@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -166,7 +166,8 @@ namespace Asv.Mavlink.AsvAudio
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("codec",
+            new(0,
+            "codec",
             "Audio codec used by this device.",
             string.Empty, 
             string.Empty, 
@@ -175,7 +176,8 @@ namespace Asv.Mavlink.AsvAudio
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("mode",
+            new(1,
+            "mode",
             "Device current work mode.",
             string.Empty, 
             string.Empty, 
@@ -184,7 +186,8 @@ namespace Asv.Mavlink.AsvAudio
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("name",
+            new(2,
+            "name",
             "Audio device name in voice chat.",
             string.Empty, 
             string.Empty, 
@@ -201,6 +204,22 @@ namespace Asv.Mavlink.AsvAudio
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Codec);
+            writer.Write(StaticFields[1], Payload.Mode);
+            writer.Write(StaticFields[2], Payload.Name);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Codec = (AsvAudioCodec)reader.ReadEnum(StaticFields[0]);
+            Payload.Mode = (AsvAudioModeFlag)reader.ReadEnum(StaticFields[1]);
+            reader.ReadCharArray(StaticFields[2], Payload.Name);
+        
+            
+        }
     }
 
     /// <summary>
@@ -212,14 +231,14 @@ namespace Asv.Mavlink.AsvAudio
         public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 2; // Codec
-            sum+= 1; // Mode
-            sum+=Name.Length; //Name
-            return (byte)sum;
+            return (byte)(
+            + 2 // uint16_t codec
+            + 1 // uint8_t mode
+            +Name.Length // char[16] name
+            );
         }
 
 
@@ -310,7 +329,8 @@ namespace Asv.Mavlink.AsvAudio
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("target_system",
+            new(0,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -319,7 +339,8 @@ namespace Asv.Mavlink.AsvAudio
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(1,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -328,7 +349,8 @@ namespace Asv.Mavlink.AsvAudio
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("frame_seq",
+            new(2,
+            "frame_seq",
             "Frame sequence number.",
             string.Empty, 
             string.Empty, 
@@ -337,7 +359,8 @@ namespace Asv.Mavlink.AsvAudio
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("pkt_in_frame",
+            new(3,
+            "pkt_in_frame",
             "Number of packets for one encoded audio frame.",
             string.Empty, 
             string.Empty, 
@@ -346,7 +369,8 @@ namespace Asv.Mavlink.AsvAudio
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("pkt_seq",
+            new(4,
+            "pkt_seq",
             "Packet sequence number (starting with 0 on every encoded frame).",
             string.Empty, 
             string.Empty, 
@@ -355,7 +379,8 @@ namespace Asv.Mavlink.AsvAudio
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data_size",
+            new(5,
+            "data_size",
             "Size of data array.",
             string.Empty, 
             string.Empty, 
@@ -364,7 +389,8 @@ namespace Asv.Mavlink.AsvAudio
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data",
+            new(6,
+            "data",
             "Audio data.",
             string.Empty, 
             string.Empty, 
@@ -385,6 +411,30 @@ namespace Asv.Mavlink.AsvAudio
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TargetSystem);
+            writer.Write(StaticFields[1], Payload.TargetComponent);
+            writer.Write(StaticFields[2], Payload.FrameSeq);
+            writer.Write(StaticFields[3], Payload.PktInFrame);
+            writer.Write(StaticFields[4], Payload.PktSeq);
+            writer.Write(StaticFields[5], Payload.DataSize);
+            writer.Write(StaticFields[6], Payload.Data);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
+            Payload.FrameSeq = reader.ReadByte(StaticFields[2]);
+            Payload.PktInFrame = reader.ReadByte(StaticFields[3]);
+            Payload.PktSeq = reader.ReadByte(StaticFields[4]);
+            Payload.DataSize = reader.ReadByte(StaticFields[5]);
+            reader.ReadByteArray(StaticFields[6], Payload.Data);
+        
+            
+        }
     }
 
     /// <summary>
@@ -396,18 +446,18 @@ namespace Asv.Mavlink.AsvAudio
         public byte GetMaxByteSize() => 236; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 236; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //FrameSeq
-            sum+=1; //PktInFrame
-            sum+=1; //PktSeq
-            sum+=1; //DataSize
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t frame_seq
+            +1 // uint8_t pkt_in_frame
+            +1 // uint8_t pkt_seq
+            +1 // uint8_t data_size
+            +Data.Length // uint8_t[230] data
+            );
         }
 
 

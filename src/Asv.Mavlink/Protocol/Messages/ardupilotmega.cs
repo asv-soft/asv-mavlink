@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -2237,7 +2237,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("mag_declination",
+            new(0,
+            "mag_declination",
             "Magnetic declination.",
             string.Empty, 
             @"rad", 
@@ -2246,7 +2247,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("raw_press",
+            new(1,
+            "raw_press",
             "Raw pressure from barometer.",
             string.Empty, 
             string.Empty, 
@@ -2255,7 +2257,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("raw_temp",
+            new(2,
+            "raw_temp",
             "Raw temperature from barometer.",
             string.Empty, 
             string.Empty, 
@@ -2264,7 +2267,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gyro_cal_x",
+            new(3,
+            "gyro_cal_x",
             "Gyro X calibration.",
             string.Empty, 
             string.Empty, 
@@ -2273,7 +2277,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("gyro_cal_y",
+            new(4,
+            "gyro_cal_y",
             "Gyro Y calibration.",
             string.Empty, 
             string.Empty, 
@@ -2282,7 +2287,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("gyro_cal_z",
+            new(5,
+            "gyro_cal_z",
             "Gyro Z calibration.",
             string.Empty, 
             string.Empty, 
@@ -2291,7 +2297,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("accel_cal_x",
+            new(6,
+            "accel_cal_x",
             "Accel X calibration.",
             string.Empty, 
             string.Empty, 
@@ -2300,7 +2307,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("accel_cal_y",
+            new(7,
+            "accel_cal_y",
             "Accel Y calibration.",
             string.Empty, 
             string.Empty, 
@@ -2309,7 +2317,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("accel_cal_z",
+            new(8,
+            "accel_cal_z",
             "Accel Z calibration.",
             string.Empty, 
             string.Empty, 
@@ -2318,7 +2327,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("mag_ofs_x",
+            new(9,
+            "mag_ofs_x",
             "Magnetometer X offset.",
             string.Empty, 
             string.Empty, 
@@ -2327,7 +2337,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int16, 
             0, 
             false),
-            new("mag_ofs_y",
+            new(10,
+            "mag_ofs_y",
             "Magnetometer Y offset.",
             string.Empty, 
             string.Empty, 
@@ -2336,7 +2347,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int16, 
             0, 
             false),
-            new("mag_ofs_z",
+            new(11,
+            "mag_ofs_z",
             "Magnetometer Z offset.",
             string.Empty, 
             string.Empty, 
@@ -2362,6 +2374,40 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.MagDeclination);
+            writer.Write(StaticFields[1], Payload.RawPress);
+            writer.Write(StaticFields[2], Payload.RawTemp);
+            writer.Write(StaticFields[3], Payload.GyroCalX);
+            writer.Write(StaticFields[4], Payload.GyroCalY);
+            writer.Write(StaticFields[5], Payload.GyroCalZ);
+            writer.Write(StaticFields[6], Payload.AccelCalX);
+            writer.Write(StaticFields[7], Payload.AccelCalY);
+            writer.Write(StaticFields[8], Payload.AccelCalZ);
+            writer.Write(StaticFields[9], Payload.MagOfsX);
+            writer.Write(StaticFields[10], Payload.MagOfsY);
+            writer.Write(StaticFields[11], Payload.MagOfsZ);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.MagDeclination = reader.ReadFloat(StaticFields[0]);
+            Payload.RawPress = reader.ReadInt(StaticFields[1]);
+            Payload.RawTemp = reader.ReadInt(StaticFields[2]);
+            Payload.GyroCalX = reader.ReadFloat(StaticFields[3]);
+            Payload.GyroCalY = reader.ReadFloat(StaticFields[4]);
+            Payload.GyroCalZ = reader.ReadFloat(StaticFields[5]);
+            Payload.AccelCalX = reader.ReadFloat(StaticFields[6]);
+            Payload.AccelCalY = reader.ReadFloat(StaticFields[7]);
+            Payload.AccelCalZ = reader.ReadFloat(StaticFields[8]);
+            Payload.MagOfsX = reader.ReadShort(StaticFields[9]);
+            Payload.MagOfsY = reader.ReadShort(StaticFields[10]);
+            Payload.MagOfsZ = reader.ReadShort(StaticFields[11]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2373,23 +2419,23 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //MagDeclination
-            sum+=4; //RawPress
-            sum+=4; //RawTemp
-            sum+=4; //GyroCalX
-            sum+=4; //GyroCalY
-            sum+=4; //GyroCalZ
-            sum+=4; //AccelCalX
-            sum+=4; //AccelCalY
-            sum+=4; //AccelCalZ
-            sum+=2; //MagOfsX
-            sum+=2; //MagOfsY
-            sum+=2; //MagOfsZ
-            return (byte)sum;
+            return (byte)(
+            +4 // float mag_declination
+            +4 // int32_t raw_press
+            +4 // int32_t raw_temp
+            +4 // float gyro_cal_x
+            +4 // float gyro_cal_y
+            +4 // float gyro_cal_z
+            +4 // float accel_cal_x
+            +4 // float accel_cal_y
+            +4 // float accel_cal_z
+            +2 // int16_t mag_ofs_x
+            +2 // int16_t mag_ofs_y
+            +2 // int16_t mag_ofs_z
+            );
         }
 
 
@@ -2518,7 +2564,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("mag_ofs_x",
+            new(0,
+            "mag_ofs_x",
             "Magnetometer X offset.",
             string.Empty, 
             string.Empty, 
@@ -2527,7 +2574,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int16, 
             0, 
             false),
-            new("mag_ofs_y",
+            new(1,
+            "mag_ofs_y",
             "Magnetometer Y offset.",
             string.Empty, 
             string.Empty, 
@@ -2536,7 +2584,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int16, 
             0, 
             false),
-            new("mag_ofs_z",
+            new(2,
+            "mag_ofs_z",
             "Magnetometer Z offset.",
             string.Empty, 
             string.Empty, 
@@ -2545,7 +2594,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int16, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -2554,7 +2604,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -2573,6 +2624,26 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.MagOfsX);
+            writer.Write(StaticFields[1], Payload.MagOfsY);
+            writer.Write(StaticFields[2], Payload.MagOfsZ);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.MagOfsX = reader.ReadShort(StaticFields[0]);
+            Payload.MagOfsY = reader.ReadShort(StaticFields[1]);
+            Payload.MagOfsZ = reader.ReadShort(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2584,16 +2655,16 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //MagOfsX
-            sum+=2; //MagOfsY
-            sum+=2; //MagOfsZ
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +2 // int16_t mag_ofs_x
+            +2 // int16_t mag_ofs_y
+            +2 // int16_t mag_ofs_z
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -2673,7 +2744,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("brkval",
+            new(0,
+            "brkval",
             "Heap top.",
             string.Empty, 
             string.Empty, 
@@ -2682,7 +2754,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("freemem",
+            new(1,
+            "freemem",
             "Free memory.",
             string.Empty, 
             @"bytes", 
@@ -2691,7 +2764,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("freemem32",
+            new(2,
+            "freemem32",
             "Free memory (32 bit).",
             string.Empty, 
             @"bytes", 
@@ -2708,6 +2782,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Brkval);
+            writer.Write(StaticFields[1], Payload.Freemem);
+            writer.Write(StaticFields[2], Payload.Freemem32);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Brkval = reader.ReadUShort(StaticFields[0]);
+            Payload.Freemem = reader.ReadUShort(StaticFields[1]);
+            Payload.Freemem32 = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2719,14 +2809,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Brkval
-            sum+=2; //Freemem
-            sum+=4; //Freemem32
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t brkval
+            +2 // uint16_t freemem
+            +4 // uint32_t freemem32
+            );
         }
 
 
@@ -2794,7 +2884,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("adc1",
+            new(0,
+            "adc1",
             "ADC output 1.",
             string.Empty, 
             string.Empty, 
@@ -2803,7 +2894,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("adc2",
+            new(1,
+            "adc2",
             "ADC output 2.",
             string.Empty, 
             string.Empty, 
@@ -2812,7 +2904,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("adc3",
+            new(2,
+            "adc3",
             "ADC output 3.",
             string.Empty, 
             string.Empty, 
@@ -2821,7 +2914,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("adc4",
+            new(3,
+            "adc4",
             "ADC output 4.",
             string.Empty, 
             string.Empty, 
@@ -2830,7 +2924,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("adc5",
+            new(4,
+            "adc5",
             "ADC output 5.",
             string.Empty, 
             string.Empty, 
@@ -2839,7 +2934,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("adc6",
+            new(5,
+            "adc6",
             "ADC output 6.",
             string.Empty, 
             string.Empty, 
@@ -2859,6 +2955,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Adc1);
+            writer.Write(StaticFields[1], Payload.Adc2);
+            writer.Write(StaticFields[2], Payload.Adc3);
+            writer.Write(StaticFields[3], Payload.Adc4);
+            writer.Write(StaticFields[4], Payload.Adc5);
+            writer.Write(StaticFields[5], Payload.Adc6);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Adc1 = reader.ReadUShort(StaticFields[0]);
+            Payload.Adc2 = reader.ReadUShort(StaticFields[1]);
+            Payload.Adc3 = reader.ReadUShort(StaticFields[2]);
+            Payload.Adc4 = reader.ReadUShort(StaticFields[3]);
+            Payload.Adc5 = reader.ReadUShort(StaticFields[4]);
+            Payload.Adc6 = reader.ReadUShort(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2870,17 +2988,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Adc1
-            sum+=2; //Adc2
-            sum+=2; //Adc3
-            sum+=2; //Adc4
-            sum+=2; //Adc5
-            sum+=2; //Adc6
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t adc1
+            +2 // uint16_t adc2
+            +2 // uint16_t adc3
+            +2 // uint16_t adc4
+            +2 // uint16_t adc5
+            +2 // uint16_t adc6
+            );
         }
 
 
@@ -2967,7 +3085,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("extra_value",
+            new(0,
+            "extra_value",
             "Correspondent value to given extra_param.",
             string.Empty, 
             string.Empty, 
@@ -2976,7 +3095,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("shutter_speed",
+            new(1,
+            "shutter_speed",
             "Divisor number //e.g. 1000 means 1/1000 (0 means ignore).",
             string.Empty, 
             string.Empty, 
@@ -2985,7 +3105,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(2,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -2994,7 +3115,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(3,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -3003,7 +3125,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("mode",
+            new(4,
+            "mode",
             "Mode enumeration from 1 to N //P, TV, AV, M, etc. (0 means ignore).",
             string.Empty, 
             string.Empty, 
@@ -3012,7 +3135,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("aperture",
+            new(5,
+            "aperture",
             "F stop number x 10 //e.g. 28 means 2.8 (0 means ignore).",
             string.Empty, 
             string.Empty, 
@@ -3021,7 +3145,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("iso",
+            new(6,
+            "iso",
             "ISO enumeration from 1 to N //e.g. 80, 100, 200, Etc (0 means ignore).",
             string.Empty, 
             string.Empty, 
@@ -3030,7 +3155,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("exposure_type",
+            new(7,
+            "exposure_type",
             "Exposure type enumeration from 1 to N (0 means ignore).",
             string.Empty, 
             string.Empty, 
@@ -3039,7 +3165,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("command_id",
+            new(8,
+            "command_id",
             "Command Identity (incremental loop: 0 to 255). //A command sent multiple times will be executed or pooled just once.",
             string.Empty, 
             string.Empty, 
@@ -3048,7 +3175,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("engine_cut_off",
+            new(9,
+            "engine_cut_off",
             "Main engine cut-off time before camera trigger (0 means no cut-off).",
             string.Empty, 
             @"ds", 
@@ -3057,7 +3185,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("extra_param",
+            new(10,
+            "extra_param",
             "Extra parameters enumeration (0 means ignore).",
             string.Empty, 
             string.Empty, 
@@ -3082,6 +3211,38 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.ExtraValue);
+            writer.Write(StaticFields[1], Payload.ShutterSpeed);
+            writer.Write(StaticFields[2], Payload.TargetSystem);
+            writer.Write(StaticFields[3], Payload.TargetComponent);
+            writer.Write(StaticFields[4], Payload.Mode);
+            writer.Write(StaticFields[5], Payload.Aperture);
+            writer.Write(StaticFields[6], Payload.Iso);
+            writer.Write(StaticFields[7], Payload.ExposureType);
+            writer.Write(StaticFields[8], Payload.CommandId);
+            writer.Write(StaticFields[9], Payload.EngineCutOff);
+            writer.Write(StaticFields[10], Payload.ExtraParam);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.ExtraValue = reader.ReadFloat(StaticFields[0]);
+            Payload.ShutterSpeed = reader.ReadUShort(StaticFields[1]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[2]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[3]);
+            Payload.Mode = reader.ReadByte(StaticFields[4]);
+            Payload.Aperture = reader.ReadByte(StaticFields[5]);
+            Payload.Iso = reader.ReadByte(StaticFields[6]);
+            Payload.ExposureType = reader.ReadByte(StaticFields[7]);
+            Payload.CommandId = reader.ReadByte(StaticFields[8]);
+            Payload.EngineCutOff = reader.ReadByte(StaticFields[9]);
+            Payload.ExtraParam = reader.ReadByte(StaticFields[10]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3093,22 +3254,22 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //ExtraValue
-            sum+=2; //ShutterSpeed
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Mode
-            sum+=1; //Aperture
-            sum+=1; //Iso
-            sum+=1; //ExposureType
-            sum+=1; //CommandId
-            sum+=1; //EngineCutOff
-            sum+=1; //ExtraParam
-            return (byte)sum;
+            return (byte)(
+            +4 // float extra_value
+            +2 // uint16_t shutter_speed
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t mode
+            +1 // uint8_t aperture
+            +1 // uint8_t iso
+            +1 // uint8_t exposure_type
+            +1 // uint8_t command_id
+            +1 // uint8_t engine_cut_off
+            +1 // uint8_t extra_param
+            );
         }
 
 
@@ -3230,7 +3391,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("extra_value",
+            new(0,
+            "extra_value",
             "Correspondent value to given extra_param.",
             string.Empty, 
             string.Empty, 
@@ -3239,7 +3401,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -3248,7 +3411,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -3257,7 +3421,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("session",
+            new(3,
+            "session",
             "0: stop, 1: start or keep it up //Session control e.g. show/hide lens.",
             string.Empty, 
             string.Empty, 
@@ -3266,7 +3431,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("zoom_pos",
+            new(4,
+            "zoom_pos",
             "1 to N //Zoom's absolute position (0 means ignore).",
             string.Empty, 
             string.Empty, 
@@ -3275,7 +3441,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("zoom_step",
+            new(5,
+            "zoom_step",
             "-100 to 100 //Zooming step value to offset zoom from the current position.",
             string.Empty, 
             string.Empty, 
@@ -3284,7 +3451,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int8, 
             0, 
             false),
-            new("focus_lock",
+            new(6,
+            "focus_lock",
             "0: unlock focus or keep unlocked, 1: lock focus or keep locked, 3: re-lock focus.",
             string.Empty, 
             string.Empty, 
@@ -3293,7 +3461,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("shot",
+            new(7,
+            "shot",
             "0: ignore, 1: shot or start filming.",
             string.Empty, 
             string.Empty, 
@@ -3302,7 +3471,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("command_id",
+            new(8,
+            "command_id",
             "Command Identity (incremental loop: 0 to 255)//A command sent multiple times will be executed or pooled just once.",
             string.Empty, 
             string.Empty, 
@@ -3311,7 +3481,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("extra_param",
+            new(9,
+            "extra_param",
             "Extra parameters enumeration (0 means ignore).",
             string.Empty, 
             string.Empty, 
@@ -3335,6 +3506,36 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.ExtraValue);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+            writer.Write(StaticFields[3], Payload.Session);
+            writer.Write(StaticFields[4], Payload.ZoomPos);
+            writer.Write(StaticFields[5], Payload.ZoomStep);
+            writer.Write(StaticFields[6], Payload.FocusLock);
+            writer.Write(StaticFields[7], Payload.Shot);
+            writer.Write(StaticFields[8], Payload.CommandId);
+            writer.Write(StaticFields[9], Payload.ExtraParam);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.ExtraValue = reader.ReadFloat(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+            Payload.Session = reader.ReadByte(StaticFields[3]);
+            Payload.ZoomPos = reader.ReadByte(StaticFields[4]);
+            Payload.ZoomStep = reader.ReadSByte(StaticFields[5]);
+            Payload.FocusLock = reader.ReadByte(StaticFields[6]);
+            Payload.Shot = reader.ReadByte(StaticFields[7]);
+            Payload.CommandId = reader.ReadByte(StaticFields[8]);
+            Payload.ExtraParam = reader.ReadByte(StaticFields[9]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3346,21 +3547,21 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 13; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //ExtraValue
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Session
-            sum+=1; //ZoomPos
-            sum+=1; //ZoomStep
-            sum+=1; //FocusLock
-            sum+=1; //Shot
-            sum+=1; //CommandId
-            sum+=1; //ExtraParam
-            return (byte)sum;
+            return (byte)(
+            +4 // float extra_value
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t session
+            +1 // uint8_t zoom_pos
+            +1 // int8_t zoom_step
+            +1 // uint8_t focus_lock
+            +1 // uint8_t shot
+            +1 // uint8_t command_id
+            +1 // uint8_t extra_param
+            );
         }
 
 
@@ -3475,7 +3676,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("target_system",
+            new(0,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -3484,7 +3686,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(1,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -3493,7 +3696,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("mount_mode",
+            new(2,
+            "mount_mode",
             "Mount operating mode.",
             string.Empty, 
             string.Empty, 
@@ -3502,7 +3706,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("stab_roll",
+            new(3,
+            "stab_roll",
             "(1 = yes, 0 = no).",
             string.Empty, 
             string.Empty, 
@@ -3511,7 +3716,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("stab_pitch",
+            new(4,
+            "stab_pitch",
             "(1 = yes, 0 = no).",
             string.Empty, 
             string.Empty, 
@@ -3520,7 +3726,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("stab_yaw",
+            new(5,
+            "stab_yaw",
             "(1 = yes, 0 = no).",
             string.Empty, 
             string.Empty, 
@@ -3540,6 +3747,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TargetSystem);
+            writer.Write(StaticFields[1], Payload.TargetComponent);
+            writer.Write(StaticFields[2], Payload.MountMode);
+            writer.Write(StaticFields[3], Payload.StabRoll);
+            writer.Write(StaticFields[4], Payload.StabPitch);
+            writer.Write(StaticFields[5], Payload.StabYaw);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
+            Payload.MountMode = (MavMountMode)reader.ReadEnum(StaticFields[2]);
+            Payload.StabRoll = reader.ReadByte(StaticFields[3]);
+            Payload.StabPitch = reader.ReadByte(StaticFields[4]);
+            Payload.StabYaw = reader.ReadByte(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3551,17 +3780,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // MountMode
-            sum+=1; //StabRoll
-            sum+=1; //StabPitch
-            sum+=1; //StabYaw
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t mount_mode
+            +1 // uint8_t stab_roll
+            +1 // uint8_t stab_pitch
+            +1 // uint8_t stab_yaw
+            );
         }
 
 
@@ -3648,7 +3877,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("input_a",
+            new(0,
+            "input_a",
             "Pitch (centi-degrees) or lat (degE7), depending on mount mode.",
             string.Empty, 
             string.Empty, 
@@ -3657,7 +3887,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("input_b",
+            new(1,
+            "input_b",
             "Roll (centi-degrees) or lon (degE7) depending on mount mode.",
             string.Empty, 
             string.Empty, 
@@ -3666,7 +3897,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("input_c",
+            new(2,
+            "input_c",
             "Yaw (centi-degrees) or alt (cm) depending on mount mode.",
             string.Empty, 
             string.Empty, 
@@ -3675,7 +3907,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -3684,7 +3917,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -3693,7 +3927,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("save_position",
+            new(5,
+            "save_position",
             "If \"1\" it will save current trimmed position on EEPROM (just valid for NEUTRAL and LANDING).",
             string.Empty, 
             string.Empty, 
@@ -3713,6 +3948,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.InputA);
+            writer.Write(StaticFields[1], Payload.InputB);
+            writer.Write(StaticFields[2], Payload.InputC);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+            writer.Write(StaticFields[5], Payload.SavePosition);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.InputA = reader.ReadInt(StaticFields[0]);
+            Payload.InputB = reader.ReadInt(StaticFields[1]);
+            Payload.InputC = reader.ReadInt(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+            Payload.SavePosition = reader.ReadByte(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3724,17 +3981,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //InputA
-            sum+=4; //InputB
-            sum+=4; //InputC
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //SavePosition
-            return (byte)sum;
+            return (byte)(
+            +4 // int32_t input_a
+            +4 // int32_t input_b
+            +4 // int32_t input_c
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t save_position
+            );
         }
 
 
@@ -3821,7 +4078,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("pointing_a",
+            new(0,
+            "pointing_a",
             "Pitch.",
             string.Empty, 
             @"cdeg", 
@@ -3830,7 +4088,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("pointing_b",
+            new(1,
+            "pointing_b",
             "Roll.",
             string.Empty, 
             @"cdeg", 
@@ -3839,7 +4098,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("pointing_c",
+            new(2,
+            "pointing_c",
             "Yaw.",
             string.Empty, 
             @"cdeg", 
@@ -3848,7 +4108,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -3857,7 +4118,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -3866,7 +4128,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("mount_mode",
+            new(5,
+            "mount_mode",
             "Mount operating mode.",
             string.Empty, 
             string.Empty, 
@@ -3886,6 +4149,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.PointingA);
+            writer.Write(StaticFields[1], Payload.PointingB);
+            writer.Write(StaticFields[2], Payload.PointingC);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+            writer.Write(StaticFields[5], Payload.MountMode);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.PointingA = reader.ReadInt(StaticFields[0]);
+            Payload.PointingB = reader.ReadInt(StaticFields[1]);
+            Payload.PointingC = reader.ReadInt(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+            Payload.MountMode = (MavMountMode)reader.ReadEnum(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3897,17 +4182,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //PointingA
-            sum+=4; //PointingB
-            sum+=4; //PointingC
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // MountMode
-            return (byte)sum;
+            return (byte)(
+            +4 // int32_t pointing_a
+            +4 // int32_t pointing_b
+            +4 // int32_t pointing_c
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t mount_mode
+            );
         }
 
 
@@ -3996,7 +4281,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("lat",
+            new(0,
+            "lat",
             "Latitude of point.",
             string.Empty, 
             @"deg", 
@@ -4005,7 +4291,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("lng",
+            new(1,
+            "lng",
             "Longitude of point.",
             string.Empty, 
             @"deg", 
@@ -4014,7 +4301,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("target_system",
+            new(2,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -4023,7 +4311,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(3,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -4032,7 +4321,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("idx",
+            new(4,
+            "idx",
             "Point index (first point is 1, 0 is for return point).",
             string.Empty, 
             string.Empty, 
@@ -4041,7 +4331,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("count",
+            new(5,
+            "count",
             "Total number of points (for sanity checking).",
             string.Empty, 
             string.Empty, 
@@ -4061,6 +4352,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Lat);
+            writer.Write(StaticFields[1], Payload.Lng);
+            writer.Write(StaticFields[2], Payload.TargetSystem);
+            writer.Write(StaticFields[3], Payload.TargetComponent);
+            writer.Write(StaticFields[4], Payload.Idx);
+            writer.Write(StaticFields[5], Payload.Count);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Lat = reader.ReadFloat(StaticFields[0]);
+            Payload.Lng = reader.ReadFloat(StaticFields[1]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[2]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[3]);
+            Payload.Idx = reader.ReadByte(StaticFields[4]);
+            Payload.Count = reader.ReadByte(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -4072,17 +4385,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Lat
-            sum+=4; //Lng
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Idx
-            sum+=1; //Count
-            return (byte)sum;
+            return (byte)(
+            +4 // float lat
+            +4 // float lng
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t idx
+            +1 // uint8_t count
+            );
         }
 
 
@@ -4169,7 +4482,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("target_system",
+            new(0,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -4178,7 +4492,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(1,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -4187,7 +4502,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("idx",
+            new(2,
+            "idx",
             "Point index (first point is 1, 0 is for return point).",
             string.Empty, 
             string.Empty, 
@@ -4204,6 +4520,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TargetSystem);
+            writer.Write(StaticFields[1], Payload.TargetComponent);
+            writer.Write(StaticFields[2], Payload.Idx);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
+            Payload.Idx = reader.ReadByte(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -4215,14 +4547,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Idx
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t idx
+            );
         }
 
 
@@ -4288,7 +4620,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("omegaIx",
+            new(0,
+            "omegaIx",
             "X gyro drift estimate.",
             string.Empty, 
             @"rad/s", 
@@ -4297,7 +4630,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("omegaIy",
+            new(1,
+            "omegaIy",
             "Y gyro drift estimate.",
             string.Empty, 
             @"rad/s", 
@@ -4306,7 +4640,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("omegaIz",
+            new(2,
+            "omegaIz",
             "Z gyro drift estimate.",
             string.Empty, 
             @"rad/s", 
@@ -4315,7 +4650,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("accel_weight",
+            new(3,
+            "accel_weight",
             "Average accel_weight.",
             string.Empty, 
             string.Empty, 
@@ -4324,7 +4660,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("renorm_val",
+            new(4,
+            "renorm_val",
             "Average renormalisation value.",
             string.Empty, 
             string.Empty, 
@@ -4333,7 +4670,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("error_rp",
+            new(5,
+            "error_rp",
             "Average error_roll_pitch value.",
             string.Empty, 
             string.Empty, 
@@ -4342,7 +4680,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("error_yaw",
+            new(6,
+            "error_yaw",
             "Average error_yaw value.",
             string.Empty, 
             string.Empty, 
@@ -4363,6 +4702,30 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Omegaix);
+            writer.Write(StaticFields[1], Payload.Omegaiy);
+            writer.Write(StaticFields[2], Payload.Omegaiz);
+            writer.Write(StaticFields[3], Payload.AccelWeight);
+            writer.Write(StaticFields[4], Payload.RenormVal);
+            writer.Write(StaticFields[5], Payload.ErrorRp);
+            writer.Write(StaticFields[6], Payload.ErrorYaw);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Omegaix = reader.ReadFloat(StaticFields[0]);
+            Payload.Omegaiy = reader.ReadFloat(StaticFields[1]);
+            Payload.Omegaiz = reader.ReadFloat(StaticFields[2]);
+            Payload.AccelWeight = reader.ReadFloat(StaticFields[3]);
+            Payload.RenormVal = reader.ReadFloat(StaticFields[4]);
+            Payload.ErrorRp = reader.ReadFloat(StaticFields[5]);
+            Payload.ErrorYaw = reader.ReadFloat(StaticFields[6]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -4374,18 +4737,18 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Omegaix
-            sum+=4; //Omegaiy
-            sum+=4; //Omegaiz
-            sum+=4; //AccelWeight
-            sum+=4; //RenormVal
-            sum+=4; //ErrorRp
-            sum+=4; //ErrorYaw
-            return (byte)sum;
+            return (byte)(
+            +4 // float omegaIx
+            +4 // float omegaIy
+            +4 // float omegaIz
+            +4 // float accel_weight
+            +4 // float renorm_val
+            +4 // float error_rp
+            +4 // float error_yaw
+            );
         }
 
 
@@ -4479,7 +4842,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("roll",
+            new(0,
+            "roll",
             "Roll angle.",
             string.Empty, 
             @"rad", 
@@ -4488,7 +4852,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pitch",
+            new(1,
+            "pitch",
             "Pitch angle.",
             string.Empty, 
             @"rad", 
@@ -4497,7 +4862,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw",
+            new(2,
+            "yaw",
             "Yaw angle.",
             string.Empty, 
             @"rad", 
@@ -4506,7 +4872,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("xacc",
+            new(3,
+            "xacc",
             "X acceleration.",
             string.Empty, 
             @"m/s/s", 
@@ -4515,7 +4882,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yacc",
+            new(4,
+            "yacc",
             "Y acceleration.",
             string.Empty, 
             @"m/s/s", 
@@ -4524,7 +4892,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("zacc",
+            new(5,
+            "zacc",
             "Z acceleration.",
             string.Empty, 
             @"m/s/s", 
@@ -4533,7 +4902,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("xgyro",
+            new(6,
+            "xgyro",
             "Angular speed around X axis.",
             string.Empty, 
             @"rad/s", 
@@ -4542,7 +4912,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("ygyro",
+            new(7,
+            "ygyro",
             "Angular speed around Y axis.",
             string.Empty, 
             @"rad/s", 
@@ -4551,7 +4922,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("zgyro",
+            new(8,
+            "zgyro",
             "Angular speed around Z axis.",
             string.Empty, 
             @"rad/s", 
@@ -4560,7 +4932,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("lat",
+            new(9,
+            "lat",
             "Latitude.",
             string.Empty, 
             @"degE7", 
@@ -4569,7 +4942,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lng",
+            new(10,
+            "lng",
             "Longitude.",
             string.Empty, 
             @"degE7", 
@@ -4594,6 +4968,38 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Roll);
+            writer.Write(StaticFields[1], Payload.Pitch);
+            writer.Write(StaticFields[2], Payload.Yaw);
+            writer.Write(StaticFields[3], Payload.Xacc);
+            writer.Write(StaticFields[4], Payload.Yacc);
+            writer.Write(StaticFields[5], Payload.Zacc);
+            writer.Write(StaticFields[6], Payload.Xgyro);
+            writer.Write(StaticFields[7], Payload.Ygyro);
+            writer.Write(StaticFields[8], Payload.Zgyro);
+            writer.Write(StaticFields[9], Payload.Lat);
+            writer.Write(StaticFields[10], Payload.Lng);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Roll = reader.ReadFloat(StaticFields[0]);
+            Payload.Pitch = reader.ReadFloat(StaticFields[1]);
+            Payload.Yaw = reader.ReadFloat(StaticFields[2]);
+            Payload.Xacc = reader.ReadFloat(StaticFields[3]);
+            Payload.Yacc = reader.ReadFloat(StaticFields[4]);
+            Payload.Zacc = reader.ReadFloat(StaticFields[5]);
+            Payload.Xgyro = reader.ReadFloat(StaticFields[6]);
+            Payload.Ygyro = reader.ReadFloat(StaticFields[7]);
+            Payload.Zgyro = reader.ReadFloat(StaticFields[8]);
+            Payload.Lat = reader.ReadInt(StaticFields[9]);
+            Payload.Lng = reader.ReadInt(StaticFields[10]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -4605,22 +5011,22 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //Xacc
-            sum+=4; //Yacc
-            sum+=4; //Zacc
-            sum+=4; //Xgyro
-            sum+=4; //Ygyro
-            sum+=4; //Zgyro
-            sum+=4; //Lat
-            sum+=4; //Lng
-            return (byte)sum;
+            return (byte)(
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float xacc
+            +4 // float yacc
+            +4 // float zacc
+            +4 // float xgyro
+            +4 // float ygyro
+            +4 // float zgyro
+            +4 // int32_t lat
+            +4 // int32_t lng
+            );
         }
 
 
@@ -4742,7 +5148,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("Vcc",
+            new(0,
+            "Vcc",
             "Board voltage.",
             string.Empty, 
             @"mV", 
@@ -4751,7 +5158,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("I2Cerr",
+            new(1,
+            "I2Cerr",
             "I2C error count.",
             string.Empty, 
             string.Empty, 
@@ -4767,6 +5175,20 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Vcc);
+            writer.Write(StaticFields[1], Payload.I2cerr);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Vcc = reader.ReadUShort(StaticFields[0]);
+            Payload.I2cerr = reader.ReadByte(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -4778,13 +5200,13 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Vcc
-            sum+=1; //I2cerr
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t Vcc
+            +1 // uint8_t I2Cerr
+            );
         }
 
 
@@ -4843,7 +5265,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("rxerrors",
+            new(0,
+            "rxerrors",
             "Receive errors.",
             string.Empty, 
             string.Empty, 
@@ -4852,7 +5275,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("fixed",
+            new(1,
+            "fixed",
             "Count of error corrected packets.",
             string.Empty, 
             string.Empty, 
@@ -4861,7 +5285,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("rssi",
+            new(2,
+            "rssi",
             "Local signal strength.",
             string.Empty, 
             string.Empty, 
@@ -4870,7 +5295,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("remrssi",
+            new(3,
+            "remrssi",
             "Remote signal strength.",
             string.Empty, 
             string.Empty, 
@@ -4879,7 +5305,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("txbuf",
+            new(4,
+            "txbuf",
             "How full the tx buffer is.",
             string.Empty, 
             @"%", 
@@ -4888,7 +5315,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("noise",
+            new(5,
+            "noise",
             "Background noise level.",
             string.Empty, 
             string.Empty, 
@@ -4897,7 +5325,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("remnoise",
+            new(6,
+            "remnoise",
             "Remote background noise level.",
             string.Empty, 
             string.Empty, 
@@ -4918,6 +5347,30 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Rxerrors);
+            writer.Write(StaticFields[1], Payload.Fixed);
+            writer.Write(StaticFields[2], Payload.Rssi);
+            writer.Write(StaticFields[3], Payload.Remrssi);
+            writer.Write(StaticFields[4], Payload.Txbuf);
+            writer.Write(StaticFields[5], Payload.Noise);
+            writer.Write(StaticFields[6], Payload.Remnoise);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Rxerrors = reader.ReadUShort(StaticFields[0]);
+            Payload.Fixed = reader.ReadUShort(StaticFields[1]);
+            Payload.Rssi = reader.ReadByte(StaticFields[2]);
+            Payload.Remrssi = reader.ReadByte(StaticFields[3]);
+            Payload.Txbuf = reader.ReadByte(StaticFields[4]);
+            Payload.Noise = reader.ReadByte(StaticFields[5]);
+            Payload.Remnoise = reader.ReadByte(StaticFields[6]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -4929,18 +5382,18 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Rxerrors
-            sum+=2; //Fixed
-            sum+=1; //Rssi
-            sum+=1; //Remrssi
-            sum+=1; //Txbuf
-            sum+=1; //Noise
-            sum+=1; //Remnoise
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t rxerrors
+            +2 // uint16_t fixed
+            +1 // uint8_t rssi
+            +1 // uint8_t remrssi
+            +1 // uint8_t txbuf
+            +1 // uint8_t noise
+            +1 // uint8_t remnoise
+            );
         }
 
 
@@ -5034,7 +5487,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("last_trigger",
+            new(0,
+            "last_trigger",
             "Time (since boot) of last breach.",
             string.Empty, 
             @"ms", 
@@ -5043,7 +5497,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("last_action",
+            new(1,
+            "last_action",
             "Time (since boot) of last recovery action.",
             string.Empty, 
             @"ms", 
@@ -5052,7 +5507,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("last_recovery",
+            new(2,
+            "last_recovery",
             "Time (since boot) of last successful recovery.",
             string.Empty, 
             @"ms", 
@@ -5061,7 +5517,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("last_clear",
+            new(3,
+            "last_clear",
             "Time (since boot) of last all-clear.",
             string.Empty, 
             @"ms", 
@@ -5070,7 +5527,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("breach_count",
+            new(4,
+            "breach_count",
             "Number of fence breaches.",
             string.Empty, 
             string.Empty, 
@@ -5079,7 +5537,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("limits_state",
+            new(5,
+            "limits_state",
             "State of AP_Limits.",
             string.Empty, 
             string.Empty, 
@@ -5088,7 +5547,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("mods_enabled",
+            new(6,
+            "mods_enabled",
             "AP_Limit_Module bitfield of enabled modules.",
             string.Empty, 
             string.Empty, 
@@ -5097,7 +5557,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("mods_required",
+            new(7,
+            "mods_required",
             "AP_Limit_Module bitfield of required modules.",
             string.Empty, 
             string.Empty, 
@@ -5106,7 +5567,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("mods_triggered",
+            new(8,
+            "mods_triggered",
             "AP_Limit_Module bitfield of triggered modules.",
             string.Empty, 
             string.Empty, 
@@ -5129,6 +5591,34 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.LastTrigger);
+            writer.Write(StaticFields[1], Payload.LastAction);
+            writer.Write(StaticFields[2], Payload.LastRecovery);
+            writer.Write(StaticFields[3], Payload.LastClear);
+            writer.Write(StaticFields[4], Payload.BreachCount);
+            writer.Write(StaticFields[5], Payload.LimitsState);
+            writer.Write(StaticFields[6], Payload.ModsEnabled);
+            writer.Write(StaticFields[7], Payload.ModsRequired);
+            writer.Write(StaticFields[8], Payload.ModsTriggered);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.LastTrigger = reader.ReadUInt(StaticFields[0]);
+            Payload.LastAction = reader.ReadUInt(StaticFields[1]);
+            Payload.LastRecovery = reader.ReadUInt(StaticFields[2]);
+            Payload.LastClear = reader.ReadUInt(StaticFields[3]);
+            Payload.BreachCount = reader.ReadUShort(StaticFields[4]);
+            Payload.LimitsState = (LimitsState)reader.ReadEnum(StaticFields[5]);
+            Payload.ModsEnabled = (LimitModule)reader.ReadEnum(StaticFields[6]);
+            Payload.ModsRequired = (LimitModule)reader.ReadEnum(StaticFields[7]);
+            Payload.ModsTriggered = (LimitModule)reader.ReadEnum(StaticFields[8]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -5140,20 +5630,20 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //LastTrigger
-            sum+=4; //LastAction
-            sum+=4; //LastRecovery
-            sum+=4; //LastClear
-            sum+=2; //BreachCount
-            sum+= 1; // LimitsState
-            sum+= 1; // ModsEnabled
-            sum+= 1; // ModsRequired
-            sum+= 1; // ModsTriggered
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t last_trigger
+            +4 // uint32_t last_action
+            +4 // uint32_t last_recovery
+            +4 // uint32_t last_clear
+            +2 // uint16_t breach_count
+            + 1 // uint8_t limits_state
+            + 1 // uint8_t mods_enabled
+            + 1 // uint8_t mods_required
+            + 1 // uint8_t mods_triggered
+            );
         }
 
 
@@ -5261,7 +5751,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("direction",
+            new(0,
+            "direction",
             "Wind direction (that wind is coming from).",
             string.Empty, 
             @"deg", 
@@ -5270,7 +5761,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("speed",
+            new(1,
+            "speed",
             "Wind speed in ground plane.",
             string.Empty, 
             @"m/s", 
@@ -5279,7 +5771,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("speed_z",
+            new(2,
+            "speed_z",
             "Vertical wind speed.",
             string.Empty, 
             @"m/s", 
@@ -5296,6 +5789,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Direction);
+            writer.Write(StaticFields[1], Payload.Speed);
+            writer.Write(StaticFields[2], Payload.SpeedZ);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Direction = reader.ReadFloat(StaticFields[0]);
+            Payload.Speed = reader.ReadFloat(StaticFields[1]);
+            Payload.SpeedZ = reader.ReadFloat(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -5307,14 +5816,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Direction
-            sum+=4; //Speed
-            sum+=4; //SpeedZ
-            return (byte)sum;
+            return (byte)(
+            +4 // float direction
+            +4 // float speed
+            +4 // float speed_z
+            );
         }
 
 
@@ -5380,7 +5889,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("type",
+            new(0,
+            "type",
             "Data type.",
             string.Empty, 
             string.Empty, 
@@ -5389,7 +5899,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("len",
+            new(1,
+            "len",
             "Data length.",
             string.Empty, 
             @"bytes", 
@@ -5398,7 +5909,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data",
+            new(2,
+            "data",
             "Raw data.",
             string.Empty, 
             string.Empty, 
@@ -5415,6 +5927,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Type);
+            writer.Write(StaticFields[1], Payload.Len);
+            writer.Write(StaticFields[2], Payload.Data);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Type = reader.ReadByte(StaticFields[0]);
+            Payload.Len = reader.ReadByte(StaticFields[1]);
+            reader.ReadByteArray(StaticFields[2], Payload.Data);
+        
+            
+        }
     }
 
     /// <summary>
@@ -5426,14 +5954,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //Type
-            sum+=1; //Len
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t type
+            +1 // uint8_t len
+            +Data.Length // uint8_t[16] data
+            );
         }
 
 
@@ -5512,7 +6040,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("type",
+            new(0,
+            "type",
             "Data type.",
             string.Empty, 
             string.Empty, 
@@ -5521,7 +6050,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("len",
+            new(1,
+            "len",
             "Data length.",
             string.Empty, 
             @"bytes", 
@@ -5530,7 +6060,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data",
+            new(2,
+            "data",
             "Raw data.",
             string.Empty, 
             string.Empty, 
@@ -5547,6 +6078,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Type);
+            writer.Write(StaticFields[1], Payload.Len);
+            writer.Write(StaticFields[2], Payload.Data);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Type = reader.ReadByte(StaticFields[0]);
+            Payload.Len = reader.ReadByte(StaticFields[1]);
+            reader.ReadByteArray(StaticFields[2], Payload.Data);
+        
+            
+        }
     }
 
     /// <summary>
@@ -5558,14 +6105,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //Type
-            sum+=1; //Len
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t type
+            +1 // uint8_t len
+            +Data.Length // uint8_t[32] data
+            );
         }
 
 
@@ -5644,7 +6191,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("type",
+            new(0,
+            "type",
             "Data type.",
             string.Empty, 
             string.Empty, 
@@ -5653,7 +6201,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("len",
+            new(1,
+            "len",
             "Data length.",
             string.Empty, 
             @"bytes", 
@@ -5662,7 +6211,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data",
+            new(2,
+            "data",
             "Raw data.",
             string.Empty, 
             string.Empty, 
@@ -5679,6 +6229,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Type);
+            writer.Write(StaticFields[1], Payload.Len);
+            writer.Write(StaticFields[2], Payload.Data);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Type = reader.ReadByte(StaticFields[0]);
+            Payload.Len = reader.ReadByte(StaticFields[1]);
+            reader.ReadByteArray(StaticFields[2], Payload.Data);
+        
+            
+        }
     }
 
     /// <summary>
@@ -5690,14 +6256,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 66; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 66; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //Type
-            sum+=1; //Len
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t type
+            +1 // uint8_t len
+            +Data.Length // uint8_t[64] data
+            );
         }
 
 
@@ -5776,7 +6342,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("type",
+            new(0,
+            "type",
             "Data type.",
             string.Empty, 
             string.Empty, 
@@ -5785,7 +6352,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("len",
+            new(1,
+            "len",
             "Data length.",
             string.Empty, 
             @"bytes", 
@@ -5794,7 +6362,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data",
+            new(2,
+            "data",
             "Raw data.",
             string.Empty, 
             string.Empty, 
@@ -5811,6 +6380,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Type);
+            writer.Write(StaticFields[1], Payload.Len);
+            writer.Write(StaticFields[2], Payload.Data);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Type = reader.ReadByte(StaticFields[0]);
+            Payload.Len = reader.ReadByte(StaticFields[1]);
+            reader.ReadByteArray(StaticFields[2], Payload.Data);
+        
+            
+        }
     }
 
     /// <summary>
@@ -5822,14 +6407,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 98; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //Type
-            sum+=1; //Len
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t type
+            +1 // uint8_t len
+            +Data.Length // uint8_t[96] data
+            );
         }
 
 
@@ -5908,7 +6493,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("distance",
+            new(0,
+            "distance",
             "Distance.",
             string.Empty, 
             @"m", 
@@ -5917,7 +6503,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("voltage",
+            new(1,
+            "voltage",
             "Raw voltage if available, zero otherwise.",
             string.Empty, 
             @"V", 
@@ -5933,6 +6520,20 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Distance);
+            writer.Write(StaticFields[1], Payload.Voltage);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Distance = reader.ReadFloat(StaticFields[0]);
+            Payload.Voltage = reader.ReadFloat(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -5944,13 +6545,13 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Distance
-            sum+=4; //Voltage
-            return (byte)sum;
+            return (byte)(
+            +4 // float distance
+            +4 // float voltage
+            );
         }
 
 
@@ -6009,7 +6610,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("vx",
+            new(0,
+            "vx",
             "GPS velocity north.",
             string.Empty, 
             @"m/s", 
@@ -6018,7 +6620,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("vy",
+            new(1,
+            "vy",
             "GPS velocity east.",
             string.Empty, 
             @"m/s", 
@@ -6027,7 +6630,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("vz",
+            new(2,
+            "vz",
             "GPS velocity down.",
             string.Empty, 
             @"m/s", 
@@ -6036,7 +6640,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("diff_pressure",
+            new(3,
+            "diff_pressure",
             "Differential pressure.",
             string.Empty, 
             @"Pa", 
@@ -6045,7 +6650,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("EAS2TAS",
+            new(4,
+            "EAS2TAS",
             "Estimated to true airspeed ratio.",
             string.Empty, 
             string.Empty, 
@@ -6054,7 +6660,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("ratio",
+            new(5,
+            "ratio",
             "Airspeed ratio.",
             string.Empty, 
             string.Empty, 
@@ -6063,7 +6670,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("state_x",
+            new(6,
+            "state_x",
             "EKF state x.",
             string.Empty, 
             string.Empty, 
@@ -6072,7 +6680,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("state_y",
+            new(7,
+            "state_y",
             "EKF state y.",
             string.Empty, 
             string.Empty, 
@@ -6081,7 +6690,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("state_z",
+            new(8,
+            "state_z",
             "EKF state z.",
             string.Empty, 
             string.Empty, 
@@ -6090,7 +6700,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("Pax",
+            new(9,
+            "Pax",
             "EKF Pax.",
             string.Empty, 
             string.Empty, 
@@ -6099,7 +6710,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("Pby",
+            new(10,
+            "Pby",
             "EKF Pby.",
             string.Empty, 
             string.Empty, 
@@ -6108,7 +6720,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("Pcz",
+            new(11,
+            "Pcz",
             "EKF Pcz.",
             string.Empty, 
             string.Empty, 
@@ -6134,6 +6747,40 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Vx);
+            writer.Write(StaticFields[1], Payload.Vy);
+            writer.Write(StaticFields[2], Payload.Vz);
+            writer.Write(StaticFields[3], Payload.DiffPressure);
+            writer.Write(StaticFields[4], Payload.Eas2tas);
+            writer.Write(StaticFields[5], Payload.Ratio);
+            writer.Write(StaticFields[6], Payload.StateX);
+            writer.Write(StaticFields[7], Payload.StateY);
+            writer.Write(StaticFields[8], Payload.StateZ);
+            writer.Write(StaticFields[9], Payload.Pax);
+            writer.Write(StaticFields[10], Payload.Pby);
+            writer.Write(StaticFields[11], Payload.Pcz);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Vx = reader.ReadFloat(StaticFields[0]);
+            Payload.Vy = reader.ReadFloat(StaticFields[1]);
+            Payload.Vz = reader.ReadFloat(StaticFields[2]);
+            Payload.DiffPressure = reader.ReadFloat(StaticFields[3]);
+            Payload.Eas2tas = reader.ReadFloat(StaticFields[4]);
+            Payload.Ratio = reader.ReadFloat(StaticFields[5]);
+            Payload.StateX = reader.ReadFloat(StaticFields[6]);
+            Payload.StateY = reader.ReadFloat(StaticFields[7]);
+            Payload.StateZ = reader.ReadFloat(StaticFields[8]);
+            Payload.Pax = reader.ReadFloat(StaticFields[9]);
+            Payload.Pby = reader.ReadFloat(StaticFields[10]);
+            Payload.Pcz = reader.ReadFloat(StaticFields[11]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -6145,23 +6792,23 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 48; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 48; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Vx
-            sum+=4; //Vy
-            sum+=4; //Vz
-            sum+=4; //DiffPressure
-            sum+=4; //Eas2tas
-            sum+=4; //Ratio
-            sum+=4; //StateX
-            sum+=4; //StateY
-            sum+=4; //StateZ
-            sum+=4; //Pax
-            sum+=4; //Pby
-            sum+=4; //Pcz
-            return (byte)sum;
+            return (byte)(
+            +4 // float vx
+            +4 // float vy
+            +4 // float vz
+            +4 // float diff_pressure
+            +4 // float EAS2TAS
+            +4 // float ratio
+            +4 // float state_x
+            +4 // float state_y
+            +4 // float state_z
+            +4 // float Pax
+            +4 // float Pby
+            +4 // float Pcz
+            );
         }
 
 
@@ -6290,7 +6937,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("lat",
+            new(0,
+            "lat",
             "Latitude of point.",
             string.Empty, 
             @"degE7", 
@@ -6299,7 +6947,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lng",
+            new(1,
+            "lng",
             "Longitude of point.",
             string.Empty, 
             @"degE7", 
@@ -6308,7 +6957,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("alt",
+            new(2,
+            "alt",
             "Transit / loiter altitude relative to home.",
             string.Empty, 
             @"m", 
@@ -6317,7 +6967,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int16, 
             0, 
             false),
-            new("break_alt",
+            new(3,
+            "break_alt",
             "Break altitude relative to home.",
             string.Empty, 
             @"m", 
@@ -6326,7 +6977,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int16, 
             0, 
             false),
-            new("land_dir",
+            new(4,
+            "land_dir",
             "Heading to aim for when landing.",
             string.Empty, 
             @"cdeg", 
@@ -6335,7 +6987,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(5,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -6344,7 +6997,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(6,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -6353,7 +7007,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("idx",
+            new(7,
+            "idx",
             "Point index (first point is 0).",
             string.Empty, 
             string.Empty, 
@@ -6362,7 +7017,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("count",
+            new(8,
+            "count",
             "Total number of points (for sanity checking).",
             string.Empty, 
             string.Empty, 
@@ -6371,7 +7027,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("flags",
+            new(9,
+            "flags",
             "Configuration flags.",
             string.Empty, 
             string.Empty, 
@@ -6395,6 +7052,36 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Lat);
+            writer.Write(StaticFields[1], Payload.Lng);
+            writer.Write(StaticFields[2], Payload.Alt);
+            writer.Write(StaticFields[3], Payload.BreakAlt);
+            writer.Write(StaticFields[4], Payload.LandDir);
+            writer.Write(StaticFields[5], Payload.TargetSystem);
+            writer.Write(StaticFields[6], Payload.TargetComponent);
+            writer.Write(StaticFields[7], Payload.Idx);
+            writer.Write(StaticFields[8], Payload.Count);
+            writer.Write(StaticFields[9], Payload.Flags);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Lat = reader.ReadInt(StaticFields[0]);
+            Payload.Lng = reader.ReadInt(StaticFields[1]);
+            Payload.Alt = reader.ReadShort(StaticFields[2]);
+            Payload.BreakAlt = reader.ReadShort(StaticFields[3]);
+            Payload.LandDir = reader.ReadUShort(StaticFields[4]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[5]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[6]);
+            Payload.Idx = reader.ReadByte(StaticFields[7]);
+            Payload.Count = reader.ReadByte(StaticFields[8]);
+            Payload.Flags = (RallyFlags)reader.ReadEnum(StaticFields[9]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -6406,21 +7093,21 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Lat
-            sum+=4; //Lng
-            sum+=2; //Alt
-            sum+=2; //BreakAlt
-            sum+=2; //LandDir
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Idx
-            sum+=1; //Count
-            sum+= 1; // Flags
-            return (byte)sum;
+            return (byte)(
+            +4 // int32_t lat
+            +4 // int32_t lng
+            +2 // int16_t alt
+            +2 // int16_t break_alt
+            +2 // uint16_t land_dir
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t idx
+            +1 // uint8_t count
+            + 1 // uint8_t flags
+            );
         }
 
 
@@ -6535,7 +7222,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("target_system",
+            new(0,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -6544,7 +7232,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(1,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -6553,7 +7242,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("idx",
+            new(2,
+            "idx",
             "Point index (first point is 0).",
             string.Empty, 
             string.Empty, 
@@ -6570,6 +7260,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TargetSystem);
+            writer.Write(StaticFields[1], Payload.TargetComponent);
+            writer.Write(StaticFields[2], Payload.Idx);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
+            Payload.Idx = reader.ReadByte(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -6581,14 +7287,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Idx
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t idx
+            );
         }
 
 
@@ -6654,7 +7360,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("current",
+            new(0,
+            "current",
             "Current.",
             string.Empty, 
             @"A", 
@@ -6663,7 +7370,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("CompensationX",
+            new(1,
+            "CompensationX",
             "Motor Compensation X.",
             string.Empty, 
             string.Empty, 
@@ -6672,7 +7380,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("CompensationY",
+            new(2,
+            "CompensationY",
             "Motor Compensation Y.",
             string.Empty, 
             string.Empty, 
@@ -6681,7 +7390,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("CompensationZ",
+            new(3,
+            "CompensationZ",
             "Motor Compensation Z.",
             string.Empty, 
             string.Empty, 
@@ -6690,7 +7400,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("throttle",
+            new(4,
+            "throttle",
             "Throttle.",
             string.Empty, 
             @"d%", 
@@ -6699,7 +7410,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("interference",
+            new(5,
+            "interference",
             "Interference.",
             string.Empty, 
             @"%", 
@@ -6719,6 +7431,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Current);
+            writer.Write(StaticFields[1], Payload.Compensationx);
+            writer.Write(StaticFields[2], Payload.Compensationy);
+            writer.Write(StaticFields[3], Payload.Compensationz);
+            writer.Write(StaticFields[4], Payload.Throttle);
+            writer.Write(StaticFields[5], Payload.Interference);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Current = reader.ReadFloat(StaticFields[0]);
+            Payload.Compensationx = reader.ReadFloat(StaticFields[1]);
+            Payload.Compensationy = reader.ReadFloat(StaticFields[2]);
+            Payload.Compensationz = reader.ReadFloat(StaticFields[3]);
+            Payload.Throttle = reader.ReadUShort(StaticFields[4]);
+            Payload.Interference = reader.ReadUShort(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -6730,17 +7464,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Current
-            sum+=4; //Compensationx
-            sum+=4; //Compensationy
-            sum+=4; //Compensationz
-            sum+=2; //Throttle
-            sum+=2; //Interference
-            return (byte)sum;
+            return (byte)(
+            +4 // float current
+            +4 // float CompensationX
+            +4 // float CompensationY
+            +4 // float CompensationZ
+            +2 // uint16_t throttle
+            +2 // uint16_t interference
+            );
         }
 
 
@@ -6827,7 +7561,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("roll",
+            new(0,
+            "roll",
             "Roll angle.",
             string.Empty, 
             @"rad", 
@@ -6836,7 +7571,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pitch",
+            new(1,
+            "pitch",
             "Pitch angle.",
             string.Empty, 
             @"rad", 
@@ -6845,7 +7581,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw",
+            new(2,
+            "yaw",
             "Yaw angle.",
             string.Empty, 
             @"rad", 
@@ -6854,7 +7591,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("altitude",
+            new(3,
+            "altitude",
             "Altitude (MSL).",
             string.Empty, 
             @"m", 
@@ -6863,7 +7601,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("lat",
+            new(4,
+            "lat",
             "Latitude.",
             string.Empty, 
             @"degE7", 
@@ -6872,7 +7611,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lng",
+            new(5,
+            "lng",
             "Longitude.",
             string.Empty, 
             @"degE7", 
@@ -6892,6 +7632,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Roll);
+            writer.Write(StaticFields[1], Payload.Pitch);
+            writer.Write(StaticFields[2], Payload.Yaw);
+            writer.Write(StaticFields[3], Payload.Altitude);
+            writer.Write(StaticFields[4], Payload.Lat);
+            writer.Write(StaticFields[5], Payload.Lng);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Roll = reader.ReadFloat(StaticFields[0]);
+            Payload.Pitch = reader.ReadFloat(StaticFields[1]);
+            Payload.Yaw = reader.ReadFloat(StaticFields[2]);
+            Payload.Altitude = reader.ReadFloat(StaticFields[3]);
+            Payload.Lat = reader.ReadInt(StaticFields[4]);
+            Payload.Lng = reader.ReadInt(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -6903,17 +7665,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //Altitude
-            sum+=4; //Lat
-            sum+=4; //Lng
-            return (byte)sum;
+            return (byte)(
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float altitude
+            +4 // int32_t lat
+            +4 // int32_t lng
+            );
         }
 
 
@@ -7000,7 +7762,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_usec",
+            new(0,
+            "time_usec",
             "Image timestamp (since UNIX epoch, according to camera clock).",
             string.Empty, 
             @"us", 
@@ -7009,7 +7772,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("p1",
+            new(1,
+            "p1",
             "Parameter 1 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
             string.Empty, 
             string.Empty, 
@@ -7018,7 +7782,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("p2",
+            new(2,
+            "p2",
             "Parameter 2 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
             string.Empty, 
             string.Empty, 
@@ -7027,7 +7792,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("p3",
+            new(3,
+            "p3",
             "Parameter 3 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
             string.Empty, 
             string.Empty, 
@@ -7036,7 +7802,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("p4",
+            new(4,
+            "p4",
             "Parameter 4 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
             string.Empty, 
             string.Empty, 
@@ -7045,7 +7812,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("img_idx",
+            new(5,
+            "img_idx",
             "Image index.",
             string.Empty, 
             string.Empty, 
@@ -7054,7 +7822,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(6,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -7063,7 +7832,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("cam_idx",
+            new(7,
+            "cam_idx",
             "Camera ID.",
             string.Empty, 
             string.Empty, 
@@ -7072,7 +7842,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("event_id",
+            new(8,
+            "event_id",
             "Event type.",
             string.Empty, 
             string.Empty, 
@@ -7095,6 +7866,34 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUsec);
+            writer.Write(StaticFields[1], Payload.P1);
+            writer.Write(StaticFields[2], Payload.P2);
+            writer.Write(StaticFields[3], Payload.P3);
+            writer.Write(StaticFields[4], Payload.P4);
+            writer.Write(StaticFields[5], Payload.ImgIdx);
+            writer.Write(StaticFields[6], Payload.TargetSystem);
+            writer.Write(StaticFields[7], Payload.CamIdx);
+            writer.Write(StaticFields[8], Payload.EventId);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUsec = reader.ReadULong(StaticFields[0]);
+            Payload.P1 = reader.ReadFloat(StaticFields[1]);
+            Payload.P2 = reader.ReadFloat(StaticFields[2]);
+            Payload.P3 = reader.ReadFloat(StaticFields[3]);
+            Payload.P4 = reader.ReadFloat(StaticFields[4]);
+            Payload.ImgIdx = reader.ReadUShort(StaticFields[5]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
+            Payload.CamIdx = reader.ReadByte(StaticFields[7]);
+            Payload.EventId = (CameraStatusTypes)reader.ReadEnum(StaticFields[8]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -7106,20 +7905,20 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 29; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUsec
-            sum+=4; //P1
-            sum+=4; //P2
-            sum+=4; //P3
-            sum+=4; //P4
-            sum+=2; //ImgIdx
-            sum+=1; //TargetSystem
-            sum+=1; //CamIdx
-            sum+= 1; // EventId
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_usec
+            +4 // float p1
+            +4 // float p2
+            +4 // float p3
+            +4 // float p4
+            +2 // uint16_t img_idx
+            +1 // uint8_t target_system
+            +1 // uint8_t cam_idx
+            + 1 // uint8_t event_id
+            );
         }
 
 
@@ -7227,7 +8026,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_usec",
+            new(0,
+            "time_usec",
             "Image timestamp (since UNIX epoch), as passed in by CAMERA_STATUS message (or autopilot if no CCB).",
             string.Empty, 
             @"us", 
@@ -7236,7 +8036,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("lat",
+            new(1,
+            "lat",
             "Latitude.",
             string.Empty, 
             @"degE7", 
@@ -7245,7 +8046,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lng",
+            new(2,
+            "lng",
             "Longitude.",
             string.Empty, 
             @"degE7", 
@@ -7254,7 +8056,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("alt_msl",
+            new(3,
+            "alt_msl",
             "Altitude (MSL).",
             string.Empty, 
             @"m", 
@@ -7263,7 +8066,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("alt_rel",
+            new(4,
+            "alt_rel",
             "Altitude (Relative to HOME location).",
             string.Empty, 
             @"m", 
@@ -7272,7 +8076,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("roll",
+            new(5,
+            "roll",
             "Camera Roll angle (earth frame, +-180).",
             string.Empty, 
             @"deg", 
@@ -7281,7 +8086,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pitch",
+            new(6,
+            "pitch",
             "Camera Pitch angle (earth frame, +-180).",
             string.Empty, 
             @"deg", 
@@ -7290,7 +8096,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw",
+            new(7,
+            "yaw",
             "Camera Yaw (earth frame, 0-360, true).",
             string.Empty, 
             @"deg", 
@@ -7299,7 +8106,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("foc_len",
+            new(8,
+            "foc_len",
             "Focal Length.",
             string.Empty, 
             @"mm", 
@@ -7308,7 +8116,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("img_idx",
+            new(9,
+            "img_idx",
             "Image index.",
             string.Empty, 
             string.Empty, 
@@ -7317,7 +8126,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(10,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -7326,7 +8136,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("cam_idx",
+            new(11,
+            "cam_idx",
             "Camera ID.",
             string.Empty, 
             string.Empty, 
@@ -7335,7 +8146,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("flags",
+            new(12,
+            "flags",
             "Feedback flags.",
             string.Empty, 
             string.Empty, 
@@ -7344,7 +8156,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("completed_captures",
+            new(13,
+            "completed_captures",
             "Completed image captures.",
             string.Empty, 
             string.Empty, 
@@ -7372,6 +8185,44 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUsec);
+            writer.Write(StaticFields[1], Payload.Lat);
+            writer.Write(StaticFields[2], Payload.Lng);
+            writer.Write(StaticFields[3], Payload.AltMsl);
+            writer.Write(StaticFields[4], Payload.AltRel);
+            writer.Write(StaticFields[5], Payload.Roll);
+            writer.Write(StaticFields[6], Payload.Pitch);
+            writer.Write(StaticFields[7], Payload.Yaw);
+            writer.Write(StaticFields[8], Payload.FocLen);
+            writer.Write(StaticFields[9], Payload.ImgIdx);
+            writer.Write(StaticFields[10], Payload.TargetSystem);
+            writer.Write(StaticFields[11], Payload.CamIdx);
+            writer.Write(StaticFields[12], Payload.Flags);
+            writer.Write(StaticFields[13], Payload.CompletedCaptures);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Lat = reader.ReadInt(StaticFields[1]);
+            Payload.Lng = reader.ReadInt(StaticFields[2]);
+            Payload.AltMsl = reader.ReadFloat(StaticFields[3]);
+            Payload.AltRel = reader.ReadFloat(StaticFields[4]);
+            Payload.Roll = reader.ReadFloat(StaticFields[5]);
+            Payload.Pitch = reader.ReadFloat(StaticFields[6]);
+            Payload.Yaw = reader.ReadFloat(StaticFields[7]);
+            Payload.FocLen = reader.ReadFloat(StaticFields[8]);
+            Payload.ImgIdx = reader.ReadUShort(StaticFields[9]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[10]);
+            Payload.CamIdx = reader.ReadByte(StaticFields[11]);
+            Payload.Flags = (CameraFeedbackFlags)reader.ReadEnum(StaticFields[12]);
+            Payload.CompletedCaptures = reader.ReadUShort(StaticFields[13]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -7383,25 +8234,25 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 47; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 47; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUsec
-            sum+=4; //Lat
-            sum+=4; //Lng
-            sum+=4; //AltMsl
-            sum+=4; //AltRel
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //FocLen
-            sum+=2; //ImgIdx
-            sum+=1; //TargetSystem
-            sum+=1; //CamIdx
-            sum+= 1; // Flags
-            sum+=2; //CompletedCaptures
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_usec
+            +4 // int32_t lat
+            +4 // int32_t lng
+            +4 // float alt_msl
+            +4 // float alt_rel
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float foc_len
+            +2 // uint16_t img_idx
+            +1 // uint8_t target_system
+            +1 // uint8_t cam_idx
+            + 1 // uint8_t flags
+            +2 // uint16_t completed_captures
+            );
         }
 
 
@@ -7546,7 +8397,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("voltage",
+            new(0,
+            "voltage",
             "Voltage.",
             string.Empty, 
             @"mV", 
@@ -7555,7 +8407,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("current_battery",
+            new(1,
+            "current_battery",
             "Battery current, -1: autopilot does not measure the current.",
             string.Empty, 
             @"cA", 
@@ -7571,6 +8424,20 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Voltage);
+            writer.Write(StaticFields[1], Payload.CurrentBattery);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Voltage = reader.ReadUShort(StaticFields[0]);
+            Payload.CurrentBattery = reader.ReadShort(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -7582,13 +8449,13 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Voltage
-            sum+=2; //CurrentBattery
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t voltage
+            +2 // int16_t current_battery
+            );
         }
 
 
@@ -7647,7 +8514,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("roll",
+            new(0,
+            "roll",
             "Roll angle.",
             string.Empty, 
             @"rad", 
@@ -7656,7 +8524,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pitch",
+            new(1,
+            "pitch",
             "Pitch angle.",
             string.Empty, 
             @"rad", 
@@ -7665,7 +8534,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw",
+            new(2,
+            "yaw",
             "Yaw angle.",
             string.Empty, 
             @"rad", 
@@ -7674,7 +8544,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("altitude",
+            new(3,
+            "altitude",
             "Altitude (MSL).",
             string.Empty, 
             @"m", 
@@ -7683,7 +8554,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("lat",
+            new(4,
+            "lat",
             "Latitude.",
             string.Empty, 
             @"degE7", 
@@ -7692,7 +8564,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lng",
+            new(5,
+            "lng",
             "Longitude.",
             string.Empty, 
             @"degE7", 
@@ -7701,7 +8574,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("v1",
+            new(6,
+            "v1",
             "Test variable1.",
             string.Empty, 
             string.Empty, 
@@ -7710,7 +8584,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("v2",
+            new(7,
+            "v2",
             "Test variable2.",
             string.Empty, 
             string.Empty, 
@@ -7719,7 +8594,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("v3",
+            new(8,
+            "v3",
             "Test variable3.",
             string.Empty, 
             string.Empty, 
@@ -7728,7 +8604,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("v4",
+            new(9,
+            "v4",
             "Test variable4.",
             string.Empty, 
             string.Empty, 
@@ -7752,6 +8629,36 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Roll);
+            writer.Write(StaticFields[1], Payload.Pitch);
+            writer.Write(StaticFields[2], Payload.Yaw);
+            writer.Write(StaticFields[3], Payload.Altitude);
+            writer.Write(StaticFields[4], Payload.Lat);
+            writer.Write(StaticFields[5], Payload.Lng);
+            writer.Write(StaticFields[6], Payload.V1);
+            writer.Write(StaticFields[7], Payload.V2);
+            writer.Write(StaticFields[8], Payload.V3);
+            writer.Write(StaticFields[9], Payload.V4);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Roll = reader.ReadFloat(StaticFields[0]);
+            Payload.Pitch = reader.ReadFloat(StaticFields[1]);
+            Payload.Yaw = reader.ReadFloat(StaticFields[2]);
+            Payload.Altitude = reader.ReadFloat(StaticFields[3]);
+            Payload.Lat = reader.ReadInt(StaticFields[4]);
+            Payload.Lng = reader.ReadInt(StaticFields[5]);
+            Payload.V1 = reader.ReadFloat(StaticFields[6]);
+            Payload.V2 = reader.ReadFloat(StaticFields[7]);
+            Payload.V3 = reader.ReadFloat(StaticFields[8]);
+            Payload.V4 = reader.ReadFloat(StaticFields[9]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -7763,21 +8670,21 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 40; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //Altitude
-            sum+=4; //Lat
-            sum+=4; //Lng
-            sum+=4; //V1
-            sum+=4; //V2
-            sum+=4; //V3
-            sum+=4; //V4
-            return (byte)sum;
+            return (byte)(
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float altitude
+            +4 // int32_t lat
+            +4 // int32_t lng
+            +4 // float v1
+            +4 // float v2
+            +4 // float v3
+            +4 // float v4
+            );
         }
 
 
@@ -7892,7 +8799,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("target_system",
+            new(0,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -7901,7 +8809,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(1,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -7917,6 +8826,20 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TargetSystem);
+            writer.Write(StaticFields[1], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -7928,13 +8851,13 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -7993,7 +8916,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("seqno",
+            new(0,
+            "seqno",
             "LoggerFactory data block sequence number.",
             string.Empty, 
             string.Empty, 
@@ -8002,7 +8926,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -8011,7 +8936,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -8020,7 +8946,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data",
+            new(3,
+            "data",
             "LoggerFactory data block.",
             string.Empty, 
             string.Empty, 
@@ -8038,6 +8965,24 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Seqno);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+            writer.Write(StaticFields[3], Payload.Data);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Seqno = (MavRemoteLogDataBlockCommands)reader.ReadEnum(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+            reader.ReadByteArray(StaticFields[3], Payload.Data);
+        
+            
+        }
     }
 
     /// <summary>
@@ -8049,15 +8994,15 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 206; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 206; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 4; // Seqno
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            + 4 // uint32_t seqno
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +Data.Length // uint8_t[200] data
+            );
         }
 
 
@@ -8143,7 +9088,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("seqno",
+            new(0,
+            "seqno",
             "LoggerFactory data block sequence number.",
             string.Empty, 
             string.Empty, 
@@ -8152,7 +9098,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -8161,7 +9108,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -8170,7 +9118,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("status",
+            new(3,
+            "status",
             "LoggerFactory data block status.",
             string.Empty, 
             string.Empty, 
@@ -8188,6 +9137,24 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Seqno);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+            writer.Write(StaticFields[3], Payload.Status);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Seqno = reader.ReadUInt(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+            Payload.Status = (MavRemoteLogDataBlockStatuses)reader.ReadEnum(StaticFields[3]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -8199,15 +9166,15 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Seqno
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // Status
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t seqno
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t status
+            );
         }
 
 
@@ -8280,7 +9247,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("target_system",
+            new(0,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -8289,7 +9257,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(1,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -8298,7 +9267,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("instance",
+            new(2,
+            "instance",
             "Instance (LED instance to control or 255 for all LEDs).",
             string.Empty, 
             string.Empty, 
@@ -8307,7 +9277,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("pattern",
+            new(3,
+            "pattern",
             "Pattern (see LED_PATTERN_ENUM).",
             string.Empty, 
             string.Empty, 
@@ -8316,7 +9287,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("custom_len",
+            new(4,
+            "custom_len",
             "Custom Byte Length.",
             string.Empty, 
             string.Empty, 
@@ -8325,7 +9297,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("custom_bytes",
+            new(5,
+            "custom_bytes",
             "Custom Bytes.",
             string.Empty, 
             string.Empty, 
@@ -8345,6 +9318,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TargetSystem);
+            writer.Write(StaticFields[1], Payload.TargetComponent);
+            writer.Write(StaticFields[2], Payload.Instance);
+            writer.Write(StaticFields[3], Payload.Pattern);
+            writer.Write(StaticFields[4], Payload.CustomLen);
+            writer.Write(StaticFields[5], Payload.CustomBytes);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
+            Payload.Instance = reader.ReadByte(StaticFields[2]);
+            Payload.Pattern = reader.ReadByte(StaticFields[3]);
+            Payload.CustomLen = reader.ReadByte(StaticFields[4]);
+            reader.ReadByteArray(StaticFields[5], Payload.CustomBytes);
+        
+            
+        }
     }
 
     /// <summary>
@@ -8356,17 +9351,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 29; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Instance
-            sum+=1; //Pattern
-            sum+=1; //CustomLen
-            sum+=CustomBytes.Length; //CustomBytes
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t instance
+            +1 // uint8_t pattern
+            +1 // uint8_t custom_len
+            +CustomBytes.Length // uint8_t[24] custom_bytes
+            );
         }
 
 
@@ -8466,7 +9461,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("direction_x",
+            new(0,
+            "direction_x",
             "Body frame direction vector for display.",
             string.Empty, 
             string.Empty, 
@@ -8475,7 +9471,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("direction_y",
+            new(1,
+            "direction_y",
             "Body frame direction vector for display.",
             string.Empty, 
             string.Empty, 
@@ -8484,7 +9481,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("direction_z",
+            new(2,
+            "direction_z",
             "Body frame direction vector for display.",
             string.Empty, 
             string.Empty, 
@@ -8493,7 +9491,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("compass_id",
+            new(3,
+            "compass_id",
             "Compass being calibrated.",
             string.Empty, 
             string.Empty, 
@@ -8502,7 +9501,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("cal_mask",
+            new(4,
+            "cal_mask",
             "Bitmask of compasses being calibrated.",
             string.Empty, 
             string.Empty, 
@@ -8511,7 +9511,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("cal_status",
+            new(5,
+            "cal_status",
             "Calibration Status.",
             string.Empty, 
             string.Empty, 
@@ -8520,7 +9521,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("attempt",
+            new(6,
+            "attempt",
             "Attempt number.",
             string.Empty, 
             string.Empty, 
@@ -8529,7 +9531,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("completion_pct",
+            new(7,
+            "completion_pct",
             "Completion percentage.",
             string.Empty, 
             @"%", 
@@ -8538,7 +9541,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("completion_mask",
+            new(8,
+            "completion_mask",
             "Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).",
             string.Empty, 
             string.Empty, 
@@ -8561,6 +9565,34 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.DirectionX);
+            writer.Write(StaticFields[1], Payload.DirectionY);
+            writer.Write(StaticFields[2], Payload.DirectionZ);
+            writer.Write(StaticFields[3], Payload.CompassId);
+            writer.Write(StaticFields[4], Payload.CalMask);
+            writer.Write(StaticFields[5], Payload.CalStatus);
+            writer.Write(StaticFields[6], Payload.Attempt);
+            writer.Write(StaticFields[7], Payload.CompletionPct);
+            writer.Write(StaticFields[8], Payload.CompletionMask);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.DirectionX = reader.ReadFloat(StaticFields[0]);
+            Payload.DirectionY = reader.ReadFloat(StaticFields[1]);
+            Payload.DirectionZ = reader.ReadFloat(StaticFields[2]);
+            Payload.CompassId = reader.ReadByte(StaticFields[3]);
+            Payload.CalMask = reader.ReadByte(StaticFields[4]);
+            Payload.CalStatus = (MagCalStatus)reader.ReadEnum(StaticFields[5]);
+            Payload.Attempt = reader.ReadByte(StaticFields[6]);
+            Payload.CompletionPct = reader.ReadByte(StaticFields[7]);
+            reader.ReadByteArray(StaticFields[8], Payload.CompletionMask);
+        
+            
+        }
     }
 
     /// <summary>
@@ -8572,20 +9604,20 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //DirectionX
-            sum+=4; //DirectionY
-            sum+=4; //DirectionZ
-            sum+=1; //CompassId
-            sum+=1; //CalMask
-            sum+= 1; // CalStatus
-            sum+=1; //Attempt
-            sum+=1; //CompletionPct
-            sum+=CompletionMask.Length; //CompletionMask
-            return (byte)sum;
+            return (byte)(
+            +4 // float direction_x
+            +4 // float direction_y
+            +4 // float direction_z
+            +1 // uint8_t compass_id
+            +1 // uint8_t cal_mask
+            + 1 // uint8_t cal_status
+            +1 // uint8_t attempt
+            +1 // uint8_t completion_pct
+            +CompletionMask.Length // uint8_t[10] completion_mask
+            );
         }
 
 
@@ -8706,7 +9738,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("velocity_variance",
+            new(0,
+            "velocity_variance",
             "Velocity variance.",
             string.Empty, 
             string.Empty, 
@@ -8715,7 +9748,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pos_horiz_variance",
+            new(1,
+            "pos_horiz_variance",
             "Horizontal Position variance.",
             string.Empty, 
             string.Empty, 
@@ -8724,7 +9758,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pos_vert_variance",
+            new(2,
+            "pos_vert_variance",
             "Vertical Position variance.",
             string.Empty, 
             string.Empty, 
@@ -8733,7 +9768,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("compass_variance",
+            new(3,
+            "compass_variance",
             "Compass variance.",
             string.Empty, 
             string.Empty, 
@@ -8742,7 +9778,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("terrain_alt_variance",
+            new(4,
+            "terrain_alt_variance",
             "Terrain Altitude variance.",
             string.Empty, 
             string.Empty, 
@@ -8751,7 +9788,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("flags",
+            new(5,
+            "flags",
             "Flags.",
             string.Empty, 
             string.Empty, 
@@ -8760,7 +9798,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("airspeed_variance",
+            new(6,
+            "airspeed_variance",
             "Airspeed variance.",
             string.Empty, 
             string.Empty, 
@@ -8781,6 +9820,30 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.VelocityVariance);
+            writer.Write(StaticFields[1], Payload.PosHorizVariance);
+            writer.Write(StaticFields[2], Payload.PosVertVariance);
+            writer.Write(StaticFields[3], Payload.CompassVariance);
+            writer.Write(StaticFields[4], Payload.TerrainAltVariance);
+            writer.Write(StaticFields[5], Payload.Flags);
+            writer.Write(StaticFields[6], Payload.AirspeedVariance);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.VelocityVariance = reader.ReadFloat(StaticFields[0]);
+            Payload.PosHorizVariance = reader.ReadFloat(StaticFields[1]);
+            Payload.PosVertVariance = reader.ReadFloat(StaticFields[2]);
+            Payload.CompassVariance = reader.ReadFloat(StaticFields[3]);
+            Payload.TerrainAltVariance = reader.ReadFloat(StaticFields[4]);
+            Payload.Flags = (EkfStatusFlags)reader.ReadEnum(StaticFields[5]);
+            Payload.AirspeedVariance = reader.ReadFloat(StaticFields[6]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -8792,18 +9855,18 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //VelocityVariance
-            sum+=4; //PosHorizVariance
-            sum+=4; //PosVertVariance
-            sum+=4; //CompassVariance
-            sum+=4; //TerrainAltVariance
-            sum+= 2; // Flags
-            sum+=4; //AirspeedVariance
-            return (byte)sum;
+            return (byte)(
+            +4 // float velocity_variance
+            +4 // float pos_horiz_variance
+            +4 // float pos_vert_variance
+            +4 // float compass_variance
+            +4 // float terrain_alt_variance
+            + 2 // uint16_t flags
+            +4 // float airspeed_variance
+            );
         }
 
 
@@ -8899,7 +9962,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("desired",
+            new(0,
+            "desired",
             "Desired rate.",
             string.Empty, 
             string.Empty, 
@@ -8908,7 +9972,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("achieved",
+            new(1,
+            "achieved",
             "Achieved rate.",
             string.Empty, 
             string.Empty, 
@@ -8917,7 +9982,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("FF",
+            new(2,
+            "FF",
             "FF component.",
             string.Empty, 
             string.Empty, 
@@ -8926,7 +9992,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("P",
+            new(3,
+            "P",
             "P component.",
             string.Empty, 
             string.Empty, 
@@ -8935,7 +10002,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("I",
+            new(4,
+            "I",
             "I component.",
             string.Empty, 
             string.Empty, 
@@ -8944,7 +10012,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("D",
+            new(5,
+            "D",
             "D component.",
             string.Empty, 
             string.Empty, 
@@ -8953,7 +10022,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("axis",
+            new(6,
+            "axis",
             "Axis.",
             string.Empty, 
             string.Empty, 
@@ -8962,7 +10032,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("SRate",
+            new(7,
+            "SRate",
             "Slew rate.",
             string.Empty, 
             string.Empty, 
@@ -8971,7 +10042,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             true),
-            new("PDmod",
+            new(8,
+            "PDmod",
             "P/D oscillation modifier.",
             string.Empty, 
             string.Empty, 
@@ -8994,6 +10066,34 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Desired);
+            writer.Write(StaticFields[1], Payload.Achieved);
+            writer.Write(StaticFields[2], Payload.Ff);
+            writer.Write(StaticFields[3], Payload.P);
+            writer.Write(StaticFields[4], Payload.I);
+            writer.Write(StaticFields[5], Payload.D);
+            writer.Write(StaticFields[6], Payload.Axis);
+            writer.Write(StaticFields[7], Payload.Srate);
+            writer.Write(StaticFields[8], Payload.Pdmod);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Desired = reader.ReadFloat(StaticFields[0]);
+            Payload.Achieved = reader.ReadFloat(StaticFields[1]);
+            Payload.Ff = reader.ReadFloat(StaticFields[2]);
+            Payload.P = reader.ReadFloat(StaticFields[3]);
+            Payload.I = reader.ReadFloat(StaticFields[4]);
+            Payload.D = reader.ReadFloat(StaticFields[5]);
+            Payload.Axis = (PidTuningAxis)reader.ReadEnum(StaticFields[6]);
+            Payload.Srate = reader.ReadFloat(StaticFields[7]);
+            Payload.Pdmod = reader.ReadFloat(StaticFields[8]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -9005,20 +10105,20 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Desired
-            sum+=4; //Achieved
-            sum+=4; //Ff
-            sum+=4; //P
-            sum+=4; //I
-            sum+=4; //D
-            sum+= 1; // Axis
-            sum+=4; //Srate
-            sum+=4; //Pdmod
-            return (byte)sum;
+            return (byte)(
+            +4 // float desired
+            +4 // float achieved
+            +4 // float FF
+            +4 // float P
+            +4 // float I
+            +4 // float D
+            + 1 // uint8_t axis
+            +4 // float SRate
+            +4 // float PDmod
+            );
         }
 
 
@@ -9130,7 +10230,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("landing_lat",
+            new(0,
+            "landing_lat",
             "Landing latitude.",
             string.Empty, 
             @"degE7", 
@@ -9139,7 +10240,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("landing_lon",
+            new(1,
+            "landing_lon",
             "Landing longitude.",
             string.Empty, 
             @"degE7", 
@@ -9148,7 +10250,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("path_lat",
+            new(2,
+            "path_lat",
             "Final heading start point, latitude.",
             string.Empty, 
             @"degE7", 
@@ -9157,7 +10260,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("path_lon",
+            new(3,
+            "path_lon",
             "Final heading start point, longitude.",
             string.Empty, 
             @"degE7", 
@@ -9166,7 +10270,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("arc_entry_lat",
+            new(4,
+            "arc_entry_lat",
             "Arc entry point, latitude.",
             string.Empty, 
             @"degE7", 
@@ -9175,7 +10280,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("arc_entry_lon",
+            new(5,
+            "arc_entry_lon",
             "Arc entry point, longitude.",
             string.Empty, 
             @"degE7", 
@@ -9184,7 +10290,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("altitude",
+            new(6,
+            "altitude",
             "Altitude.",
             string.Empty, 
             @"m", 
@@ -9193,7 +10300,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("expected_travel_distance",
+            new(7,
+            "expected_travel_distance",
             "Distance the aircraft expects to travel during the deepstall.",
             string.Empty, 
             @"m", 
@@ -9202,7 +10310,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("cross_track_error",
+            new(8,
+            "cross_track_error",
             "Deepstall cross track error (only valid when in DEEPSTALL_STAGE_LAND).",
             string.Empty, 
             @"m", 
@@ -9211,7 +10320,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("stage",
+            new(9,
+            "stage",
             "Deepstall stage.",
             string.Empty, 
             string.Empty, 
@@ -9235,6 +10345,36 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.LandingLat);
+            writer.Write(StaticFields[1], Payload.LandingLon);
+            writer.Write(StaticFields[2], Payload.PathLat);
+            writer.Write(StaticFields[3], Payload.PathLon);
+            writer.Write(StaticFields[4], Payload.ArcEntryLat);
+            writer.Write(StaticFields[5], Payload.ArcEntryLon);
+            writer.Write(StaticFields[6], Payload.Altitude);
+            writer.Write(StaticFields[7], Payload.ExpectedTravelDistance);
+            writer.Write(StaticFields[8], Payload.CrossTrackError);
+            writer.Write(StaticFields[9], Payload.Stage);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.LandingLat = reader.ReadInt(StaticFields[0]);
+            Payload.LandingLon = reader.ReadInt(StaticFields[1]);
+            Payload.PathLat = reader.ReadInt(StaticFields[2]);
+            Payload.PathLon = reader.ReadInt(StaticFields[3]);
+            Payload.ArcEntryLat = reader.ReadInt(StaticFields[4]);
+            Payload.ArcEntryLon = reader.ReadInt(StaticFields[5]);
+            Payload.Altitude = reader.ReadFloat(StaticFields[6]);
+            Payload.ExpectedTravelDistance = reader.ReadFloat(StaticFields[7]);
+            Payload.CrossTrackError = reader.ReadFloat(StaticFields[8]);
+            Payload.Stage = (DeepstallStage)reader.ReadEnum(StaticFields[9]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -9246,21 +10386,21 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //LandingLat
-            sum+=4; //LandingLon
-            sum+=4; //PathLat
-            sum+=4; //PathLon
-            sum+=4; //ArcEntryLat
-            sum+=4; //ArcEntryLon
-            sum+=4; //Altitude
-            sum+=4; //ExpectedTravelDistance
-            sum+=4; //CrossTrackError
-            sum+= 1; // Stage
-            return (byte)sum;
+            return (byte)(
+            +4 // int32_t landing_lat
+            +4 // int32_t landing_lon
+            +4 // int32_t path_lat
+            +4 // int32_t path_lon
+            +4 // int32_t arc_entry_lat
+            +4 // int32_t arc_entry_lon
+            +4 // float altitude
+            +4 // float expected_travel_distance
+            +4 // float cross_track_error
+            + 1 // uint8_t stage
+            );
         }
 
 
@@ -9375,7 +10515,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("delta_time",
+            new(0,
+            "delta_time",
             "Time since last update.",
             string.Empty, 
             @"s", 
@@ -9384,7 +10525,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("delta_angle_x",
+            new(1,
+            "delta_angle_x",
             "Delta angle X.",
             string.Empty, 
             @"rad", 
@@ -9393,7 +10535,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("delta_angle_y",
+            new(2,
+            "delta_angle_y",
             "Delta angle Y.",
             string.Empty, 
             @"rad", 
@@ -9402,7 +10545,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("delta_angle_z",
+            new(3,
+            "delta_angle_z",
             "Delta angle X.",
             string.Empty, 
             @"rad", 
@@ -9411,7 +10555,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("delta_velocity_x",
+            new(4,
+            "delta_velocity_x",
             "Delta velocity X.",
             string.Empty, 
             @"m/s", 
@@ -9420,7 +10565,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("delta_velocity_y",
+            new(5,
+            "delta_velocity_y",
             "Delta velocity Y.",
             string.Empty, 
             @"m/s", 
@@ -9429,7 +10575,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("delta_velocity_z",
+            new(6,
+            "delta_velocity_z",
             "Delta velocity Z.",
             string.Empty, 
             @"m/s", 
@@ -9438,7 +10585,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("joint_roll",
+            new(7,
+            "joint_roll",
             "Joint ROLL.",
             string.Empty, 
             @"rad", 
@@ -9447,7 +10595,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("joint_el",
+            new(8,
+            "joint_el",
             "Joint EL.",
             string.Empty, 
             @"rad", 
@@ -9456,7 +10605,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("joint_az",
+            new(9,
+            "joint_az",
             "Joint AZ.",
             string.Empty, 
             @"rad", 
@@ -9465,7 +10615,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("target_system",
+            new(10,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -9474,7 +10625,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(11,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -9500,6 +10652,40 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.DeltaTime);
+            writer.Write(StaticFields[1], Payload.DeltaAngleX);
+            writer.Write(StaticFields[2], Payload.DeltaAngleY);
+            writer.Write(StaticFields[3], Payload.DeltaAngleZ);
+            writer.Write(StaticFields[4], Payload.DeltaVelocityX);
+            writer.Write(StaticFields[5], Payload.DeltaVelocityY);
+            writer.Write(StaticFields[6], Payload.DeltaVelocityZ);
+            writer.Write(StaticFields[7], Payload.JointRoll);
+            writer.Write(StaticFields[8], Payload.JointEl);
+            writer.Write(StaticFields[9], Payload.JointAz);
+            writer.Write(StaticFields[10], Payload.TargetSystem);
+            writer.Write(StaticFields[11], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.DeltaTime = reader.ReadFloat(StaticFields[0]);
+            Payload.DeltaAngleX = reader.ReadFloat(StaticFields[1]);
+            Payload.DeltaAngleY = reader.ReadFloat(StaticFields[2]);
+            Payload.DeltaAngleZ = reader.ReadFloat(StaticFields[3]);
+            Payload.DeltaVelocityX = reader.ReadFloat(StaticFields[4]);
+            Payload.DeltaVelocityY = reader.ReadFloat(StaticFields[5]);
+            Payload.DeltaVelocityZ = reader.ReadFloat(StaticFields[6]);
+            Payload.JointRoll = reader.ReadFloat(StaticFields[7]);
+            Payload.JointEl = reader.ReadFloat(StaticFields[8]);
+            Payload.JointAz = reader.ReadFloat(StaticFields[9]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[10]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[11]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -9511,23 +10697,23 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //DeltaTime
-            sum+=4; //DeltaAngleX
-            sum+=4; //DeltaAngleY
-            sum+=4; //DeltaAngleZ
-            sum+=4; //DeltaVelocityX
-            sum+=4; //DeltaVelocityY
-            sum+=4; //DeltaVelocityZ
-            sum+=4; //JointRoll
-            sum+=4; //JointEl
-            sum+=4; //JointAz
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +4 // float delta_time
+            +4 // float delta_angle_x
+            +4 // float delta_angle_y
+            +4 // float delta_angle_z
+            +4 // float delta_velocity_x
+            +4 // float delta_velocity_y
+            +4 // float delta_velocity_z
+            +4 // float joint_roll
+            +4 // float joint_el
+            +4 // float joint_az
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -9656,7 +10842,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("demanded_rate_x",
+            new(0,
+            "demanded_rate_x",
             "Demanded angular rate X.",
             string.Empty, 
             @"rad/s", 
@@ -9665,7 +10852,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("demanded_rate_y",
+            new(1,
+            "demanded_rate_y",
             "Demanded angular rate Y.",
             string.Empty, 
             @"rad/s", 
@@ -9674,7 +10862,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("demanded_rate_z",
+            new(2,
+            "demanded_rate_z",
             "Demanded angular rate Z.",
             string.Empty, 
             @"rad/s", 
@@ -9683,7 +10872,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -9692,7 +10882,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -9711,6 +10902,26 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.DemandedRateX);
+            writer.Write(StaticFields[1], Payload.DemandedRateY);
+            writer.Write(StaticFields[2], Payload.DemandedRateZ);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.DemandedRateX = reader.ReadFloat(StaticFields[0]);
+            Payload.DemandedRateY = reader.ReadFloat(StaticFields[1]);
+            Payload.DemandedRateZ = reader.ReadFloat(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -9722,16 +10933,16 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //DemandedRateX
-            sum+=4; //DemandedRateY
-            sum+=4; //DemandedRateZ
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +4 // float demanded_rate_x
+            +4 // float demanded_rate_y
+            +4 // float demanded_rate_z
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -9811,7 +11022,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("rl_torque_cmd",
+            new(0,
+            "rl_torque_cmd",
             "Roll Torque Command.",
             string.Empty, 
             string.Empty, 
@@ -9820,7 +11032,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int16, 
             0, 
             false),
-            new("el_torque_cmd",
+            new(1,
+            "el_torque_cmd",
             "Elevation Torque Command.",
             string.Empty, 
             string.Empty, 
@@ -9829,7 +11042,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int16, 
             0, 
             false),
-            new("az_torque_cmd",
+            new(2,
+            "az_torque_cmd",
             "Azimuth Torque Command.",
             string.Empty, 
             string.Empty, 
@@ -9838,7 +11052,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int16, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -9847,7 +11062,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -9866,6 +11082,26 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RlTorqueCmd);
+            writer.Write(StaticFields[1], Payload.ElTorqueCmd);
+            writer.Write(StaticFields[2], Payload.AzTorqueCmd);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RlTorqueCmd = reader.ReadShort(StaticFields[0]);
+            Payload.ElTorqueCmd = reader.ReadShort(StaticFields[1]);
+            Payload.AzTorqueCmd = reader.ReadShort(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -9877,16 +11113,16 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RlTorqueCmd
-            sum+=2; //ElTorqueCmd
-            sum+=2; //AzTorqueCmd
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +2 // int16_t rl_torque_cmd
+            +2 // int16_t el_torque_cmd
+            +2 // int16_t az_torque_cmd
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -9966,7 +11202,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("status",
+            new(0,
+            "status",
             "Status.",
             string.Empty, 
             string.Empty, 
@@ -9975,7 +11212,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("capture_mode",
+            new(1,
+            "capture_mode",
             "Current capture mode.",
             string.Empty, 
             string.Empty, 
@@ -9984,7 +11222,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("flags",
+            new(2,
+            "flags",
             "Additional status bits.",
             string.Empty, 
             string.Empty, 
@@ -10001,6 +11240,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Status);
+            writer.Write(StaticFields[1], Payload.CaptureMode);
+            writer.Write(StaticFields[2], Payload.Flags);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Status = (GoproHeartbeatStatus)reader.ReadEnum(StaticFields[0]);
+            Payload.CaptureMode = (GoproCaptureMode)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (GoproHeartbeatFlags)reader.ReadEnum(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -10012,14 +11267,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // Status
-            sum+= 1; // CaptureMode
-            sum+= 1; // Flags
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t status
+            + 1 // uint8_t capture_mode
+            + 1 // uint8_t flags
+            );
         }
 
 
@@ -10085,7 +11340,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("target_system",
+            new(0,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -10094,7 +11350,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(1,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -10103,7 +11360,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("cmd_id",
+            new(2,
+            "cmd_id",
             "Command ID.",
             string.Empty, 
             string.Empty, 
@@ -10120,6 +11378,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TargetSystem);
+            writer.Write(StaticFields[1], Payload.TargetComponent);
+            writer.Write(StaticFields[2], Payload.CmdId);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
+            Payload.CmdId = (GoproCommand)reader.ReadEnum(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -10131,14 +11405,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // CmdId
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t cmd_id
+            );
         }
 
 
@@ -10204,7 +11478,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("cmd_id",
+            new(0,
+            "cmd_id",
             "Command ID.",
             string.Empty, 
             string.Empty, 
@@ -10213,7 +11488,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("status",
+            new(1,
+            "status",
             "Status.",
             string.Empty, 
             string.Empty, 
@@ -10222,7 +11498,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("value",
+            new(2,
+            "value",
             "Value.",
             string.Empty, 
             string.Empty, 
@@ -10239,6 +11516,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.CmdId);
+            writer.Write(StaticFields[1], Payload.Status);
+            writer.Write(StaticFields[2], Payload.Value);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.CmdId = (GoproCommand)reader.ReadEnum(StaticFields[0]);
+            Payload.Status = (GoproRequestStatus)reader.ReadEnum(StaticFields[1]);
+            reader.ReadByteArray(StaticFields[2], Payload.Value);
+        
+            
+        }
     }
 
     /// <summary>
@@ -10250,14 +11543,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // CmdId
-            sum+= 1; // Status
-            sum+=Value.Length; //Value
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t cmd_id
+            + 1 // uint8_t status
+            +Value.Length // uint8_t[4] value
+            );
         }
 
 
@@ -10336,7 +11629,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("target_system",
+            new(0,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -10345,7 +11639,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(1,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -10354,7 +11649,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("cmd_id",
+            new(2,
+            "cmd_id",
             "Command ID.",
             string.Empty, 
             string.Empty, 
@@ -10363,7 +11659,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("value",
+            new(3,
+            "value",
             "Value.",
             string.Empty, 
             string.Empty, 
@@ -10381,6 +11678,24 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TargetSystem);
+            writer.Write(StaticFields[1], Payload.TargetComponent);
+            writer.Write(StaticFields[2], Payload.CmdId);
+            writer.Write(StaticFields[3], Payload.Value);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
+            Payload.CmdId = (GoproCommand)reader.ReadEnum(StaticFields[2]);
+            reader.ReadByteArray(StaticFields[3], Payload.Value);
+        
+            
+        }
     }
 
     /// <summary>
@@ -10392,15 +11707,15 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // CmdId
-            sum+=Value.Length; //Value
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t cmd_id
+            +Value.Length // uint8_t[4] value
+            );
         }
 
 
@@ -10486,7 +11801,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("cmd_id",
+            new(0,
+            "cmd_id",
             "Command ID.",
             string.Empty, 
             string.Empty, 
@@ -10495,7 +11811,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("status",
+            new(1,
+            "status",
             "Status.",
             string.Empty, 
             string.Empty, 
@@ -10511,6 +11828,20 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.CmdId);
+            writer.Write(StaticFields[1], Payload.Status);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.CmdId = (GoproCommand)reader.ReadEnum(StaticFields[0]);
+            Payload.Status = (GoproRequestStatus)reader.ReadEnum(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -10522,13 +11853,13 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // CmdId
-            sum+= 1; // Status
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t cmd_id
+            + 1 // uint8_t status
+            );
         }
 
 
@@ -10587,7 +11918,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("rpm1",
+            new(0,
+            "rpm1",
             "RPM Sensor1.",
             string.Empty, 
             string.Empty, 
@@ -10596,7 +11928,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rpm2",
+            new(1,
+            "rpm2",
             "RPM Sensor2.",
             string.Empty, 
             string.Empty, 
@@ -10612,6 +11945,20 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Rpm1);
+            writer.Write(StaticFields[1], Payload.Rpm2);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Rpm1 = reader.ReadFloat(StaticFields[0]);
+            Payload.Rpm2 = reader.ReadFloat(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -10623,13 +11970,13 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Rpm1
-            sum+=4; //Rpm2
-            return (byte)sum;
+            return (byte)(
+            +4 // float rpm1
+            +4 // float rpm2
+            );
         }
 
 
@@ -10688,7 +12035,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Request ID - copied to reply.",
             string.Empty, 
             string.Empty, 
@@ -10697,7 +12045,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -10706,7 +12055,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -10715,7 +12065,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("bustype",
+            new(3,
+            "bustype",
             "The bus type.",
             string.Empty, 
             string.Empty, 
@@ -10724,7 +12075,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("bus",
+            new(4,
+            "bus",
             "Bus number.",
             string.Empty, 
             string.Empty, 
@@ -10733,7 +12085,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("address",
+            new(5,
+            "address",
             "Bus address.",
             string.Empty, 
             string.Empty, 
@@ -10742,7 +12095,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("busname",
+            new(6,
+            "busname",
             "Name of device on bus (for SPI).",
             string.Empty, 
             string.Empty, 
@@ -10751,7 +12105,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Char, 
             40, 
             false),
-            new("regstart",
+            new(7,
+            "regstart",
             "First register to read.",
             string.Empty, 
             string.Empty, 
@@ -10760,7 +12115,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("count",
+            new(8,
+            "count",
             "Count of registers to read.",
             string.Empty, 
             string.Empty, 
@@ -10769,7 +12125,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("bank",
+            new(9,
+            "bank",
             "Bank number.",
             string.Empty, 
             string.Empty, 
@@ -10793,6 +12150,36 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+            writer.Write(StaticFields[3], Payload.Bustype);
+            writer.Write(StaticFields[4], Payload.Bus);
+            writer.Write(StaticFields[5], Payload.Address);
+            writer.Write(StaticFields[6], Payload.Busname);
+            writer.Write(StaticFields[7], Payload.Regstart);
+            writer.Write(StaticFields[8], Payload.Count);
+            writer.Write(StaticFields[9], Payload.Bank);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+            Payload.Bustype = (DeviceOpBustype)reader.ReadEnum(StaticFields[3]);
+            Payload.Bus = reader.ReadByte(StaticFields[4]);
+            Payload.Address = reader.ReadByte(StaticFields[5]);
+            reader.ReadCharArray(StaticFields[6], Payload.Busname);
+            Payload.Regstart = reader.ReadByte(StaticFields[7]);
+            Payload.Count = reader.ReadByte(StaticFields[8]);
+            Payload.Bank = reader.ReadByte(StaticFields[9]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -10804,21 +12191,21 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 52; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 52; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // Bustype
-            sum+=1; //Bus
-            sum+=1; //Address
-            sum+=Busname.Length; //Busname
-            sum+=1; //Regstart
-            sum+=1; //Count
-            sum+=1; //Bank
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t bustype
+            +1 // uint8_t bus
+            +1 // uint8_t address
+            +Busname.Length // char[40] busname
+            +1 // uint8_t regstart
+            +1 // uint8_t count
+            +1 // uint8_t bank
+            );
         }
 
 
@@ -10960,7 +12347,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Request ID - copied from request.",
             string.Empty, 
             string.Empty, 
@@ -10969,7 +12357,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("result",
+            new(1,
+            "result",
             "0 for success, anything else is failure code.",
             string.Empty, 
             string.Empty, 
@@ -10978,7 +12367,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("regstart",
+            new(2,
+            "regstart",
             "Starting register.",
             string.Empty, 
             string.Empty, 
@@ -10987,7 +12377,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("count",
+            new(3,
+            "count",
             "Count of bytes read.",
             string.Empty, 
             string.Empty, 
@@ -10996,7 +12387,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data",
+            new(4,
+            "data",
             "Reply data.",
             string.Empty, 
             string.Empty, 
@@ -11005,7 +12397,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             128, 
             false),
-            new("bank",
+            new(5,
+            "bank",
             "Bank number.",
             string.Empty, 
             string.Empty, 
@@ -11025,6 +12418,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.Result);
+            writer.Write(StaticFields[2], Payload.Regstart);
+            writer.Write(StaticFields[3], Payload.Count);
+            writer.Write(StaticFields[4], Payload.Data);
+            writer.Write(StaticFields[5], Payload.Bank);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
+            Payload.Result = reader.ReadByte(StaticFields[1]);
+            Payload.Regstart = reader.ReadByte(StaticFields[2]);
+            Payload.Count = reader.ReadByte(StaticFields[3]);
+            reader.ReadByteArray(StaticFields[4], Payload.Data);
+            Payload.Bank = reader.ReadByte(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -11036,17 +12451,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 136; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 136; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=1; //Result
-            sum+=1; //Regstart
-            sum+=1; //Count
-            sum+=Data.Length; //Data
-            sum+=1; //Bank
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +1 // uint8_t result
+            +1 // uint8_t regstart
+            +1 // uint8_t count
+            +Data.Length // uint8_t[128] data
+            +1 // uint8_t bank
+            );
         }
 
 
@@ -11148,7 +12563,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Request ID - copied to reply.",
             string.Empty, 
             string.Empty, 
@@ -11157,7 +12573,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -11166,7 +12583,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -11175,7 +12593,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("bustype",
+            new(3,
+            "bustype",
             "The bus type.",
             string.Empty, 
             string.Empty, 
@@ -11184,7 +12603,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("bus",
+            new(4,
+            "bus",
             "Bus number.",
             string.Empty, 
             string.Empty, 
@@ -11193,7 +12613,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("address",
+            new(5,
+            "address",
             "Bus address.",
             string.Empty, 
             string.Empty, 
@@ -11202,7 +12623,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("busname",
+            new(6,
+            "busname",
             "Name of device on bus (for SPI).",
             string.Empty, 
             string.Empty, 
@@ -11211,7 +12633,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Char, 
             40, 
             false),
-            new("regstart",
+            new(7,
+            "regstart",
             "First register to write.",
             string.Empty, 
             string.Empty, 
@@ -11220,7 +12643,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("count",
+            new(8,
+            "count",
             "Count of registers to write.",
             string.Empty, 
             string.Empty, 
@@ -11229,7 +12653,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data",
+            new(9,
+            "data",
             "Write data.",
             string.Empty, 
             string.Empty, 
@@ -11238,7 +12663,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             128, 
             false),
-            new("bank",
+            new(10,
+            "bank",
             "Bank number.",
             string.Empty, 
             string.Empty, 
@@ -11263,6 +12689,38 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+            writer.Write(StaticFields[3], Payload.Bustype);
+            writer.Write(StaticFields[4], Payload.Bus);
+            writer.Write(StaticFields[5], Payload.Address);
+            writer.Write(StaticFields[6], Payload.Busname);
+            writer.Write(StaticFields[7], Payload.Regstart);
+            writer.Write(StaticFields[8], Payload.Count);
+            writer.Write(StaticFields[9], Payload.Data);
+            writer.Write(StaticFields[10], Payload.Bank);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+            Payload.Bustype = (DeviceOpBustype)reader.ReadEnum(StaticFields[3]);
+            Payload.Bus = reader.ReadByte(StaticFields[4]);
+            Payload.Address = reader.ReadByte(StaticFields[5]);
+            reader.ReadCharArray(StaticFields[6], Payload.Busname);
+            Payload.Regstart = reader.ReadByte(StaticFields[7]);
+            Payload.Count = reader.ReadByte(StaticFields[8]);
+            reader.ReadByteArray(StaticFields[9], Payload.Data);
+            Payload.Bank = reader.ReadByte(StaticFields[10]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -11274,22 +12732,22 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 180; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 180; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // Bustype
-            sum+=1; //Bus
-            sum+=1; //Address
-            sum+=Busname.Length; //Busname
-            sum+=1; //Regstart
-            sum+=1; //Count
-            sum+=Data.Length; //Data
-            sum+=1; //Bank
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t bustype
+            +1 // uint8_t bus
+            +1 // uint8_t address
+            +Busname.Length // char[40] busname
+            +1 // uint8_t regstart
+            +1 // uint8_t count
+            +Data.Length // uint8_t[128] data
+            +1 // uint8_t bank
+            );
         }
 
 
@@ -11446,7 +12904,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Request ID - copied from request.",
             string.Empty, 
             string.Empty, 
@@ -11455,7 +12914,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("result",
+            new(1,
+            "result",
             "0 for success, anything else is failure code.",
             string.Empty, 
             string.Empty, 
@@ -11471,6 +12931,20 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.Result);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
+            Payload.Result = reader.ReadByte(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -11482,13 +12956,13 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=1; //Result
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +1 // uint8_t result
+            );
         }
 
 
@@ -11547,7 +13021,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("desired",
+            new(0,
+            "desired",
             "Desired rate.",
             string.Empty, 
             @"deg/s", 
@@ -11556,7 +13031,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("achieved",
+            new(1,
+            "achieved",
             "Achieved rate.",
             string.Empty, 
             @"deg/s", 
@@ -11565,7 +13041,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("error",
+            new(2,
+            "error",
             "Error between model and vehicle.",
             string.Empty, 
             string.Empty, 
@@ -11574,7 +13051,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("theta",
+            new(3,
+            "theta",
             "Theta estimated state predictor.",
             string.Empty, 
             string.Empty, 
@@ -11583,7 +13061,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("omega",
+            new(4,
+            "omega",
             "Omega estimated state predictor.",
             string.Empty, 
             string.Empty, 
@@ -11592,7 +13071,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("sigma",
+            new(5,
+            "sigma",
             "Sigma estimated state predictor.",
             string.Empty, 
             string.Empty, 
@@ -11601,7 +13081,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("theta_dot",
+            new(6,
+            "theta_dot",
             "Theta derivative.",
             string.Empty, 
             string.Empty, 
@@ -11610,7 +13091,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("omega_dot",
+            new(7,
+            "omega_dot",
             "Omega derivative.",
             string.Empty, 
             string.Empty, 
@@ -11619,7 +13101,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("sigma_dot",
+            new(8,
+            "sigma_dot",
             "Sigma derivative.",
             string.Empty, 
             string.Empty, 
@@ -11628,7 +13111,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("f",
+            new(9,
+            "f",
             "Projection operator value.",
             string.Empty, 
             string.Empty, 
@@ -11637,7 +13121,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("f_dot",
+            new(10,
+            "f_dot",
             "Projection operator derivative.",
             string.Empty, 
             string.Empty, 
@@ -11646,7 +13131,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("u",
+            new(11,
+            "u",
             "u adaptive controlled output command.",
             string.Empty, 
             string.Empty, 
@@ -11655,7 +13141,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("axis",
+            new(12,
+            "axis",
             "Axis.",
             string.Empty, 
             string.Empty, 
@@ -11682,6 +13169,42 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Desired);
+            writer.Write(StaticFields[1], Payload.Achieved);
+            writer.Write(StaticFields[2], Payload.Error);
+            writer.Write(StaticFields[3], Payload.Theta);
+            writer.Write(StaticFields[4], Payload.Omega);
+            writer.Write(StaticFields[5], Payload.Sigma);
+            writer.Write(StaticFields[6], Payload.ThetaDot);
+            writer.Write(StaticFields[7], Payload.OmegaDot);
+            writer.Write(StaticFields[8], Payload.SigmaDot);
+            writer.Write(StaticFields[9], Payload.F);
+            writer.Write(StaticFields[10], Payload.FDot);
+            writer.Write(StaticFields[11], Payload.U);
+            writer.Write(StaticFields[12], Payload.Axis);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Desired = reader.ReadFloat(StaticFields[0]);
+            Payload.Achieved = reader.ReadFloat(StaticFields[1]);
+            Payload.Error = reader.ReadFloat(StaticFields[2]);
+            Payload.Theta = reader.ReadFloat(StaticFields[3]);
+            Payload.Omega = reader.ReadFloat(StaticFields[4]);
+            Payload.Sigma = reader.ReadFloat(StaticFields[5]);
+            Payload.ThetaDot = reader.ReadFloat(StaticFields[6]);
+            Payload.OmegaDot = reader.ReadFloat(StaticFields[7]);
+            Payload.SigmaDot = reader.ReadFloat(StaticFields[8]);
+            Payload.F = reader.ReadFloat(StaticFields[9]);
+            Payload.FDot = reader.ReadFloat(StaticFields[10]);
+            Payload.U = reader.ReadFloat(StaticFields[11]);
+            Payload.Axis = (PidTuningAxis)reader.ReadEnum(StaticFields[12]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -11693,24 +13216,24 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 49; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 49; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Desired
-            sum+=4; //Achieved
-            sum+=4; //Error
-            sum+=4; //Theta
-            sum+=4; //Omega
-            sum+=4; //Sigma
-            sum+=4; //ThetaDot
-            sum+=4; //OmegaDot
-            sum+=4; //SigmaDot
-            sum+=4; //F
-            sum+=4; //FDot
-            sum+=4; //U
-            sum+= 1; // Axis
-            return (byte)sum;
+            return (byte)(
+            +4 // float desired
+            +4 // float achieved
+            +4 // float error
+            +4 // float theta
+            +4 // float omega
+            +4 // float sigma
+            +4 // float theta_dot
+            +4 // float omega_dot
+            +4 // float sigma_dot
+            +4 // float f
+            +4 // float f_dot
+            +4 // float u
+            + 1 // uint8_t axis
+            );
         }
 
 
@@ -11846,7 +13369,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_usec",
+            new(0,
+            "time_usec",
             "Timestamp (synced to UNIX time or since system boot).",
             string.Empty, 
             @"us", 
@@ -11855,7 +13379,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("time_delta_usec",
+            new(1,
+            "time_delta_usec",
             "Time since the last reported camera frame.",
             string.Empty, 
             @"us", 
@@ -11864,7 +13389,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("angle_delta",
+            new(2,
+            "angle_delta",
             "Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.",
             string.Empty, 
             @"rad", 
@@ -11873,7 +13399,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             3, 
             false),
-            new("position_delta",
+            new(3,
+            "position_delta",
             "Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.",
             string.Empty, 
             @"m", 
@@ -11882,7 +13409,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             3, 
             false),
-            new("confidence",
+            new(4,
+            "confidence",
             "Normalised confidence value from 0 to 100.",
             string.Empty, 
             @"%", 
@@ -11901,6 +13429,26 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUsec);
+            writer.Write(StaticFields[1], Payload.TimeDeltaUsec);
+            writer.Write(StaticFields[2], Payload.AngleDelta);
+            writer.Write(StaticFields[3], Payload.PositionDelta);
+            writer.Write(StaticFields[4], Payload.Confidence);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUsec = reader.ReadULong(StaticFields[0]);
+            Payload.TimeDeltaUsec = reader.ReadULong(StaticFields[1]);
+            reader.ReadFloatArray(StaticFields[2], Payload.AngleDelta);
+            reader.ReadFloatArray(StaticFields[3], Payload.PositionDelta);
+            Payload.Confidence = reader.ReadFloat(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -11912,16 +13460,16 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUsec
-            sum+=8; //TimeDeltaUsec
-            sum+=AngleDelta.Length * 4; //AngleDelta
-            sum+=PositionDelta.Length * 4; //PositionDelta
-            sum+=4; //Confidence
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_usec
+            +8 // uint64_t time_delta_usec
+            +AngleDelta.Length * 4 // float[3] angle_delta
+            +PositionDelta.Length * 4 // float[3] position_delta
+            +4 // float confidence
+            );
         }
 
 
@@ -12022,7 +13570,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_usec",
+            new(0,
+            "time_usec",
             "Timestamp (since boot or Unix epoch).",
             string.Empty, 
             @"us", 
@@ -12031,7 +13580,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("AOA",
+            new(1,
+            "AOA",
             "Angle of Attack.",
             string.Empty, 
             @"deg", 
@@ -12040,7 +13590,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("SSA",
+            new(2,
+            "SSA",
             "Side Slip Angle.",
             string.Empty, 
             @"deg", 
@@ -12057,6 +13608,22 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUsec);
+            writer.Write(StaticFields[1], Payload.Aoa);
+            writer.Write(StaticFields[2], Payload.Ssa);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Aoa = reader.ReadFloat(StaticFields[1]);
+            Payload.Ssa = reader.ReadFloat(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -12068,14 +13635,14 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUsec
-            sum+=4; //Aoa
-            sum+=4; //Ssa
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_usec
+            +4 // float AOA
+            +4 // float SSA
+            );
         }
 
 
@@ -12141,7 +13708,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("voltage",
+            new(0,
+            "voltage",
             "Voltage.",
             string.Empty, 
             @"cV", 
@@ -12150,7 +13718,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("current",
+            new(1,
+            "current",
             "Current.",
             string.Empty, 
             @"cA", 
@@ -12159,7 +13728,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("totalcurrent",
+            new(2,
+            "totalcurrent",
             "Total current.",
             string.Empty, 
             @"mAh", 
@@ -12168,7 +13738,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("rpm",
+            new(3,
+            "rpm",
             "RPM (eRPM).",
             string.Empty, 
             @"rpm", 
@@ -12177,7 +13748,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("count",
+            new(4,
+            "count",
             "count of telemetry packets received (wraps at 65535).",
             string.Empty, 
             string.Empty, 
@@ -12186,7 +13758,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("temperature",
+            new(5,
+            "temperature",
             "Temperature.",
             string.Empty, 
             @"degC", 
@@ -12206,6 +13779,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Voltage);
+            writer.Write(StaticFields[1], Payload.Current);
+            writer.Write(StaticFields[2], Payload.Totalcurrent);
+            writer.Write(StaticFields[3], Payload.Rpm);
+            writer.Write(StaticFields[4], Payload.Count);
+            writer.Write(StaticFields[5], Payload.Temperature);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadUShortArray(StaticFields[0], Payload.Voltage);
+            reader.ReadUShortArray(StaticFields[1], Payload.Current);
+            reader.ReadUShortArray(StaticFields[2], Payload.Totalcurrent);
+            reader.ReadUShortArray(StaticFields[3], Payload.Rpm);
+            reader.ReadUShortArray(StaticFields[4], Payload.Count);
+            reader.ReadByteArray(StaticFields[5], Payload.Temperature);
+        
+            
+        }
     }
 
     /// <summary>
@@ -12217,17 +13812,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=Voltage.Length * 2; //Voltage
-            sum+=Current.Length * 2; //Current
-            sum+=Totalcurrent.Length * 2; //Totalcurrent
-            sum+=Rpm.Length * 2; //Rpm
-            sum+=Count.Length * 2; //Count
-            sum+=Temperature.Length; //Temperature
-            return (byte)sum;
+            return (byte)(
+            +Voltage.Length * 2 // uint16_t[4] voltage
+            +Current.Length * 2 // uint16_t[4] current
+            +Totalcurrent.Length * 2 // uint16_t[4] totalcurrent
+            +Rpm.Length * 2 // uint16_t[4] rpm
+            +Count.Length * 2 // uint16_t[4] count
+            +Temperature.Length // uint8_t[4] temperature
+            );
         }
 
 
@@ -12367,7 +13962,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("voltage",
+            new(0,
+            "voltage",
             "Voltage.",
             string.Empty, 
             @"cV", 
@@ -12376,7 +13972,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("current",
+            new(1,
+            "current",
             "Current.",
             string.Empty, 
             @"cA", 
@@ -12385,7 +13982,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("totalcurrent",
+            new(2,
+            "totalcurrent",
             "Total current.",
             string.Empty, 
             @"mAh", 
@@ -12394,7 +13992,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("rpm",
+            new(3,
+            "rpm",
             "RPM (eRPM).",
             string.Empty, 
             @"rpm", 
@@ -12403,7 +14002,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("count",
+            new(4,
+            "count",
             "count of telemetry packets received (wraps at 65535).",
             string.Empty, 
             string.Empty, 
@@ -12412,7 +14012,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("temperature",
+            new(5,
+            "temperature",
             "Temperature.",
             string.Empty, 
             @"degC", 
@@ -12432,6 +14033,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Voltage);
+            writer.Write(StaticFields[1], Payload.Current);
+            writer.Write(StaticFields[2], Payload.Totalcurrent);
+            writer.Write(StaticFields[3], Payload.Rpm);
+            writer.Write(StaticFields[4], Payload.Count);
+            writer.Write(StaticFields[5], Payload.Temperature);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadUShortArray(StaticFields[0], Payload.Voltage);
+            reader.ReadUShortArray(StaticFields[1], Payload.Current);
+            reader.ReadUShortArray(StaticFields[2], Payload.Totalcurrent);
+            reader.ReadUShortArray(StaticFields[3], Payload.Rpm);
+            reader.ReadUShortArray(StaticFields[4], Payload.Count);
+            reader.ReadByteArray(StaticFields[5], Payload.Temperature);
+        
+            
+        }
     }
 
     /// <summary>
@@ -12443,17 +14066,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=Voltage.Length * 2; //Voltage
-            sum+=Current.Length * 2; //Current
-            sum+=Totalcurrent.Length * 2; //Totalcurrent
-            sum+=Rpm.Length * 2; //Rpm
-            sum+=Count.Length * 2; //Count
-            sum+=Temperature.Length; //Temperature
-            return (byte)sum;
+            return (byte)(
+            +Voltage.Length * 2 // uint16_t[4] voltage
+            +Current.Length * 2 // uint16_t[4] current
+            +Totalcurrent.Length * 2 // uint16_t[4] totalcurrent
+            +Rpm.Length * 2 // uint16_t[4] rpm
+            +Count.Length * 2 // uint16_t[4] count
+            +Temperature.Length // uint8_t[4] temperature
+            );
         }
 
 
@@ -12593,7 +14216,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("voltage",
+            new(0,
+            "voltage",
             "Voltage.",
             string.Empty, 
             @"cV", 
@@ -12602,7 +14226,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("current",
+            new(1,
+            "current",
             "Current.",
             string.Empty, 
             @"cA", 
@@ -12611,7 +14236,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("totalcurrent",
+            new(2,
+            "totalcurrent",
             "Total current.",
             string.Empty, 
             @"mAh", 
@@ -12620,7 +14246,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("rpm",
+            new(3,
+            "rpm",
             "RPM (eRPM).",
             string.Empty, 
             @"rpm", 
@@ -12629,7 +14256,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("count",
+            new(4,
+            "count",
             "count of telemetry packets received (wraps at 65535).",
             string.Empty, 
             string.Empty, 
@@ -12638,7 +14266,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("temperature",
+            new(5,
+            "temperature",
             "Temperature.",
             string.Empty, 
             @"degC", 
@@ -12658,6 +14287,28 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Voltage);
+            writer.Write(StaticFields[1], Payload.Current);
+            writer.Write(StaticFields[2], Payload.Totalcurrent);
+            writer.Write(StaticFields[3], Payload.Rpm);
+            writer.Write(StaticFields[4], Payload.Count);
+            writer.Write(StaticFields[5], Payload.Temperature);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadUShortArray(StaticFields[0], Payload.Voltage);
+            reader.ReadUShortArray(StaticFields[1], Payload.Current);
+            reader.ReadUShortArray(StaticFields[2], Payload.Totalcurrent);
+            reader.ReadUShortArray(StaticFields[3], Payload.Rpm);
+            reader.ReadUShortArray(StaticFields[4], Payload.Count);
+            reader.ReadByteArray(StaticFields[5], Payload.Temperature);
+        
+            
+        }
     }
 
     /// <summary>
@@ -12669,17 +14320,17 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=Voltage.Length * 2; //Voltage
-            sum+=Current.Length * 2; //Current
-            sum+=Totalcurrent.Length * 2; //Totalcurrent
-            sum+=Rpm.Length * 2; //Rpm
-            sum+=Count.Length * 2; //Count
-            sum+=Temperature.Length; //Temperature
-            return (byte)sum;
+            return (byte)(
+            +Voltage.Length * 2 // uint16_t[4] voltage
+            +Current.Length * 2 // uint16_t[4] current
+            +Totalcurrent.Length * 2 // uint16_t[4] totalcurrent
+            +Rpm.Length * 2 // uint16_t[4] rpm
+            +Count.Length * 2 // uint16_t[4] count
+            +Temperature.Length // uint8_t[4] temperature
+            );
         }
 
 
@@ -12819,7 +14470,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Request ID - copied to reply.",
             string.Empty, 
             string.Empty, 
@@ -12828,7 +14480,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("min_value",
+            new(1,
+            "min_value",
             "OSD parameter minimum value.",
             string.Empty, 
             string.Empty, 
@@ -12837,7 +14490,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("max_value",
+            new(2,
+            "max_value",
             "OSD parameter maximum value.",
             string.Empty, 
             string.Empty, 
@@ -12846,7 +14500,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("increment",
+            new(3,
+            "increment",
             "OSD parameter increment.",
             string.Empty, 
             string.Empty, 
@@ -12855,7 +14510,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("target_system",
+            new(4,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -12864,7 +14520,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(5,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -12873,7 +14530,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("osd_screen",
+            new(6,
+            "osd_screen",
             "OSD parameter screen index.",
             string.Empty, 
             string.Empty, 
@@ -12882,7 +14540,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("osd_index",
+            new(7,
+            "osd_index",
             "OSD parameter display index.",
             string.Empty, 
             string.Empty, 
@@ -12891,7 +14550,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("param_id",
+            new(8,
+            "param_id",
             "Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
             string.Empty, 
             string.Empty, 
@@ -12900,7 +14560,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Char, 
             16, 
             false),
-            new("config_type",
+            new(9,
+            "config_type",
             "Config type.",
             string.Empty, 
             string.Empty, 
@@ -12924,6 +14585,36 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.MinValue);
+            writer.Write(StaticFields[2], Payload.MaxValue);
+            writer.Write(StaticFields[3], Payload.Increment);
+            writer.Write(StaticFields[4], Payload.TargetSystem);
+            writer.Write(StaticFields[5], Payload.TargetComponent);
+            writer.Write(StaticFields[6], Payload.OsdScreen);
+            writer.Write(StaticFields[7], Payload.OsdIndex);
+            writer.Write(StaticFields[8], Payload.ParamId);
+            writer.Write(StaticFields[9], Payload.ConfigType);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
+            Payload.MinValue = reader.ReadFloat(StaticFields[1]);
+            Payload.MaxValue = reader.ReadFloat(StaticFields[2]);
+            Payload.Increment = reader.ReadFloat(StaticFields[3]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[4]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[5]);
+            Payload.OsdScreen = reader.ReadByte(StaticFields[6]);
+            Payload.OsdIndex = reader.ReadByte(StaticFields[7]);
+            reader.ReadCharArray(StaticFields[8], Payload.ParamId);
+            Payload.ConfigType = (OsdParamConfigType)reader.ReadEnum(StaticFields[9]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -12935,21 +14626,21 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=4; //MinValue
-            sum+=4; //MaxValue
-            sum+=4; //Increment
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //OsdScreen
-            sum+=1; //OsdIndex
-            sum+=ParamId.Length; //ParamId
-            sum+= 1; // ConfigType
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +4 // float min_value
+            +4 // float max_value
+            +4 // float increment
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t osd_screen
+            +1 // uint8_t osd_index
+            +ParamId.Length // char[16] param_id
+            + 1 // uint8_t config_type
+            );
         }
 
 
@@ -13089,7 +14780,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Request ID - copied from request.",
             string.Empty, 
             string.Empty, 
@@ -13098,7 +14790,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("result",
+            new(1,
+            "result",
             "Config error type.",
             string.Empty, 
             string.Empty, 
@@ -13114,6 +14807,20 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.Result);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
+            Payload.Result = (OsdParamConfigError)reader.ReadEnum(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -13125,13 +14832,13 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+= 1; // Result
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            + 1 // uint8_t result
+            );
         }
 
 
@@ -13190,7 +14897,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Request ID - copied to reply.",
             string.Empty, 
             string.Empty, 
@@ -13199,7 +14907,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -13208,7 +14917,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -13217,7 +14927,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("osd_screen",
+            new(3,
+            "osd_screen",
             "OSD parameter screen index.",
             string.Empty, 
             string.Empty, 
@@ -13226,7 +14937,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("osd_index",
+            new(4,
+            "osd_index",
             "OSD parameter display index.",
             string.Empty, 
             string.Empty, 
@@ -13245,6 +14957,26 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+            writer.Write(StaticFields[3], Payload.OsdScreen);
+            writer.Write(StaticFields[4], Payload.OsdIndex);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+            Payload.OsdScreen = reader.ReadByte(StaticFields[3]);
+            Payload.OsdIndex = reader.ReadByte(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -13256,16 +14988,16 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //OsdScreen
-            sum+=1; //OsdIndex
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t osd_screen
+            +1 // uint8_t osd_index
+            );
         }
 
 
@@ -13345,7 +15077,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Request ID - copied from request.",
             string.Empty, 
             string.Empty, 
@@ -13354,7 +15087,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("min_value",
+            new(1,
+            "min_value",
             "OSD parameter minimum value.",
             string.Empty, 
             string.Empty, 
@@ -13363,7 +15097,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("max_value",
+            new(2,
+            "max_value",
             "OSD parameter maximum value.",
             string.Empty, 
             string.Empty, 
@@ -13372,7 +15107,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("increment",
+            new(3,
+            "increment",
             "OSD parameter increment.",
             string.Empty, 
             string.Empty, 
@@ -13381,7 +15117,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("result",
+            new(4,
+            "result",
             "Config error type.",
             string.Empty, 
             string.Empty, 
@@ -13390,7 +15127,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("param_id",
+            new(5,
+            "param_id",
             "Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
             string.Empty, 
             string.Empty, 
@@ -13399,7 +15137,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Char, 
             16, 
             false),
-            new("config_type",
+            new(6,
+            "config_type",
             "Config type.",
             string.Empty, 
             string.Empty, 
@@ -13420,6 +15159,30 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.MinValue);
+            writer.Write(StaticFields[2], Payload.MaxValue);
+            writer.Write(StaticFields[3], Payload.Increment);
+            writer.Write(StaticFields[4], Payload.Result);
+            writer.Write(StaticFields[5], Payload.ParamId);
+            writer.Write(StaticFields[6], Payload.ConfigType);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
+            Payload.MinValue = reader.ReadFloat(StaticFields[1]);
+            Payload.MaxValue = reader.ReadFloat(StaticFields[2]);
+            Payload.Increment = reader.ReadFloat(StaticFields[3]);
+            Payload.Result = (OsdParamConfigError)reader.ReadEnum(StaticFields[4]);
+            reader.ReadCharArray(StaticFields[5], Payload.ParamId);
+            Payload.ConfigType = (OsdParamConfigType)reader.ReadEnum(StaticFields[6]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -13431,18 +15194,18 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=4; //MinValue
-            sum+=4; //MaxValue
-            sum+=4; //Increment
-            sum+= 1; // Result
-            sum+=ParamId.Length; //ParamId
-            sum+= 1; // ConfigType
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +4 // float min_value
+            +4 // float max_value
+            +4 // float increment
+            + 1 // uint8_t result
+            +ParamId.Length // char[16] param_id
+            + 1 // uint8_t config_type
+            );
         }
 
 
@@ -13561,7 +15324,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_boot_ms",
+            new(0,
+            "time_boot_ms",
             "Timestamp (time since system boot).",
             string.Empty, 
             @"ms", 
@@ -13570,7 +15334,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("x",
+            new(1,
+            "x",
             " X position of the obstacle.",
             string.Empty, 
             @"m", 
@@ -13579,7 +15344,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("y",
+            new(2,
+            "y",
             " Y position of the obstacle.",
             string.Empty, 
             @"m", 
@@ -13588,7 +15354,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("z",
+            new(3,
+            "z",
             " Z position of the obstacle.",
             string.Empty, 
             @"m", 
@@ -13597,7 +15364,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("min_distance",
+            new(4,
+            "min_distance",
             "Minimum distance the sensor can measure.",
             string.Empty, 
             @"m", 
@@ -13606,7 +15374,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("max_distance",
+            new(5,
+            "max_distance",
             "Maximum distance the sensor can measure.",
             string.Empty, 
             @"m", 
@@ -13615,7 +15384,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("obstacle_id",
+            new(6,
+            "obstacle_id",
             " Unique ID given to each obstacle so that its movement can be tracked. Use UINT16_MAX if object ID is unknown or cannot be determined.",
             string.Empty, 
             string.Empty, 
@@ -13624,7 +15394,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("sensor_type",
+            new(7,
+            "sensor_type",
             "Class id of the distance sensor type.",
             string.Empty, 
             string.Empty, 
@@ -13633,7 +15404,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("frame",
+            new(8,
+            "frame",
             "Coordinate frame of reference.",
             string.Empty, 
             string.Empty, 
@@ -13656,6 +15428,34 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeBootMs);
+            writer.Write(StaticFields[1], Payload.X);
+            writer.Write(StaticFields[2], Payload.Y);
+            writer.Write(StaticFields[3], Payload.Z);
+            writer.Write(StaticFields[4], Payload.MinDistance);
+            writer.Write(StaticFields[5], Payload.MaxDistance);
+            writer.Write(StaticFields[6], Payload.ObstacleId);
+            writer.Write(StaticFields[7], Payload.SensorType);
+            writer.Write(StaticFields[8], Payload.Frame);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
+            Payload.X = reader.ReadFloat(StaticFields[1]);
+            Payload.Y = reader.ReadFloat(StaticFields[2]);
+            Payload.Z = reader.ReadFloat(StaticFields[3]);
+            Payload.MinDistance = reader.ReadFloat(StaticFields[4]);
+            Payload.MaxDistance = reader.ReadFloat(StaticFields[5]);
+            Payload.ObstacleId = reader.ReadUShort(StaticFields[6]);
+            Payload.SensorType = (MavDistanceSensor)reader.ReadEnum(StaticFields[7]);
+            Payload.Frame = (MavFrame)reader.ReadEnum(StaticFields[8]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -13667,20 +15467,20 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //TimeBootMs
-            sum+=4; //X
-            sum+=4; //Y
-            sum+=4; //Z
-            sum+=4; //MinDistance
-            sum+=4; //MaxDistance
-            sum+=2; //ObstacleId
-            sum+= 1; // SensorType
-            sum+= 1; // Frame
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t time_boot_ms
+            +4 // float x
+            +4 // float y
+            +4 // float z
+            +4 // float min_distance
+            +4 // float max_distance
+            +2 // uint16_t obstacle_id
+            + 1 // uint8_t sensor_type
+            + 1 // uint8_t frame
+            );
         }
 
 
@@ -13788,7 +15588,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_boot_ms",
+            new(0,
+            "time_boot_ms",
             "Timestamp (time since system boot)",
             string.Empty, 
             @"ms", 
@@ -13797,7 +15598,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("lat",
+            new(1,
+            "lat",
             "Latitude",
             string.Empty, 
             @"degE7", 
@@ -13806,7 +15608,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lng",
+            new(2,
+            "lng",
             "Longitude",
             string.Empty, 
             @"degE7", 
@@ -13815,7 +15618,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int32, 
             0, 
             false),
-            new("alt",
+            new(3,
+            "alt",
             "Altitude (MSL) of vehicle",
             string.Empty, 
             @"m", 
@@ -13824,7 +15628,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("roll",
+            new(4,
+            "roll",
             "Roll angle",
             string.Empty, 
             @"rad", 
@@ -13833,7 +15638,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pitch",
+            new(5,
+            "pitch",
             "Pitch angle",
             string.Empty, 
             @"rad", 
@@ -13842,7 +15648,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw",
+            new(6,
+            "yaw",
             "Yaw angle",
             string.Empty, 
             @"rad", 
@@ -13851,7 +15658,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("distance",
+            new(7,
+            "distance",
             "Distance (uncorrected)",
             string.Empty, 
             @"m", 
@@ -13860,7 +15668,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("temperature",
+            new(8,
+            "temperature",
             "Water temperature",
             string.Empty, 
             @"degC", 
@@ -13869,7 +15678,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Float32, 
             0, 
             false),
-            new("id",
+            new(9,
+            "id",
             "Onboard ID of the sensor",
             string.Empty, 
             string.Empty, 
@@ -13878,7 +15688,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("healthy",
+            new(10,
+            "healthy",
             "Sensor data healthy (0=unhealthy, 1=healthy)",
             string.Empty, 
             string.Empty, 
@@ -13903,6 +15714,38 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeBootMs);
+            writer.Write(StaticFields[1], Payload.Lat);
+            writer.Write(StaticFields[2], Payload.Lng);
+            writer.Write(StaticFields[3], Payload.Alt);
+            writer.Write(StaticFields[4], Payload.Roll);
+            writer.Write(StaticFields[5], Payload.Pitch);
+            writer.Write(StaticFields[6], Payload.Yaw);
+            writer.Write(StaticFields[7], Payload.Distance);
+            writer.Write(StaticFields[8], Payload.Temperature);
+            writer.Write(StaticFields[9], Payload.Id);
+            writer.Write(StaticFields[10], Payload.Healthy);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
+            Payload.Lat = reader.ReadInt(StaticFields[1]);
+            Payload.Lng = reader.ReadInt(StaticFields[2]);
+            Payload.Alt = reader.ReadFloat(StaticFields[3]);
+            Payload.Roll = reader.ReadFloat(StaticFields[4]);
+            Payload.Pitch = reader.ReadFloat(StaticFields[5]);
+            Payload.Yaw = reader.ReadFloat(StaticFields[6]);
+            Payload.Distance = reader.ReadFloat(StaticFields[7]);
+            Payload.Temperature = reader.ReadFloat(StaticFields[8]);
+            Payload.Id = reader.ReadByte(StaticFields[9]);
+            Payload.Healthy = reader.ReadByte(StaticFields[10]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -13914,22 +15757,22 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //TimeBootMs
-            sum+=4; //Lat
-            sum+=4; //Lng
-            sum+=4; //Alt
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //Distance
-            sum+=4; //Temperature
-            sum+=1; //Id
-            sum+=1; //Healthy
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t time_boot_ms
+            +4 // int32_t lat
+            +4 // int32_t lng
+            +4 // float alt
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float distance
+            +4 // float temperature
+            +1 // uint8_t id
+            +1 // uint8_t healthy
+            );
         }
 
 
@@ -14051,7 +15894,8 @@ namespace Asv.Mavlink.Ardupilotmega
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("MCU_temperature",
+            new(0,
+            "MCU_temperature",
             "MCU Internal temperature",
             string.Empty, 
             @"cdegC", 
@@ -14060,7 +15904,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Int16, 
             0, 
             false),
-            new("MCU_voltage",
+            new(1,
+            "MCU_voltage",
             "MCU voltage",
             string.Empty, 
             @"mV", 
@@ -14069,7 +15914,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("MCU_voltage_min",
+            new(2,
+            "MCU_voltage_min",
             "MCU voltage minimum",
             string.Empty, 
             @"mV", 
@@ -14078,7 +15924,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("MCU_voltage_max",
+            new(3,
+            "MCU_voltage_max",
             "MCU voltage maximum",
             string.Empty, 
             @"mV", 
@@ -14087,7 +15934,8 @@ namespace Asv.Mavlink.Ardupilotmega
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("id",
+            new(4,
+            "id",
             "MCU instance",
             string.Empty, 
             string.Empty, 
@@ -14106,6 +15954,26 @@ namespace Asv.Mavlink.Ardupilotmega
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.McuTemperature);
+            writer.Write(StaticFields[1], Payload.McuVoltage);
+            writer.Write(StaticFields[2], Payload.McuVoltageMin);
+            writer.Write(StaticFields[3], Payload.McuVoltageMax);
+            writer.Write(StaticFields[4], Payload.Id);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.McuTemperature = reader.ReadShort(StaticFields[0]);
+            Payload.McuVoltage = reader.ReadUShort(StaticFields[1]);
+            Payload.McuVoltageMin = reader.ReadUShort(StaticFields[2]);
+            Payload.McuVoltageMax = reader.ReadUShort(StaticFields[3]);
+            Payload.Id = reader.ReadByte(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -14117,16 +15985,16 @@ namespace Asv.Mavlink.Ardupilotmega
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //McuTemperature
-            sum+=2; //McuVoltage
-            sum+=2; //McuVoltageMin
-            sum+=2; //McuVoltageMax
-            sum+=1; //Id
-            return (byte)sum;
+            return (byte)(
+            +2 // int16_t MCU_temperature
+            +2 // uint16_t MCU_voltage
+            +2 // uint16_t MCU_voltage_min
+            +2 // uint16_t MCU_voltage_max
+            +1 // uint8_t id
+            );
         }
 
 

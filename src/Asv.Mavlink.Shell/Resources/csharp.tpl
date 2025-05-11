@@ -110,7 +110,8 @@ namespace Asv.Mavlink.{{ Namespace }}
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
 {%- for field in msg.Fields -%}
-            new("{{ field.Name }}",
+            new({{ forloop.index0 }},
+            "{{ field.Name }}",
             {% if field.EscDesc %}"{{ field.EscDesc }}"{% else %}string.Empty{% endif %},
             {% if field.PrintFormat %}"{{ field.PrintFormat }}"{% else %}string.Empty{% endif %}, 
             {% if field.Units %}@"{{ field.Units }}"{% else %}string.Empty{% endif %}, 
@@ -128,6 +129,95 @@ namespace Asv.Mavlink.{{ Namespace }}
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+{%- for field in msg.Fields -%}
+            writer.Write(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+{%- endfor -%}
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+{%- for field in msg.Fields -%}
+    {%- if field.IsEnum -%}
+        {%- if field.IsArray -%}
+            {%- case field.Type -%}
+            {%- when 'char' or 'double' or 'float'-%}
+            ERROR => ENUM as 'char' or 'double' or 'float' ???????
+            {%- else -%}
+            var array = reader.ReadEnumArray(StaticFields[{{ forloop.index0 }}]);
+            for(var i=0;i<array.Length;i++)
+            {
+                Payload.{{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})(array.GetValue(i) ?? throw new InvalidOperationException());
+            }            
+            {%- endcase -%}
+            
+        {%- else -%}
+            {%- case field.Type -%}
+            {%- when 'char' or 'double' or 'float'-%}
+            ERROR => ENUM as 'char' or 'double' or 'float' ???????
+            {%- else -%}
+            Payload.{{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})reader.ReadEnum(StaticFields[{{ forloop.index0 }}]);
+            {%- endcase -%}
+        {%- endif -%}
+    {%- else -%}
+        {%- if field.IsArray -%}
+            {%- case field.Type -%}
+            {%- when 'char' -%}
+            reader.ReadCharArray(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+            {%- when 'sbyte' -%}
+            reader.ReadSByteArray(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+            {%- when 'byte' -%}
+            reader.ReadByteArray(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+            {%- when 'short' -%}
+            reader.ReadShortArray(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+            {%- when 'ushort' -%}
+            reader.ReadUShortArray(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+            {%- when 'int' -%}
+            reader.ReadIntArray(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+            {%- when 'uint' -%}
+            reader.ReadUIntArray(StaticFields[{{ forloop.index0 }}],Payload.{{ field.CamelCaseName }});
+            {%- when 'long' -%}
+            reader.ReadLongArray(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+            {%- when 'ulong' -%}
+            reader.ReadULongArray(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+            {%- when 'float' -%}
+            reader.ReadFloatArray(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+            {%- when 'double' -%}
+            reader.ReadDoubleArray(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+            {%- endcase -%}
+        {%- else -%}
+            {%- case field.Type -%}
+            {%- when 'char' -%}
+            Payload.{{ field.CamelCaseName }} = reader.ReadChar(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'sbyte' -%}
+            Payload.{{ field.CamelCaseName }} = reader.ReadSByte(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'byte' -%}
+            Payload.{{ field.CamelCaseName }} = reader.ReadByte(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'short' -%}
+            Payload.{{ field.CamelCaseName }} = reader.ReadShort(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'ushort' -%}
+            Payload.{{ field.CamelCaseName }} = reader.ReadUShort(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'int' -%}
+            Payload.{{ field.CamelCaseName }} = reader.ReadInt(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'uint' -%}
+            Payload.{{ field.CamelCaseName }} = reader.ReadUInt(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'long' -%}
+            Payload.{{ field.CamelCaseName }} = reader.ReadLong(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'ulong' -%}
+            Payload.{{ field.CamelCaseName }} = reader.ReadULong(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'float' -%}
+            Payload.{{ field.CamelCaseName }} = reader.ReadFloat(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'double' -%}
+            Payload.{{ field.CamelCaseName }} = reader.ReadDouble(StaticFields[{{ forloop.index0 }}]);
+            {%- endcase -%}
+        {%- endif -%}
+    {%- endif -%}
+{%- endfor -%}
+        
+            
+        }
     }
 
     /// <summary>
@@ -139,10 +229,10 @@ namespace Asv.Mavlink.{{ Namespace }}
         public byte GetMaxByteSize() => {{ msg.PayloadByteSize }}; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => {{ msg.PayloadByteSize - msg.ExtendedFieldsLength }}; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
+            return (byte)(
 {%- for field in msg.Fields -%}
     {%- if field.IsEnum -%}
         {%- if field.IsArray -%}
@@ -150,19 +240,19 @@ namespace Asv.Mavlink.{{ Namespace }}
             {%- when 'char' or 'double' or 'float'-%}
             ERROR => ENUM as 'char' or 'double' or 'float' ???????
             {%- when 'sbyte' or 'byte' -%}
-            sum+= {{ field.CamelCaseName }}.Length; // {{ field.CamelCaseName }}
+            + {{ field.CamelCaseName }}.Length // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'short' -%}
-            sum+= {{ field.CamelCaseName }}.Length * 2; // {{ field.CamelCaseName }}
+            + {{ field.CamelCaseName }}.Length * 2 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'ushort' -%}
-            sum+= {{ field.CamelCaseName }}.Length * 2; // {{ field.CamelCaseName }}
+            + {{ field.CamelCaseName }}.Length * 2 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'int' -%}
-            sum+= {{ field.CamelCaseName }}.Length * 4; // {{ field.CamelCaseName }}
+            + {{ field.CamelCaseName }}.Length * 4 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'uint' -%}
-            sum+= {{ field.CamelCaseName }}.Length * 4; // {{ field.CamelCaseName }}
+            + {{ field.CamelCaseName }}.Length * 4 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'long' -%}
-            sum+= {{ field.CamelCaseName }}.Length * 8; // {{ field.CamelCaseName }}
+            + {{ field.CamelCaseName }}.Length * 8 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'ulong' -%}
-            sum+= {{ field.CamelCaseName }}.Length * 8; // {{ field.CamelCaseName }}
+            + {{ field.CamelCaseName }}.Length * 8 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- endcase -%}
             
         {%- else -%}
@@ -170,72 +260,72 @@ namespace Asv.Mavlink.{{ Namespace }}
             {%- when 'char' or 'double' or 'float'-%}
             ERROR => ENUM as 'char' or 'double' or 'float' ???????
             {%- when 'sbyte' or 'byte' -%}
-            sum+= 1; // {{ field.CamelCaseName }}
+            + 1 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'short' -%}
-            sum+= 2; // {{ field.CamelCaseName }}
+            + 2 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'ushort' -%}
-            sum+= 2; // {{ field.CamelCaseName }}
+            + 2 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'int' -%}
-            sum+= 4; // {{ field.CamelCaseName }}
+            + 4 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'uint' -%}
-            sum+= 4; // {{ field.CamelCaseName }}
+            + 4 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'long' -%}
-            sum+= 8; // {{ field.CamelCaseName }}
+            + 8 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'ulong' -%}
-            sum+= 8; // {{ field.CamelCaseName }}
+            + 8 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- endcase -%}
         {%- endif -%}
     {%- else -%}
         {%- if field.IsArray -%}
             {%- case field.Type -%}
             {%- when 'char' -%}
-            sum+={{ field.CamelCaseName }}.Length; //{{ field.CamelCaseName }}
+            +{{ field.CamelCaseName }}.Length // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'sbyte' or 'byte' -%}
-            sum+={{ field.CamelCaseName }}.Length; //{{ field.CamelCaseName }}
+            +{{ field.CamelCaseName }}.Length // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'short' -%}
-            sum+={{ field.CamelCaseName }}.Length * 2; //{{ field.CamelCaseName }}
+            +{{ field.CamelCaseName }}.Length * 2 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'ushort' -%}
-            sum+={{ field.CamelCaseName }}.Length * 2; //{{ field.CamelCaseName }}
+            +{{ field.CamelCaseName }}.Length * 2 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'int' -%}
-            sum+={{ field.CamelCaseName }}.Length * 4; //{{ field.CamelCaseName }}
+            +{{ field.CamelCaseName }}.Length * 4 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'uint' -%}
-            sum+={{ field.CamelCaseName }}.Length * 4; //{{ field.CamelCaseName }}
+            +{{ field.CamelCaseName }}.Length * 4 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'long' -%}
-            sum+={{ field.CamelCaseName }}.Length * 8; //{{ field.CamelCaseName }}
+            +{{ field.CamelCaseName }}.Length * 8 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'ulong' -%}
-            sum+={{ field.CamelCaseName }}.Length * 8; //{{ field.CamelCaseName }}
+            +{{ field.CamelCaseName }}.Length * 8 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'float' -%}
-            sum+={{ field.CamelCaseName }}.Length * 4; //{{ field.CamelCaseName }}
+            +{{ field.CamelCaseName }}.Length * 4 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'double' -%}
-            sum+={{ field.CamelCaseName }}.Length * 8; //{{ field.CamelCaseName }}
+            +{{ field.CamelCaseName }}.Length * 8 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- endcase -%}
         {%- else -%}
             {%- case field.Type -%}
             {%- when 'char' -%}
-            sum+=1; //{{ field.CamelCaseName }}
+            +1 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'sbyte' or 'byte' -%}
-            sum+=1; //{{ field.CamelCaseName }}
+            +1 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'short' -%}
-            sum+=2; //{{ field.CamelCaseName }}
+            +2 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'ushort' -%}
-            sum+=2; //{{ field.CamelCaseName }}
+            +2 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'int' -%}
-            sum+=4; //{{ field.CamelCaseName }}
+            +4 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'uint' -%}
-            sum+=4; //{{ field.CamelCaseName }}
+            +4 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'long' -%}
-            sum+=8; //{{ field.CamelCaseName }}
+            +8 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'ulong' -%}
-            sum+=8; //{{ field.CamelCaseName }}
+            +8 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'float' -%}
-            sum+=4; //{{ field.CamelCaseName }}
+            +4 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- when 'double' -%}
-            sum+=8; //{{ field.CamelCaseName }}
+            +8 // {{ field.ULogTypeName }} {{ field.Name }}
             {%- endcase -%}
         {%- endif -%}
     {%- endif -%}
 {%- endfor -%}
-            return (byte)sum;
+            );
         }
 
 

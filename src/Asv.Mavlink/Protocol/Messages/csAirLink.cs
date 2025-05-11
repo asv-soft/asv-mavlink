@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -92,7 +92,8 @@ namespace Asv.Mavlink.Csairlink
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("login",
+            new(0,
+            "login",
             "Login",
             string.Empty, 
             string.Empty, 
@@ -101,7 +102,8 @@ namespace Asv.Mavlink.Csairlink
             MessageFieldType.Char, 
             50, 
             false),
-            new("password",
+            new(1,
+            "password",
             "Password",
             string.Empty, 
             string.Empty, 
@@ -117,6 +119,20 @@ namespace Asv.Mavlink.Csairlink
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Login);
+            writer.Write(StaticFields[1], Payload.Password);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadCharArray(StaticFields[0], Payload.Login);
+            reader.ReadCharArray(StaticFields[1], Payload.Password);
+        
+            
+        }
     }
 
     /// <summary>
@@ -128,13 +144,13 @@ namespace Asv.Mavlink.Csairlink
         public byte GetMaxByteSize() => 100; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 100; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=Login.Length; //Login
-            sum+=Password.Length; //Password
-            return (byte)sum;
+            return (byte)(
+            +Login.Length // char[50] login
+            +Password.Length // char[50] password
+            );
         }
 
 
@@ -238,7 +254,8 @@ namespace Asv.Mavlink.Csairlink
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("resp_type",
+            new(0,
+            "resp_type",
             "Response type",
             string.Empty, 
             string.Empty, 
@@ -253,6 +270,18 @@ namespace Asv.Mavlink.Csairlink
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RespType);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RespType = (AirlinkAuthResponseType)reader.ReadEnum(StaticFields[0]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -264,12 +293,12 @@ namespace Asv.Mavlink.Csairlink
         public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // RespType
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t resp_type
+            );
         }
 
 

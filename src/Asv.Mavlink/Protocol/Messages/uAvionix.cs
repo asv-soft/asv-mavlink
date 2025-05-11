@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -348,7 +348,8 @@ namespace Asv.Mavlink.Uavionix
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("ICAO",
+            new(0,
+            "ICAO",
             "Vehicle address (24 bit)",
             string.Empty, 
             string.Empty, 
@@ -357,7 +358,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("stallSpeed",
+            new(1,
+            "stallSpeed",
             "Aircraft stall speed in cm/s",
             string.Empty, 
             @"cm/s", 
@@ -366,7 +368,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("callsign",
+            new(2,
+            "callsign",
             "Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, \" \" only)",
             string.Empty, 
             string.Empty, 
@@ -375,7 +378,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Char, 
             9, 
             false),
-            new("emitterType",
+            new(3,
+            "emitterType",
             "Transmitting vehicle type. See ADSB_EMITTER_TYPE enum",
             string.Empty, 
             string.Empty, 
@@ -384,7 +388,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("aircraftSize",
+            new(4,
+            "aircraftSize",
             "Aircraft length and width encoding (table 2-35 of DO-282B)",
             string.Empty, 
             string.Empty, 
@@ -393,7 +398,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("gpsOffsetLat",
+            new(5,
+            "gpsOffsetLat",
             "GPS antenna lateral offset (table 2-36 of DO-282B)",
             string.Empty, 
             string.Empty, 
@@ -402,7 +408,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("gpsOffsetLon",
+            new(6,
+            "gpsOffsetLon",
             "GPS antenna longitudinal offset from nose [if non-zero, take position (in meters) divide by 2 and add one] (table 2-37 DO-282B)",
             string.Empty, 
             string.Empty, 
@@ -411,7 +418,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("rfSelect",
+            new(7,
+            "rfSelect",
             "ADS-B transponder receiver and transmit enable flags",
             string.Empty, 
             string.Empty, 
@@ -433,6 +441,32 @@ namespace Asv.Mavlink.Uavionix
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Icao);
+            writer.Write(StaticFields[1], Payload.Stallspeed);
+            writer.Write(StaticFields[2], Payload.Callsign);
+            writer.Write(StaticFields[3], Payload.Emittertype);
+            writer.Write(StaticFields[4], Payload.Aircraftsize);
+            writer.Write(StaticFields[5], Payload.Gpsoffsetlat);
+            writer.Write(StaticFields[6], Payload.Gpsoffsetlon);
+            writer.Write(StaticFields[7], Payload.Rfselect);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Icao = reader.ReadUInt(StaticFields[0]);
+            Payload.Stallspeed = reader.ReadUShort(StaticFields[1]);
+            reader.ReadCharArray(StaticFields[2], Payload.Callsign);
+            Payload.Emittertype = (AdsbEmitterType)reader.ReadEnum(StaticFields[3]);
+            Payload.Aircraftsize = (UavionixAdsbOutCfgAircraftSize)reader.ReadEnum(StaticFields[4]);
+            Payload.Gpsoffsetlat = (UavionixAdsbOutCfgGpsOffsetLat)reader.ReadEnum(StaticFields[5]);
+            Payload.Gpsoffsetlon = (UavionixAdsbOutCfgGpsOffsetLon)reader.ReadEnum(StaticFields[6]);
+            Payload.Rfselect = (UavionixAdsbOutRfSelect)reader.ReadEnum(StaticFields[7]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -444,19 +478,19 @@ namespace Asv.Mavlink.Uavionix
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Icao
-            sum+=2; //Stallspeed
-            sum+=Callsign.Length; //Callsign
-            sum+= 1; // Emittertype
-            sum+= 1; // Aircraftsize
-            sum+= 1; // Gpsoffsetlat
-            sum+= 1; // Gpsoffsetlon
-            sum+= 1; // Rfselect
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t ICAO
+            +2 // uint16_t stallSpeed
+            +Callsign.Length // char[9] callsign
+            + 1 // uint8_t emitterType
+            + 1 // uint8_t aircraftSize
+            + 1 // uint8_t gpsOffsetLat
+            + 1 // uint8_t gpsOffsetLon
+            + 1 // uint8_t rfSelect
+            );
         }
 
 
@@ -582,7 +616,8 @@ namespace Asv.Mavlink.Uavionix
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("utcTime",
+            new(0,
+            "utcTime",
             "UTC time in seconds since GPS epoch (Jan 6, 1980). If unknown set to UINT32_MAX",
             string.Empty, 
             @"s", 
@@ -591,7 +626,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("gpsLat",
+            new(1,
+            "gpsLat",
             "Latitude WGS84 (deg * 1E7). If unknown set to INT32_MAX",
             string.Empty, 
             @"degE7", 
@@ -600,7 +636,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gpsLon",
+            new(2,
+            "gpsLon",
             "Longitude WGS84 (deg * 1E7). If unknown set to INT32_MAX",
             string.Empty, 
             @"degE7", 
@@ -609,7 +646,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gpsAlt",
+            new(3,
+            "gpsAlt",
             "Altitude (WGS84). UP +ve. If unknown set to INT32_MAX",
             string.Empty, 
             @"mm", 
@@ -618,7 +656,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Int32, 
             0, 
             false),
-            new("baroAltMSL",
+            new(4,
+            "baroAltMSL",
             "Barometric pressure altitude (MSL) relative to a standard atmosphere of 1013.2 mBar and NOT bar corrected altitude (m * 1E-3). (up +ve). If unknown set to INT32_MAX",
             string.Empty, 
             @"mbar", 
@@ -627,7 +666,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Int32, 
             0, 
             false),
-            new("accuracyHor",
+            new(5,
+            "accuracyHor",
             "Horizontal accuracy in mm (m * 1E-3). If unknown set to UINT32_MAX",
             string.Empty, 
             @"mm", 
@@ -636,7 +676,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("accuracyVert",
+            new(6,
+            "accuracyVert",
             "Vertical accuracy in cm. If unknown set to UINT16_MAX",
             string.Empty, 
             @"cm", 
@@ -645,7 +686,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("accuracyVel",
+            new(7,
+            "accuracyVel",
             "Velocity accuracy in mm/s (m * 1E-3). If unknown set to UINT16_MAX",
             string.Empty, 
             @"mm/s", 
@@ -654,7 +696,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("velVert",
+            new(8,
+            "velVert",
             "GPS vertical speed in cm/s. If unknown set to INT16_MAX",
             string.Empty, 
             @"cm/s", 
@@ -663,7 +706,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Int16, 
             0, 
             false),
-            new("velNS",
+            new(9,
+            "velNS",
             "North-South velocity over ground in cm/s North +ve. If unknown set to INT16_MAX",
             string.Empty, 
             @"cm/s", 
@@ -672,7 +716,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Int16, 
             0, 
             false),
-            new("VelEW",
+            new(10,
+            "VelEW",
             "East-West velocity over ground in cm/s East +ve. If unknown set to INT16_MAX",
             string.Empty, 
             @"cm/s", 
@@ -681,7 +726,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Int16, 
             0, 
             false),
-            new("state",
+            new(11,
+            "state",
             "ADS-B transponder dynamic input state flags",
             string.Empty, 
             string.Empty, 
@@ -690,7 +736,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("squawk",
+            new(12,
+            "squawk",
             "Mode A code (typically 1200 [0x04B0] for VFR)",
             string.Empty, 
             string.Empty, 
@@ -699,7 +746,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("gpsFix",
+            new(13,
+            "gpsFix",
             "0-1: no fix, 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK",
             string.Empty, 
             string.Empty, 
@@ -708,7 +756,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("numSats",
+            new(14,
+            "numSats",
             "Number of satellites visible. If unknown set to UINT8_MAX",
             string.Empty, 
             string.Empty, 
@@ -717,7 +766,8 @@ namespace Asv.Mavlink.Uavionix
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("emergencyStatus",
+            new(15,
+            "emergencyStatus",
             "Emergency status",
             string.Empty, 
             string.Empty, 
@@ -747,6 +797,48 @@ namespace Asv.Mavlink.Uavionix
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Utctime);
+            writer.Write(StaticFields[1], Payload.Gpslat);
+            writer.Write(StaticFields[2], Payload.Gpslon);
+            writer.Write(StaticFields[3], Payload.Gpsalt);
+            writer.Write(StaticFields[4], Payload.Baroaltmsl);
+            writer.Write(StaticFields[5], Payload.Accuracyhor);
+            writer.Write(StaticFields[6], Payload.Accuracyvert);
+            writer.Write(StaticFields[7], Payload.Accuracyvel);
+            writer.Write(StaticFields[8], Payload.Velvert);
+            writer.Write(StaticFields[9], Payload.Velns);
+            writer.Write(StaticFields[10], Payload.Velew);
+            writer.Write(StaticFields[11], Payload.State);
+            writer.Write(StaticFields[12], Payload.Squawk);
+            writer.Write(StaticFields[13], Payload.Gpsfix);
+            writer.Write(StaticFields[14], Payload.Numsats);
+            writer.Write(StaticFields[15], Payload.Emergencystatus);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Utctime = reader.ReadUInt(StaticFields[0]);
+            Payload.Gpslat = reader.ReadInt(StaticFields[1]);
+            Payload.Gpslon = reader.ReadInt(StaticFields[2]);
+            Payload.Gpsalt = reader.ReadInt(StaticFields[3]);
+            Payload.Baroaltmsl = reader.ReadInt(StaticFields[4]);
+            Payload.Accuracyhor = reader.ReadUInt(StaticFields[5]);
+            Payload.Accuracyvert = reader.ReadUShort(StaticFields[6]);
+            Payload.Accuracyvel = reader.ReadUShort(StaticFields[7]);
+            Payload.Velvert = reader.ReadShort(StaticFields[8]);
+            Payload.Velns = reader.ReadShort(StaticFields[9]);
+            Payload.Velew = reader.ReadShort(StaticFields[10]);
+            Payload.State = (UavionixAdsbOutDynamicState)reader.ReadEnum(StaticFields[11]);
+            Payload.Squawk = reader.ReadUShort(StaticFields[12]);
+            Payload.Gpsfix = (UavionixAdsbOutDynamicGpsFix)reader.ReadEnum(StaticFields[13]);
+            Payload.Numsats = reader.ReadByte(StaticFields[14]);
+            Payload.Emergencystatus = (UavionixAdsbEmergencyStatus)reader.ReadEnum(StaticFields[15]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -758,27 +850,27 @@ namespace Asv.Mavlink.Uavionix
         public byte GetMaxByteSize() => 41; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 41; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Utctime
-            sum+=4; //Gpslat
-            sum+=4; //Gpslon
-            sum+=4; //Gpsalt
-            sum+=4; //Baroaltmsl
-            sum+=4; //Accuracyhor
-            sum+=2; //Accuracyvert
-            sum+=2; //Accuracyvel
-            sum+=2; //Velvert
-            sum+=2; //Velns
-            sum+=2; //Velew
-            sum+= 2; // State
-            sum+=2; //Squawk
-            sum+= 1; // Gpsfix
-            sum+=1; //Numsats
-            sum+= 1; // Emergencystatus
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t utcTime
+            +4 // int32_t gpsLat
+            +4 // int32_t gpsLon
+            +4 // int32_t gpsAlt
+            +4 // int32_t baroAltMSL
+            +4 // uint32_t accuracyHor
+            +2 // uint16_t accuracyVert
+            +2 // uint16_t accuracyVel
+            +2 // int16_t velVert
+            +2 // int16_t velNS
+            +2 // int16_t VelEW
+            + 2 // uint16_t state
+            +2 // uint16_t squawk
+            + 1 // uint8_t gpsFix
+            +1 // uint8_t numSats
+            + 1 // uint8_t emergencyStatus
+            );
         }
 
 
@@ -935,7 +1027,8 @@ namespace Asv.Mavlink.Uavionix
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("rfHealth",
+            new(0,
+            "rfHealth",
             "ADS-B transponder messages",
             string.Empty, 
             string.Empty, 
@@ -950,6 +1043,18 @@ namespace Asv.Mavlink.Uavionix
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Rfhealth);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Rfhealth = (UavionixAdsbRfHealth)reader.ReadEnum(StaticFields[0]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -961,12 +1066,12 @@ namespace Asv.Mavlink.Uavionix
         public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // Rfhealth
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t rfHealth
+            );
         }
 
 

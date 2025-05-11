@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -692,7 +692,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies a unique number for this request. This allows the response packet to be identified.",
             string.Empty, 
             string.Empty, 
@@ -701,7 +702,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -710,7 +712,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -727,6 +730,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -738,14 +757,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -811,7 +830,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -820,7 +840,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("result",
+            new(1,
+            "result",
             "Result code.",
             string.Empty, 
             string.Empty, 
@@ -829,7 +850,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("supported_modes",
+            new(2,
+            "supported_modes",
             "Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true.",
             string.Empty, 
             string.Empty, 
@@ -846,6 +868,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.Result);
+            writer.Write(StaticFields[2], Payload.SupportedModes);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.Result = (AsvRsgaRequestAck)reader.ReadEnum(StaticFields[1]);
+            reader.ReadByteArray(StaticFields[2], Payload.SupportedModes);
+        
+            
+        }
     }
 
     /// <summary>
@@ -857,14 +895,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 35; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+= 1; // Result
-            sum+=SupportedModes.Length; //SupportedModes
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            + 1 // uint8_t result
+            +SupportedModes.Length // uint8_t[32] supported_modes
+            );
         }
 
 
@@ -943,7 +981,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -952,7 +991,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -961,7 +1001,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("data_index",
+            new(2,
+            "data_index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -970,7 +1011,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("lat",
+            new(3,
+            "lat",
             "Latitude (WGS84, EGM96 ellipsoid)",
             string.Empty, 
             @"degE7", 
@@ -979,7 +1021,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lat_err",
+            new(4,
+            "lat_err",
             "Expected Error in Latitude (North) Direction",
             string.Empty, 
             @"mm", 
@@ -988,7 +1031,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lon",
+            new(5,
+            "lon",
             "Longitude (WGS84, EGM96 ellipsoid)",
             string.Empty, 
             @"degE7", 
@@ -997,7 +1041,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lon_err",
+            new(6,
+            "lon_err",
             "Expected Error in Longitude (East) Direction",
             string.Empty, 
             @"mm", 
@@ -1006,7 +1051,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Int32, 
             0, 
             false),
-            new("alt_msl",
+            new(7,
+            "alt_msl",
             "Antenna altitude above/below mean sea level (geoid)",
             string.Empty, 
             @"mm", 
@@ -1015,7 +1061,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Int32, 
             0, 
             false),
-            new("alt_wgs",
+            new(8,
+            "alt_wgs",
             "Antenna altitude WGS-84 earth ellipsoid",
             string.Empty, 
             @"mm", 
@@ -1024,7 +1071,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Int32, 
             0, 
             false),
-            new("alt_err",
+            new(9,
+            "alt_err",
             "Expected Error in Altitude",
             string.Empty, 
             @"mm", 
@@ -1033,7 +1081,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Int32, 
             0, 
             false),
-            new("ref_id",
+            new(10,
+            "ref_id",
             "GNSS reference station ID (used when GNSS is received from multiple sources).",
             string.Empty, 
             string.Empty, 
@@ -1042,7 +1091,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("hdop",
+            new(11,
+            "hdop",
             "HDOP horizontal dilution of position",
             string.Empty, 
             string.Empty, 
@@ -1051,7 +1101,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("vdop",
+            new(12,
+            "vdop",
             "VDOP vertical dilution of position",
             string.Empty, 
             string.Empty, 
@@ -1060,7 +1111,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("sog",
+            new(13,
+            "sog",
             "Speed over ground",
             string.Empty, 
             @"cm/s", 
@@ -1069,7 +1121,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("cog_true",
+            new(14,
+            "cog_true",
             "Course over ground (true) (yaw angle). 0.0..359.99 degrees",
             string.Empty, 
             @"cdeg", 
@@ -1078,7 +1131,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("cog_mag",
+            new(15,
+            "cog_mag",
             "Course over ground (magnetic) (yaw angle). 0.0..359.99 degrees",
             string.Empty, 
             @"cdeg", 
@@ -1087,7 +1141,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("receiver_type",
+            new(16,
+            "receiver_type",
             "GNSS receiver type.",
             string.Empty, 
             string.Empty, 
@@ -1096,7 +1151,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("gnss_flags",
+            new(17,
+            "gnss_flags",
             "GNSS special flags.",
             string.Empty, 
             string.Empty, 
@@ -1105,7 +1161,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("sat_cnt",
+            new(18,
+            "sat_cnt",
             "Number of satellites in view",
             string.Empty, 
             string.Empty, 
@@ -1114,7 +1171,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("fix_type",
+            new(19,
+            "fix_type",
             "GNSS fix type",
             string.Empty, 
             string.Empty, 
@@ -1148,6 +1206,56 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.DataIndex);
+            writer.Write(StaticFields[3], Payload.Lat);
+            writer.Write(StaticFields[4], Payload.LatErr);
+            writer.Write(StaticFields[5], Payload.Lon);
+            writer.Write(StaticFields[6], Payload.LonErr);
+            writer.Write(StaticFields[7], Payload.AltMsl);
+            writer.Write(StaticFields[8], Payload.AltWgs);
+            writer.Write(StaticFields[9], Payload.AltErr);
+            writer.Write(StaticFields[10], Payload.RefId);
+            writer.Write(StaticFields[11], Payload.Hdop);
+            writer.Write(StaticFields[12], Payload.Vdop);
+            writer.Write(StaticFields[13], Payload.Sog);
+            writer.Write(StaticFields[14], Payload.CogTrue);
+            writer.Write(StaticFields[15], Payload.CogMag);
+            writer.Write(StaticFields[16], Payload.ReceiverType);
+            writer.Write(StaticFields[17], Payload.GnssFlags);
+            writer.Write(StaticFields[18], Payload.SatCnt);
+            writer.Write(StaticFields[19], Payload.FixType);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.DataIndex = reader.ReadUInt(StaticFields[2]);
+            Payload.Lat = reader.ReadInt(StaticFields[3]);
+            Payload.LatErr = reader.ReadInt(StaticFields[4]);
+            Payload.Lon = reader.ReadInt(StaticFields[5]);
+            Payload.LonErr = reader.ReadInt(StaticFields[6]);
+            Payload.AltMsl = reader.ReadInt(StaticFields[7]);
+            Payload.AltWgs = reader.ReadInt(StaticFields[8]);
+            Payload.AltErr = reader.ReadInt(StaticFields[9]);
+            Payload.RefId = reader.ReadUShort(StaticFields[10]);
+            Payload.Hdop = reader.ReadUShort(StaticFields[11]);
+            Payload.Vdop = reader.ReadUShort(StaticFields[12]);
+            Payload.Sog = reader.ReadUShort(StaticFields[13]);
+            Payload.CogTrue = reader.ReadUShort(StaticFields[14]);
+            Payload.CogMag = reader.ReadUShort(StaticFields[15]);
+            Payload.ReceiverType = (AsvRsgaRttGnssType)reader.ReadEnum(StaticFields[16]);
+            Payload.GnssFlags = (AsvRsgaRttGnssFlags)reader.ReadEnum(StaticFields[17]);
+            Payload.SatCnt = reader.ReadByte(StaticFields[18]);
+            Payload.FixType = (GpsFixType)reader.ReadEnum(StaticFields[19]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1159,31 +1267,31 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 64; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 64; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //DataIndex
-            sum+=4; //Lat
-            sum+=4; //LatErr
-            sum+=4; //Lon
-            sum+=4; //LonErr
-            sum+=4; //AltMsl
-            sum+=4; //AltWgs
-            sum+=4; //AltErr
-            sum+=2; //RefId
-            sum+=2; //Hdop
-            sum+=2; //Vdop
-            sum+=2; //Sog
-            sum+=2; //CogTrue
-            sum+=2; //CogMag
-            sum+= 1; // ReceiverType
-            sum+= 1; // GnssFlags
-            sum+=1; //SatCnt
-            sum+= 1; // FixType
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t data_index
+            +4 // int32_t lat
+            +4 // int32_t lat_err
+            +4 // int32_t lon
+            +4 // int32_t lon_err
+            +4 // int32_t alt_msl
+            +4 // int32_t alt_wgs
+            +4 // int32_t alt_err
+            +2 // uint16_t ref_id
+            +2 // uint16_t hdop
+            +2 // uint16_t vdop
+            +2 // uint16_t sog
+            +2 // uint16_t cog_true
+            +2 // uint16_t cog_mag
+            + 1 // uint8_t receiver_type
+            + 1 // uint8_t gnss_flags
+            +1 // uint8_t sat_cnt
+            + 1 // uint8_t fix_type
+            );
         }
 
 
@@ -1368,7 +1476,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -1377,7 +1486,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -1386,7 +1496,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -1403,6 +1514,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1414,14 +1541,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -1487,7 +1614,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -1496,7 +1624,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -1505,7 +1634,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -1522,6 +1652,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1533,14 +1679,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -1606,7 +1752,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -1615,7 +1762,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -1624,7 +1772,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -1641,6 +1790,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1652,14 +1817,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -1725,7 +1890,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -1734,7 +1900,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -1743,7 +1910,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -1760,6 +1928,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1771,14 +1955,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -1844,7 +2028,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -1853,7 +2038,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -1862,7 +2048,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -1879,6 +2066,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1890,14 +2093,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -1963,7 +2166,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -1972,7 +2176,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -1981,7 +2186,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -1998,6 +2204,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2009,14 +2231,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -2082,7 +2304,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -2091,7 +2314,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -2100,7 +2324,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -2117,6 +2342,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2128,14 +2369,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -2201,7 +2442,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -2210,7 +2452,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -2219,7 +2462,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -2236,6 +2480,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2247,14 +2507,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -2320,7 +2580,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -2329,7 +2590,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -2338,7 +2600,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -2355,6 +2618,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2366,14 +2645,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -2439,7 +2718,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -2448,7 +2728,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -2457,7 +2738,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("tx_freq",
+            new(2,
+            "tx_freq",
             "TX frequency",
             string.Empty, 
             @"Hz", 
@@ -2466,7 +2748,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("rx_freq",
+            new(3,
+            "rx_freq",
             "RX frequency",
             string.Empty, 
             @"Hz", 
@@ -2475,7 +2758,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(4,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -2484,7 +2768,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("tx_power",
+            new(5,
+            "tx_power",
             "Output power",
             string.Empty, 
             @"dBm", 
@@ -2493,7 +2778,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("tx_gain",
+            new(6,
+            "tx_gain",
             "Percent of total TX gain level (0.0 - 1.0)",
             string.Empty, 
             @"%", 
@@ -2502,7 +2788,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rx_power",
+            new(7,
+            "rx_power",
             "Receive power (peak)",
             string.Empty, 
             @"dBm", 
@@ -2511,7 +2798,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rx_field_strength",
+            new(8,
+            "rx_field_strength",
             "Receive power field strength.",
             string.Empty, 
             @"uV/m", 
@@ -2520,7 +2808,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rx_signal_overflow",
+            new(9,
+            "rx_signal_overflow",
             "Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).",
             string.Empty, 
             @"%", 
@@ -2529,7 +2818,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rx_gain",
+            new(10,
+            "rx_gain",
             "Percent of total RX gain level (0.0 - 1.0)",
             string.Empty, 
             @"%", 
@@ -2538,7 +2828,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("distance",
+            new(11,
+            "distance",
             "Measured distance",
             string.Empty, 
             @"m", 
@@ -2547,7 +2838,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("reply_efficiency",
+            new(12,
+            "reply_efficiency",
             "Reply efficiency request\\response (between 0% - 100%)",
             string.Empty, 
             @"%", 
@@ -2556,7 +2848,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rx_freq_offset",
+            new(13,
+            "rx_freq_offset",
             "RX frequency offset",
             string.Empty, 
             @"Hz", 
@@ -2565,7 +2858,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Int16, 
             0, 
             false),
-            new("pulse_shape_rise",
+            new(14,
+            "pulse_shape_rise",
             "Pulse shape: rise time (\u22643 \u03BCs)",
             string.Empty, 
             @"ns", 
@@ -2574,7 +2868,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("pulse_shape_duration",
+            new(15,
+            "pulse_shape_duration",
             "Pulse shape: rise time (3.5 \u03BCs, \u00B10.5 \u03BCs)",
             string.Empty, 
             @"ns", 
@@ -2583,7 +2878,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("pulse_shape_decay",
+            new(16,
+            "pulse_shape_decay",
             "Pulse shape: rise time (\u22643.5 \u03BCs)",
             string.Empty, 
             @"ns", 
@@ -2592,7 +2888,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("pulse_spacing",
+            new(17,
+            "pulse_spacing",
             "Pulse spacing (X channel 12 \u00B10.25 us, Y channel: 30 \u00B10.25 us)",
             string.Empty, 
             @"ns", 
@@ -2601,7 +2898,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("req_freq",
+            new(18,
+            "req_freq",
             "Number of our request",
             string.Empty, 
             @"pps", 
@@ -2610,7 +2908,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("hip_freq",
+            new(19,
+            "hip_freq",
             "Measured number of all replies, that was recognised as beacon HIP",
             string.Empty, 
             @"pps", 
@@ -2619,7 +2918,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("measure_time",
+            new(20,
+            "measure_time",
             "Measure time.",
             string.Empty, 
             @"ms", 
@@ -2628,7 +2928,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Int16, 
             0, 
             false),
-            new("pulse_shape_amplitude",
+            new(21,
+            "pulse_shape_amplitude",
             "Pulse shape: amplitude (between 95% rise/fall amplitudes, \u226595% of maximum amplitude)",
             string.Empty, 
             @"%", 
@@ -2637,7 +2938,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Int8, 
             0, 
             false),
-            new("code_id",
+            new(22,
+            "code_id",
             "Code identification",
             string.Empty, 
             @"Letters", 
@@ -2674,6 +2976,62 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.TxFreq);
+            writer.Write(StaticFields[3], Payload.RxFreq);
+            writer.Write(StaticFields[4], Payload.Index);
+            writer.Write(StaticFields[5], Payload.TxPower);
+            writer.Write(StaticFields[6], Payload.TxGain);
+            writer.Write(StaticFields[7], Payload.RxPower);
+            writer.Write(StaticFields[8], Payload.RxFieldStrength);
+            writer.Write(StaticFields[9], Payload.RxSignalOverflow);
+            writer.Write(StaticFields[10], Payload.RxGain);
+            writer.Write(StaticFields[11], Payload.Distance);
+            writer.Write(StaticFields[12], Payload.ReplyEfficiency);
+            writer.Write(StaticFields[13], Payload.RxFreqOffset);
+            writer.Write(StaticFields[14], Payload.PulseShapeRise);
+            writer.Write(StaticFields[15], Payload.PulseShapeDuration);
+            writer.Write(StaticFields[16], Payload.PulseShapeDecay);
+            writer.Write(StaticFields[17], Payload.PulseSpacing);
+            writer.Write(StaticFields[18], Payload.ReqFreq);
+            writer.Write(StaticFields[19], Payload.HipFreq);
+            writer.Write(StaticFields[20], Payload.MeasureTime);
+            writer.Write(StaticFields[21], Payload.PulseShapeAmplitude);
+            writer.Write(StaticFields[22], Payload.CodeId);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.TxFreq = reader.ReadULong(StaticFields[2]);
+            Payload.RxFreq = reader.ReadULong(StaticFields[3]);
+            Payload.Index = reader.ReadUInt(StaticFields[4]);
+            Payload.TxPower = reader.ReadFloat(StaticFields[5]);
+            Payload.TxGain = reader.ReadFloat(StaticFields[6]);
+            Payload.RxPower = reader.ReadFloat(StaticFields[7]);
+            Payload.RxFieldStrength = reader.ReadFloat(StaticFields[8]);
+            Payload.RxSignalOverflow = reader.ReadFloat(StaticFields[9]);
+            Payload.RxGain = reader.ReadFloat(StaticFields[10]);
+            Payload.Distance = reader.ReadFloat(StaticFields[11]);
+            Payload.ReplyEfficiency = reader.ReadFloat(StaticFields[12]);
+            Payload.RxFreqOffset = reader.ReadShort(StaticFields[13]);
+            Payload.PulseShapeRise = reader.ReadUShort(StaticFields[14]);
+            Payload.PulseShapeDuration = reader.ReadUShort(StaticFields[15]);
+            Payload.PulseShapeDecay = reader.ReadUShort(StaticFields[16]);
+            Payload.PulseSpacing = reader.ReadUShort(StaticFields[17]);
+            Payload.ReqFreq = reader.ReadUShort(StaticFields[18]);
+            Payload.HipFreq = reader.ReadUShort(StaticFields[19]);
+            Payload.MeasureTime = reader.ReadShort(StaticFields[20]);
+            Payload.PulseShapeAmplitude = reader.ReadSByte(StaticFields[21]);
+            reader.ReadCharArray(StaticFields[22], Payload.CodeId);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2685,34 +3043,34 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 89; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 89; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=8; //TxFreq
-            sum+=8; //RxFreq
-            sum+=4; //Index
-            sum+=4; //TxPower
-            sum+=4; //TxGain
-            sum+=4; //RxPower
-            sum+=4; //RxFieldStrength
-            sum+=4; //RxSignalOverflow
-            sum+=4; //RxGain
-            sum+=4; //Distance
-            sum+=4; //ReplyEfficiency
-            sum+=2; //RxFreqOffset
-            sum+=2; //PulseShapeRise
-            sum+=2; //PulseShapeDuration
-            sum+=2; //PulseShapeDecay
-            sum+=2; //PulseSpacing
-            sum+=2; //ReqFreq
-            sum+=2; //HipFreq
-            sum+=2; //MeasureTime
-            sum+=1; //PulseShapeAmplitude
-            sum+=CodeId.Length; //CodeId
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +8 // uint64_t tx_freq
+            +8 // uint64_t rx_freq
+            +4 // uint32_t index
+            +4 // float tx_power
+            +4 // float tx_gain
+            +4 // float rx_power
+            +4 // float rx_field_strength
+            +4 // float rx_signal_overflow
+            +4 // float rx_gain
+            +4 // float distance
+            +4 // float reply_efficiency
+            +2 // int16_t rx_freq_offset
+            +2 // uint16_t pulse_shape_rise
+            +2 // uint16_t pulse_shape_duration
+            +2 // uint16_t pulse_shape_decay
+            +2 // uint16_t pulse_spacing
+            +2 // uint16_t req_freq
+            +2 // uint16_t hip_freq
+            +2 // int16_t measure_time
+            +1 // int8_t pulse_shape_amplitude
+            +CodeId.Length // char[4] code_id
+            );
         }
 
 
@@ -2943,7 +3301,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -2952,7 +3311,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -2961,7 +3321,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -2978,6 +3339,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2989,14 +3366,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -3062,7 +3439,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -3071,7 +3449,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -3080,7 +3459,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -3097,6 +3477,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3108,14 +3504,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -3181,7 +3577,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -3190,7 +3587,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -3199,7 +3597,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -3216,6 +3615,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3227,14 +3642,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -3300,7 +3715,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -3309,7 +3725,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -3318,7 +3735,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -3335,6 +3753,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3346,14 +3780,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -3419,7 +3853,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -3428,7 +3863,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -3437,7 +3873,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -3454,6 +3891,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3465,14 +3918,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -3538,7 +3991,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -3547,7 +4001,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -3556,7 +4011,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("tx_freq",
+            new(2,
+            "tx_freq",
             "TX frequency",
             string.Empty, 
             @"Hz", 
@@ -3565,7 +4021,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("rx_freq",
+            new(3,
+            "rx_freq",
             "RX frequency",
             string.Empty, 
             @"Hz", 
@@ -3574,7 +4031,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(4,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -3583,7 +4041,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("tx_power",
+            new(5,
+            "tx_power",
             "Output power",
             string.Empty, 
             @"dBm", 
@@ -3592,7 +4051,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("tx_gain",
+            new(6,
+            "tx_gain",
             "Percent of total TX gain level (0.0 - 1.0)",
             string.Empty, 
             @"%", 
@@ -3601,7 +4061,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rx_power",
+            new(7,
+            "rx_power",
             "Receive power (peak)",
             string.Empty, 
             @"dBm", 
@@ -3610,7 +4071,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rx_field_strength",
+            new(8,
+            "rx_field_strength",
             "Receive power field strength.",
             string.Empty, 
             @"uV/m", 
@@ -3619,7 +4081,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rx_signal_overflow",
+            new(9,
+            "rx_signal_overflow",
             "Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).",
             string.Empty, 
             @"%", 
@@ -3628,7 +4091,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rx_gain",
+            new(10,
+            "rx_gain",
             "Percent of total RX gain level (0.0 - 1.0)",
             string.Empty, 
             @"%", 
@@ -3637,7 +4101,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Float32, 
             0, 
             false),
-            new("icao_address",
+            new(11,
+            "icao_address",
             "Vehicle ICAO address (24 bit)",
             string.Empty, 
             string.Empty, 
@@ -3646,7 +4111,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("uf_counter_flag",
+            new(12,
+            "uf_counter_flag",
             "UF counters present flag ",
             string.Empty, 
             string.Empty, 
@@ -3655,7 +4121,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("df_counter_present",
+            new(13,
+            "df_counter_present",
             "UF counters present ",
             string.Empty, 
             string.Empty, 
@@ -3664,7 +4131,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("rx_freq_offset",
+            new(14,
+            "rx_freq_offset",
             "RX frequency offset",
             string.Empty, 
             @"Hz", 
@@ -3673,7 +4141,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Int16, 
             0, 
             false),
-            new("ref_id",
+            new(15,
+            "ref_id",
             "GNSS reference station ID (used when GNSS is received from multiple sources).",
             string.Empty, 
             string.Empty, 
@@ -3682,7 +4151,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("squawk",
+            new(16,
+            "squawk",
             "Mode A code (typically 1200 [0x04B0] for VFR)",
             string.Empty, 
             string.Empty, 
@@ -3691,7 +4161,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("call_sign",
+            new(17,
+            "call_sign",
             "Vehicle identifier (8 characters, valid characters are A-Z, 0-9, \" \" only)",
             string.Empty, 
             string.Empty, 
@@ -3700,7 +4171,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Char, 
             8, 
             false),
-            new("uf_counter",
+            new(18,
+            "uf_counter",
             "UF incremental counters for every 25 message ",
             string.Empty, 
             string.Empty, 
@@ -3709,7 +4181,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint8, 
             25, 
             false),
-            new("df_counter",
+            new(19,
+            "df_counter",
             "DF incremental counters for every 25 message ",
             string.Empty, 
             string.Empty, 
@@ -3743,6 +4216,56 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.TxFreq);
+            writer.Write(StaticFields[3], Payload.RxFreq);
+            writer.Write(StaticFields[4], Payload.Index);
+            writer.Write(StaticFields[5], Payload.TxPower);
+            writer.Write(StaticFields[6], Payload.TxGain);
+            writer.Write(StaticFields[7], Payload.RxPower);
+            writer.Write(StaticFields[8], Payload.RxFieldStrength);
+            writer.Write(StaticFields[9], Payload.RxSignalOverflow);
+            writer.Write(StaticFields[10], Payload.RxGain);
+            writer.Write(StaticFields[11], Payload.IcaoAddress);
+            writer.Write(StaticFields[12], Payload.UfCounterFlag);
+            writer.Write(StaticFields[13], Payload.DfCounterPresent);
+            writer.Write(StaticFields[14], Payload.RxFreqOffset);
+            writer.Write(StaticFields[15], Payload.RefId);
+            writer.Write(StaticFields[16], Payload.Squawk);
+            writer.Write(StaticFields[17], Payload.CallSign);
+            writer.Write(StaticFields[18], Payload.UfCounter);
+            writer.Write(StaticFields[19], Payload.DfCounter);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.TxFreq = reader.ReadULong(StaticFields[2]);
+            Payload.RxFreq = reader.ReadULong(StaticFields[3]);
+            Payload.Index = reader.ReadUInt(StaticFields[4]);
+            Payload.TxPower = reader.ReadFloat(StaticFields[5]);
+            Payload.TxGain = reader.ReadFloat(StaticFields[6]);
+            Payload.RxPower = reader.ReadFloat(StaticFields[7]);
+            Payload.RxFieldStrength = reader.ReadFloat(StaticFields[8]);
+            Payload.RxSignalOverflow = reader.ReadFloat(StaticFields[9]);
+            Payload.RxGain = reader.ReadFloat(StaticFields[10]);
+            Payload.IcaoAddress = reader.ReadUInt(StaticFields[11]);
+            Payload.UfCounterFlag = (AsvRsgaRttAdsbMsgUf)reader.ReadEnum(StaticFields[12]);
+            Payload.DfCounterPresent = (AsvRsgaRttAdsbMsgDf)reader.ReadEnum(StaticFields[13]);
+            Payload.RxFreqOffset = reader.ReadShort(StaticFields[14]);
+            Payload.RefId = reader.ReadUShort(StaticFields[15]);
+            Payload.Squawk = reader.ReadUShort(StaticFields[16]);
+            reader.ReadCharArray(StaticFields[17], Payload.CallSign);
+            reader.ReadByteArray(StaticFields[18], Payload.UfCounter);
+            reader.ReadByteArray(StaticFields[19], Payload.DfCounter);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3754,31 +4277,31 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 136; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 136; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=8; //TxFreq
-            sum+=8; //RxFreq
-            sum+=4; //Index
-            sum+=4; //TxPower
-            sum+=4; //TxGain
-            sum+=4; //RxPower
-            sum+=4; //RxFieldStrength
-            sum+=4; //RxSignalOverflow
-            sum+=4; //RxGain
-            sum+=4; //IcaoAddress
-            sum+= 4; // UfCounterFlag
-            sum+= 4; // DfCounterPresent
-            sum+=2; //RxFreqOffset
-            sum+=2; //RefId
-            sum+=2; //Squawk
-            sum+=CallSign.Length; //CallSign
-            sum+=UfCounter.Length; //UfCounter
-            sum+=DfCounter.Length; //DfCounter
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +8 // uint64_t tx_freq
+            +8 // uint64_t rx_freq
+            +4 // uint32_t index
+            +4 // float tx_power
+            +4 // float tx_gain
+            +4 // float rx_power
+            +4 // float rx_field_strength
+            +4 // float rx_signal_overflow
+            +4 // float rx_gain
+            +4 // uint32_t icao_address
+            + 4 // uint32_t uf_counter_flag
+            + 4 // uint32_t df_counter_present
+            +2 // int16_t rx_freq_offset
+            +2 // uint16_t ref_id
+            +2 // uint16_t squawk
+            +CallSign.Length // char[8] call_sign
+            +UfCounter.Length // uint8_t[25] uf_counter
+            +DfCounter.Length // uint8_t[25] df_counter
+            );
         }
 
 
@@ -4004,7 +4527,8 @@ namespace Asv.Mavlink.AsvRsga
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -4013,7 +4537,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Data flags.",
             string.Empty, 
             string.Empty, 
@@ -4022,7 +4547,8 @@ namespace Asv.Mavlink.AsvRsga
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("index",
+            new(2,
+            "index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -4039,6 +4565,22 @@ namespace Asv.Mavlink.AsvRsga
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Index);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Index = reader.ReadUInt(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -4050,14 +4592,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 

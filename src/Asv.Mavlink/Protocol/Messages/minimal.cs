@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -1249,7 +1249,8 @@ namespace Asv.Mavlink.Minimal
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("custom_mode",
+            new(0,
+            "custom_mode",
             "A bitfield for use for autopilot-specific flags",
             string.Empty, 
             string.Empty, 
@@ -1258,7 +1259,8 @@ namespace Asv.Mavlink.Minimal
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("type",
+            new(1,
+            "type",
             "Vehicle or component type. For a flight controller component the vehicle type (quadrotor, helicopter, etc.). For other components the component type (e.g. camera, gimbal, etc.). This should be used in preference to component id for identifying the component type.",
             string.Empty, 
             string.Empty, 
@@ -1267,7 +1269,8 @@ namespace Asv.Mavlink.Minimal
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("autopilot",
+            new(2,
+            "autopilot",
             "Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers.",
             string.Empty, 
             string.Empty, 
@@ -1276,7 +1279,8 @@ namespace Asv.Mavlink.Minimal
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("base_mode",
+            new(3,
+            "base_mode",
             "System mode bitmap.",
             string.Empty, 
             string.Empty, 
@@ -1285,7 +1289,8 @@ namespace Asv.Mavlink.Minimal
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("system_status",
+            new(4,
+            "system_status",
             "System status flag.",
             string.Empty, 
             string.Empty, 
@@ -1294,7 +1299,8 @@ namespace Asv.Mavlink.Minimal
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("mavlink_version",
+            new(5,
+            "mavlink_version",
             "MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version",
             string.Empty, 
             string.Empty, 
@@ -1314,6 +1320,28 @@ namespace Asv.Mavlink.Minimal
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.CustomMode);
+            writer.Write(StaticFields[1], Payload.Type);
+            writer.Write(StaticFields[2], Payload.Autopilot);
+            writer.Write(StaticFields[3], Payload.BaseMode);
+            writer.Write(StaticFields[4], Payload.SystemStatus);
+            writer.Write(StaticFields[5], Payload.MavlinkVersion);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.CustomMode = reader.ReadUInt(StaticFields[0]);
+            Payload.Type = (MavType)reader.ReadEnum(StaticFields[1]);
+            Payload.Autopilot = (MavAutopilot)reader.ReadEnum(StaticFields[2]);
+            Payload.BaseMode = (MavModeFlag)reader.ReadEnum(StaticFields[3]);
+            Payload.SystemStatus = (MavState)reader.ReadEnum(StaticFields[4]);
+            Payload.MavlinkVersion = reader.ReadByte(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1325,17 +1353,17 @@ namespace Asv.Mavlink.Minimal
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //CustomMode
-            sum+= 1; // Type
-            sum+= 1; // Autopilot
-            sum+= 1; // BaseMode
-            sum+= 1; // SystemStatus
-            sum+=1; //MavlinkVersion
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t custom_mode
+            + 1 // uint8_t type
+            + 1 // uint8_t autopilot
+            + 1 // uint8_t base_mode
+            + 1 // uint8_t system_status
+            +1 // uint8_t mavlink_version
+            );
         }
 
 
@@ -1422,7 +1450,8 @@ namespace Asv.Mavlink.Minimal
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("version",
+            new(0,
+            "version",
             "Currently active MAVLink version number * 100: v1.0 is 100, v2.0 is 200, etc.",
             string.Empty, 
             string.Empty, 
@@ -1431,7 +1460,8 @@ namespace Asv.Mavlink.Minimal
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("min_version",
+            new(1,
+            "min_version",
             "Minimum MAVLink version supported",
             string.Empty, 
             string.Empty, 
@@ -1440,7 +1470,8 @@ namespace Asv.Mavlink.Minimal
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("max_version",
+            new(2,
+            "max_version",
             "Maximum MAVLink version supported (set to the same value as version by default)",
             string.Empty, 
             string.Empty, 
@@ -1449,7 +1480,8 @@ namespace Asv.Mavlink.Minimal
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("spec_version_hash",
+            new(3,
+            "spec_version_hash",
             "The first 8 bytes (not characters printed in hex!) of the git hash.",
             string.Empty, 
             string.Empty, 
@@ -1458,7 +1490,8 @@ namespace Asv.Mavlink.Minimal
             MessageFieldType.Uint8, 
             8, 
             false),
-            new("library_version_hash",
+            new(4,
+            "library_version_hash",
             "The first 8 bytes (not characters printed in hex!) of the git hash.",
             string.Empty, 
             string.Empty, 
@@ -1477,6 +1510,26 @@ namespace Asv.Mavlink.Minimal
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Version);
+            writer.Write(StaticFields[1], Payload.MinVersion);
+            writer.Write(StaticFields[2], Payload.MaxVersion);
+            writer.Write(StaticFields[3], Payload.SpecVersionHash);
+            writer.Write(StaticFields[4], Payload.LibraryVersionHash);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Version = reader.ReadUShort(StaticFields[0]);
+            Payload.MinVersion = reader.ReadUShort(StaticFields[1]);
+            Payload.MaxVersion = reader.ReadUShort(StaticFields[2]);
+            reader.ReadByteArray(StaticFields[3], Payload.SpecVersionHash);
+            reader.ReadByteArray(StaticFields[4], Payload.LibraryVersionHash);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1488,16 +1541,16 @@ namespace Asv.Mavlink.Minimal
         public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Version
-            sum+=2; //MinVersion
-            sum+=2; //MaxVersion
-            sum+=SpecVersionHash.Length; //SpecVersionHash
-            sum+=LibraryVersionHash.Length; //LibraryVersionHash
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t version
+            +2 // uint16_t min_version
+            +2 // uint16_t max_version
+            +SpecVersionHash.Length // uint8_t[8] spec_version_hash
+            +LibraryVersionHash.Length // uint8_t[8] library_version_hash
+            );
         }
 
 

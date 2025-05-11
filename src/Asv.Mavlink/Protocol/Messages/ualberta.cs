@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -154,7 +154,8 @@ namespace Asv.Mavlink.Ualberta
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("usec",
+            new(0,
+            "usec",
             "Timestamp (microseconds)",
             string.Empty, 
             string.Empty, 
@@ -163,7 +164,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("accel_0",
+            new(1,
+            "accel_0",
             "b_f[0]",
             string.Empty, 
             string.Empty, 
@@ -172,7 +174,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Float32, 
             0, 
             false),
-            new("accel_1",
+            new(2,
+            "accel_1",
             "b_f[1]",
             string.Empty, 
             string.Empty, 
@@ -181,7 +184,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Float32, 
             0, 
             false),
-            new("accel_2",
+            new(3,
+            "accel_2",
             "b_f[2]",
             string.Empty, 
             string.Empty, 
@@ -190,7 +194,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Float32, 
             0, 
             false),
-            new("gyro_0",
+            new(4,
+            "gyro_0",
             "b_f[0]",
             string.Empty, 
             string.Empty, 
@@ -199,7 +204,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Float32, 
             0, 
             false),
-            new("gyro_1",
+            new(5,
+            "gyro_1",
             "b_f[1]",
             string.Empty, 
             string.Empty, 
@@ -208,7 +214,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Float32, 
             0, 
             false),
-            new("gyro_2",
+            new(6,
+            "gyro_2",
             "b_f[2]",
             string.Empty, 
             string.Empty, 
@@ -229,6 +236,30 @@ namespace Asv.Mavlink.Ualberta
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Usec);
+            writer.Write(StaticFields[1], Payload.Accel0);
+            writer.Write(StaticFields[2], Payload.Accel1);
+            writer.Write(StaticFields[3], Payload.Accel2);
+            writer.Write(StaticFields[4], Payload.Gyro0);
+            writer.Write(StaticFields[5], Payload.Gyro1);
+            writer.Write(StaticFields[6], Payload.Gyro2);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Usec = reader.ReadULong(StaticFields[0]);
+            Payload.Accel0 = reader.ReadFloat(StaticFields[1]);
+            Payload.Accel1 = reader.ReadFloat(StaticFields[2]);
+            Payload.Accel2 = reader.ReadFloat(StaticFields[3]);
+            Payload.Gyro0 = reader.ReadFloat(StaticFields[4]);
+            Payload.Gyro1 = reader.ReadFloat(StaticFields[5]);
+            Payload.Gyro2 = reader.ReadFloat(StaticFields[6]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -240,18 +271,18 @@ namespace Asv.Mavlink.Ualberta
         public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //Usec
-            sum+=4; //Accel0
-            sum+=4; //Accel1
-            sum+=4; //Accel2
-            sum+=4; //Gyro0
-            sum+=4; //Gyro1
-            sum+=4; //Gyro2
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t usec
+            +4 // float accel_0
+            +4 // float accel_1
+            +4 // float accel_2
+            +4 // float gyro_0
+            +4 // float gyro_1
+            +4 // float gyro_2
+            );
         }
 
 
@@ -345,7 +376,8 @@ namespace Asv.Mavlink.Ualberta
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("aileron",
+            new(0,
+            "aileron",
             "Aileron setpoints: left, center, right",
             string.Empty, 
             string.Empty, 
@@ -354,7 +386,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Uint16, 
             3, 
             false),
-            new("elevator",
+            new(1,
+            "elevator",
             "Elevator setpoints: nose down, center, nose up",
             string.Empty, 
             string.Empty, 
@@ -363,7 +396,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Uint16, 
             3, 
             false),
-            new("rudder",
+            new(2,
+            "rudder",
             "Rudder setpoints: nose left, center, nose right",
             string.Empty, 
             string.Empty, 
@@ -372,7 +406,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Uint16, 
             3, 
             false),
-            new("gyro",
+            new(3,
+            "gyro",
             "Tail gyro mode/gain setpoints: heading hold, rate mode",
             string.Empty, 
             string.Empty, 
@@ -381,7 +416,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Uint16, 
             2, 
             false),
-            new("pitch",
+            new(4,
+            "pitch",
             "Pitch curve setpoints (every 25%)",
             string.Empty, 
             string.Empty, 
@@ -390,7 +426,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Uint16, 
             5, 
             false),
-            new("throttle",
+            new(5,
+            "throttle",
             "Throttle curve setpoints (every 25%)",
             string.Empty, 
             string.Empty, 
@@ -410,6 +447,28 @@ namespace Asv.Mavlink.Ualberta
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Aileron);
+            writer.Write(StaticFields[1], Payload.Elevator);
+            writer.Write(StaticFields[2], Payload.Rudder);
+            writer.Write(StaticFields[3], Payload.Gyro);
+            writer.Write(StaticFields[4], Payload.Pitch);
+            writer.Write(StaticFields[5], Payload.Throttle);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadUShortArray(StaticFields[0], Payload.Aileron);
+            reader.ReadUShortArray(StaticFields[1], Payload.Elevator);
+            reader.ReadUShortArray(StaticFields[2], Payload.Rudder);
+            reader.ReadUShortArray(StaticFields[3], Payload.Gyro);
+            reader.ReadUShortArray(StaticFields[4], Payload.Pitch);
+            reader.ReadUShortArray(StaticFields[5], Payload.Throttle);
+        
+            
+        }
     }
 
     /// <summary>
@@ -421,17 +480,17 @@ namespace Asv.Mavlink.Ualberta
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=Aileron.Length * 2; //Aileron
-            sum+=Elevator.Length * 2; //Elevator
-            sum+=Rudder.Length * 2; //Rudder
-            sum+=Gyro.Length * 2; //Gyro
-            sum+=Pitch.Length * 2; //Pitch
-            sum+=Throttle.Length * 2; //Throttle
-            return (byte)sum;
+            return (byte)(
+            +Aileron.Length * 2 // uint16_t[3] aileron
+            +Elevator.Length * 2 // uint16_t[3] elevator
+            +Rudder.Length * 2 // uint16_t[3] rudder
+            +Gyro.Length * 2 // uint16_t[2] gyro
+            +Pitch.Length * 2 // uint16_t[5] pitch
+            +Throttle.Length * 2 // uint16_t[5] throttle
+            );
         }
 
 
@@ -571,7 +630,8 @@ namespace Asv.Mavlink.Ualberta
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("mode",
+            new(0,
+            "mode",
             "System mode, see UALBERTA_AUTOPILOT_MODE ENUM",
             string.Empty, 
             string.Empty, 
@@ -580,7 +640,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("nav_mode",
+            new(1,
+            "nav_mode",
             "Navigation mode, see UALBERTA_NAV_MODE ENUM",
             string.Empty, 
             string.Empty, 
@@ -589,7 +650,8 @@ namespace Asv.Mavlink.Ualberta
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("pilot",
+            new(2,
+            "pilot",
             "Pilot mode, see UALBERTA_PILOT_MODE",
             string.Empty, 
             string.Empty, 
@@ -606,6 +668,22 @@ namespace Asv.Mavlink.Ualberta
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Mode);
+            writer.Write(StaticFields[1], Payload.NavMode);
+            writer.Write(StaticFields[2], Payload.Pilot);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Mode = reader.ReadByte(StaticFields[0]);
+            Payload.NavMode = reader.ReadByte(StaticFields[1]);
+            Payload.Pilot = reader.ReadByte(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -617,14 +695,14 @@ namespace Asv.Mavlink.Ualberta
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //Mode
-            sum+=1; //NavMode
-            sum+=1; //Pilot
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t mode
+            +1 // uint8_t nav_mode
+            +1 // uint8_t pilot
+            );
         }
 
 

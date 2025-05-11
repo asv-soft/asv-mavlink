@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -200,7 +200,8 @@ namespace Asv.Mavlink.AsvChart
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies a unique number for this request. This allows the response packet to be identified.",
             string.Empty, 
             string.Empty, 
@@ -209,7 +210,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("skip",
+            new(1,
+            "skip",
             "Specifies the start index of the records to be sent in the response.",
             string.Empty, 
             string.Empty, 
@@ -218,7 +220,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("count",
+            new(2,
+            "count",
             "Specifies the number of records to be sent in the response after the skip index.",
             string.Empty, 
             string.Empty, 
@@ -227,7 +230,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -236,7 +240,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -255,6 +260,26 @@ namespace Asv.Mavlink.AsvChart
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.Skip);
+            writer.Write(StaticFields[2], Payload.Count);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.Skip = reader.ReadUShort(StaticFields[1]);
+            Payload.Count = reader.ReadUShort(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -266,16 +291,16 @@ namespace Asv.Mavlink.AsvChart
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=2; //Skip
-            sum+=2; //Count
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +2 // uint16_t skip
+            +2 // uint16_t count
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -355,7 +380,8 @@ namespace Asv.Mavlink.AsvChart
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -364,7 +390,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("items_count",
+            new(1,
+            "items_count",
             "Number of ASV_CHART_INFO items to be transmitted after this response with a success result code (dependent on the request).",
             string.Empty, 
             string.Empty, 
@@ -373,7 +400,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("chat_list_hash",
+            new(2,
+            "chat_list_hash",
             "Hash of the all ASV_CHART_INFO.",
             string.Empty, 
             string.Empty, 
@@ -382,7 +410,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("result",
+            new(3,
+            "result",
             "Result code.",
             string.Empty, 
             string.Empty, 
@@ -400,6 +429,24 @@ namespace Asv.Mavlink.AsvChart
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.ItemsCount);
+            writer.Write(StaticFields[2], Payload.ChatListHash);
+            writer.Write(StaticFields[3], Payload.Result);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.ItemsCount = reader.ReadUShort(StaticFields[1]);
+            Payload.ChatListHash = reader.ReadUShort(StaticFields[2]);
+            Payload.Result = (AsvChartRequestAck)reader.ReadEnum(StaticFields[3]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -411,15 +458,15 @@ namespace Asv.Mavlink.AsvChart
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=2; //ItemsCount
-            sum+=2; //ChatListHash
-            sum+= 1; // Result
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +2 // uint16_t items_count
+            +2 // uint16_t chat_list_hash
+            + 1 // uint8_t result
+            );
         }
 
 
@@ -492,7 +539,8 @@ namespace Asv.Mavlink.AsvChart
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("chart_count",
+            new(0,
+            "chart_count",
             "Number of ASV_CHART_INFO items to be transmitted after this response with a success result code (dependent on the request).",
             string.Empty, 
             string.Empty, 
@@ -501,7 +549,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("chat_list_hash",
+            new(1,
+            "chat_list_hash",
             "Hash of the all ASV_CHART_INFO.",
             string.Empty, 
             string.Empty, 
@@ -517,6 +566,20 @@ namespace Asv.Mavlink.AsvChart
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.ChartCount);
+            writer.Write(StaticFields[1], Payload.ChatListHash);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.ChartCount = reader.ReadUShort(StaticFields[0]);
+            Payload.ChatListHash = reader.ReadUShort(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -528,13 +591,13 @@ namespace Asv.Mavlink.AsvChart
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //ChartCount
-            sum+=2; //ChatListHash
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t chart_count
+            +2 // uint16_t chat_list_hash
+            );
         }
 
 
@@ -593,7 +656,8 @@ namespace Asv.Mavlink.AsvChart
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("axes_x_min",
+            new(0,
+            "axes_x_min",
             "Minimum value of Axis X.",
             string.Empty, 
             string.Empty, 
@@ -602,7 +666,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Float32, 
             0, 
             false),
-            new("axes_x_max",
+            new(1,
+            "axes_x_max",
             "Maximum value of Axis X.",
             string.Empty, 
             string.Empty, 
@@ -611,7 +676,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Float32, 
             0, 
             false),
-            new("axes_y_min",
+            new(2,
+            "axes_y_min",
             "Minimum value of Axis Y.",
             string.Empty, 
             string.Empty, 
@@ -620,7 +686,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Float32, 
             0, 
             false),
-            new("axes_y_max",
+            new(3,
+            "axes_y_max",
             "Maximum value of Axis Y.",
             string.Empty, 
             string.Empty, 
@@ -629,7 +696,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Float32, 
             0, 
             false),
-            new("chart_id",
+            new(4,
+            "chart_id",
             "Chart ID.",
             string.Empty, 
             string.Empty, 
@@ -638,7 +706,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("chart_info_hash",
+            new(5,
+            "chart_info_hash",
             "Hash of the chart info.",
             string.Empty, 
             string.Empty, 
@@ -647,7 +716,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("axes_x_unit",
+            new(6,
+            "axes_x_unit",
             "Axis X unit.",
             string.Empty, 
             string.Empty, 
@@ -656,7 +726,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("axes_x_count",
+            new(7,
+            "axes_x_count",
             "Total measure points for Axis X. Dependent on chart type (1 measure for simple plot signal, more for heatmap signal).",
             string.Empty, 
             string.Empty, 
@@ -665,7 +736,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("axes_y_unit",
+            new(8,
+            "axes_y_unit",
             "Axis Y unit.",
             string.Empty, 
             string.Empty, 
@@ -674,7 +746,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("axes_y_count",
+            new(9,
+            "axes_y_count",
             "Total measure points for Axis Y.",
             string.Empty, 
             string.Empty, 
@@ -683,7 +756,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("chart_name",
+            new(10,
+            "chart_name",
             "Chart name, terminated by NULL if the length is less than 16 human-readable chars, and WITHOUT null termination (NULL) byte if the length is exactly 16 chars. Applications have to provide 8+1 bytes storage if the ID is stored as a string.",
             string.Empty, 
             string.Empty, 
@@ -692,7 +766,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Char, 
             16, 
             false),
-            new("chart_type",
+            new(11,
+            "chart_type",
             "Type of chart.",
             string.Empty, 
             string.Empty, 
@@ -701,7 +776,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("axes_x_name",
+            new(12,
+            "axes_x_name",
             "Axis X name, terminated by NULL if the length is less than 16 human-readable chars, and WITHOUT null termination (NULL) byte if the length is exactly 16 chars. Applications have to provide 8+1 bytes storage if the ID is stored as a string.",
             string.Empty, 
             string.Empty, 
@@ -710,7 +786,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Char, 
             16, 
             false),
-            new("axes_y_name",
+            new(13,
+            "axes_y_name",
             "Axis Y name, terminated by NULL if the length is less than 16 human-readable chars, and WITHOUT null termination (NULL) byte if the length is exactly 16 chars. Applications have to provide 8+1 bytes storage if the ID is stored as a string.",
             string.Empty, 
             string.Empty, 
@@ -719,7 +796,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Char, 
             16, 
             false),
-            new("format",
+            new(14,
+            "format",
             "Format of one measure.",
             string.Empty, 
             string.Empty, 
@@ -748,6 +826,46 @@ namespace Asv.Mavlink.AsvChart
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.AxesXMin);
+            writer.Write(StaticFields[1], Payload.AxesXMax);
+            writer.Write(StaticFields[2], Payload.AxesYMin);
+            writer.Write(StaticFields[3], Payload.AxesYMax);
+            writer.Write(StaticFields[4], Payload.ChartId);
+            writer.Write(StaticFields[5], Payload.ChartInfoHash);
+            writer.Write(StaticFields[6], Payload.AxesXUnit);
+            writer.Write(StaticFields[7], Payload.AxesXCount);
+            writer.Write(StaticFields[8], Payload.AxesYUnit);
+            writer.Write(StaticFields[9], Payload.AxesYCount);
+            writer.Write(StaticFields[10], Payload.ChartName);
+            writer.Write(StaticFields[11], Payload.ChartType);
+            writer.Write(StaticFields[12], Payload.AxesXName);
+            writer.Write(StaticFields[13], Payload.AxesYName);
+            writer.Write(StaticFields[14], Payload.Format);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.AxesXMin = reader.ReadFloat(StaticFields[0]);
+            Payload.AxesXMax = reader.ReadFloat(StaticFields[1]);
+            Payload.AxesYMin = reader.ReadFloat(StaticFields[2]);
+            Payload.AxesYMax = reader.ReadFloat(StaticFields[3]);
+            Payload.ChartId = reader.ReadUShort(StaticFields[4]);
+            Payload.ChartInfoHash = reader.ReadUShort(StaticFields[5]);
+            Payload.AxesXUnit = (AsvChartUnitType)reader.ReadEnum(StaticFields[6]);
+            Payload.AxesXCount = reader.ReadUShort(StaticFields[7]);
+            Payload.AxesYUnit = (AsvChartUnitType)reader.ReadEnum(StaticFields[8]);
+            Payload.AxesYCount = reader.ReadUShort(StaticFields[9]);
+            reader.ReadCharArray(StaticFields[10], Payload.ChartName);
+            Payload.ChartType = (AsvChartType)reader.ReadEnum(StaticFields[11]);
+            reader.ReadCharArray(StaticFields[12], Payload.AxesXName);
+            reader.ReadCharArray(StaticFields[13], Payload.AxesYName);
+            Payload.Format = (AsvChartDataFormat)reader.ReadEnum(StaticFields[14]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -759,26 +877,26 @@ namespace Asv.Mavlink.AsvChart
         public byte GetMaxByteSize() => 78; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 78; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //AxesXMin
-            sum+=4; //AxesXMax
-            sum+=4; //AxesYMin
-            sum+=4; //AxesYMax
-            sum+=2; //ChartId
-            sum+=2; //ChartInfoHash
-            sum+= 2; // AxesXUnit
-            sum+=2; //AxesXCount
-            sum+= 2; // AxesYUnit
-            sum+=2; //AxesYCount
-            sum+=ChartName.Length; //ChartName
-            sum+= 1; // ChartType
-            sum+=AxesXName.Length; //AxesXName
-            sum+=AxesYName.Length; //AxesYName
-            sum+= 1; // Format
-            return (byte)sum;
+            return (byte)(
+            +4 // float axes_x_min
+            +4 // float axes_x_max
+            +4 // float axes_y_min
+            +4 // float axes_y_max
+            +2 // uint16_t chart_id
+            +2 // uint16_t chart_info_hash
+            + 2 // uint16_t axes_x_unit
+            +2 // uint16_t axes_x_count
+            + 2 // uint16_t axes_y_unit
+            +2 // uint16_t axes_y_count
+            +ChartName.Length // char[16] chart_name
+            + 1 // uint8_t chart_type
+            +AxesXName.Length // char[16] axes_x_name
+            +AxesYName.Length // char[16] axes_y_name
+            + 1 // uint8_t format
+            );
         }
 
 
@@ -993,7 +1111,8 @@ namespace Asv.Mavlink.AsvChart
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("data_rate",
+            new(0,
+            "data_rate",
             "The requested message rate (delay in ms)",
             string.Empty, 
             @"Ms", 
@@ -1002,7 +1121,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Float32, 
             0, 
             false),
-            new("chat_id",
+            new(1,
+            "chat_id",
             "The ID of the requested chart",
             string.Empty, 
             string.Empty, 
@@ -1011,7 +1131,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("chat_info_hash",
+            new(2,
+            "chat_info_hash",
             "Hash of the chart ASV_CHART_INFO to ensure that all settings are synchronized.",
             string.Empty, 
             string.Empty, 
@@ -1020,7 +1141,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID",
             string.Empty, 
             string.Empty, 
@@ -1029,7 +1151,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID",
             string.Empty, 
             string.Empty, 
@@ -1038,7 +1161,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data_trigger",
+            new(5,
+            "data_trigger",
             "Additional argument for stream request.",
             string.Empty, 
             string.Empty, 
@@ -1058,6 +1182,28 @@ namespace Asv.Mavlink.AsvChart
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.DataRate);
+            writer.Write(StaticFields[1], Payload.ChatId);
+            writer.Write(StaticFields[2], Payload.ChatInfoHash);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+            writer.Write(StaticFields[5], Payload.DataTrigger);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.DataRate = reader.ReadFloat(StaticFields[0]);
+            Payload.ChatId = reader.ReadUShort(StaticFields[1]);
+            Payload.ChatInfoHash = reader.ReadUShort(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+            Payload.DataTrigger = (AsvChartDataTrigger)reader.ReadEnum(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1069,17 +1215,17 @@ namespace Asv.Mavlink.AsvChart
         public byte GetMaxByteSize() => 11; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 11; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //DataRate
-            sum+=2; //ChatId
-            sum+=2; //ChatInfoHash
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // DataTrigger
-            return (byte)sum;
+            return (byte)(
+            +4 // float data_rate
+            +2 // uint16_t chat_id
+            +2 // uint16_t chat_info_hash
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t data_trigger
+            );
         }
 
 
@@ -1166,7 +1312,8 @@ namespace Asv.Mavlink.AsvChart
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("data_rate",
+            new(0,
+            "data_rate",
             "The requested message rate (delay in ms).",
             string.Empty, 
             @"Ms", 
@@ -1175,7 +1322,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Float32, 
             0, 
             false),
-            new("chat_id",
+            new(1,
+            "chat_id",
             "The ID of the requested chart",
             string.Empty, 
             string.Empty, 
@@ -1184,7 +1332,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("chat_info_hash",
+            new(2,
+            "chat_info_hash",
             "Hash of the chart ASV_CHART_INFO to ensure that all settings are synchronized.",
             string.Empty, 
             string.Empty, 
@@ -1193,7 +1342,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("result",
+            new(3,
+            "result",
             "Result code.",
             string.Empty, 
             string.Empty, 
@@ -1202,7 +1352,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data_trigger",
+            new(4,
+            "data_trigger",
             "Additional argument for stream request.",
             string.Empty, 
             string.Empty, 
@@ -1221,6 +1372,26 @@ namespace Asv.Mavlink.AsvChart
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.DataRate);
+            writer.Write(StaticFields[1], Payload.ChatId);
+            writer.Write(StaticFields[2], Payload.ChatInfoHash);
+            writer.Write(StaticFields[3], Payload.Result);
+            writer.Write(StaticFields[4], Payload.DataTrigger);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.DataRate = reader.ReadFloat(StaticFields[0]);
+            Payload.ChatId = reader.ReadUShort(StaticFields[1]);
+            Payload.ChatInfoHash = reader.ReadUShort(StaticFields[2]);
+            Payload.Result = (AsvChartRequestAck)reader.ReadEnum(StaticFields[3]);
+            Payload.DataTrigger = (AsvChartDataTrigger)reader.ReadEnum(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1232,16 +1403,16 @@ namespace Asv.Mavlink.AsvChart
         public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //DataRate
-            sum+=2; //ChatId
-            sum+=2; //ChatInfoHash
-            sum+= 1; // Result
-            sum+= 1; // DataTrigger
-            return (byte)sum;
+            return (byte)(
+            +4 // float data_rate
+            +2 // uint16_t chat_id
+            +2 // uint16_t chat_info_hash
+            + 1 // uint8_t result
+            + 1 // uint8_t data_trigger
+            );
         }
 
 
@@ -1321,7 +1492,8 @@ namespace Asv.Mavlink.AsvChart
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time) for current set of measures.",
             string.Empty, 
             @"us", 
@@ -1330,7 +1502,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("chat_id",
+            new(1,
+            "chat_id",
             "Chart id.",
             string.Empty, 
             string.Empty, 
@@ -1339,7 +1512,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("chat_info_hash",
+            new(2,
+            "chat_info_hash",
             "Hash of the chart ASV_CHART_INFO to ensure that all settings are synchronized.",
             string.Empty, 
             string.Empty, 
@@ -1348,7 +1522,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("pkt_in_frame",
+            new(3,
+            "pkt_in_frame",
             "Number of packets for one frame.",
             string.Empty, 
             string.Empty, 
@@ -1357,7 +1532,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("pkt_seq",
+            new(4,
+            "pkt_seq",
             "Packet sequence number (starting with 0 on every encoded frame).",
             string.Empty, 
             string.Empty, 
@@ -1366,7 +1542,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("data_size",
+            new(5,
+            "data_size",
             "Size of data array.",
             string.Empty, 
             string.Empty, 
@@ -1375,7 +1552,8 @@ namespace Asv.Mavlink.AsvChart
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data",
+            new(6,
+            "data",
             "Chart data.",
             string.Empty, 
             string.Empty, 
@@ -1396,6 +1574,30 @@ namespace Asv.Mavlink.AsvChart
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.ChatId);
+            writer.Write(StaticFields[2], Payload.ChatInfoHash);
+            writer.Write(StaticFields[3], Payload.PktInFrame);
+            writer.Write(StaticFields[4], Payload.PktSeq);
+            writer.Write(StaticFields[5], Payload.DataSize);
+            writer.Write(StaticFields[6], Payload.Data);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.ChatId = reader.ReadUShort(StaticFields[1]);
+            Payload.ChatInfoHash = reader.ReadUShort(StaticFields[2]);
+            Payload.PktInFrame = reader.ReadUShort(StaticFields[3]);
+            Payload.PktSeq = reader.ReadUShort(StaticFields[4]);
+            Payload.DataSize = reader.ReadByte(StaticFields[5]);
+            reader.ReadByteArray(StaticFields[6], Payload.Data);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1407,18 +1609,18 @@ namespace Asv.Mavlink.AsvChart
         public byte GetMaxByteSize() => 237; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 237; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+=2; //ChatId
-            sum+=2; //ChatInfoHash
-            sum+=2; //PktInFrame
-            sum+=2; //PktSeq
-            sum+=1; //DataSize
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            +2 // uint16_t chat_id
+            +2 // uint16_t chat_info_hash
+            +2 // uint16_t pkt_in_frame
+            +2 // uint16_t pkt_seq
+            +1 // uint8_t data_size
+            +Data.Length // uint8_t[220] data
+            );
         }
 
 

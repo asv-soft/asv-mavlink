@@ -5,6 +5,7 @@ namespace Asv.Mavlink;
 
 
 public readonly struct MavlinkFieldInfo(
+    int index,
     string name,
     string description,
     string printFormat,
@@ -15,6 +16,7 @@ public readonly struct MavlinkFieldInfo(
     int arraySize,
     bool isExtended)
 {
+    public int Index => index;
     public string Name => name;
     public string Description => description;
     public string PrintFormat => printFormat;

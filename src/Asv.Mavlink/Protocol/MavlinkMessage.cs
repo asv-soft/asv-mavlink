@@ -10,6 +10,8 @@ public abstract class MavlinkMessage : IProtocolMessage<int>
     
     public abstract ImmutableArray<MavlinkFieldInfo> Fields { get; }
     public abstract string GetFormatMessage();
+    public abstract void ReadFields(IMavlinkFieldWriter writer);
+    public abstract void WriteFields(IMavlinkFieldReader reader);
 
     public abstract void Deserialize(ref ReadOnlySpan<byte> buffer);
 

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -445,7 +445,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("supported_modes",
+            new(0,
+            "supported_modes",
             "Supported ASV_SDR_CUSTOM_MODE.",
             string.Empty, 
             string.Empty, 
@@ -454,7 +455,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("size",
+            new(1,
+            "size",
             "Total storage size in bytes.",
             string.Empty, 
             @"bytes", 
@@ -463,7 +465,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("record_count",
+            new(2,
+            "record_count",
             "Number of records in storage.",
             string.Empty, 
             string.Empty, 
@@ -472,7 +475,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("current_mission_index",
+            new(3,
+            "current_mission_index",
             "Current mission index.",
             string.Empty, 
             string.Empty, 
@@ -481,7 +485,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("current_record_guid",
+            new(4,
+            "current_record_guid",
             "Record GUID. Also by this field we can understand if the data is currently being recorded (GUID!=0x00) or not (GUID==0x00).",
             string.Empty, 
             string.Empty, 
@@ -490,7 +495,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             16, 
             false),
-            new("current_record_mode",
+            new(5,
+            "current_record_mode",
             "Current record mode (record data type).",
             string.Empty, 
             string.Empty, 
@@ -499,7 +505,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("current_record_name",
+            new(6,
+            "current_record_name",
             "Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string. If the data is currently not being recorded, than return null; ",
             string.Empty, 
             string.Empty, 
@@ -508,7 +515,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Char, 
             28, 
             false),
-            new("mission_state",
+            new(7,
+            "mission_state",
             "Mission state.",
             string.Empty, 
             string.Empty, 
@@ -517,7 +525,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("calib_state",
+            new(8,
+            "calib_state",
             "Calibration status.",
             string.Empty, 
             string.Empty, 
@@ -526,7 +535,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             true),
-            new("calib_table_count",
+            new(9,
+            "calib_table_count",
             "Number of calibration tables.",
             string.Empty, 
             string.Empty, 
@@ -535,7 +545,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             true),
-            new("ref_power",
+            new(10,
+            "ref_power",
             "Estimated reference power in dBm. Entered in MAV_CMD_ASV_SDR_SET_MODE command.",
             string.Empty, 
             string.Empty, 
@@ -544,7 +555,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             true),
-            new("signal_overflow",
+            new(11,
+            "signal_overflow",
             "Input path signal overflow indicator. Relative value from 0.0 to 1.0.",
             string.Empty, 
             string.Empty, 
@@ -570,6 +582,40 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.SupportedModes);
+            writer.Write(StaticFields[1], Payload.Size);
+            writer.Write(StaticFields[2], Payload.RecordCount);
+            writer.Write(StaticFields[3], Payload.CurrentMissionIndex);
+            writer.Write(StaticFields[4], Payload.CurrentRecordGuid);
+            writer.Write(StaticFields[5], Payload.CurrentRecordMode);
+            writer.Write(StaticFields[6], Payload.CurrentRecordName);
+            writer.Write(StaticFields[7], Payload.MissionState);
+            writer.Write(StaticFields[8], Payload.CalibState);
+            writer.Write(StaticFields[9], Payload.CalibTableCount);
+            writer.Write(StaticFields[10], Payload.RefPower);
+            writer.Write(StaticFields[11], Payload.SignalOverflow);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.SupportedModes = (AsvSdrCustomModeFlag)reader.ReadEnum(StaticFields[0]);
+            Payload.Size = reader.ReadULong(StaticFields[1]);
+            Payload.RecordCount = reader.ReadUShort(StaticFields[2]);
+            Payload.CurrentMissionIndex = reader.ReadUShort(StaticFields[3]);
+            reader.ReadByteArray(StaticFields[4], Payload.CurrentRecordGuid);
+            Payload.CurrentRecordMode = (AsvSdrCustomMode)reader.ReadEnum(StaticFields[5]);
+            reader.ReadCharArray(StaticFields[6], Payload.CurrentRecordName);
+            Payload.MissionState = (AsvSdrMissionState)reader.ReadEnum(StaticFields[7]);
+            Payload.CalibState = (AsvSdrCalibState)reader.ReadEnum(StaticFields[8]);
+            Payload.CalibTableCount = reader.ReadUShort(StaticFields[9]);
+            Payload.RefPower = reader.ReadFloat(StaticFields[10]);
+            Payload.SignalOverflow = reader.ReadFloat(StaticFields[11]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -581,23 +627,23 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 77; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 77; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 8; // SupportedModes
-            sum+=8; //Size
-            sum+=2; //RecordCount
-            sum+=2; //CurrentMissionIndex
-            sum+=CurrentRecordGuid.Length; //CurrentRecordGuid
-            sum+= 1; // CurrentRecordMode
-            sum+=CurrentRecordName.Length; //CurrentRecordName
-            sum+= 1; // MissionState
-            sum+= 1; // CalibState
-            sum+=2; //CalibTableCount
-            sum+=4; //RefPower
-            sum+=4; //SignalOverflow
-            return (byte)sum;
+            return (byte)(
+            + 8 // uint64_t supported_modes
+            +8 // uint64_t size
+            +2 // uint16_t record_count
+            +2 // uint16_t current_mission_index
+            +CurrentRecordGuid.Length // uint8_t[16] current_record_guid
+            + 1 // uint8_t current_record_mode
+            +CurrentRecordName.Length // char[28] current_record_name
+            + 1 // uint8_t mission_state
+            + 1 // uint8_t calib_state
+            +2 // uint16_t calib_table_count
+            +4 // float ref_power
+            +4 // float signal_overflow
+            );
         }
 
 
@@ -767,7 +813,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies a unique number for this request. This allows the response packet to be identified.",
             string.Empty, 
             string.Empty, 
@@ -776,7 +823,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("skip",
+            new(1,
+            "skip",
             "Specifies the start index of the records to be sent in the response.",
             string.Empty, 
             string.Empty, 
@@ -785,7 +833,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("count",
+            new(2,
+            "count",
             "Specifies the number of records to be sent in the response after the skip index.",
             string.Empty, 
             string.Empty, 
@@ -794,7 +843,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID",
             string.Empty, 
             string.Empty, 
@@ -803,7 +853,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID",
             string.Empty, 
             string.Empty, 
@@ -822,6 +873,26 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.Skip);
+            writer.Write(StaticFields[2], Payload.Count);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.Skip = reader.ReadUShort(StaticFields[1]);
+            Payload.Count = reader.ReadUShort(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -833,16 +904,16 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=2; //Skip
-            sum+=2; //Count
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +2 // uint16_t skip
+            +2 // uint16_t count
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -922,7 +993,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -931,7 +1003,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("items_count",
+            new(1,
+            "items_count",
             "Number of items ASV_SDR_RECORD for transmition after this request with success result code (depended from request).",
             string.Empty, 
             string.Empty, 
@@ -940,7 +1013,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("result",
+            new(2,
+            "result",
             "Result code.",
             string.Empty, 
             string.Empty, 
@@ -957,6 +1031,22 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.ItemsCount);
+            writer.Write(StaticFields[2], Payload.Result);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.ItemsCount = reader.ReadUShort(StaticFields[1]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -968,14 +1058,14 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=2; //ItemsCount
-            sum+= 1; // Result
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +2 // uint16_t items_count
+            + 1 // uint8_t result
+            );
         }
 
 
@@ -1041,7 +1131,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("frequency",
+            new(0,
+            "frequency",
             "Reference frequency in Hz, specified by MAV_CMD_ASV_SDR_SET_MODE command.",
             string.Empty, 
             string.Empty, 
@@ -1050,7 +1141,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("created_unix_us",
+            new(1,
+            "created_unix_us",
             "Created timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -1059,7 +1151,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("data_type",
+            new(2,
+            "data_type",
             "Record data type(it is also possible to know the type of data inside the record by cast enum to int).",
             string.Empty, 
             string.Empty, 
@@ -1068,7 +1161,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("duration_sec",
+            new(3,
+            "duration_sec",
             "Record duration in sec.",
             string.Empty, 
             @"sec", 
@@ -1077,7 +1171,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("data_count",
+            new(4,
+            "data_count",
             "Data items count.",
             string.Empty, 
             string.Empty, 
@@ -1086,7 +1181,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("size",
+            new(5,
+            "size",
             "Total data size of record with all data items and tags.",
             string.Empty, 
             @"bytes", 
@@ -1095,7 +1191,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("tag_count",
+            new(6,
+            "tag_count",
             "Tag items count.",
             string.Empty, 
             string.Empty, 
@@ -1104,7 +1201,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("record_guid",
+            new(7,
+            "record_guid",
             "Record GUID. Generated by payload after the start of recording.",
             string.Empty, 
             string.Empty, 
@@ -1113,7 +1211,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             16, 
             false),
-            new("record_name",
+            new(8,
+            "record_name",
             "Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.",
             string.Empty, 
             string.Empty, 
@@ -1136,6 +1235,34 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Frequency);
+            writer.Write(StaticFields[1], Payload.CreatedUnixUs);
+            writer.Write(StaticFields[2], Payload.DataType);
+            writer.Write(StaticFields[3], Payload.DurationSec);
+            writer.Write(StaticFields[4], Payload.DataCount);
+            writer.Write(StaticFields[5], Payload.Size);
+            writer.Write(StaticFields[6], Payload.TagCount);
+            writer.Write(StaticFields[7], Payload.RecordGuid);
+            writer.Write(StaticFields[8], Payload.RecordName);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Frequency = reader.ReadULong(StaticFields[0]);
+            Payload.CreatedUnixUs = reader.ReadULong(StaticFields[1]);
+            Payload.DataType = (AsvSdrCustomMode)reader.ReadEnum(StaticFields[2]);
+            Payload.DurationSec = reader.ReadUInt(StaticFields[3]);
+            Payload.DataCount = reader.ReadUInt(StaticFields[4]);
+            Payload.Size = reader.ReadUInt(StaticFields[5]);
+            Payload.TagCount = reader.ReadUShort(StaticFields[6]);
+            reader.ReadByteArray(StaticFields[7], Payload.RecordGuid);
+            reader.ReadCharArray(StaticFields[8], Payload.RecordName);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1147,20 +1274,20 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 78; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 78; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //Frequency
-            sum+=8; //CreatedUnixUs
-            sum+= 4; // DataType
-            sum+=4; //DurationSec
-            sum+=4; //DataCount
-            sum+=4; //Size
-            sum+=2; //TagCount
-            sum+=RecordGuid.Length; //RecordGuid
-            sum+=RecordName.Length; //RecordName
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t frequency
+            +8 // uint64_t created_unix_us
+            + 4 // uint32_t data_type
+            +4 // uint32_t duration_sec
+            +4 // uint32_t data_count
+            +4 // uint32_t size
+            +2 // uint16_t tag_count
+            +RecordGuid.Length // uint8_t[16] record_guid
+            +RecordName.Length // char[28] record_name
+            );
         }
 
 
@@ -1301,7 +1428,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies a unique number for this request. This allows the response packet to be identified.",
             string.Empty, 
             string.Empty, 
@@ -1310,7 +1438,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -1319,7 +1448,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -1328,7 +1458,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("record_guid",
+            new(3,
+            "record_guid",
             "Specifies GUID of the record to be deleted.",
             string.Empty, 
             string.Empty, 
@@ -1346,6 +1477,24 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+            writer.Write(StaticFields[3], Payload.RecordGuid);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+            reader.ReadByteArray(StaticFields[3], Payload.RecordGuid);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1357,15 +1506,15 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=RecordGuid.Length; //RecordGuid
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +RecordGuid.Length // uint8_t[16] record_guid
+            );
         }
 
 
@@ -1451,7 +1600,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -1460,7 +1610,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("result",
+            new(1,
+            "result",
             "Result code.",
             string.Empty, 
             string.Empty, 
@@ -1469,7 +1620,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("record_guid",
+            new(2,
+            "record_guid",
             "Specifies the GUID of the record that was deleted.",
             string.Empty, 
             string.Empty, 
@@ -1486,6 +1638,22 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.Result);
+            writer.Write(StaticFields[2], Payload.RecordGuid);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[1]);
+            reader.ReadByteArray(StaticFields[2], Payload.RecordGuid);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1497,14 +1665,14 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+= 1; // Result
-            sum+=RecordGuid.Length; //RecordGuid
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            + 1 // uint8_t result
+            +RecordGuid.Length // uint8_t[16] record_guid
+            );
         }
 
 
@@ -1583,7 +1751,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Request unique number. This is to allow the response packet to be detected.",
             string.Empty, 
             string.Empty, 
@@ -1592,7 +1761,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("skip",
+            new(1,
+            "skip",
             "Specifies the start index of the tag to be sent in the response.",
             string.Empty, 
             string.Empty, 
@@ -1601,7 +1771,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("count",
+            new(2,
+            "count",
             "Specifies the number of tag to be sent in the response after the skip index.",
             string.Empty, 
             string.Empty, 
@@ -1610,7 +1781,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID",
             string.Empty, 
             string.Empty, 
@@ -1619,7 +1791,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID",
             string.Empty, 
             string.Empty, 
@@ -1628,7 +1801,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("record_guid",
+            new(5,
+            "record_guid",
             "Specifies the GUID of the record.",
             string.Empty, 
             string.Empty, 
@@ -1648,6 +1822,28 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.Skip);
+            writer.Write(StaticFields[2], Payload.Count);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+            writer.Write(StaticFields[5], Payload.RecordGuid);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.Skip = reader.ReadUShort(StaticFields[1]);
+            Payload.Count = reader.ReadUShort(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+            reader.ReadByteArray(StaticFields[5], Payload.RecordGuid);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1659,17 +1855,17 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=2; //Skip
-            sum+=2; //Count
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=RecordGuid.Length; //RecordGuid
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +2 // uint16_t skip
+            +2 // uint16_t count
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +RecordGuid.Length // uint8_t[16] record_guid
+            );
         }
 
 
@@ -1769,7 +1965,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -1778,7 +1975,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("items_count",
+            new(1,
+            "items_count",
             "Number of items ASV_SDR_RECORD_TAG for transmition after this request with success result code (depended from request).",
             string.Empty, 
             string.Empty, 
@@ -1787,7 +1985,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("result",
+            new(2,
+            "result",
             "Result code.",
             string.Empty, 
             string.Empty, 
@@ -1804,6 +2003,22 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.ItemsCount);
+            writer.Write(StaticFields[2], Payload.Result);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.ItemsCount = reader.ReadUShort(StaticFields[1]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1815,14 +2030,14 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=2; //ItemsCount
-            sum+= 1; // Result
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +2 // uint16_t items_count
+            + 1 // uint8_t result
+            );
         }
 
 
@@ -1888,7 +2103,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("record_guid",
+            new(0,
+            "record_guid",
             "Record GUID.",
             string.Empty, 
             string.Empty, 
@@ -1897,7 +2113,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             16, 
             false),
-            new("tag_guid",
+            new(1,
+            "tag_guid",
             "Tag GUID.",
             string.Empty, 
             string.Empty, 
@@ -1906,7 +2123,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             16, 
             false),
-            new("tag_name",
+            new(2,
+            "tag_name",
             "Tag name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
             string.Empty, 
             string.Empty, 
@@ -1915,7 +2133,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Char, 
             16, 
             false),
-            new("tag_type",
+            new(3,
+            "tag_type",
             "Tag type.",
             string.Empty, 
             string.Empty, 
@@ -1924,7 +2143,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("tag_value",
+            new(4,
+            "tag_value",
             "Tag value, depends on the type of tag.",
             string.Empty, 
             string.Empty, 
@@ -1943,6 +2163,26 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RecordGuid);
+            writer.Write(StaticFields[1], Payload.TagGuid);
+            writer.Write(StaticFields[2], Payload.TagName);
+            writer.Write(StaticFields[3], Payload.TagType);
+            writer.Write(StaticFields[4], Payload.TagValue);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadByteArray(StaticFields[0], Payload.RecordGuid);
+            reader.ReadByteArray(StaticFields[1], Payload.TagGuid);
+            reader.ReadCharArray(StaticFields[2], Payload.TagName);
+            Payload.TagType = (AsvSdrRecordTagType)reader.ReadEnum(StaticFields[3]);
+            reader.ReadByteArray(StaticFields[4], Payload.TagValue);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1954,16 +2194,16 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 57; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 57; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=RecordGuid.Length; //RecordGuid
-            sum+=TagGuid.Length; //TagGuid
-            sum+=TagName.Length; //TagName
-            sum+= 1; // TagType
-            sum+=TagValue.Length; //TagValue
-            return (byte)sum;
+            return (byte)(
+            +RecordGuid.Length // uint8_t[16] record_guid
+            +TagGuid.Length // uint8_t[16] tag_guid
+            +TagName.Length // char[16] tag_name
+            + 1 // uint8_t tag_type
+            +TagValue.Length // uint8_t[8] tag_value
+            );
         }
 
 
@@ -2092,7 +2332,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -2101,7 +2342,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -2110,7 +2352,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -2119,7 +2362,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("record_guid",
+            new(3,
+            "record_guid",
             "Record GUID.",
             string.Empty, 
             string.Empty, 
@@ -2128,7 +2372,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             16, 
             false),
-            new("tag_guid",
+            new(4,
+            "tag_guid",
             "Tag GUID.",
             string.Empty, 
             string.Empty, 
@@ -2147,6 +2392,26 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+            writer.Write(StaticFields[3], Payload.RecordGuid);
+            writer.Write(StaticFields[4], Payload.TagGuid);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+            reader.ReadByteArray(StaticFields[3], Payload.RecordGuid);
+            reader.ReadByteArray(StaticFields[4], Payload.TagGuid);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2158,16 +2423,16 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 36; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=RecordGuid.Length; //RecordGuid
-            sum+=TagGuid.Length; //TagGuid
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +RecordGuid.Length // uint8_t[16] record_guid
+            +TagGuid.Length // uint8_t[16] tag_guid
+            );
         }
 
 
@@ -2268,7 +2533,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -2277,7 +2543,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("result",
+            new(1,
+            "result",
             "Result code.",
             string.Empty, 
             string.Empty, 
@@ -2286,7 +2553,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("record_guid",
+            new(2,
+            "record_guid",
             "Record GUID.",
             string.Empty, 
             string.Empty, 
@@ -2295,7 +2563,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             16, 
             false),
-            new("tag_guid",
+            new(3,
+            "tag_guid",
             "Tag GUID.",
             string.Empty, 
             string.Empty, 
@@ -2313,6 +2582,24 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.Result);
+            writer.Write(StaticFields[2], Payload.RecordGuid);
+            writer.Write(StaticFields[3], Payload.TagGuid);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[1]);
+            reader.ReadByteArray(StaticFields[2], Payload.RecordGuid);
+            reader.ReadByteArray(StaticFields[3], Payload.TagGuid);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2324,15 +2611,15 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 35; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+= 1; // Result
-            sum+=RecordGuid.Length; //RecordGuid
-            sum+=TagGuid.Length; //TagGuid
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            + 1 // uint8_t result
+            +RecordGuid.Length // uint8_t[16] record_guid
+            +TagGuid.Length // uint8_t[16] tag_guid
+            );
         }
 
 
@@ -2426,7 +2713,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("skip",
+            new(0,
+            "skip",
             "Specifies the start index of the tag to be sent in the response.",
             string.Empty, 
             string.Empty, 
@@ -2435,7 +2723,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("count",
+            new(1,
+            "count",
             "Specifies the number of tag to be sent in the response after the skip index.",
             string.Empty, 
             string.Empty, 
@@ -2444,7 +2733,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("request_id",
+            new(2,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -2453,7 +2743,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID",
             string.Empty, 
             string.Empty, 
@@ -2462,7 +2753,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID",
             string.Empty, 
             string.Empty, 
@@ -2471,7 +2763,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("record_guid",
+            new(5,
+            "record_guid",
             "Record GUID.",
             string.Empty, 
             string.Empty, 
@@ -2491,6 +2784,28 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Skip);
+            writer.Write(StaticFields[1], Payload.Count);
+            writer.Write(StaticFields[2], Payload.RequestId);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+            writer.Write(StaticFields[5], Payload.RecordGuid);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Skip = reader.ReadUInt(StaticFields[0]);
+            Payload.Count = reader.ReadUInt(StaticFields[1]);
+            Payload.RequestId = reader.ReadUShort(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+            reader.ReadByteArray(StaticFields[5], Payload.RecordGuid);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2502,17 +2817,17 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Skip
-            sum+=4; //Count
-            sum+=2; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=RecordGuid.Length; //RecordGuid
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t skip
+            +4 // uint32_t count
+            +2 // uint16_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +RecordGuid.Length // uint8_t[16] record_guid
+            );
         }
 
 
@@ -2612,7 +2927,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("data_type",
+            new(0,
+            "data_type",
             "Record data type(it is also possible to know the type of data inside the record by cast enum to int).",
             string.Empty, 
             string.Empty, 
@@ -2621,7 +2937,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("items_count",
+            new(1,
+            "items_count",
             "Number of items ASV_SDR_RECORD_DATA_* for transmition after this request with success result code (depended from request).",
             string.Empty, 
             string.Empty, 
@@ -2630,7 +2947,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("request_id",
+            new(2,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -2639,7 +2957,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("result",
+            new(3,
+            "result",
             "Result code.",
             string.Empty, 
             string.Empty, 
@@ -2648,7 +2967,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("record_guid",
+            new(4,
+            "record_guid",
             "Record GUID.",
             string.Empty, 
             string.Empty, 
@@ -2667,6 +2987,26 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.DataType);
+            writer.Write(StaticFields[1], Payload.ItemsCount);
+            writer.Write(StaticFields[2], Payload.RequestId);
+            writer.Write(StaticFields[3], Payload.Result);
+            writer.Write(StaticFields[4], Payload.RecordGuid);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.DataType = (AsvSdrCustomMode)reader.ReadEnum(StaticFields[0]);
+            Payload.ItemsCount = reader.ReadUInt(StaticFields[1]);
+            Payload.RequestId = reader.ReadUShort(StaticFields[2]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[3]);
+            reader.ReadByteArray(StaticFields[4], Payload.RecordGuid);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2678,16 +3018,16 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 4; // DataType
-            sum+=4; //ItemsCount
-            sum+=2; //RequestId
-            sum+= 1; // Result
-            sum+=RecordGuid.Length; //RecordGuid
-            return (byte)sum;
+            return (byte)(
+            + 4 // uint32_t data_type
+            +4 // uint32_t items_count
+            +2 // uint16_t request_id
+            + 1 // uint8_t result
+            +RecordGuid.Length // uint8_t[16] record_guid
+            );
         }
 
 
@@ -2780,7 +3120,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -2789,7 +3130,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("result",
+            new(1,
+            "result",
             "Result code.",
             string.Empty, 
             string.Empty, 
@@ -2805,6 +3147,20 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.Result);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2816,13 +3172,13 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+= 1; // Result
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            + 1 // uint8_t result
+            );
         }
 
 
@@ -2881,7 +3237,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("table_index",
+            new(0,
+            "table_index",
             "Table index.",
             string.Empty, 
             string.Empty, 
@@ -2890,7 +3247,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("request_id",
+            new(1,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -2899,7 +3257,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(2,
+            "target_system",
             "System ID",
             string.Empty, 
             string.Empty, 
@@ -2908,7 +3267,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(3,
+            "target_component",
             "Component ID",
             string.Empty, 
             string.Empty, 
@@ -2926,6 +3286,24 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TableIndex);
+            writer.Write(StaticFields[1], Payload.RequestId);
+            writer.Write(StaticFields[2], Payload.TargetSystem);
+            writer.Write(StaticFields[3], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TableIndex = reader.ReadUShort(StaticFields[0]);
+            Payload.RequestId = reader.ReadUShort(StaticFields[1]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[2]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[3]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2937,15 +3315,15 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //TableIndex
-            sum+=2; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t table_index
+            +2 // uint16_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -3018,7 +3396,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("created_unix_us",
+            new(0,
+            "created_unix_us",
             "Updated timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -3027,7 +3406,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("table_index",
+            new(1,
+            "table_index",
             "Table index.",
             string.Empty, 
             string.Empty, 
@@ -3036,7 +3416,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("row_count",
+            new(2,
+            "row_count",
             "Specifies the number of ROWs in the table.",
             string.Empty, 
             string.Empty, 
@@ -3045,7 +3426,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("table_name",
+            new(3,
+            "table_name",
             "Table name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.",
             string.Empty, 
             string.Empty, 
@@ -3063,6 +3445,24 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.CreatedUnixUs);
+            writer.Write(StaticFields[1], Payload.TableIndex);
+            writer.Write(StaticFields[2], Payload.RowCount);
+            writer.Write(StaticFields[3], Payload.TableName);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.CreatedUnixUs = reader.ReadULong(StaticFields[0]);
+            Payload.TableIndex = reader.ReadUShort(StaticFields[1]);
+            Payload.RowCount = reader.ReadUShort(StaticFields[2]);
+            reader.ReadCharArray(StaticFields[3], Payload.TableName);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3074,15 +3474,15 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 40; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //CreatedUnixUs
-            sum+=2; //TableIndex
-            sum+=2; //RowCount
-            sum+=TableName.Length; //TableName
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t created_unix_us
+            +2 // uint16_t table_index
+            +2 // uint16_t row_count
+            +TableName.Length // char[28] table_name
+            );
         }
 
 
@@ -3180,7 +3580,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -3189,7 +3590,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("table_index",
+            new(1,
+            "table_index",
             "Table index.",
             string.Empty, 
             string.Empty, 
@@ -3198,7 +3600,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("row_index",
+            new(2,
+            "row_index",
             "ROW index.",
             string.Empty, 
             string.Empty, 
@@ -3207,7 +3610,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -3216,7 +3620,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -3235,6 +3640,26 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.TableIndex);
+            writer.Write(StaticFields[2], Payload.RowIndex);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.TableIndex = reader.ReadUShort(StaticFields[1]);
+            Payload.RowIndex = reader.ReadUShort(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3246,16 +3671,16 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=2; //TableIndex
-            sum+=2; //RowIndex
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +2 // uint16_t table_index
+            +2 // uint16_t row_index
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -3335,7 +3760,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("ref_freq",
+            new(0,
+            "ref_freq",
             "Reference frequency in Hz.",
             string.Empty, 
             string.Empty, 
@@ -3344,7 +3770,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("ref_power",
+            new(1,
+            "ref_power",
             "Reference power in dBm.",
             string.Empty, 
             string.Empty, 
@@ -3353,7 +3780,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("ref_value",
+            new(2,
+            "ref_value",
             "Reference value.",
             string.Empty, 
             string.Empty, 
@@ -3362,7 +3790,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("adjustment",
+            new(3,
+            "adjustment",
             "Adjustment for measured value (ref_value = measured_value + adjustment)",
             string.Empty, 
             string.Empty, 
@@ -3371,7 +3800,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("table_index",
+            new(4,
+            "table_index",
             "Table index.",
             string.Empty, 
             string.Empty, 
@@ -3380,7 +3810,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("row_index",
+            new(5,
+            "row_index",
             "ROW index.",
             string.Empty, 
             string.Empty, 
@@ -3389,7 +3820,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(6,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -3398,7 +3830,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(7,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -3420,6 +3853,32 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RefFreq);
+            writer.Write(StaticFields[1], Payload.RefPower);
+            writer.Write(StaticFields[2], Payload.RefValue);
+            writer.Write(StaticFields[3], Payload.Adjustment);
+            writer.Write(StaticFields[4], Payload.TableIndex);
+            writer.Write(StaticFields[5], Payload.RowIndex);
+            writer.Write(StaticFields[6], Payload.TargetSystem);
+            writer.Write(StaticFields[7], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RefFreq = reader.ReadULong(StaticFields[0]);
+            Payload.RefPower = reader.ReadFloat(StaticFields[1]);
+            Payload.RefValue = reader.ReadFloat(StaticFields[2]);
+            Payload.Adjustment = reader.ReadFloat(StaticFields[3]);
+            Payload.TableIndex = reader.ReadUShort(StaticFields[4]);
+            Payload.RowIndex = reader.ReadUShort(StaticFields[5]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[7]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3431,19 +3890,19 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //RefFreq
-            sum+=4; //RefPower
-            sum+=4; //RefValue
-            sum+=4; //Adjustment
-            sum+=2; //TableIndex
-            sum+=2; //RowIndex
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t ref_freq
+            +4 // float ref_power
+            +4 // float ref_value
+            +4 // float adjustment
+            +2 // uint16_t table_index
+            +2 // uint16_t row_index
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -3544,7 +4003,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("created_unix_us",
+            new(0,
+            "created_unix_us",
             "Current timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -3553,7 +4013,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("table_index",
+            new(1,
+            "table_index",
             "Table index.",
             string.Empty, 
             string.Empty, 
@@ -3562,7 +4023,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("request_id",
+            new(2,
+            "request_id",
             "Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -3571,7 +4033,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("row_count",
+            new(3,
+            "row_count",
             "Specifies the number of ROWs in the table.",
             string.Empty, 
             string.Empty, 
@@ -3580,7 +4043,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(4,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -3589,7 +4053,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(5,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -3609,6 +4074,28 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.CreatedUnixUs);
+            writer.Write(StaticFields[1], Payload.TableIndex);
+            writer.Write(StaticFields[2], Payload.RequestId);
+            writer.Write(StaticFields[3], Payload.RowCount);
+            writer.Write(StaticFields[4], Payload.TargetSystem);
+            writer.Write(StaticFields[5], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.CreatedUnixUs = reader.ReadULong(StaticFields[0]);
+            Payload.TableIndex = reader.ReadUShort(StaticFields[1]);
+            Payload.RequestId = reader.ReadUShort(StaticFields[2]);
+            Payload.RowCount = reader.ReadUShort(StaticFields[3]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[4]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3620,17 +4107,17 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //CreatedUnixUs
-            sum+=2; //TableIndex
-            sum+=2; //RequestId
-            sum+=2; //RowCount
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t created_unix_us
+            +2 // uint16_t table_index
+            +2 // uint16_t request_id
+            +2 // uint16_t row_count
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -3717,7 +4204,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("request_id",
+            new(0,
+            "request_id",
             "Specifies the unique number of the original request from ASV_SDR_CALIB_TABLE_UPLOAD_START. This allows the response to be matched to the correct request.",
             string.Empty, 
             string.Empty, 
@@ -3726,7 +4214,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("table_index",
+            new(1,
+            "table_index",
             "Table index.",
             string.Empty, 
             string.Empty, 
@@ -3735,7 +4224,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("row_index",
+            new(2,
+            "row_index",
             "ROW index.",
             string.Empty, 
             string.Empty, 
@@ -3744,7 +4234,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(3,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -3753,7 +4244,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(4,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -3772,6 +4264,26 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RequestId);
+            writer.Write(StaticFields[1], Payload.TableIndex);
+            writer.Write(StaticFields[2], Payload.RowIndex);
+            writer.Write(StaticFields[3], Payload.TargetSystem);
+            writer.Write(StaticFields[4], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RequestId = reader.ReadUShort(StaticFields[0]);
+            Payload.TableIndex = reader.ReadUShort(StaticFields[1]);
+            Payload.RowIndex = reader.ReadUShort(StaticFields[2]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3783,16 +4295,16 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=2; //TableIndex
-            sum+=2; //RowIndex
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +2 // uint16_t table_index
+            +2 // uint16_t row_index
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -3872,7 +4384,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time) for current set of measures.",
             string.Empty, 
             @"us", 
@@ -3881,7 +4394,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("min",
+            new(1,
+            "min",
             "Min value of set.",
             string.Empty, 
             string.Empty, 
@@ -3890,7 +4404,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("max",
+            new(2,
+            "max",
             "Max value of set.",
             string.Empty, 
             string.Empty, 
@@ -3899,7 +4414,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("start",
+            new(3,
+            "start",
             "Start index of measure set.",
             string.Empty, 
             string.Empty, 
@@ -3908,7 +4424,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("total",
+            new(4,
+            "total",
             "Total points in set.",
             string.Empty, 
             string.Empty, 
@@ -3917,7 +4434,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("signal_name",
+            new(5,
+            "signal_name",
             "Signal name, terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 8+1 bytes storage if the ID is stored as string",
             string.Empty, 
             string.Empty, 
@@ -3926,7 +4444,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Char, 
             8, 
             false),
-            new("format",
+            new(6,
+            "format",
             "Format of one measure.",
             string.Empty, 
             string.Empty, 
@@ -3935,7 +4454,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("count",
+            new(7,
+            "count",
             "Measures count in this packet.",
             string.Empty, 
             string.Empty, 
@@ -3944,7 +4464,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("data",
+            new(8,
+            "data",
             "Data set of points.",
             string.Empty, 
             string.Empty, 
@@ -3967,6 +4488,34 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.Min);
+            writer.Write(StaticFields[2], Payload.Max);
+            writer.Write(StaticFields[3], Payload.Start);
+            writer.Write(StaticFields[4], Payload.Total);
+            writer.Write(StaticFields[5], Payload.SignalName);
+            writer.Write(StaticFields[6], Payload.Format);
+            writer.Write(StaticFields[7], Payload.Count);
+            writer.Write(StaticFields[8], Payload.Data);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.Min = reader.ReadFloat(StaticFields[1]);
+            Payload.Max = reader.ReadFloat(StaticFields[2]);
+            Payload.Start = reader.ReadUShort(StaticFields[3]);
+            Payload.Total = reader.ReadUShort(StaticFields[4]);
+            reader.ReadCharArray(StaticFields[5], Payload.SignalName);
+            Payload.Format = (AsvSdrSignalFormat)reader.ReadEnum(StaticFields[6]);
+            Payload.Count = reader.ReadByte(StaticFields[7]);
+            reader.ReadByteArray(StaticFields[8], Payload.Data);
+        
+            
+        }
     }
 
     /// <summary>
@@ -3978,20 +4527,20 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 230; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 230; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+=4; //Min
-            sum+=4; //Max
-            sum+=2; //Start
-            sum+=2; //Total
-            sum+=SignalName.Length; //SignalName
-            sum+= 1; // Format
-            sum+=1; //Count
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            +4 // float min
+            +4 // float max
+            +2 // uint16_t start
+            +2 // uint16_t total
+            +SignalName.Length // char[8] signal_name
+            + 1 // uint8_t format
+            +1 // uint8_t count
+            +Data.Length // uint8_t[200] data
+            );
         }
 
 
@@ -4132,7 +4681,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -4141,7 +4691,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("total_freq",
+            new(1,
+            "total_freq",
             "Measured frequency.",
             string.Empty, 
             @"Hz", 
@@ -4150,7 +4701,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("data_index",
+            new(2,
+            "data_index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -4159,7 +4711,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("gnss_lat",
+            new(3,
+            "gnss_lat",
             "Latitude (WGS84, EGM96 ellipsoid)",
             string.Empty, 
             @"degE7", 
@@ -4168,7 +4721,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_lon",
+            new(4,
+            "gnss_lon",
             "Longitude (WGS84, EGM96 ellipsoid)",
             string.Empty, 
             @"degE7", 
@@ -4177,7 +4731,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_alt",
+            new(5,
+            "gnss_alt",
             "Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.",
             string.Empty, 
             @"mm", 
@@ -4186,7 +4741,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_alt_ellipsoid",
+            new(6,
+            "gnss_alt_ellipsoid",
             "Altitude (above WGS84, EGM96 ellipsoid). Positive for up.",
             string.Empty, 
             @"mm", 
@@ -4195,7 +4751,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_h_acc",
+            new(7,
+            "gnss_h_acc",
             "Position uncertainty. Positive for up.",
             string.Empty, 
             @"mm", 
@@ -4204,7 +4761,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("gnss_v_acc",
+            new(8,
+            "gnss_v_acc",
             "Altitude uncertainty. Positive for up.",
             string.Empty, 
             @"mm", 
@@ -4213,7 +4771,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("gnss_vel_acc",
+            new(9,
+            "gnss_vel_acc",
             "Speed uncertainty. Positive for up.",
             string.Empty, 
             @"mm", 
@@ -4222,7 +4781,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("lat",
+            new(10,
+            "lat",
             "Filtered global position latitude, expressed",
             string.Empty, 
             @"degE7", 
@@ -4231,7 +4791,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lon",
+            new(11,
+            "lon",
             "Filtered global position longitude, expressed",
             string.Empty, 
             @"degE7", 
@@ -4240,7 +4801,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("alt",
+            new(12,
+            "alt",
             "Filtered global position altitude (MSL).",
             string.Empty, 
             @"mm", 
@@ -4249,7 +4811,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("relative_alt",
+            new(13,
+            "relative_alt",
             "Altitude above ground",
             string.Empty, 
             @"mm", 
@@ -4258,7 +4821,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("roll",
+            new(14,
+            "roll",
             "Roll angle (-pi..+pi)",
             string.Empty, 
             @"rad", 
@@ -4267,7 +4831,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pitch",
+            new(15,
+            "pitch",
             "Pitch angle (-pi..+pi)",
             string.Empty, 
             @"rad", 
@@ -4276,7 +4841,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw",
+            new(16,
+            "yaw",
             "Yaw angle (-pi..+pi)",
             string.Empty, 
             @"rad", 
@@ -4285,7 +4851,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("crs_power",
+            new(17,
+            "crs_power",
             "Input power of course.",
             string.Empty, 
             @"dBm", 
@@ -4294,7 +4861,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("crs_am_90",
+            new(18,
+            "crs_am_90",
             "Aplitude modulation of 90Hz of course.",
             string.Empty, 
             @"%", 
@@ -4303,7 +4871,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("crs_am_150",
+            new(19,
+            "crs_am_150",
             "Aplitude modulation of 150Hz of course.",
             string.Empty, 
             @"%", 
@@ -4312,7 +4881,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("clr_power",
+            new(20,
+            "clr_power",
             "Input power of clearance.",
             string.Empty, 
             @"dBm", 
@@ -4321,7 +4891,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("clr_am_90",
+            new(21,
+            "clr_am_90",
             "Aplitude modulation of 90Hz of clearance.",
             string.Empty, 
             @"%", 
@@ -4330,7 +4901,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("clr_am_150",
+            new(22,
+            "clr_am_150",
             "Aplitude modulation of 150Hz of clearance.",
             string.Empty, 
             @"% E2", 
@@ -4339,7 +4911,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("total_power",
+            new(23,
+            "total_power",
             "Total input power.",
             string.Empty, 
             @"dBm", 
@@ -4348,7 +4921,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("total_field_strength",
+            new(24,
+            "total_field_strength",
             "Total field strength.",
             string.Empty, 
             @"uV/m", 
@@ -4357,7 +4931,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("total_am_90",
+            new(25,
+            "total_am_90",
             "Total aplitude modulation of 90Hz.",
             string.Empty, 
             @"%", 
@@ -4366,7 +4941,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("total_am_150",
+            new(26,
+            "total_am_150",
             "Total aplitude modulation of 150Hz.",
             string.Empty, 
             @"%", 
@@ -4375,7 +4951,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("phi_90_crs_vs_clr",
+            new(27,
+            "phi_90_crs_vs_clr",
             " Phase difference 90 Hz clearance and cource",
             string.Empty, 
             @"deg", 
@@ -4384,7 +4961,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("phi_150_crs_vs_clr",
+            new(28,
+            "phi_150_crs_vs_clr",
             "Phase difference 150 Hz clearance and cource.",
             string.Empty, 
             @"deg", 
@@ -4393,7 +4971,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("code_id_am_1020",
+            new(29,
+            "code_id_am_1020",
             "Total aplitude modulation of 90Hz.",
             string.Empty, 
             @"%", 
@@ -4402,7 +4981,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("gnss_eph",
+            new(30,
+            "gnss_eph",
             "GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX",
             string.Empty, 
             string.Empty, 
@@ -4411,7 +4991,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("gnss_epv",
+            new(31,
+            "gnss_epv",
             "GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX",
             string.Empty, 
             string.Empty, 
@@ -4420,7 +5001,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("gnss_vel",
+            new(32,
+            "gnss_vel",
             "GPS ground speed. If unknown, set to: UINT16_MAX",
             string.Empty, 
             @"cm/s", 
@@ -4429,7 +5011,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("vx",
+            new(33,
+            "vx",
             "Ground X Speed (Latitude, positive north)",
             string.Empty, 
             @"cm/s", 
@@ -4438,7 +5021,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("vy",
+            new(34,
+            "vy",
             "Ground Y Speed (Longitude, positive east)",
             string.Empty, 
             @"cm/s", 
@@ -4447,7 +5031,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("vz",
+            new(35,
+            "vz",
             "Ground Z Speed (Altitude, positive down)",
             string.Empty, 
             @"cm/s", 
@@ -4456,7 +5041,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("hdg",
+            new(36,
+            "hdg",
             "Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX",
             string.Empty, 
             @"cdeg", 
@@ -4465,7 +5051,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("crs_carrier_offset",
+            new(37,
+            "crs_carrier_offset",
             "Carrier frequency offset of course.",
             string.Empty, 
             @"Hz", 
@@ -4474,7 +5061,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("crs_freq_90",
+            new(38,
+            "crs_freq_90",
             "Frequency offset of signal 90 Hz of course.",
             string.Empty, 
             @"Hz", 
@@ -4483,7 +5071,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("crs_freq_150",
+            new(39,
+            "crs_freq_150",
             "Frequency offset of signal 150 Hz of course.",
             string.Empty, 
             @"Hz", 
@@ -4492,7 +5081,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("clr_carrier_offset",
+            new(40,
+            "clr_carrier_offset",
             "Carrier frequency offset of clearance.",
             string.Empty, 
             @"Hz", 
@@ -4501,7 +5091,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("clr_freq_90",
+            new(41,
+            "clr_freq_90",
             "Frequency offset of signal 90 Hz of clearance.",
             string.Empty, 
             @"Hz", 
@@ -4510,7 +5101,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("clr_freq_150",
+            new(42,
+            "clr_freq_150",
             "Frequency offset of signal 150 Hz of clearance.",
             string.Empty, 
             @"Hz", 
@@ -4519,7 +5111,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("total_carrier_offset",
+            new(43,
+            "total_carrier_offset",
             "Total carrier frequency offset.",
             string.Empty, 
             @"Hz", 
@@ -4528,7 +5121,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("total_freq_90",
+            new(44,
+            "total_freq_90",
             "Total frequency offset of signal 90 Hz.",
             string.Empty, 
             @"Hz", 
@@ -4537,7 +5131,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("total_freq_150",
+            new(45,
+            "total_freq_150",
             "Total frequency offset of signal 150 Hz.",
             string.Empty, 
             @"Hz", 
@@ -4546,7 +5141,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("code_id_freq_1020",
+            new(46,
+            "code_id_freq_1020",
             "Total frequency offset of signal 90 Hz.",
             string.Empty, 
             @"Hz", 
@@ -4555,7 +5151,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("measure_time",
+            new(47,
+            "measure_time",
             "Measure time.",
             string.Empty, 
             @"ms", 
@@ -4564,7 +5161,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("record_guid",
+            new(48,
+            "record_guid",
             "Record GUID.",
             string.Empty, 
             string.Empty, 
@@ -4573,7 +5171,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             16, 
             false),
-            new("gnss_fix_type",
+            new(49,
+            "gnss_fix_type",
             "GPS fix type.",
             string.Empty, 
             string.Empty, 
@@ -4582,7 +5181,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("gnss_satellites_visible",
+            new(50,
+            "gnss_satellites_visible",
             "Number of satellites visible. If unknown, set to 255",
             string.Empty, 
             string.Empty, 
@@ -4591,7 +5191,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("code_id",
+            new(51,
+            "code_id",
             "Code identification",
             string.Empty, 
             @"Letters", 
@@ -4657,6 +5258,120 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.TotalFreq);
+            writer.Write(StaticFields[2], Payload.DataIndex);
+            writer.Write(StaticFields[3], Payload.GnssLat);
+            writer.Write(StaticFields[4], Payload.GnssLon);
+            writer.Write(StaticFields[5], Payload.GnssAlt);
+            writer.Write(StaticFields[6], Payload.GnssAltEllipsoid);
+            writer.Write(StaticFields[7], Payload.GnssHAcc);
+            writer.Write(StaticFields[8], Payload.GnssVAcc);
+            writer.Write(StaticFields[9], Payload.GnssVelAcc);
+            writer.Write(StaticFields[10], Payload.Lat);
+            writer.Write(StaticFields[11], Payload.Lon);
+            writer.Write(StaticFields[12], Payload.Alt);
+            writer.Write(StaticFields[13], Payload.RelativeAlt);
+            writer.Write(StaticFields[14], Payload.Roll);
+            writer.Write(StaticFields[15], Payload.Pitch);
+            writer.Write(StaticFields[16], Payload.Yaw);
+            writer.Write(StaticFields[17], Payload.CrsPower);
+            writer.Write(StaticFields[18], Payload.CrsAm90);
+            writer.Write(StaticFields[19], Payload.CrsAm150);
+            writer.Write(StaticFields[20], Payload.ClrPower);
+            writer.Write(StaticFields[21], Payload.ClrAm90);
+            writer.Write(StaticFields[22], Payload.ClrAm150);
+            writer.Write(StaticFields[23], Payload.TotalPower);
+            writer.Write(StaticFields[24], Payload.TotalFieldStrength);
+            writer.Write(StaticFields[25], Payload.TotalAm90);
+            writer.Write(StaticFields[26], Payload.TotalAm150);
+            writer.Write(StaticFields[27], Payload.Phi90CrsVsClr);
+            writer.Write(StaticFields[28], Payload.Phi150CrsVsClr);
+            writer.Write(StaticFields[29], Payload.CodeIdAm1020);
+            writer.Write(StaticFields[30], Payload.GnssEph);
+            writer.Write(StaticFields[31], Payload.GnssEpv);
+            writer.Write(StaticFields[32], Payload.GnssVel);
+            writer.Write(StaticFields[33], Payload.Vx);
+            writer.Write(StaticFields[34], Payload.Vy);
+            writer.Write(StaticFields[35], Payload.Vz);
+            writer.Write(StaticFields[36], Payload.Hdg);
+            writer.Write(StaticFields[37], Payload.CrsCarrierOffset);
+            writer.Write(StaticFields[38], Payload.CrsFreq90);
+            writer.Write(StaticFields[39], Payload.CrsFreq150);
+            writer.Write(StaticFields[40], Payload.ClrCarrierOffset);
+            writer.Write(StaticFields[41], Payload.ClrFreq90);
+            writer.Write(StaticFields[42], Payload.ClrFreq150);
+            writer.Write(StaticFields[43], Payload.TotalCarrierOffset);
+            writer.Write(StaticFields[44], Payload.TotalFreq90);
+            writer.Write(StaticFields[45], Payload.TotalFreq150);
+            writer.Write(StaticFields[46], Payload.CodeIdFreq1020);
+            writer.Write(StaticFields[47], Payload.MeasureTime);
+            writer.Write(StaticFields[48], Payload.RecordGuid);
+            writer.Write(StaticFields[49], Payload.GnssFixType);
+            writer.Write(StaticFields[50], Payload.GnssSatellitesVisible);
+            writer.Write(StaticFields[51], Payload.CodeId);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.TotalFreq = reader.ReadULong(StaticFields[1]);
+            Payload.DataIndex = reader.ReadUInt(StaticFields[2]);
+            Payload.GnssLat = reader.ReadInt(StaticFields[3]);
+            Payload.GnssLon = reader.ReadInt(StaticFields[4]);
+            Payload.GnssAlt = reader.ReadInt(StaticFields[5]);
+            Payload.GnssAltEllipsoid = reader.ReadInt(StaticFields[6]);
+            Payload.GnssHAcc = reader.ReadUInt(StaticFields[7]);
+            Payload.GnssVAcc = reader.ReadUInt(StaticFields[8]);
+            Payload.GnssVelAcc = reader.ReadUInt(StaticFields[9]);
+            Payload.Lat = reader.ReadInt(StaticFields[10]);
+            Payload.Lon = reader.ReadInt(StaticFields[11]);
+            Payload.Alt = reader.ReadInt(StaticFields[12]);
+            Payload.RelativeAlt = reader.ReadInt(StaticFields[13]);
+            Payload.Roll = reader.ReadFloat(StaticFields[14]);
+            Payload.Pitch = reader.ReadFloat(StaticFields[15]);
+            Payload.Yaw = reader.ReadFloat(StaticFields[16]);
+            Payload.CrsPower = reader.ReadFloat(StaticFields[17]);
+            Payload.CrsAm90 = reader.ReadFloat(StaticFields[18]);
+            Payload.CrsAm150 = reader.ReadFloat(StaticFields[19]);
+            Payload.ClrPower = reader.ReadFloat(StaticFields[20]);
+            Payload.ClrAm90 = reader.ReadFloat(StaticFields[21]);
+            Payload.ClrAm150 = reader.ReadFloat(StaticFields[22]);
+            Payload.TotalPower = reader.ReadFloat(StaticFields[23]);
+            Payload.TotalFieldStrength = reader.ReadFloat(StaticFields[24]);
+            Payload.TotalAm90 = reader.ReadFloat(StaticFields[25]);
+            Payload.TotalAm150 = reader.ReadFloat(StaticFields[26]);
+            Payload.Phi90CrsVsClr = reader.ReadFloat(StaticFields[27]);
+            Payload.Phi150CrsVsClr = reader.ReadFloat(StaticFields[28]);
+            Payload.CodeIdAm1020 = reader.ReadFloat(StaticFields[29]);
+            Payload.GnssEph = reader.ReadUShort(StaticFields[30]);
+            Payload.GnssEpv = reader.ReadUShort(StaticFields[31]);
+            Payload.GnssVel = reader.ReadUShort(StaticFields[32]);
+            Payload.Vx = reader.ReadShort(StaticFields[33]);
+            Payload.Vy = reader.ReadShort(StaticFields[34]);
+            Payload.Vz = reader.ReadShort(StaticFields[35]);
+            Payload.Hdg = reader.ReadUShort(StaticFields[36]);
+            Payload.CrsCarrierOffset = reader.ReadShort(StaticFields[37]);
+            Payload.CrsFreq90 = reader.ReadShort(StaticFields[38]);
+            Payload.CrsFreq150 = reader.ReadShort(StaticFields[39]);
+            Payload.ClrCarrierOffset = reader.ReadShort(StaticFields[40]);
+            Payload.ClrFreq90 = reader.ReadShort(StaticFields[41]);
+            Payload.ClrFreq150 = reader.ReadShort(StaticFields[42]);
+            Payload.TotalCarrierOffset = reader.ReadShort(StaticFields[43]);
+            Payload.TotalFreq90 = reader.ReadShort(StaticFields[44]);
+            Payload.TotalFreq150 = reader.ReadShort(StaticFields[45]);
+            Payload.CodeIdFreq1020 = reader.ReadShort(StaticFields[46]);
+            Payload.MeasureTime = reader.ReadShort(StaticFields[47]);
+            reader.ReadByteArray(StaticFields[48], Payload.RecordGuid);
+            Payload.GnssFixType = (GpsFixType)reader.ReadEnum(StaticFields[49]);
+            Payload.GnssSatellitesVisible = reader.ReadByte(StaticFields[50]);
+            reader.ReadCharArray(StaticFields[51], Payload.CodeId);
+        
+            
+        }
     }
 
     /// <summary>
@@ -4668,63 +5383,63 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 186; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 186; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+=8; //TotalFreq
-            sum+=4; //DataIndex
-            sum+=4; //GnssLat
-            sum+=4; //GnssLon
-            sum+=4; //GnssAlt
-            sum+=4; //GnssAltEllipsoid
-            sum+=4; //GnssHAcc
-            sum+=4; //GnssVAcc
-            sum+=4; //GnssVelAcc
-            sum+=4; //Lat
-            sum+=4; //Lon
-            sum+=4; //Alt
-            sum+=4; //RelativeAlt
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //CrsPower
-            sum+=4; //CrsAm90
-            sum+=4; //CrsAm150
-            sum+=4; //ClrPower
-            sum+=4; //ClrAm90
-            sum+=4; //ClrAm150
-            sum+=4; //TotalPower
-            sum+=4; //TotalFieldStrength
-            sum+=4; //TotalAm90
-            sum+=4; //TotalAm150
-            sum+=4; //Phi90CrsVsClr
-            sum+=4; //Phi150CrsVsClr
-            sum+=4; //CodeIdAm1020
-            sum+=2; //GnssEph
-            sum+=2; //GnssEpv
-            sum+=2; //GnssVel
-            sum+=2; //Vx
-            sum+=2; //Vy
-            sum+=2; //Vz
-            sum+=2; //Hdg
-            sum+=2; //CrsCarrierOffset
-            sum+=2; //CrsFreq90
-            sum+=2; //CrsFreq150
-            sum+=2; //ClrCarrierOffset
-            sum+=2; //ClrFreq90
-            sum+=2; //ClrFreq150
-            sum+=2; //TotalCarrierOffset
-            sum+=2; //TotalFreq90
-            sum+=2; //TotalFreq150
-            sum+=2; //CodeIdFreq1020
-            sum+=2; //MeasureTime
-            sum+=RecordGuid.Length; //RecordGuid
-            sum+= 1; // GnssFixType
-            sum+=1; //GnssSatellitesVisible
-            sum+=CodeId.Length; //CodeId
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            +8 // uint64_t total_freq
+            +4 // uint32_t data_index
+            +4 // int32_t gnss_lat
+            +4 // int32_t gnss_lon
+            +4 // int32_t gnss_alt
+            +4 // int32_t gnss_alt_ellipsoid
+            +4 // uint32_t gnss_h_acc
+            +4 // uint32_t gnss_v_acc
+            +4 // uint32_t gnss_vel_acc
+            +4 // int32_t lat
+            +4 // int32_t lon
+            +4 // int32_t alt
+            +4 // int32_t relative_alt
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float crs_power
+            +4 // float crs_am_90
+            +4 // float crs_am_150
+            +4 // float clr_power
+            +4 // float clr_am_90
+            +4 // float clr_am_150
+            +4 // float total_power
+            +4 // float total_field_strength
+            +4 // float total_am_90
+            +4 // float total_am_150
+            +4 // float phi_90_crs_vs_clr
+            +4 // float phi_150_crs_vs_clr
+            +4 // float code_id_am_1020
+            +2 // uint16_t gnss_eph
+            +2 // uint16_t gnss_epv
+            +2 // uint16_t gnss_vel
+            +2 // int16_t vx
+            +2 // int16_t vy
+            +2 // int16_t vz
+            +2 // uint16_t hdg
+            +2 // int16_t crs_carrier_offset
+            +2 // int16_t crs_freq_90
+            +2 // int16_t crs_freq_150
+            +2 // int16_t clr_carrier_offset
+            +2 // int16_t clr_freq_90
+            +2 // int16_t clr_freq_150
+            +2 // int16_t total_carrier_offset
+            +2 // int16_t total_freq_90
+            +2 // int16_t total_freq_150
+            +2 // int16_t code_id_freq_1020
+            +2 // int16_t measure_time
+            +RecordGuid.Length // uint8_t[16] record_guid
+            + 1 // uint8_t gnss_fix_type
+            +1 // uint8_t gnss_satellites_visible
+            +CodeId.Length // char[4] code_id
+            );
         }
 
 
@@ -5166,7 +5881,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -5175,7 +5891,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("total_freq",
+            new(1,
+            "total_freq",
             "Measured frequency.",
             string.Empty, 
             @"Hz", 
@@ -5184,7 +5901,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("data_index",
+            new(2,
+            "data_index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -5193,7 +5911,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("gnss_lat",
+            new(3,
+            "gnss_lat",
             "Latitude (WGS84, EGM96 ellipsoid)",
             string.Empty, 
             @"degE7", 
@@ -5202,7 +5921,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_lon",
+            new(4,
+            "gnss_lon",
             "Longitude (WGS84, EGM96 ellipsoid)",
             string.Empty, 
             @"degE7", 
@@ -5211,7 +5931,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_alt",
+            new(5,
+            "gnss_alt",
             "Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.",
             string.Empty, 
             @"mm", 
@@ -5220,7 +5941,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_alt_ellipsoid",
+            new(6,
+            "gnss_alt_ellipsoid",
             "Altitude (above WGS84, EGM96 ellipsoid). Positive for up.",
             string.Empty, 
             @"mm", 
@@ -5229,7 +5951,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_h_acc",
+            new(7,
+            "gnss_h_acc",
             "Position uncertainty. Positive for up.",
             string.Empty, 
             @"mm", 
@@ -5238,7 +5961,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("gnss_v_acc",
+            new(8,
+            "gnss_v_acc",
             "Altitude uncertainty. Positive for up.",
             string.Empty, 
             @"mm", 
@@ -5247,7 +5971,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("gnss_vel_acc",
+            new(9,
+            "gnss_vel_acc",
             "Speed uncertainty. Positive for up.",
             string.Empty, 
             @"mm", 
@@ -5256,7 +5981,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("lat",
+            new(10,
+            "lat",
             "Filtered global position latitude, expressed",
             string.Empty, 
             @"degE7", 
@@ -5265,7 +5991,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lon",
+            new(11,
+            "lon",
             "Filtered global position longitude, expressed",
             string.Empty, 
             @"degE7", 
@@ -5274,7 +6001,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("alt",
+            new(12,
+            "alt",
             "Filtered global position altitude (MSL).",
             string.Empty, 
             @"mm", 
@@ -5283,7 +6011,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("relative_alt",
+            new(13,
+            "relative_alt",
             "Altitude above ground",
             string.Empty, 
             @"mm", 
@@ -5292,7 +6021,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("roll",
+            new(14,
+            "roll",
             "Roll angle (-pi..+pi)",
             string.Empty, 
             @"rad", 
@@ -5301,7 +6031,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pitch",
+            new(15,
+            "pitch",
             "Pitch angle (-pi..+pi)",
             string.Empty, 
             @"rad", 
@@ -5310,7 +6041,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw",
+            new(16,
+            "yaw",
             "Yaw angle (-pi..+pi)",
             string.Empty, 
             @"rad", 
@@ -5319,7 +6051,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("crs_power",
+            new(17,
+            "crs_power",
             "Input power of course.",
             string.Empty, 
             @"dBm", 
@@ -5328,7 +6061,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("crs_am_90",
+            new(18,
+            "crs_am_90",
             "Aplitude modulation of 90Hz of course.",
             string.Empty, 
             @"%", 
@@ -5337,7 +6071,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("crs_am_150",
+            new(19,
+            "crs_am_150",
             "Aplitude modulation of 150Hz of course.",
             string.Empty, 
             @"%", 
@@ -5346,7 +6081,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("clr_power",
+            new(20,
+            "clr_power",
             "Input power of clearance.",
             string.Empty, 
             @"dBm", 
@@ -5355,7 +6091,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("clr_am_90",
+            new(21,
+            "clr_am_90",
             "Aplitude modulation of 90Hz of clearance.",
             string.Empty, 
             @"%", 
@@ -5364,7 +6101,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("clr_am_150",
+            new(22,
+            "clr_am_150",
             "Aplitude modulation of 150Hz of clearance.",
             string.Empty, 
             @"% E2", 
@@ -5373,7 +6111,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("total_power",
+            new(23,
+            "total_power",
             "Total input power.",
             string.Empty, 
             @"dBm", 
@@ -5382,7 +6121,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("total_field_strength",
+            new(24,
+            "total_field_strength",
             "Total field strength.",
             string.Empty, 
             @"uV/m", 
@@ -5391,7 +6131,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("total_am_90",
+            new(25,
+            "total_am_90",
             "Total aplitude modulation of 90Hz.",
             string.Empty, 
             @"%", 
@@ -5400,7 +6141,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("total_am_150",
+            new(26,
+            "total_am_150",
             "Total aplitude modulation of 150Hz.",
             string.Empty, 
             @"%", 
@@ -5409,7 +6151,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("phi_90_crs_vs_clr",
+            new(27,
+            "phi_90_crs_vs_clr",
             " Phase difference 90 Hz clearance and cource",
             string.Empty, 
             @"deg", 
@@ -5418,7 +6161,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("phi_150_crs_vs_clr",
+            new(28,
+            "phi_150_crs_vs_clr",
             "Phase difference 150 Hz clearance and cource.",
             string.Empty, 
             @"deg", 
@@ -5427,7 +6171,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("gnss_eph",
+            new(29,
+            "gnss_eph",
             "GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX",
             string.Empty, 
             string.Empty, 
@@ -5436,7 +6181,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("gnss_epv",
+            new(30,
+            "gnss_epv",
             "GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX",
             string.Empty, 
             string.Empty, 
@@ -5445,7 +6191,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("gnss_vel",
+            new(31,
+            "gnss_vel",
             "GPS ground speed. If unknown, set to: UINT16_MAX",
             string.Empty, 
             @"cm/s", 
@@ -5454,7 +6201,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("vx",
+            new(32,
+            "vx",
             "Ground X Speed (Latitude, positive north)",
             string.Empty, 
             @"cm/s", 
@@ -5463,7 +6211,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("vy",
+            new(33,
+            "vy",
             "Ground Y Speed (Longitude, positive east)",
             string.Empty, 
             @"cm/s", 
@@ -5472,7 +6221,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("vz",
+            new(34,
+            "vz",
             "Ground Z Speed (Altitude, positive down)",
             string.Empty, 
             @"cm/s", 
@@ -5481,7 +6231,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("hdg",
+            new(35,
+            "hdg",
             "Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX",
             string.Empty, 
             @"cdeg", 
@@ -5490,7 +6241,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("crs_carrier_offset",
+            new(36,
+            "crs_carrier_offset",
             "Carrier frequency offset of course.",
             string.Empty, 
             @"Hz", 
@@ -5499,7 +6251,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("crs_freq_90",
+            new(37,
+            "crs_freq_90",
             "Frequency offset of signal 90 Hz of course.",
             string.Empty, 
             @"Hz", 
@@ -5508,7 +6261,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("crs_freq_150",
+            new(38,
+            "crs_freq_150",
             "Frequency offset of signal 150 Hz of course.",
             string.Empty, 
             @"Hz", 
@@ -5517,7 +6271,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("clr_carrier_offset",
+            new(39,
+            "clr_carrier_offset",
             "Carrier frequency offset of clearance.",
             string.Empty, 
             @"Hz", 
@@ -5526,7 +6281,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("clr_freq_90",
+            new(40,
+            "clr_freq_90",
             "Frequency offset of signal 90 Hz of clearance.",
             string.Empty, 
             @"Hz", 
@@ -5535,7 +6291,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("clr_freq_150",
+            new(41,
+            "clr_freq_150",
             "Frequency offset of signal 150 Hz of clearance.",
             string.Empty, 
             @"Hz", 
@@ -5544,7 +6301,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("total_carrier_offset",
+            new(42,
+            "total_carrier_offset",
             "Total carrier frequency offset.",
             string.Empty, 
             @"Hz", 
@@ -5553,7 +6311,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("total_freq_90",
+            new(43,
+            "total_freq_90",
             "Total frequency offset of signal 90 Hz.",
             string.Empty, 
             @"Hz", 
@@ -5562,7 +6321,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("total_freq_150",
+            new(44,
+            "total_freq_150",
             "Total frequency offset of signal 150 Hz.",
             string.Empty, 
             @"Hz", 
@@ -5571,7 +6331,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("measure_time",
+            new(45,
+            "measure_time",
             "Measure time.",
             string.Empty, 
             @"ms", 
@@ -5580,7 +6341,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("record_guid",
+            new(46,
+            "record_guid",
             "Record GUID.",
             string.Empty, 
             string.Empty, 
@@ -5589,7 +6351,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             16, 
             false),
-            new("gnss_fix_type",
+            new(47,
+            "gnss_fix_type",
             "GPS fix type.",
             string.Empty, 
             string.Empty, 
@@ -5598,7 +6361,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("gnss_satellites_visible",
+            new(48,
+            "gnss_satellites_visible",
             "Number of satellites visible. If unknown, set to 255",
             string.Empty, 
             string.Empty, 
@@ -5661,6 +6425,114 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.TotalFreq);
+            writer.Write(StaticFields[2], Payload.DataIndex);
+            writer.Write(StaticFields[3], Payload.GnssLat);
+            writer.Write(StaticFields[4], Payload.GnssLon);
+            writer.Write(StaticFields[5], Payload.GnssAlt);
+            writer.Write(StaticFields[6], Payload.GnssAltEllipsoid);
+            writer.Write(StaticFields[7], Payload.GnssHAcc);
+            writer.Write(StaticFields[8], Payload.GnssVAcc);
+            writer.Write(StaticFields[9], Payload.GnssVelAcc);
+            writer.Write(StaticFields[10], Payload.Lat);
+            writer.Write(StaticFields[11], Payload.Lon);
+            writer.Write(StaticFields[12], Payload.Alt);
+            writer.Write(StaticFields[13], Payload.RelativeAlt);
+            writer.Write(StaticFields[14], Payload.Roll);
+            writer.Write(StaticFields[15], Payload.Pitch);
+            writer.Write(StaticFields[16], Payload.Yaw);
+            writer.Write(StaticFields[17], Payload.CrsPower);
+            writer.Write(StaticFields[18], Payload.CrsAm90);
+            writer.Write(StaticFields[19], Payload.CrsAm150);
+            writer.Write(StaticFields[20], Payload.ClrPower);
+            writer.Write(StaticFields[21], Payload.ClrAm90);
+            writer.Write(StaticFields[22], Payload.ClrAm150);
+            writer.Write(StaticFields[23], Payload.TotalPower);
+            writer.Write(StaticFields[24], Payload.TotalFieldStrength);
+            writer.Write(StaticFields[25], Payload.TotalAm90);
+            writer.Write(StaticFields[26], Payload.TotalAm150);
+            writer.Write(StaticFields[27], Payload.Phi90CrsVsClr);
+            writer.Write(StaticFields[28], Payload.Phi150CrsVsClr);
+            writer.Write(StaticFields[29], Payload.GnssEph);
+            writer.Write(StaticFields[30], Payload.GnssEpv);
+            writer.Write(StaticFields[31], Payload.GnssVel);
+            writer.Write(StaticFields[32], Payload.Vx);
+            writer.Write(StaticFields[33], Payload.Vy);
+            writer.Write(StaticFields[34], Payload.Vz);
+            writer.Write(StaticFields[35], Payload.Hdg);
+            writer.Write(StaticFields[36], Payload.CrsCarrierOffset);
+            writer.Write(StaticFields[37], Payload.CrsFreq90);
+            writer.Write(StaticFields[38], Payload.CrsFreq150);
+            writer.Write(StaticFields[39], Payload.ClrCarrierOffset);
+            writer.Write(StaticFields[40], Payload.ClrFreq90);
+            writer.Write(StaticFields[41], Payload.ClrFreq150);
+            writer.Write(StaticFields[42], Payload.TotalCarrierOffset);
+            writer.Write(StaticFields[43], Payload.TotalFreq90);
+            writer.Write(StaticFields[44], Payload.TotalFreq150);
+            writer.Write(StaticFields[45], Payload.MeasureTime);
+            writer.Write(StaticFields[46], Payload.RecordGuid);
+            writer.Write(StaticFields[47], Payload.GnssFixType);
+            writer.Write(StaticFields[48], Payload.GnssSatellitesVisible);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.TotalFreq = reader.ReadULong(StaticFields[1]);
+            Payload.DataIndex = reader.ReadUInt(StaticFields[2]);
+            Payload.GnssLat = reader.ReadInt(StaticFields[3]);
+            Payload.GnssLon = reader.ReadInt(StaticFields[4]);
+            Payload.GnssAlt = reader.ReadInt(StaticFields[5]);
+            Payload.GnssAltEllipsoid = reader.ReadInt(StaticFields[6]);
+            Payload.GnssHAcc = reader.ReadUInt(StaticFields[7]);
+            Payload.GnssVAcc = reader.ReadUInt(StaticFields[8]);
+            Payload.GnssVelAcc = reader.ReadUInt(StaticFields[9]);
+            Payload.Lat = reader.ReadInt(StaticFields[10]);
+            Payload.Lon = reader.ReadInt(StaticFields[11]);
+            Payload.Alt = reader.ReadInt(StaticFields[12]);
+            Payload.RelativeAlt = reader.ReadInt(StaticFields[13]);
+            Payload.Roll = reader.ReadFloat(StaticFields[14]);
+            Payload.Pitch = reader.ReadFloat(StaticFields[15]);
+            Payload.Yaw = reader.ReadFloat(StaticFields[16]);
+            Payload.CrsPower = reader.ReadFloat(StaticFields[17]);
+            Payload.CrsAm90 = reader.ReadFloat(StaticFields[18]);
+            Payload.CrsAm150 = reader.ReadFloat(StaticFields[19]);
+            Payload.ClrPower = reader.ReadFloat(StaticFields[20]);
+            Payload.ClrAm90 = reader.ReadFloat(StaticFields[21]);
+            Payload.ClrAm150 = reader.ReadFloat(StaticFields[22]);
+            Payload.TotalPower = reader.ReadFloat(StaticFields[23]);
+            Payload.TotalFieldStrength = reader.ReadFloat(StaticFields[24]);
+            Payload.TotalAm90 = reader.ReadFloat(StaticFields[25]);
+            Payload.TotalAm150 = reader.ReadFloat(StaticFields[26]);
+            Payload.Phi90CrsVsClr = reader.ReadFloat(StaticFields[27]);
+            Payload.Phi150CrsVsClr = reader.ReadFloat(StaticFields[28]);
+            Payload.GnssEph = reader.ReadUShort(StaticFields[29]);
+            Payload.GnssEpv = reader.ReadUShort(StaticFields[30]);
+            Payload.GnssVel = reader.ReadUShort(StaticFields[31]);
+            Payload.Vx = reader.ReadShort(StaticFields[32]);
+            Payload.Vy = reader.ReadShort(StaticFields[33]);
+            Payload.Vz = reader.ReadShort(StaticFields[34]);
+            Payload.Hdg = reader.ReadUShort(StaticFields[35]);
+            Payload.CrsCarrierOffset = reader.ReadShort(StaticFields[36]);
+            Payload.CrsFreq90 = reader.ReadShort(StaticFields[37]);
+            Payload.CrsFreq150 = reader.ReadShort(StaticFields[38]);
+            Payload.ClrCarrierOffset = reader.ReadShort(StaticFields[39]);
+            Payload.ClrFreq90 = reader.ReadShort(StaticFields[40]);
+            Payload.ClrFreq150 = reader.ReadShort(StaticFields[41]);
+            Payload.TotalCarrierOffset = reader.ReadShort(StaticFields[42]);
+            Payload.TotalFreq90 = reader.ReadShort(StaticFields[43]);
+            Payload.TotalFreq150 = reader.ReadShort(StaticFields[44]);
+            Payload.MeasureTime = reader.ReadShort(StaticFields[45]);
+            reader.ReadByteArray(StaticFields[46], Payload.RecordGuid);
+            Payload.GnssFixType = (GpsFixType)reader.ReadEnum(StaticFields[47]);
+            Payload.GnssSatellitesVisible = reader.ReadByte(StaticFields[48]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -5672,60 +6544,60 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 176; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 176; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+=8; //TotalFreq
-            sum+=4; //DataIndex
-            sum+=4; //GnssLat
-            sum+=4; //GnssLon
-            sum+=4; //GnssAlt
-            sum+=4; //GnssAltEllipsoid
-            sum+=4; //GnssHAcc
-            sum+=4; //GnssVAcc
-            sum+=4; //GnssVelAcc
-            sum+=4; //Lat
-            sum+=4; //Lon
-            sum+=4; //Alt
-            sum+=4; //RelativeAlt
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //CrsPower
-            sum+=4; //CrsAm90
-            sum+=4; //CrsAm150
-            sum+=4; //ClrPower
-            sum+=4; //ClrAm90
-            sum+=4; //ClrAm150
-            sum+=4; //TotalPower
-            sum+=4; //TotalFieldStrength
-            sum+=4; //TotalAm90
-            sum+=4; //TotalAm150
-            sum+=4; //Phi90CrsVsClr
-            sum+=4; //Phi150CrsVsClr
-            sum+=2; //GnssEph
-            sum+=2; //GnssEpv
-            sum+=2; //GnssVel
-            sum+=2; //Vx
-            sum+=2; //Vy
-            sum+=2; //Vz
-            sum+=2; //Hdg
-            sum+=2; //CrsCarrierOffset
-            sum+=2; //CrsFreq90
-            sum+=2; //CrsFreq150
-            sum+=2; //ClrCarrierOffset
-            sum+=2; //ClrFreq90
-            sum+=2; //ClrFreq150
-            sum+=2; //TotalCarrierOffset
-            sum+=2; //TotalFreq90
-            sum+=2; //TotalFreq150
-            sum+=2; //MeasureTime
-            sum+=RecordGuid.Length; //RecordGuid
-            sum+= 1; // GnssFixType
-            sum+=1; //GnssSatellitesVisible
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            +8 // uint64_t total_freq
+            +4 // uint32_t data_index
+            +4 // int32_t gnss_lat
+            +4 // int32_t gnss_lon
+            +4 // int32_t gnss_alt
+            +4 // int32_t gnss_alt_ellipsoid
+            +4 // uint32_t gnss_h_acc
+            +4 // uint32_t gnss_v_acc
+            +4 // uint32_t gnss_vel_acc
+            +4 // int32_t lat
+            +4 // int32_t lon
+            +4 // int32_t alt
+            +4 // int32_t relative_alt
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float crs_power
+            +4 // float crs_am_90
+            +4 // float crs_am_150
+            +4 // float clr_power
+            +4 // float clr_am_90
+            +4 // float clr_am_150
+            +4 // float total_power
+            +4 // float total_field_strength
+            +4 // float total_am_90
+            +4 // float total_am_150
+            +4 // float phi_90_crs_vs_clr
+            +4 // float phi_150_crs_vs_clr
+            +2 // uint16_t gnss_eph
+            +2 // uint16_t gnss_epv
+            +2 // uint16_t gnss_vel
+            +2 // int16_t vx
+            +2 // int16_t vy
+            +2 // int16_t vz
+            +2 // uint16_t hdg
+            +2 // int16_t crs_carrier_offset
+            +2 // int16_t crs_freq_90
+            +2 // int16_t crs_freq_150
+            +2 // int16_t clr_carrier_offset
+            +2 // int16_t clr_freq_90
+            +2 // int16_t clr_freq_150
+            +2 // int16_t total_carrier_offset
+            +2 // int16_t total_freq_90
+            +2 // int16_t total_freq_150
+            +2 // int16_t measure_time
+            +RecordGuid.Length // uint8_t[16] record_guid
+            + 1 // uint8_t gnss_fix_type
+            +1 // uint8_t gnss_satellites_visible
+            );
         }
 
 
@@ -6126,7 +6998,8 @@ namespace Asv.Mavlink.AsvSdr
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_unix_usec",
+            new(0,
+            "time_unix_usec",
             "Timestamp (UNIX epoch time).",
             string.Empty, 
             @"us", 
@@ -6135,7 +7008,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("total_freq",
+            new(1,
+            "total_freq",
             "Measured frequency.",
             string.Empty, 
             @"Hz", 
@@ -6144,7 +7018,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("data_index",
+            new(2,
+            "data_index",
             "Data index in record",
             string.Empty, 
             string.Empty, 
@@ -6153,7 +7028,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("gnss_lat",
+            new(3,
+            "gnss_lat",
             "Latitude (WGS84, EGM96 ellipsoid)",
             string.Empty, 
             @"degE7", 
@@ -6162,7 +7038,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_lon",
+            new(4,
+            "gnss_lon",
             "Longitude (WGS84, EGM96 ellipsoid)",
             string.Empty, 
             @"degE7", 
@@ -6171,7 +7048,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_alt",
+            new(5,
+            "gnss_alt",
             "Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.",
             string.Empty, 
             @"mm", 
@@ -6180,7 +7058,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_alt_ellipsoid",
+            new(6,
+            "gnss_alt_ellipsoid",
             "Altitude (above WGS84, EGM96 ellipsoid). Positive for up.",
             string.Empty, 
             @"mm", 
@@ -6189,7 +7068,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("gnss_h_acc",
+            new(7,
+            "gnss_h_acc",
             "Position uncertainty. Positive for up.",
             string.Empty, 
             @"mm", 
@@ -6198,7 +7078,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("gnss_v_acc",
+            new(8,
+            "gnss_v_acc",
             "Altitude uncertainty. Positive for up.",
             string.Empty, 
             @"mm", 
@@ -6207,7 +7088,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("gnss_vel_acc",
+            new(9,
+            "gnss_vel_acc",
             "Speed uncertainty. Positive for up.",
             string.Empty, 
             @"mm", 
@@ -6216,7 +7098,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("lat",
+            new(10,
+            "lat",
             "Filtered global position latitude, expressed",
             string.Empty, 
             @"degE7", 
@@ -6225,7 +7108,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lon",
+            new(11,
+            "lon",
             "Filtered global position longitude, expressed",
             string.Empty, 
             @"degE7", 
@@ -6234,7 +7118,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("alt",
+            new(12,
+            "alt",
             "Filtered global position altitude (MSL).",
             string.Empty, 
             @"mm", 
@@ -6243,7 +7128,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("relative_alt",
+            new(13,
+            "relative_alt",
             "Altitude above ground",
             string.Empty, 
             @"mm", 
@@ -6252,7 +7138,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int32, 
             0, 
             false),
-            new("roll",
+            new(14,
+            "roll",
             "Roll angle (-pi..+pi)",
             string.Empty, 
             @"rad", 
@@ -6261,7 +7148,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pitch",
+            new(15,
+            "pitch",
             "Pitch angle (-pi..+pi)",
             string.Empty, 
             @"rad", 
@@ -6270,7 +7158,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw",
+            new(16,
+            "yaw",
             "Yaw angle (-pi..+pi)",
             string.Empty, 
             @"rad", 
@@ -6279,7 +7168,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("azimuth",
+            new(17,
+            "azimuth",
             "Measured azimuth.",
             string.Empty, 
             @"deg", 
@@ -6288,7 +7178,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("power",
+            new(18,
+            "power",
             "Total input power.",
             string.Empty, 
             @"dBm", 
@@ -6297,7 +7188,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("field_strength",
+            new(19,
+            "field_strength",
             "Total field strength.",
             string.Empty, 
             @"uV/m", 
@@ -6306,7 +7198,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("am_30",
+            new(20,
+            "am_30",
             "Total aplitude modulation of 30 Hz.",
             string.Empty, 
             @"%", 
@@ -6315,7 +7208,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("am_9960",
+            new(21,
+            "am_9960",
             "Total aplitude modulation of 9960 Hz.",
             string.Empty, 
             @"%", 
@@ -6324,7 +7218,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("deviation",
+            new(22,
+            "deviation",
             "Deviation.",
             string.Empty, 
             @"", 
@@ -6333,7 +7228,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("code_id_am_1020",
+            new(23,
+            "code_id_am_1020",
             "Total aplitude modulation of 90Hz.",
             string.Empty, 
             @"%", 
@@ -6342,7 +7238,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Float32, 
             0, 
             false),
-            new("gnss_eph",
+            new(24,
+            "gnss_eph",
             "GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX",
             string.Empty, 
             string.Empty, 
@@ -6351,7 +7248,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("gnss_epv",
+            new(25,
+            "gnss_epv",
             "GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX",
             string.Empty, 
             string.Empty, 
@@ -6360,7 +7258,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("gnss_vel",
+            new(26,
+            "gnss_vel",
             "GPS ground speed. If unknown, set to: UINT16_MAX",
             string.Empty, 
             @"cm/s", 
@@ -6369,7 +7268,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("vx",
+            new(27,
+            "vx",
             "Ground X Speed (Latitude, positive north)",
             string.Empty, 
             @"cm/s", 
@@ -6378,7 +7278,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("vy",
+            new(28,
+            "vy",
             "Ground Y Speed (Longitude, positive east)",
             string.Empty, 
             @"cm/s", 
@@ -6387,7 +7288,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("vz",
+            new(29,
+            "vz",
             "Ground Z Speed (Altitude, positive down)",
             string.Empty, 
             @"cm/s", 
@@ -6396,7 +7298,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("hdg",
+            new(30,
+            "hdg",
             "Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX",
             string.Empty, 
             @"cdeg", 
@@ -6405,7 +7308,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("carrier_offset",
+            new(31,
+            "carrier_offset",
             "Total carrier frequency offset.",
             string.Empty, 
             @"Hz", 
@@ -6414,7 +7318,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("freq_30",
+            new(32,
+            "freq_30",
             "Total frequency offset of signal 30 Hz.",
             string.Empty, 
             @"Hz", 
@@ -6423,7 +7328,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("freq_9960",
+            new(33,
+            "freq_9960",
             "Total frequency offset of signal 9960 Hz.",
             string.Empty, 
             @"Hz", 
@@ -6432,7 +7338,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("code_id_freq_1020",
+            new(34,
+            "code_id_freq_1020",
             "Total frequency offset of signal 90 Hz.",
             string.Empty, 
             @"Hz", 
@@ -6441,7 +7348,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("measure_time",
+            new(35,
+            "measure_time",
             "Measure time.",
             string.Empty, 
             @"ms", 
@@ -6450,7 +7358,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Int16, 
             0, 
             false),
-            new("record_guid",
+            new(36,
+            "record_guid",
             "Record GUID.",
             string.Empty, 
             string.Empty, 
@@ -6459,7 +7368,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             16, 
             false),
-            new("gnss_fix_type",
+            new(37,
+            "gnss_fix_type",
             "GPS fix type.",
             string.Empty, 
             string.Empty, 
@@ -6468,7 +7378,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("gnss_satellites_visible",
+            new(38,
+            "gnss_satellites_visible",
             "Number of satellites visible. If unknown, set to 255",
             string.Empty, 
             string.Empty, 
@@ -6477,7 +7388,8 @@ namespace Asv.Mavlink.AsvSdr
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("code_id",
+            new(39,
+            "code_id",
             "Code identification",
             string.Empty, 
             @"Letters", 
@@ -6531,6 +7443,96 @@ namespace Asv.Mavlink.AsvSdr
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeUnixUsec);
+            writer.Write(StaticFields[1], Payload.TotalFreq);
+            writer.Write(StaticFields[2], Payload.DataIndex);
+            writer.Write(StaticFields[3], Payload.GnssLat);
+            writer.Write(StaticFields[4], Payload.GnssLon);
+            writer.Write(StaticFields[5], Payload.GnssAlt);
+            writer.Write(StaticFields[6], Payload.GnssAltEllipsoid);
+            writer.Write(StaticFields[7], Payload.GnssHAcc);
+            writer.Write(StaticFields[8], Payload.GnssVAcc);
+            writer.Write(StaticFields[9], Payload.GnssVelAcc);
+            writer.Write(StaticFields[10], Payload.Lat);
+            writer.Write(StaticFields[11], Payload.Lon);
+            writer.Write(StaticFields[12], Payload.Alt);
+            writer.Write(StaticFields[13], Payload.RelativeAlt);
+            writer.Write(StaticFields[14], Payload.Roll);
+            writer.Write(StaticFields[15], Payload.Pitch);
+            writer.Write(StaticFields[16], Payload.Yaw);
+            writer.Write(StaticFields[17], Payload.Azimuth);
+            writer.Write(StaticFields[18], Payload.Power);
+            writer.Write(StaticFields[19], Payload.FieldStrength);
+            writer.Write(StaticFields[20], Payload.Am30);
+            writer.Write(StaticFields[21], Payload.Am9960);
+            writer.Write(StaticFields[22], Payload.Deviation);
+            writer.Write(StaticFields[23], Payload.CodeIdAm1020);
+            writer.Write(StaticFields[24], Payload.GnssEph);
+            writer.Write(StaticFields[25], Payload.GnssEpv);
+            writer.Write(StaticFields[26], Payload.GnssVel);
+            writer.Write(StaticFields[27], Payload.Vx);
+            writer.Write(StaticFields[28], Payload.Vy);
+            writer.Write(StaticFields[29], Payload.Vz);
+            writer.Write(StaticFields[30], Payload.Hdg);
+            writer.Write(StaticFields[31], Payload.CarrierOffset);
+            writer.Write(StaticFields[32], Payload.Freq30);
+            writer.Write(StaticFields[33], Payload.Freq9960);
+            writer.Write(StaticFields[34], Payload.CodeIdFreq1020);
+            writer.Write(StaticFields[35], Payload.MeasureTime);
+            writer.Write(StaticFields[36], Payload.RecordGuid);
+            writer.Write(StaticFields[37], Payload.GnssFixType);
+            writer.Write(StaticFields[38], Payload.GnssSatellitesVisible);
+            writer.Write(StaticFields[39], Payload.CodeId);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
+            Payload.TotalFreq = reader.ReadULong(StaticFields[1]);
+            Payload.DataIndex = reader.ReadUInt(StaticFields[2]);
+            Payload.GnssLat = reader.ReadInt(StaticFields[3]);
+            Payload.GnssLon = reader.ReadInt(StaticFields[4]);
+            Payload.GnssAlt = reader.ReadInt(StaticFields[5]);
+            Payload.GnssAltEllipsoid = reader.ReadInt(StaticFields[6]);
+            Payload.GnssHAcc = reader.ReadUInt(StaticFields[7]);
+            Payload.GnssVAcc = reader.ReadUInt(StaticFields[8]);
+            Payload.GnssVelAcc = reader.ReadUInt(StaticFields[9]);
+            Payload.Lat = reader.ReadInt(StaticFields[10]);
+            Payload.Lon = reader.ReadInt(StaticFields[11]);
+            Payload.Alt = reader.ReadInt(StaticFields[12]);
+            Payload.RelativeAlt = reader.ReadInt(StaticFields[13]);
+            Payload.Roll = reader.ReadFloat(StaticFields[14]);
+            Payload.Pitch = reader.ReadFloat(StaticFields[15]);
+            Payload.Yaw = reader.ReadFloat(StaticFields[16]);
+            Payload.Azimuth = reader.ReadFloat(StaticFields[17]);
+            Payload.Power = reader.ReadFloat(StaticFields[18]);
+            Payload.FieldStrength = reader.ReadFloat(StaticFields[19]);
+            Payload.Am30 = reader.ReadFloat(StaticFields[20]);
+            Payload.Am9960 = reader.ReadFloat(StaticFields[21]);
+            Payload.Deviation = reader.ReadFloat(StaticFields[22]);
+            Payload.CodeIdAm1020 = reader.ReadFloat(StaticFields[23]);
+            Payload.GnssEph = reader.ReadUShort(StaticFields[24]);
+            Payload.GnssEpv = reader.ReadUShort(StaticFields[25]);
+            Payload.GnssVel = reader.ReadUShort(StaticFields[26]);
+            Payload.Vx = reader.ReadShort(StaticFields[27]);
+            Payload.Vy = reader.ReadShort(StaticFields[28]);
+            Payload.Vz = reader.ReadShort(StaticFields[29]);
+            Payload.Hdg = reader.ReadUShort(StaticFields[30]);
+            Payload.CarrierOffset = reader.ReadShort(StaticFields[31]);
+            Payload.Freq30 = reader.ReadShort(StaticFields[32]);
+            Payload.Freq9960 = reader.ReadShort(StaticFields[33]);
+            Payload.CodeIdFreq1020 = reader.ReadShort(StaticFields[34]);
+            Payload.MeasureTime = reader.ReadShort(StaticFields[35]);
+            reader.ReadByteArray(StaticFields[36], Payload.RecordGuid);
+            Payload.GnssFixType = (GpsFixType)reader.ReadEnum(StaticFields[37]);
+            Payload.GnssSatellitesVisible = reader.ReadByte(StaticFields[38]);
+            reader.ReadCharArray(StaticFields[39], Payload.CodeId);
+        
+            
+        }
     }
 
     /// <summary>
@@ -6542,51 +7544,51 @@ namespace Asv.Mavlink.AsvSdr
         public byte GetMaxByteSize() => 150; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 150; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+=8; //TotalFreq
-            sum+=4; //DataIndex
-            sum+=4; //GnssLat
-            sum+=4; //GnssLon
-            sum+=4; //GnssAlt
-            sum+=4; //GnssAltEllipsoid
-            sum+=4; //GnssHAcc
-            sum+=4; //GnssVAcc
-            sum+=4; //GnssVelAcc
-            sum+=4; //Lat
-            sum+=4; //Lon
-            sum+=4; //Alt
-            sum+=4; //RelativeAlt
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //Azimuth
-            sum+=4; //Power
-            sum+=4; //FieldStrength
-            sum+=4; //Am30
-            sum+=4; //Am9960
-            sum+=4; //Deviation
-            sum+=4; //CodeIdAm1020
-            sum+=2; //GnssEph
-            sum+=2; //GnssEpv
-            sum+=2; //GnssVel
-            sum+=2; //Vx
-            sum+=2; //Vy
-            sum+=2; //Vz
-            sum+=2; //Hdg
-            sum+=2; //CarrierOffset
-            sum+=2; //Freq30
-            sum+=2; //Freq9960
-            sum+=2; //CodeIdFreq1020
-            sum+=2; //MeasureTime
-            sum+=RecordGuid.Length; //RecordGuid
-            sum+= 1; // GnssFixType
-            sum+=1; //GnssSatellitesVisible
-            sum+=CodeId.Length; //CodeId
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            +8 // uint64_t total_freq
+            +4 // uint32_t data_index
+            +4 // int32_t gnss_lat
+            +4 // int32_t gnss_lon
+            +4 // int32_t gnss_alt
+            +4 // int32_t gnss_alt_ellipsoid
+            +4 // uint32_t gnss_h_acc
+            +4 // uint32_t gnss_v_acc
+            +4 // uint32_t gnss_vel_acc
+            +4 // int32_t lat
+            +4 // int32_t lon
+            +4 // int32_t alt
+            +4 // int32_t relative_alt
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float azimuth
+            +4 // float power
+            +4 // float field_strength
+            +4 // float am_30
+            +4 // float am_9960
+            +4 // float deviation
+            +4 // float code_id_am_1020
+            +2 // uint16_t gnss_eph
+            +2 // uint16_t gnss_epv
+            +2 // uint16_t gnss_vel
+            +2 // int16_t vx
+            +2 // int16_t vy
+            +2 // int16_t vz
+            +2 // uint16_t hdg
+            +2 // int16_t carrier_offset
+            +2 // int16_t freq_30
+            +2 // int16_t freq_9960
+            +2 // int16_t code_id_freq_1020
+            +2 // int16_t measure_time
+            +RecordGuid.Length // uint8_t[16] record_guid
+            + 1 // uint8_t gnss_fix_type
+            +1 // uint8_t gnss_satellites_visible
+            +CodeId.Length // char[4] code_id
+            );
         }
 
 

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -500,7 +500,8 @@ namespace Asv.Mavlink.Storm32
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("device_cap_flags",
+            new(0,
+            "device_cap_flags",
             "Gimbal device capability flags. Same flags as reported by GIMBAL_DEVICE_INFORMATION. The flag is only 16 bit wide, but stored in 32 bit, for backwards compatibility (high word is zero).",
             string.Empty, 
             string.Empty, 
@@ -509,7 +510,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("manager_cap_flags",
+            new(1,
+            "manager_cap_flags",
             "Gimbal manager capability flags.",
             string.Empty, 
             string.Empty, 
@@ -518,7 +520,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("roll_min",
+            new(2,
+            "roll_min",
             "Hardware minimum roll angle (positive: roll to the right). NaN if unknown.",
             string.Empty, 
             @"rad", 
@@ -527,7 +530,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("roll_max",
+            new(3,
+            "roll_max",
             "Hardware maximum roll angle (positive: roll to the right). NaN if unknown.",
             string.Empty, 
             @"rad", 
@@ -536,7 +540,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pitch_min",
+            new(4,
+            "pitch_min",
             "Hardware minimum pitch/tilt angle (positive: tilt up). NaN if unknown.",
             string.Empty, 
             @"rad", 
@@ -545,7 +550,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pitch_max",
+            new(5,
+            "pitch_max",
             "Hardware maximum pitch/tilt angle (positive: tilt up). NaN if unknown.",
             string.Empty, 
             @"rad", 
@@ -554,7 +560,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw_min",
+            new(6,
+            "yaw_min",
             "Hardware minimum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.",
             string.Empty, 
             @"rad", 
@@ -563,7 +570,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw_max",
+            new(7,
+            "yaw_max",
             "Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.",
             string.Empty, 
             @"rad", 
@@ -572,7 +580,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("gimbal_id",
+            new(8,
+            "gimbal_id",
             "Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.",
             string.Empty, 
             string.Empty, 
@@ -595,6 +604,34 @@ namespace Asv.Mavlink.Storm32
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.DeviceCapFlags);
+            writer.Write(StaticFields[1], Payload.ManagerCapFlags);
+            writer.Write(StaticFields[2], Payload.RollMin);
+            writer.Write(StaticFields[3], Payload.RollMax);
+            writer.Write(StaticFields[4], Payload.PitchMin);
+            writer.Write(StaticFields[5], Payload.PitchMax);
+            writer.Write(StaticFields[6], Payload.YawMin);
+            writer.Write(StaticFields[7], Payload.YawMax);
+            writer.Write(StaticFields[8], Payload.GimbalId);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.DeviceCapFlags = (GimbalDeviceCapFlags)reader.ReadEnum(StaticFields[0]);
+            Payload.ManagerCapFlags = (MavStorm32GimbalManagerCapFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.RollMin = reader.ReadFloat(StaticFields[2]);
+            Payload.RollMax = reader.ReadFloat(StaticFields[3]);
+            Payload.PitchMin = reader.ReadFloat(StaticFields[4]);
+            Payload.PitchMax = reader.ReadFloat(StaticFields[5]);
+            Payload.YawMin = reader.ReadFloat(StaticFields[6]);
+            Payload.YawMax = reader.ReadFloat(StaticFields[7]);
+            Payload.GimbalId = reader.ReadByte(StaticFields[8]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -606,20 +643,20 @@ namespace Asv.Mavlink.Storm32
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 4; // DeviceCapFlags
-            sum+= 4; // ManagerCapFlags
-            sum+=4; //RollMin
-            sum+=4; //RollMax
-            sum+=4; //PitchMin
-            sum+=4; //PitchMax
-            sum+=4; //YawMin
-            sum+=4; //YawMax
-            sum+=1; //GimbalId
-            return (byte)sum;
+            return (byte)(
+            + 4 // uint32_t device_cap_flags
+            + 4 // uint32_t manager_cap_flags
+            +4 // float roll_min
+            +4 // float roll_max
+            +4 // float pitch_min
+            +4 // float pitch_max
+            +4 // float yaw_min
+            +4 // float yaw_max
+            +1 // uint8_t gimbal_id
+            );
         }
 
 
@@ -727,7 +764,8 @@ namespace Asv.Mavlink.Storm32
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("device_flags",
+            new(0,
+            "device_flags",
             "Gimbal device flags currently applied. Same flags as reported by GIMBAL_DEVICE_ATTITUDE_STATUS.",
             string.Empty, 
             string.Empty, 
@@ -736,7 +774,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("manager_flags",
+            new(1,
+            "manager_flags",
             "Gimbal manager flags currently applied.",
             string.Empty, 
             string.Empty, 
@@ -745,7 +784,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("gimbal_id",
+            new(2,
+            "gimbal_id",
             "Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.",
             string.Empty, 
             string.Empty, 
@@ -754,7 +794,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("supervisor",
+            new(3,
+            "supervisor",
             "Client who is currently supervisor (0 = none).",
             string.Empty, 
             string.Empty, 
@@ -763,7 +804,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("profile",
+            new(4,
+            "profile",
             "Profile currently applied (0 = default).",
             string.Empty, 
             string.Empty, 
@@ -782,6 +824,26 @@ namespace Asv.Mavlink.Storm32
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.DeviceFlags);
+            writer.Write(StaticFields[1], Payload.ManagerFlags);
+            writer.Write(StaticFields[2], Payload.GimbalId);
+            writer.Write(StaticFields[3], Payload.Supervisor);
+            writer.Write(StaticFields[4], Payload.Profile);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadEnum(StaticFields[0]);
+            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.GimbalId = reader.ReadByte(StaticFields[2]);
+            Payload.Supervisor = (MavStorm32GimbalManagerClient)reader.ReadEnum(StaticFields[3]);
+            Payload.Profile = (MavStorm32GimbalManagerProfile)reader.ReadEnum(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -793,16 +855,16 @@ namespace Asv.Mavlink.Storm32
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 2; // DeviceFlags
-            sum+= 2; // ManagerFlags
-            sum+=1; //GimbalId
-            sum+= 1; // Supervisor
-            sum+= 1; // Profile
-            return (byte)sum;
+            return (byte)(
+            + 2 // uint16_t device_flags
+            + 2 // uint16_t manager_flags
+            +1 // uint8_t gimbal_id
+            + 1 // uint8_t supervisor
+            + 1 // uint8_t profile
+            );
         }
 
 
@@ -882,7 +944,8 @@ namespace Asv.Mavlink.Storm32
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("q",
+            new(0,
+            "q",
             "Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). Set first element to NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
             string.Empty, 
             string.Empty, 
@@ -891,7 +954,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             4, 
             false),
-            new("angular_velocity_x",
+            new(1,
+            "angular_velocity_x",
             "X component of angular velocity (positive: roll to the right). NaN to be ignored.",
             string.Empty, 
             @"rad/s", 
@@ -900,7 +964,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("angular_velocity_y",
+            new(2,
+            "angular_velocity_y",
             "Y component of angular velocity (positive: tilt up). NaN to be ignored.",
             string.Empty, 
             @"rad/s", 
@@ -909,7 +974,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("angular_velocity_z",
+            new(3,
+            "angular_velocity_z",
             "Z component of angular velocity (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
             string.Empty, 
             @"rad/s", 
@@ -918,7 +984,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("device_flags",
+            new(4,
+            "device_flags",
             "Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.",
             string.Empty, 
             string.Empty, 
@@ -927,7 +994,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("manager_flags",
+            new(5,
+            "manager_flags",
             "Gimbal manager flags to be applied (0 to be ignored).",
             string.Empty, 
             string.Empty, 
@@ -936,7 +1004,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(6,
+            "target_system",
             "System ID",
             string.Empty, 
             string.Empty, 
@@ -945,7 +1014,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(7,
+            "target_component",
             "Component ID",
             string.Empty, 
             string.Empty, 
@@ -954,7 +1024,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("gimbal_id",
+            new(8,
+            "gimbal_id",
             "Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.",
             string.Empty, 
             string.Empty, 
@@ -963,7 +1034,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("client",
+            new(9,
+            "client",
             "Client which is contacting the gimbal manager (must be set).",
             string.Empty, 
             string.Empty, 
@@ -987,6 +1059,36 @@ namespace Asv.Mavlink.Storm32
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Q);
+            writer.Write(StaticFields[1], Payload.AngularVelocityX);
+            writer.Write(StaticFields[2], Payload.AngularVelocityY);
+            writer.Write(StaticFields[3], Payload.AngularVelocityZ);
+            writer.Write(StaticFields[4], Payload.DeviceFlags);
+            writer.Write(StaticFields[5], Payload.ManagerFlags);
+            writer.Write(StaticFields[6], Payload.TargetSystem);
+            writer.Write(StaticFields[7], Payload.TargetComponent);
+            writer.Write(StaticFields[8], Payload.GimbalId);
+            writer.Write(StaticFields[9], Payload.Client);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadFloatArray(StaticFields[0], Payload.Q);
+            Payload.AngularVelocityX = reader.ReadFloat(StaticFields[1]);
+            Payload.AngularVelocityY = reader.ReadFloat(StaticFields[2]);
+            Payload.AngularVelocityZ = reader.ReadFloat(StaticFields[3]);
+            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadEnum(StaticFields[4]);
+            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadEnum(StaticFields[5]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[7]);
+            Payload.GimbalId = reader.ReadByte(StaticFields[8]);
+            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadEnum(StaticFields[9]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -998,21 +1100,21 @@ namespace Asv.Mavlink.Storm32
         public byte GetMaxByteSize() => 36; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=Q.Length * 4; //Q
-            sum+=4; //AngularVelocityX
-            sum+=4; //AngularVelocityY
-            sum+=4; //AngularVelocityZ
-            sum+= 2; // DeviceFlags
-            sum+= 2; // ManagerFlags
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //GimbalId
-            sum+= 1; // Client
-            return (byte)sum;
+            return (byte)(
+            +Q.Length * 4 // float[4] q
+            +4 // float angular_velocity_x
+            +4 // float angular_velocity_y
+            +4 // float angular_velocity_z
+            + 2 // uint16_t device_flags
+            + 2 // uint16_t manager_flags
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t gimbal_id
+            + 1 // uint8_t client
+            );
         }
 
 
@@ -1140,7 +1242,8 @@ namespace Asv.Mavlink.Storm32
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("pitch",
+            new(0,
+            "pitch",
             "Pitch/tilt angle (positive: tilt up). NaN to be ignored.",
             string.Empty, 
             @"rad", 
@@ -1149,7 +1252,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw",
+            new(1,
+            "yaw",
             "Yaw/pan angle (positive: pan the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
             string.Empty, 
             @"rad", 
@@ -1158,7 +1262,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("pitch_rate",
+            new(2,
+            "pitch_rate",
             "Pitch/tilt angular rate (positive: tilt up). NaN to be ignored.",
             string.Empty, 
             @"rad/s", 
@@ -1167,7 +1272,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yaw_rate",
+            new(3,
+            "yaw_rate",
             "Yaw/pan angular rate (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
             string.Empty, 
             @"rad/s", 
@@ -1176,7 +1282,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("device_flags",
+            new(4,
+            "device_flags",
             "Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.",
             string.Empty, 
             string.Empty, 
@@ -1185,7 +1292,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("manager_flags",
+            new(5,
+            "manager_flags",
             "Gimbal manager flags to be applied (0 to be ignored).",
             string.Empty, 
             string.Empty, 
@@ -1194,7 +1302,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(6,
+            "target_system",
             "System ID",
             string.Empty, 
             string.Empty, 
@@ -1203,7 +1312,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(7,
+            "target_component",
             "Component ID",
             string.Empty, 
             string.Empty, 
@@ -1212,7 +1322,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("gimbal_id",
+            new(8,
+            "gimbal_id",
             "Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.",
             string.Empty, 
             string.Empty, 
@@ -1221,7 +1332,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("client",
+            new(9,
+            "client",
             "Client which is contacting the gimbal manager (must be set).",
             string.Empty, 
             string.Empty, 
@@ -1245,6 +1357,36 @@ namespace Asv.Mavlink.Storm32
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Pitch);
+            writer.Write(StaticFields[1], Payload.Yaw);
+            writer.Write(StaticFields[2], Payload.PitchRate);
+            writer.Write(StaticFields[3], Payload.YawRate);
+            writer.Write(StaticFields[4], Payload.DeviceFlags);
+            writer.Write(StaticFields[5], Payload.ManagerFlags);
+            writer.Write(StaticFields[6], Payload.TargetSystem);
+            writer.Write(StaticFields[7], Payload.TargetComponent);
+            writer.Write(StaticFields[8], Payload.GimbalId);
+            writer.Write(StaticFields[9], Payload.Client);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Pitch = reader.ReadFloat(StaticFields[0]);
+            Payload.Yaw = reader.ReadFloat(StaticFields[1]);
+            Payload.PitchRate = reader.ReadFloat(StaticFields[2]);
+            Payload.YawRate = reader.ReadFloat(StaticFields[3]);
+            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadEnum(StaticFields[4]);
+            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadEnum(StaticFields[5]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[7]);
+            Payload.GimbalId = reader.ReadByte(StaticFields[8]);
+            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadEnum(StaticFields[9]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1256,21 +1398,21 @@ namespace Asv.Mavlink.Storm32
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //PitchRate
-            sum+=4; //YawRate
-            sum+= 2; // DeviceFlags
-            sum+= 2; // ManagerFlags
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //GimbalId
-            sum+= 1; // Client
-            return (byte)sum;
+            return (byte)(
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float pitch_rate
+            +4 // float yaw_rate
+            + 2 // uint16_t device_flags
+            + 2 // uint16_t manager_flags
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t gimbal_id
+            + 1 // uint8_t client
+            );
         }
 
 
@@ -1385,7 +1527,8 @@ namespace Asv.Mavlink.Storm32
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("roll",
+            new(0,
+            "roll",
             "Roll angle (positive to roll to the right).",
             string.Empty, 
             @"rad", 
@@ -1394,7 +1537,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Float32, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID",
             string.Empty, 
             string.Empty, 
@@ -1403,7 +1547,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID",
             string.Empty, 
             string.Empty, 
@@ -1412,7 +1557,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("gimbal_id",
+            new(3,
+            "gimbal_id",
             "Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.",
             string.Empty, 
             string.Empty, 
@@ -1421,7 +1567,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("client",
+            new(4,
+            "client",
             "Client which is contacting the gimbal manager (must be set).",
             string.Empty, 
             string.Empty, 
@@ -1440,6 +1587,26 @@ namespace Asv.Mavlink.Storm32
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Roll);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+            writer.Write(StaticFields[3], Payload.GimbalId);
+            writer.Write(StaticFields[4], Payload.Client);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Roll = reader.ReadFloat(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+            Payload.GimbalId = reader.ReadByte(StaticFields[3]);
+            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadEnum(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1451,16 +1618,16 @@ namespace Asv.Mavlink.Storm32
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Roll
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //GimbalId
-            sum+= 1; // Client
-            return (byte)sum;
+            return (byte)(
+            +4 // float roll
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t gimbal_id
+            + 1 // uint8_t client
+            );
         }
 
 
@@ -1540,7 +1707,8 @@ namespace Asv.Mavlink.Storm32
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("mode",
+            new(0,
+            "mode",
             "Current shot mode.",
             string.Empty, 
             string.Empty, 
@@ -1549,7 +1717,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("shot_state",
+            new(1,
+            "shot_state",
             "Current state in the shot. States are specific to the selected shot mode.",
             string.Empty, 
             string.Empty, 
@@ -1565,6 +1734,20 @@ namespace Asv.Mavlink.Storm32
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Mode);
+            writer.Write(StaticFields[1], Payload.ShotState);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Mode = (MavQshotMode)reader.ReadEnum(StaticFields[0]);
+            Payload.ShotState = reader.ReadUShort(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1576,13 +1759,13 @@ namespace Asv.Mavlink.Storm32
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 2; // Mode
-            sum+=2; //ShotState
-            return (byte)sum;
+            return (byte)(
+            + 2 // uint16_t mode
+            +2 // uint16_t shot_state
+            );
         }
 
 
@@ -1641,7 +1824,8 @@ namespace Asv.Mavlink.Storm32
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("count",
+            new(0,
+            "count",
             "Total number of RC channels being received. This can be larger than 24, indicating that more channels are available but not given in this message.",
             string.Empty, 
             string.Empty, 
@@ -1650,7 +1834,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("flags",
+            new(1,
+            "flags",
             "Radio channels status flags.",
             string.Empty, 
             string.Empty, 
@@ -1659,7 +1844,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("channels",
+            new(2,
+            "channels",
             "RC channels. Channels above count should be set to 0, to benefit from MAVLink's zero padding.",
             string.Empty, 
             string.Empty, 
@@ -1676,6 +1862,22 @@ namespace Asv.Mavlink.Storm32
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Count);
+            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[2], Payload.Channels);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Count = reader.ReadByte(StaticFields[0]);
+            Payload.Flags = (RadioRcChannelsFlags)reader.ReadEnum(StaticFields[1]);
+            reader.ReadShortArray(StaticFields[2], Payload.Channels);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1687,14 +1889,14 @@ namespace Asv.Mavlink.Storm32
         public byte GetMaxByteSize() => 50; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 50; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //Count
-            sum+= 1; // Flags
-            sum+=Channels.Length * 2; //Channels
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t count
+            + 1 // uint8_t flags
+            +Channels.Length * 2 // int16_t[24] channels
+            );
         }
 
 
@@ -1772,7 +1974,8 @@ namespace Asv.Mavlink.Storm32
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("flags",
+            new(0,
+            "flags",
             "Radio link statistics flags.",
             string.Empty, 
             string.Empty, 
@@ -1781,7 +1984,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("rx_LQ",
+            new(1,
+            "rx_LQ",
             "Values: 0..100. UINT8_MAX: invalid/unknown.",
             string.Empty, 
             @"c%", 
@@ -1790,7 +1994,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("rx_rssi1",
+            new(2,
+            "rx_rssi1",
             "Rssi of antenna1. UINT8_MAX: invalid/unknown.",
             string.Empty, 
             string.Empty, 
@@ -1799,7 +2004,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("rx_snr1",
+            new(3,
+            "rx_snr1",
             "Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.",
             string.Empty, 
             string.Empty, 
@@ -1808,7 +2014,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Int8, 
             0, 
             false),
-            new("rx_rssi2",
+            new(4,
+            "rx_rssi2",
             "Rssi of antenna2. UINT8_MAX: ignore/unknown, use rx_rssi1.",
             string.Empty, 
             string.Empty, 
@@ -1817,7 +2024,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("rx_snr2",
+            new(5,
+            "rx_snr2",
             "Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use rx_snr1.",
             string.Empty, 
             string.Empty, 
@@ -1826,7 +2034,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Int8, 
             0, 
             false),
-            new("rx_receive_antenna",
+            new(6,
+            "rx_receive_antenna",
             "0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx receive diversity, use rx_rssi1, rx_snr1.",
             string.Empty, 
             string.Empty, 
@@ -1835,7 +2044,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("rx_transmit_antenna",
+            new(7,
+            "rx_transmit_antenna",
             "0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx transmit diversity.",
             string.Empty, 
             string.Empty, 
@@ -1844,7 +2054,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("tx_LQ",
+            new(8,
+            "tx_LQ",
             "Values: 0..100. UINT8_MAX: invalid/unknown.",
             string.Empty, 
             @"c%", 
@@ -1853,7 +2064,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("tx_rssi1",
+            new(9,
+            "tx_rssi1",
             "Rssi of antenna1. UINT8_MAX: invalid/unknown.",
             string.Empty, 
             string.Empty, 
@@ -1862,7 +2074,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("tx_snr1",
+            new(10,
+            "tx_snr1",
             "Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.",
             string.Empty, 
             string.Empty, 
@@ -1871,7 +2084,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Int8, 
             0, 
             false),
-            new("tx_rssi2",
+            new(11,
+            "tx_rssi2",
             "Rssi of antenna2. UINT8_MAX: ignore/unknown, use tx_rssi1.",
             string.Empty, 
             string.Empty, 
@@ -1880,7 +2094,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("tx_snr2",
+            new(12,
+            "tx_snr2",
             "Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use tx_snr1.",
             string.Empty, 
             string.Empty, 
@@ -1889,7 +2104,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Int8, 
             0, 
             false),
-            new("tx_receive_antenna",
+            new(13,
+            "tx_receive_antenna",
             "0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx receive diversity, use tx_rssi1, tx_snr1.",
             string.Empty, 
             string.Empty, 
@@ -1898,7 +2114,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("tx_transmit_antenna",
+            new(14,
+            "tx_transmit_antenna",
             "0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx transmit diversity.",
             string.Empty, 
             string.Empty, 
@@ -1927,6 +2144,46 @@ namespace Asv.Mavlink.Storm32
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Flags);
+            writer.Write(StaticFields[1], Payload.RxLq);
+            writer.Write(StaticFields[2], Payload.RxRssi1);
+            writer.Write(StaticFields[3], Payload.RxSnr1);
+            writer.Write(StaticFields[4], Payload.RxRssi2);
+            writer.Write(StaticFields[5], Payload.RxSnr2);
+            writer.Write(StaticFields[6], Payload.RxReceiveAntenna);
+            writer.Write(StaticFields[7], Payload.RxTransmitAntenna);
+            writer.Write(StaticFields[8], Payload.TxLq);
+            writer.Write(StaticFields[9], Payload.TxRssi1);
+            writer.Write(StaticFields[10], Payload.TxSnr1);
+            writer.Write(StaticFields[11], Payload.TxRssi2);
+            writer.Write(StaticFields[12], Payload.TxSnr2);
+            writer.Write(StaticFields[13], Payload.TxReceiveAntenna);
+            writer.Write(StaticFields[14], Payload.TxTransmitAntenna);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Flags = (RadioLinkStatsFlags)reader.ReadEnum(StaticFields[0]);
+            Payload.RxLq = reader.ReadByte(StaticFields[1]);
+            Payload.RxRssi1 = reader.ReadByte(StaticFields[2]);
+            Payload.RxSnr1 = reader.ReadSByte(StaticFields[3]);
+            Payload.RxRssi2 = reader.ReadByte(StaticFields[4]);
+            Payload.RxSnr2 = reader.ReadSByte(StaticFields[5]);
+            Payload.RxReceiveAntenna = reader.ReadByte(StaticFields[6]);
+            Payload.RxTransmitAntenna = reader.ReadByte(StaticFields[7]);
+            Payload.TxLq = reader.ReadByte(StaticFields[8]);
+            Payload.TxRssi1 = reader.ReadByte(StaticFields[9]);
+            Payload.TxSnr1 = reader.ReadSByte(StaticFields[10]);
+            Payload.TxRssi2 = reader.ReadByte(StaticFields[11]);
+            Payload.TxSnr2 = reader.ReadSByte(StaticFields[12]);
+            Payload.TxReceiveAntenna = reader.ReadByte(StaticFields[13]);
+            Payload.TxTransmitAntenna = reader.ReadByte(StaticFields[14]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1938,26 +2195,26 @@ namespace Asv.Mavlink.Storm32
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // Flags
-            sum+=1; //RxLq
-            sum+=1; //RxRssi1
-            sum+=1; //RxSnr1
-            sum+=1; //RxRssi2
-            sum+=1; //RxSnr2
-            sum+=1; //RxReceiveAntenna
-            sum+=1; //RxTransmitAntenna
-            sum+=1; //TxLq
-            sum+=1; //TxRssi1
-            sum+=1; //TxSnr1
-            sum+=1; //TxRssi2
-            sum+=1; //TxSnr2
-            sum+=1; //TxReceiveAntenna
-            sum+=1; //TxTransmitAntenna
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t flags
+            +1 // uint8_t rx_LQ
+            +1 // uint8_t rx_rssi1
+            +1 // int8_t rx_snr1
+            +1 // uint8_t rx_rssi2
+            +1 // int8_t rx_snr2
+            +1 // uint8_t rx_receive_antenna
+            +1 // uint8_t rx_transmit_antenna
+            +1 // uint8_t tx_LQ
+            +1 // uint8_t tx_rssi1
+            +1 // int8_t tx_snr1
+            +1 // uint8_t tx_rssi2
+            +1 // int8_t tx_snr2
+            +1 // uint8_t tx_receive_antenna
+            +1 // uint8_t tx_transmit_antenna
+            );
         }
 
 
@@ -2107,7 +2364,8 @@ namespace Asv.Mavlink.Storm32
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_boot_ms",
+            new(0,
+            "time_boot_ms",
             "Timestamp (time since system boot).",
             string.Empty, 
             @"ms", 
@@ -2116,7 +2374,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("count",
+            new(1,
+            "count",
             "Number of passthrough packets in this message.",
             string.Empty, 
             string.Empty, 
@@ -2125,7 +2384,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("packet_buf",
+            new(2,
+            "packet_buf",
             "Passthrough packet buffer. A packet has 6 bytes: uint16_t id + uint32_t data. The array has space for 40 packets.",
             string.Empty, 
             string.Empty, 
@@ -2142,6 +2402,22 @@ namespace Asv.Mavlink.Storm32
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeBootMs);
+            writer.Write(StaticFields[1], Payload.Count);
+            writer.Write(StaticFields[2], Payload.PacketBuf);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
+            Payload.Count = reader.ReadByte(StaticFields[1]);
+            reader.ReadByteArray(StaticFields[2], Payload.PacketBuf);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2153,14 +2429,14 @@ namespace Asv.Mavlink.Storm32
         public byte GetMaxByteSize() => 245; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 245; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //TimeBootMs
-            sum+=1; //Count
-            sum+=PacketBuf.Length; //PacketBuf
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t time_boot_ms
+            +1 // uint8_t count
+            +PacketBuf.Length // uint8_t[240] packet_buf
+            );
         }
 
 
@@ -2239,7 +2515,8 @@ namespace Asv.Mavlink.Storm32
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("param_count",
+            new(0,
+            "param_count",
             "Total number of onboard parameters.",
             string.Empty, 
             string.Empty, 
@@ -2248,7 +2525,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("param_index_first",
+            new(1,
+            "param_index_first",
             "Index of the first onboard parameter in this array.",
             string.Empty, 
             string.Empty, 
@@ -2257,7 +2535,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("flags",
+            new(2,
+            "flags",
             "Flags.",
             string.Empty, 
             string.Empty, 
@@ -2266,7 +2545,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("param_array_len",
+            new(3,
+            "param_array_len",
             "Number of onboard parameters in this array.",
             string.Empty, 
             string.Empty, 
@@ -2275,7 +2555,8 @@ namespace Asv.Mavlink.Storm32
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("packet_buf",
+            new(4,
+            "packet_buf",
             "Parameters buffer. Contains a series of variable length parameter blocks, one per parameter, with format as specifed elsewhere.",
             string.Empty, 
             string.Empty, 
@@ -2294,6 +2575,26 @@ namespace Asv.Mavlink.Storm32
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.ParamCount);
+            writer.Write(StaticFields[1], Payload.ParamIndexFirst);
+            writer.Write(StaticFields[2], Payload.Flags);
+            writer.Write(StaticFields[3], Payload.ParamArrayLen);
+            writer.Write(StaticFields[4], Payload.PacketBuf);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.ParamCount = reader.ReadUShort(StaticFields[0]);
+            Payload.ParamIndexFirst = reader.ReadUShort(StaticFields[1]);
+            Payload.Flags = reader.ReadUShort(StaticFields[2]);
+            Payload.ParamArrayLen = reader.ReadByte(StaticFields[3]);
+            reader.ReadByteArray(StaticFields[4], Payload.PacketBuf);
+        
+            
+        }
     }
 
     /// <summary>
@@ -2305,16 +2606,16 @@ namespace Asv.Mavlink.Storm32
         public byte GetMaxByteSize() => 255; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 255; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //ParamCount
-            sum+=2; //ParamIndexFirst
-            sum+=2; //Flags
-            sum+=1; //ParamArrayLen
-            sum+=PacketBuf.Length; //PacketBuf
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t param_count
+            +2 // uint16_t param_index_first
+            +2 // uint16_t flags
+            +1 // uint8_t param_array_len
+            +PacketBuf.Length // uint8_t[248] packet_buf
+            );
         }
 
 

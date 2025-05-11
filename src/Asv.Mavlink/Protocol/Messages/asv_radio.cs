@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -180,7 +180,8 @@ namespace Asv.Mavlink.AsvRadio
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("freq",
+            new(0,
+            "freq",
             "RF frequency.",
             string.Empty, 
             string.Empty, 
@@ -189,7 +190,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Float32, 
             0, 
             false),
-            new("tx_level",
+            new(1,
+            "tx_level",
             "Current TX power in dBm.",
             string.Empty, 
             string.Empty, 
@@ -198,7 +200,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rx_level",
+            new(2,
+            "rx_level",
             "Measured RX power in dBm.",
             string.Empty, 
             string.Empty, 
@@ -207,7 +210,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rx_estimated_level",
+            new(3,
+            "rx_estimated_level",
             "Estimated RX reference power in dBm.",
             string.Empty, 
             string.Empty, 
@@ -216,7 +220,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Float32, 
             0, 
             false),
-            new("rf_mode",
+            new(4,
+            "rf_mode",
             "RF mode.",
             string.Empty, 
             string.Empty, 
@@ -225,7 +230,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("modulation",
+            new(5,
+            "modulation",
             "Current RF modulation.",
             string.Empty, 
             string.Empty, 
@@ -245,6 +251,28 @@ namespace Asv.Mavlink.AsvRadio
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Freq);
+            writer.Write(StaticFields[1], Payload.TxLevel);
+            writer.Write(StaticFields[2], Payload.RxLevel);
+            writer.Write(StaticFields[3], Payload.RxEstimatedLevel);
+            writer.Write(StaticFields[4], Payload.RfMode);
+            writer.Write(StaticFields[5], Payload.Modulation);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Freq = reader.ReadFloat(StaticFields[0]);
+            Payload.TxLevel = reader.ReadFloat(StaticFields[1]);
+            Payload.RxLevel = reader.ReadFloat(StaticFields[2]);
+            Payload.RxEstimatedLevel = reader.ReadFloat(StaticFields[3]);
+            Payload.RfMode = (AsvRadioRfModeFlag)reader.ReadEnum(StaticFields[4]);
+            Payload.Modulation = (AsvRadioModulation)reader.ReadEnum(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -256,17 +284,17 @@ namespace Asv.Mavlink.AsvRadio
         public byte GetMaxByteSize() => 21; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 21; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Freq
-            sum+=4; //TxLevel
-            sum+=4; //RxLevel
-            sum+=4; //RxEstimatedLevel
-            sum+= 4; // RfMode
-            sum+= 1; // Modulation
-            return (byte)sum;
+            return (byte)(
+            +4 // float freq
+            +4 // float tx_level
+            +4 // float rx_level
+            +4 // float rx_estimated_level
+            + 4 // uint32_t rf_mode
+            + 1 // uint8_t modulation
+            );
         }
 
 
@@ -353,7 +381,8 @@ namespace Asv.Mavlink.AsvRadio
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("target_system",
+            new(0,
+            "target_system",
             "System ID",
             string.Empty, 
             string.Empty, 
@@ -362,7 +391,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(1,
+            "target_component",
             "Component ID",
             string.Empty, 
             string.Empty, 
@@ -378,6 +408,20 @@ namespace Asv.Mavlink.AsvRadio
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TargetSystem);
+            writer.Write(StaticFields[1], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -389,13 +433,13 @@ namespace Asv.Mavlink.AsvRadio
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -454,7 +498,8 @@ namespace Asv.Mavlink.AsvRadio
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("max_rf_freq",
+            new(0,
+            "max_rf_freq",
             "Max RF frequency in Hz.",
             string.Empty, 
             string.Empty, 
@@ -463,7 +508,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("min_rf_freq",
+            new(1,
+            "min_rf_freq",
             "Min RF frequency in Hz.",
             string.Empty, 
             string.Empty, 
@@ -472,7 +518,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("max_tx_power",
+            new(2,
+            "max_tx_power",
             "Max TX power in dBm.",
             string.Empty, 
             string.Empty, 
@@ -481,7 +528,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Float32, 
             0, 
             false),
-            new("min_tx_power",
+            new(3,
+            "min_tx_power",
             "Min TX power in dBm.",
             string.Empty, 
             string.Empty, 
@@ -490,7 +538,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Float32, 
             0, 
             false),
-            new("max_rx_power",
+            new(4,
+            "max_rx_power",
             "Max estimated RX power in dBm.",
             string.Empty, 
             string.Empty, 
@@ -499,7 +548,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Float32, 
             0, 
             false),
-            new("min_rx_power",
+            new(5,
+            "min_rx_power",
             "Min estimated RX power in dBm.",
             string.Empty, 
             string.Empty, 
@@ -508,7 +558,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Float32, 
             0, 
             false),
-            new("supported_modulation",
+            new(6,
+            "supported_modulation",
             "Supported RF modulations. Each bit of array is flag from ASV_RADIO_MODULATION(max 255 items) enum.",
             string.Empty, 
             string.Empty, 
@@ -529,6 +580,30 @@ namespace Asv.Mavlink.AsvRadio
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.MaxRfFreq);
+            writer.Write(StaticFields[1], Payload.MinRfFreq);
+            writer.Write(StaticFields[2], Payload.MaxTxPower);
+            writer.Write(StaticFields[3], Payload.MinTxPower);
+            writer.Write(StaticFields[4], Payload.MaxRxPower);
+            writer.Write(StaticFields[5], Payload.MinRxPower);
+            writer.Write(StaticFields[6], Payload.SupportedModulation);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.MaxRfFreq = reader.ReadUInt(StaticFields[0]);
+            Payload.MinRfFreq = reader.ReadUInt(StaticFields[1]);
+            Payload.MaxTxPower = reader.ReadFloat(StaticFields[2]);
+            Payload.MinTxPower = reader.ReadFloat(StaticFields[3]);
+            Payload.MaxRxPower = reader.ReadFloat(StaticFields[4]);
+            Payload.MinRxPower = reader.ReadFloat(StaticFields[5]);
+            reader.ReadByteArray(StaticFields[6], Payload.SupportedModulation);
+        
+            
+        }
     }
 
     /// <summary>
@@ -540,18 +615,18 @@ namespace Asv.Mavlink.AsvRadio
         public byte GetMaxByteSize() => 56; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 56; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //MaxRfFreq
-            sum+=4; //MinRfFreq
-            sum+=4; //MaxTxPower
-            sum+=4; //MinTxPower
-            sum+=4; //MaxRxPower
-            sum+=4; //MinRxPower
-            sum+=SupportedModulation.Length; //SupportedModulation
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t max_rf_freq
+            +4 // uint32_t min_rf_freq
+            +4 // float max_tx_power
+            +4 // float min_tx_power
+            +4 // float max_rx_power
+            +4 // float min_rx_power
+            +SupportedModulation.Length // uint8_t[32] supported_modulation
+            );
         }
 
 
@@ -658,7 +733,8 @@ namespace Asv.Mavlink.AsvRadio
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("skip",
+            new(0,
+            "skip",
             "Skip index.",
             string.Empty, 
             string.Empty, 
@@ -667,7 +743,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID",
             string.Empty, 
             string.Empty, 
@@ -676,7 +753,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID",
             string.Empty, 
             string.Empty, 
@@ -685,7 +763,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("count",
+            new(3,
+            "count",
             "Codec count at ASV_RADIO_CODEC_CAPABILITIES_RESPONSE.",
             string.Empty, 
             string.Empty, 
@@ -703,6 +782,24 @@ namespace Asv.Mavlink.AsvRadio
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Skip);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+            writer.Write(StaticFields[3], Payload.Count);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Skip = reader.ReadUShort(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+            Payload.Count = reader.ReadByte(StaticFields[3]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -714,15 +811,15 @@ namespace Asv.Mavlink.AsvRadio
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Skip
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Count
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t skip
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t count
+            );
         }
 
 
@@ -795,7 +892,8 @@ namespace Asv.Mavlink.AsvRadio
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("all",
+            new(0,
+            "all",
             "All codec codecs.",
             string.Empty, 
             string.Empty, 
@@ -804,7 +902,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("skip",
+            new(1,
+            "skip",
             "Skip index codec.",
             string.Empty, 
             string.Empty, 
@@ -813,7 +912,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("codecs",
+            new(2,
+            "codecs",
             "Supported codec array.",
             string.Empty, 
             string.Empty, 
@@ -822,7 +922,8 @@ namespace Asv.Mavlink.AsvRadio
             MessageFieldType.Uint16, 
             100, 
             false),
-            new("count",
+            new(3,
+            "count",
             "Array size.",
             string.Empty, 
             string.Empty, 
@@ -840,6 +941,29 @@ namespace Asv.Mavlink.AsvRadio
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.All);
+            writer.Write(StaticFields[1], Payload.Skip);
+            writer.Write(StaticFields[2], Payload.Codecs);
+            writer.Write(StaticFields[3], Payload.Count);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.All = reader.ReadUShort(StaticFields[0]);
+            Payload.Skip = reader.ReadUShort(StaticFields[1]);
+            var array = reader.ReadEnumArray(StaticFields[2]);
+            for(var i=0;i<array.Length;i++)
+            {
+                Payload.Codecs[i] = (AsvAudioCodec)(array.GetValue(i) ?? throw new InvalidOperationException());
+            }            
+            
+            Payload.Count = reader.ReadByte(StaticFields[3]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -851,16 +975,16 @@ namespace Asv.Mavlink.AsvRadio
         public byte GetMaxByteSize() => 205; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 205; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //All
-            sum+=2; //Skip
-            sum+= Codecs.Length * 2; // Codecs
+            return (byte)(
+            +2 // uint16_t all
+            +2 // uint16_t skip
+            + Codecs.Length * 2 // uint16_t[100] codecs
             
-            sum+=1; //Count
-            return (byte)sum;
+            +1 // uint8_t count
+            );
         }
 
 

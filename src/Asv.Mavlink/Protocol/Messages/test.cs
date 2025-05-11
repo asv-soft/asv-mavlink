@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -74,7 +74,8 @@ namespace Asv.Mavlink.Test
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("u64",
+            new(0,
+            "u64",
             "uint64_t",
             string.Empty, 
             string.Empty, 
@@ -83,7 +84,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Uint64, 
             0, 
             false),
-            new("s64",
+            new(1,
+            "s64",
             "int64_t",
             string.Empty, 
             string.Empty, 
@@ -92,7 +94,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Int64, 
             0, 
             false),
-            new("d",
+            new(2,
+            "d",
             "double",
             string.Empty, 
             string.Empty, 
@@ -101,7 +104,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Double, 
             0, 
             false),
-            new("u64_array",
+            new(3,
+            "u64_array",
             "uint64_t_array",
             string.Empty, 
             string.Empty, 
@@ -110,7 +114,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Uint64, 
             3, 
             false),
-            new("s64_array",
+            new(4,
+            "s64_array",
             "int64_t_array",
             string.Empty, 
             string.Empty, 
@@ -119,7 +124,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Int64, 
             3, 
             false),
-            new("d_array",
+            new(5,
+            "d_array",
             "double_array",
             string.Empty, 
             string.Empty, 
@@ -128,7 +134,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Double, 
             3, 
             false),
-            new("u32",
+            new(6,
+            "u32",
             "uint32_t",
             "0x%08x", 
             string.Empty, 
@@ -137,7 +144,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("s32",
+            new(7,
+            "s32",
             "int32_t",
             string.Empty, 
             string.Empty, 
@@ -146,7 +154,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Int32, 
             0, 
             false),
-            new("f",
+            new(8,
+            "f",
             "float",
             string.Empty, 
             string.Empty, 
@@ -155,7 +164,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Float32, 
             0, 
             false),
-            new("u32_array",
+            new(9,
+            "u32_array",
             "uint32_t_array",
             string.Empty, 
             string.Empty, 
@@ -164,7 +174,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Uint32, 
             3, 
             false),
-            new("s32_array",
+            new(10,
+            "s32_array",
             "int32_t_array",
             string.Empty, 
             string.Empty, 
@@ -173,7 +184,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Int32, 
             3, 
             false),
-            new("f_array",
+            new(11,
+            "f_array",
             "float_array",
             string.Empty, 
             string.Empty, 
@@ -182,7 +194,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Float32, 
             3, 
             false),
-            new("u16",
+            new(12,
+            "u16",
             "uint16_t",
             string.Empty, 
             string.Empty, 
@@ -191,7 +204,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("s16",
+            new(13,
+            "s16",
             "int16_t",
             string.Empty, 
             string.Empty, 
@@ -200,7 +214,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Int16, 
             0, 
             false),
-            new("u16_array",
+            new(14,
+            "u16_array",
             "uint16_t_array",
             string.Empty, 
             string.Empty, 
@@ -209,7 +224,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Uint16, 
             3, 
             false),
-            new("s16_array",
+            new(15,
+            "s16_array",
             "int16_t_array",
             string.Empty, 
             string.Empty, 
@@ -218,7 +234,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Int16, 
             3, 
             false),
-            new("c",
+            new(16,
+            "c",
             "char",
             string.Empty, 
             string.Empty, 
@@ -227,7 +244,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Char, 
             0, 
             false),
-            new("s",
+            new(17,
+            "s",
             "string",
             string.Empty, 
             string.Empty, 
@@ -236,7 +254,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Char, 
             10, 
             false),
-            new("u8",
+            new(18,
+            "u8",
             "uint8_t",
             string.Empty, 
             string.Empty, 
@@ -245,7 +264,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("s8",
+            new(19,
+            "s8",
             "int8_t",
             string.Empty, 
             string.Empty, 
@@ -254,7 +274,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Int8, 
             0, 
             false),
-            new("u8_array",
+            new(20,
+            "u8_array",
             "uint8_t_array",
             string.Empty, 
             string.Empty, 
@@ -263,7 +284,8 @@ namespace Asv.Mavlink.Test
             MessageFieldType.Uint8, 
             3, 
             false),
-            new("s8_array",
+            new(21,
+            "s8_array",
             "int8_t_array",
             string.Empty, 
             string.Empty, 
@@ -299,6 +321,60 @@ namespace Asv.Mavlink.Test
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.U64);
+            writer.Write(StaticFields[1], Payload.S64);
+            writer.Write(StaticFields[2], Payload.D);
+            writer.Write(StaticFields[3], Payload.U64Array);
+            writer.Write(StaticFields[4], Payload.S64Array);
+            writer.Write(StaticFields[5], Payload.DArray);
+            writer.Write(StaticFields[6], Payload.U32);
+            writer.Write(StaticFields[7], Payload.S32);
+            writer.Write(StaticFields[8], Payload.F);
+            writer.Write(StaticFields[9], Payload.U32Array);
+            writer.Write(StaticFields[10], Payload.S32Array);
+            writer.Write(StaticFields[11], Payload.FArray);
+            writer.Write(StaticFields[12], Payload.U16);
+            writer.Write(StaticFields[13], Payload.S16);
+            writer.Write(StaticFields[14], Payload.U16Array);
+            writer.Write(StaticFields[15], Payload.S16Array);
+            writer.Write(StaticFields[16], Payload.C);
+            writer.Write(StaticFields[17], Payload.S);
+            writer.Write(StaticFields[18], Payload.U8);
+            writer.Write(StaticFields[19], Payload.S8);
+            writer.Write(StaticFields[20], Payload.U8Array);
+            writer.Write(StaticFields[21], Payload.S8Array);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.U64 = reader.ReadULong(StaticFields[0]);
+            Payload.S64 = reader.ReadLong(StaticFields[1]);
+            Payload.D = reader.ReadDouble(StaticFields[2]);
+            reader.ReadULongArray(StaticFields[3], Payload.U64Array);
+            reader.ReadLongArray(StaticFields[4], Payload.S64Array);
+            reader.ReadDoubleArray(StaticFields[5], Payload.DArray);
+            Payload.U32 = reader.ReadUInt(StaticFields[6]);
+            Payload.S32 = reader.ReadInt(StaticFields[7]);
+            Payload.F = reader.ReadFloat(StaticFields[8]);
+            reader.ReadUIntArray(StaticFields[9],Payload.U32Array);
+            reader.ReadIntArray(StaticFields[10], Payload.S32Array);
+            reader.ReadFloatArray(StaticFields[11], Payload.FArray);
+            Payload.U16 = reader.ReadUShort(StaticFields[12]);
+            Payload.S16 = reader.ReadShort(StaticFields[13]);
+            reader.ReadUShortArray(StaticFields[14], Payload.U16Array);
+            reader.ReadShortArray(StaticFields[15], Payload.S16Array);
+            Payload.C = reader.ReadChar(StaticFields[16]);
+            reader.ReadCharArray(StaticFields[17], Payload.S);
+            Payload.U8 = reader.ReadByte(StaticFields[18]);
+            Payload.S8 = reader.ReadSByte(StaticFields[19]);
+            reader.ReadByteArray(StaticFields[20], Payload.U8Array);
+            reader.ReadSByteArray(StaticFields[21], Payload.S8Array);
+        
+            
+        }
     }
 
     /// <summary>
@@ -310,33 +386,33 @@ namespace Asv.Mavlink.Test
         public byte GetMaxByteSize() => 179; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 179; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //U64
-            sum+=8; //S64
-            sum+=8; //D
-            sum+=U64Array.Length * 8; //U64Array
-            sum+=S64Array.Length * 8; //S64Array
-            sum+=DArray.Length * 8; //DArray
-            sum+=4; //U32
-            sum+=4; //S32
-            sum+=4; //F
-            sum+=U32Array.Length * 4; //U32Array
-            sum+=S32Array.Length * 4; //S32Array
-            sum+=FArray.Length * 4; //FArray
-            sum+=2; //U16
-            sum+=2; //S16
-            sum+=U16Array.Length * 2; //U16Array
-            sum+=S16Array.Length * 2; //S16Array
-            sum+=1; //C
-            sum+=S.Length; //S
-            sum+=1; //U8
-            sum+=1; //S8
-            sum+=U8Array.Length; //U8Array
-            sum+=S8Array.Length; //S8Array
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t u64
+            +8 // int64_t s64
+            +8 // double d
+            +U64Array.Length * 8 // uint64_t[3] u64_array
+            +S64Array.Length * 8 // int64_t[3] s64_array
+            +DArray.Length * 8 // double[3] d_array
+            +4 // uint32_t u32
+            +4 // int32_t s32
+            +4 // float f
+            +U32Array.Length * 4 // uint32_t[3] u32_array
+            +S32Array.Length * 4 // int32_t[3] s32_array
+            +FArray.Length * 4 // float[3] f_array
+            +2 // uint16_t u16
+            +2 // int16_t s16
+            +U16Array.Length * 2 // uint16_t[3] u16_array
+            +S16Array.Length * 2 // int16_t[3] s16_array
+            +1 // char c
+            +S.Length // char[10] s
+            +1 // uint8_t u8
+            +1 // int8_t s8
+            +U8Array.Length // uint8_t[3] u8_array
+            +S8Array.Length // int8_t[3] s8_array
+            );
         }
 
 

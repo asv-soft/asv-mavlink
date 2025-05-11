@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -165,7 +165,8 @@ namespace Asv.Mavlink.AsvGbs
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("lat",
+            new(0,
+            "lat",
             "Latitude of GBS (value / 10000000D).",
             string.Empty, 
             @"degE7", 
@@ -174,7 +175,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lng",
+            new(1,
+            "lng",
             "Longitude of GBS (value / 10000000D).",
             string.Empty, 
             @"degE7", 
@@ -183,7 +185,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Int32, 
             0, 
             false),
-            new("alt",
+            new(2,
+            "alt",
             "Altitude of GBS.",
             string.Empty, 
             @"mm", 
@@ -192,7 +195,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Int32, 
             0, 
             false),
-            new("accuracy",
+            new(3,
+            "accuracy",
             "Current position accuracy (cm).",
             string.Empty, 
             @"cm", 
@@ -201,7 +205,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("observation",
+            new(4,
+            "observation",
             "Observation time (seconds).",
             string.Empty, 
             @"s", 
@@ -210,7 +215,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("dgps_rate",
+            new(5,
+            "dgps_rate",
             "Rate of GPS_RTCM_DATA data.",
             string.Empty, 
             @"bytes\seconds", 
@@ -219,7 +225,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("sat_all",
+            new(6,
+            "sat_all",
             "All GNSS satellite count.",
             string.Empty, 
             string.Empty, 
@@ -228,7 +235,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("sat_gps",
+            new(7,
+            "sat_gps",
             "GPS satellite count.",
             string.Empty, 
             string.Empty, 
@@ -237,7 +245,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("sat_glo",
+            new(8,
+            "sat_glo",
             "GLONASS satellite count.",
             string.Empty, 
             string.Empty, 
@@ -246,7 +255,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("sat_bdu",
+            new(9,
+            "sat_bdu",
             "BeiDou satellite count.",
             string.Empty, 
             string.Empty, 
@@ -255,7 +265,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("sat_gal",
+            new(10,
+            "sat_gal",
             "Galileo satellite count.",
             string.Empty, 
             string.Empty, 
@@ -264,7 +275,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("sat_qzs",
+            new(11,
+            "sat_qzs",
             "QZSS satellite count.",
             string.Empty, 
             string.Empty, 
@@ -273,7 +285,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("sat_ime",
+            new(12,
+            "sat_ime",
             "IMES satellite count.",
             string.Empty, 
             string.Empty, 
@@ -282,7 +295,8 @@ namespace Asv.Mavlink.AsvGbs
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("sat_sbs",
+            new(13,
+            "sat_sbs",
             "SBAS satellite count.",
             string.Empty, 
             string.Empty, 
@@ -310,6 +324,44 @@ namespace Asv.Mavlink.AsvGbs
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Lat);
+            writer.Write(StaticFields[1], Payload.Lng);
+            writer.Write(StaticFields[2], Payload.Alt);
+            writer.Write(StaticFields[3], Payload.Accuracy);
+            writer.Write(StaticFields[4], Payload.Observation);
+            writer.Write(StaticFields[5], Payload.DgpsRate);
+            writer.Write(StaticFields[6], Payload.SatAll);
+            writer.Write(StaticFields[7], Payload.SatGps);
+            writer.Write(StaticFields[8], Payload.SatGlo);
+            writer.Write(StaticFields[9], Payload.SatBdu);
+            writer.Write(StaticFields[10], Payload.SatGal);
+            writer.Write(StaticFields[11], Payload.SatQzs);
+            writer.Write(StaticFields[12], Payload.SatIme);
+            writer.Write(StaticFields[13], Payload.SatSbs);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Lat = reader.ReadInt(StaticFields[0]);
+            Payload.Lng = reader.ReadInt(StaticFields[1]);
+            Payload.Alt = reader.ReadInt(StaticFields[2]);
+            Payload.Accuracy = reader.ReadUShort(StaticFields[3]);
+            Payload.Observation = reader.ReadUShort(StaticFields[4]);
+            Payload.DgpsRate = reader.ReadUShort(StaticFields[5]);
+            Payload.SatAll = reader.ReadByte(StaticFields[6]);
+            Payload.SatGps = reader.ReadByte(StaticFields[7]);
+            Payload.SatGlo = reader.ReadByte(StaticFields[8]);
+            Payload.SatBdu = reader.ReadByte(StaticFields[9]);
+            Payload.SatGal = reader.ReadByte(StaticFields[10]);
+            Payload.SatQzs = reader.ReadByte(StaticFields[11]);
+            Payload.SatIme = reader.ReadByte(StaticFields[12]);
+            Payload.SatSbs = reader.ReadByte(StaticFields[13]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -321,25 +373,25 @@ namespace Asv.Mavlink.AsvGbs
         public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Lat
-            sum+=4; //Lng
-            sum+=4; //Alt
-            sum+=2; //Accuracy
-            sum+=2; //Observation
-            sum+=2; //DgpsRate
-            sum+=1; //SatAll
-            sum+=1; //SatGps
-            sum+=1; //SatGlo
-            sum+=1; //SatBdu
-            sum+=1; //SatGal
-            sum+=1; //SatQzs
-            sum+=1; //SatIme
-            sum+=1; //SatSbs
-            return (byte)sum;
+            return (byte)(
+            +4 // int32_t lat
+            +4 // int32_t lng
+            +4 // int32_t alt
+            +2 // uint16_t accuracy
+            +2 // uint16_t observation
+            +2 // uint16_t dgps_rate
+            +1 // uint8_t sat_all
+            +1 // uint8_t sat_gps
+            +1 // uint8_t sat_glo
+            +1 // uint8_t sat_bdu
+            +1 // uint8_t sat_gal
+            +1 // uint8_t sat_qzs
+            +1 // uint8_t sat_ime
+            +1 // uint8_t sat_sbs
+            );
         }
 
 

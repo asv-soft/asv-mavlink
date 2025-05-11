@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -81,7 +81,8 @@ namespace Asv.Mavlink.PythonArrayTest
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("ar_u32",
+            new(0,
+            "ar_u32",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -90,7 +91,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint32, 
             4, 
             false),
-            new("ar_u16",
+            new(1,
+            "ar_u16",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -99,7 +101,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint16, 
             4, 
             false),
-            new("v1",
+            new(2,
+            "v1",
             "Stub field",
             string.Empty, 
             string.Empty, 
@@ -108,7 +111,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("ar_i8",
+            new(3,
+            "ar_i8",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -117,7 +121,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Int8, 
             4, 
             false),
-            new("ar_u8",
+            new(4,
+            "ar_u8",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -136,6 +141,26 @@ namespace Asv.Mavlink.PythonArrayTest
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.ArU32);
+            writer.Write(StaticFields[1], Payload.ArU16);
+            writer.Write(StaticFields[2], Payload.V1);
+            writer.Write(StaticFields[3], Payload.ArI8);
+            writer.Write(StaticFields[4], Payload.ArU8);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadUIntArray(StaticFields[0],Payload.ArU32);
+            reader.ReadUShortArray(StaticFields[1], Payload.ArU16);
+            Payload.V1 = reader.ReadByte(StaticFields[2]);
+            reader.ReadSByteArray(StaticFields[3], Payload.ArI8);
+            reader.ReadByteArray(StaticFields[4], Payload.ArU8);
+        
+            
+        }
     }
 
     /// <summary>
@@ -147,16 +172,16 @@ namespace Asv.Mavlink.PythonArrayTest
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArU32.Length * 4; //ArU32
-            sum+=ArU16.Length * 2; //ArU16
-            sum+=1; //V1
-            sum+=ArI8.Length; //ArI8
-            sum+=ArU8.Length; //ArU8
-            return (byte)sum;
+            return (byte)(
+            +ArU32.Length * 4 // uint32_t[4] ar_u32
+            +ArU16.Length * 2 // uint16_t[4] ar_u16
+            +1 // uint8_t v1
+            +ArI8.Length // int8_t[4] ar_i8
+            +ArU8.Length // uint8_t[4] ar_u8
+            );
         }
 
 
@@ -273,7 +298,8 @@ namespace Asv.Mavlink.PythonArrayTest
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("ar_u32",
+            new(0,
+            "ar_u32",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -288,6 +314,18 @@ namespace Asv.Mavlink.PythonArrayTest
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.ArU32);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadUIntArray(StaticFields[0],Payload.ArU32);
+        
+            
+        }
     }
 
     /// <summary>
@@ -299,12 +337,12 @@ namespace Asv.Mavlink.PythonArrayTest
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArU32.Length * 4; //ArU32
-            return (byte)sum;
+            return (byte)(
+            +ArU32.Length * 4 // uint32_t[4] ar_u32
+            );
         }
 
 
@@ -369,7 +407,8 @@ namespace Asv.Mavlink.PythonArrayTest
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("ar_u32",
+            new(0,
+            "ar_u32",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -378,7 +417,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint32, 
             4, 
             false),
-            new("v",
+            new(1,
+            "v",
             "Stub field",
             string.Empty, 
             string.Empty, 
@@ -394,6 +434,20 @@ namespace Asv.Mavlink.PythonArrayTest
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.ArU32);
+            writer.Write(StaticFields[1], Payload.V);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadUIntArray(StaticFields[0],Payload.ArU32);
+            Payload.V = reader.ReadByte(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -405,13 +459,13 @@ namespace Asv.Mavlink.PythonArrayTest
         public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArU32.Length * 4; //ArU32
-            sum+=1; //V
-            return (byte)sum;
+            return (byte)(
+            +ArU32.Length * 4 // uint32_t[4] ar_u32
+            +1 // uint8_t v
+            );
         }
 
 
@@ -483,7 +537,8 @@ namespace Asv.Mavlink.PythonArrayTest
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("ar_u32",
+            new(0,
+            "ar_u32",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -492,7 +547,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint32, 
             4, 
             false),
-            new("v",
+            new(1,
+            "v",
             "Stub field",
             string.Empty, 
             string.Empty, 
@@ -508,6 +564,20 @@ namespace Asv.Mavlink.PythonArrayTest
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.ArU32);
+            writer.Write(StaticFields[1], Payload.V);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadUIntArray(StaticFields[0],Payload.ArU32);
+            Payload.V = reader.ReadByte(StaticFields[1]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -519,13 +589,13 @@ namespace Asv.Mavlink.PythonArrayTest
         public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArU32.Length * 4; //ArU32
-            sum+=1; //V
-            return (byte)sum;
+            return (byte)(
+            +ArU32.Length * 4 // uint32_t[4] ar_u32
+            +1 // uint8_t v
+            );
         }
 
 
@@ -597,7 +667,8 @@ namespace Asv.Mavlink.PythonArrayTest
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("c1",
+            new(0,
+            "c1",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -606,7 +677,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Char, 
             5, 
             false),
-            new("c2",
+            new(1,
+            "c2",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -622,6 +694,20 @@ namespace Asv.Mavlink.PythonArrayTest
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.C1);
+            writer.Write(StaticFields[1], Payload.C2);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadCharArray(StaticFields[0], Payload.C1);
+            reader.ReadCharArray(StaticFields[1], Payload.C2);
+        
+            
+        }
     }
 
     /// <summary>
@@ -633,13 +719,13 @@ namespace Asv.Mavlink.PythonArrayTest
         public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=C1.Length; //C1
-            sum+=C2.Length; //C2
-            return (byte)sum;
+            return (byte)(
+            +C1.Length // char[5] c1
+            +C2.Length // char[5] c2
+            );
         }
 
 
@@ -743,7 +829,8 @@ namespace Asv.Mavlink.PythonArrayTest
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("ar_d",
+            new(0,
+            "ar_d",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -752,7 +839,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Double, 
             2, 
             false),
-            new("v3",
+            new(1,
+            "v3",
             "Stub field",
             string.Empty, 
             string.Empty, 
@@ -761,7 +849,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("ar_u32",
+            new(2,
+            "ar_u32",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -770,7 +859,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint32, 
             2, 
             false),
-            new("ar_i32",
+            new(3,
+            "ar_i32",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -779,7 +869,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Int32, 
             2, 
             false),
-            new("ar_f",
+            new(4,
+            "ar_f",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -788,7 +879,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Float32, 
             2, 
             false),
-            new("v2",
+            new(5,
+            "v2",
             "Stub field",
             string.Empty, 
             string.Empty, 
@@ -797,7 +889,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("ar_u16",
+            new(6,
+            "ar_u16",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -806,7 +899,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint16, 
             2, 
             false),
-            new("ar_i16",
+            new(7,
+            "ar_i16",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -815,7 +909,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Int16, 
             2, 
             false),
-            new("v1",
+            new(8,
+            "v1",
             "Stub field",
             string.Empty, 
             string.Empty, 
@@ -824,7 +919,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("ar_u8",
+            new(9,
+            "ar_u8",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -833,7 +929,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint8, 
             2, 
             false),
-            new("ar_i8",
+            new(10,
+            "ar_i8",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -842,7 +939,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Int8, 
             2, 
             false),
-            new("ar_c",
+            new(11,
+            "ar_c",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -868,6 +966,40 @@ namespace Asv.Mavlink.PythonArrayTest
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.ArD);
+            writer.Write(StaticFields[1], Payload.V3);
+            writer.Write(StaticFields[2], Payload.ArU32);
+            writer.Write(StaticFields[3], Payload.ArI32);
+            writer.Write(StaticFields[4], Payload.ArF);
+            writer.Write(StaticFields[5], Payload.V2);
+            writer.Write(StaticFields[6], Payload.ArU16);
+            writer.Write(StaticFields[7], Payload.ArI16);
+            writer.Write(StaticFields[8], Payload.V1);
+            writer.Write(StaticFields[9], Payload.ArU8);
+            writer.Write(StaticFields[10], Payload.ArI8);
+            writer.Write(StaticFields[11], Payload.ArC);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadDoubleArray(StaticFields[0], Payload.ArD);
+            Payload.V3 = reader.ReadUInt(StaticFields[1]);
+            reader.ReadUIntArray(StaticFields[2],Payload.ArU32);
+            reader.ReadIntArray(StaticFields[3], Payload.ArI32);
+            reader.ReadFloatArray(StaticFields[4], Payload.ArF);
+            Payload.V2 = reader.ReadUShort(StaticFields[5]);
+            reader.ReadUShortArray(StaticFields[6], Payload.ArU16);
+            reader.ReadShortArray(StaticFields[7], Payload.ArI16);
+            Payload.V1 = reader.ReadByte(StaticFields[8]);
+            reader.ReadByteArray(StaticFields[9], Payload.ArU8);
+            reader.ReadSByteArray(StaticFields[10], Payload.ArI8);
+            reader.ReadCharArray(StaticFields[11], Payload.ArC);
+        
+            
+        }
     }
 
     /// <summary>
@@ -879,23 +1011,23 @@ namespace Asv.Mavlink.PythonArrayTest
         public byte GetMaxByteSize() => 91; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 91; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArD.Length * 8; //ArD
-            sum+=4; //V3
-            sum+=ArU32.Length * 4; //ArU32
-            sum+=ArI32.Length * 4; //ArI32
-            sum+=ArF.Length * 4; //ArF
-            sum+=2; //V2
-            sum+=ArU16.Length * 2; //ArU16
-            sum+=ArI16.Length * 2; //ArI16
-            sum+=1; //V1
-            sum+=ArU8.Length; //ArU8
-            sum+=ArI8.Length; //ArI8
-            sum+=ArC.Length; //ArC
-            return (byte)sum;
+            return (byte)(
+            +ArD.Length * 8 // double[2] ar_d
+            +4 // uint32_t v3
+            +ArU32.Length * 4 // uint32_t[2] ar_u32
+            +ArI32.Length * 4 // int32_t[2] ar_i32
+            +ArF.Length * 4 // float[2] ar_f
+            +2 // uint16_t v2
+            +ArU16.Length * 2 // uint16_t[2] ar_u16
+            +ArI16.Length * 2 // int16_t[2] ar_i16
+            +1 // uint8_t v1
+            +ArU8.Length // uint8_t[2] ar_u8
+            +ArI8.Length // int8_t[2] ar_i8
+            +ArC.Length // char[32] ar_c
+            );
         }
 
 
@@ -1113,7 +1245,8 @@ namespace Asv.Mavlink.PythonArrayTest
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("ar_d",
+            new(0,
+            "ar_d",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -1122,7 +1255,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Double, 
             2, 
             false),
-            new("ar_f",
+            new(1,
+            "ar_f",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -1131,7 +1265,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Float32, 
             2, 
             false),
-            new("ar_u32",
+            new(2,
+            "ar_u32",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -1140,7 +1275,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint32, 
             2, 
             false),
-            new("ar_i32",
+            new(3,
+            "ar_i32",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -1149,7 +1285,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Int32, 
             2, 
             false),
-            new("ar_u16",
+            new(4,
+            "ar_u16",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -1158,7 +1295,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint16, 
             2, 
             false),
-            new("ar_i16",
+            new(5,
+            "ar_i16",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -1167,7 +1305,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Int16, 
             2, 
             false),
-            new("ar_u8",
+            new(6,
+            "ar_u8",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -1176,7 +1315,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint8, 
             2, 
             false),
-            new("ar_i8",
+            new(7,
+            "ar_i8",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -1185,7 +1325,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Int8, 
             2, 
             false),
-            new("ar_c",
+            new(8,
+            "ar_c",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -1208,6 +1349,34 @@ namespace Asv.Mavlink.PythonArrayTest
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.ArD);
+            writer.Write(StaticFields[1], Payload.ArF);
+            writer.Write(StaticFields[2], Payload.ArU32);
+            writer.Write(StaticFields[3], Payload.ArI32);
+            writer.Write(StaticFields[4], Payload.ArU16);
+            writer.Write(StaticFields[5], Payload.ArI16);
+            writer.Write(StaticFields[6], Payload.ArU8);
+            writer.Write(StaticFields[7], Payload.ArI8);
+            writer.Write(StaticFields[8], Payload.ArC);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadDoubleArray(StaticFields[0], Payload.ArD);
+            reader.ReadFloatArray(StaticFields[1], Payload.ArF);
+            reader.ReadUIntArray(StaticFields[2],Payload.ArU32);
+            reader.ReadIntArray(StaticFields[3], Payload.ArI32);
+            reader.ReadUShortArray(StaticFields[4], Payload.ArU16);
+            reader.ReadShortArray(StaticFields[5], Payload.ArI16);
+            reader.ReadByteArray(StaticFields[6], Payload.ArU8);
+            reader.ReadSByteArray(StaticFields[7], Payload.ArI8);
+            reader.ReadCharArray(StaticFields[8], Payload.ArC);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1219,20 +1388,20 @@ namespace Asv.Mavlink.PythonArrayTest
         public byte GetMaxByteSize() => 84; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 84; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArD.Length * 8; //ArD
-            sum+=ArF.Length * 4; //ArF
-            sum+=ArU32.Length * 4; //ArU32
-            sum+=ArI32.Length * 4; //ArI32
-            sum+=ArU16.Length * 2; //ArU16
-            sum+=ArI16.Length * 2; //ArI16
-            sum+=ArU8.Length; //ArU8
-            sum+=ArI8.Length; //ArI8
-            sum+=ArC.Length; //ArC
-            return (byte)sum;
+            return (byte)(
+            +ArD.Length * 8 // double[2] ar_d
+            +ArF.Length * 4 // float[2] ar_f
+            +ArU32.Length * 4 // uint32_t[2] ar_u32
+            +ArI32.Length * 4 // int32_t[2] ar_i32
+            +ArU16.Length * 2 // uint16_t[2] ar_u16
+            +ArI16.Length * 2 // int16_t[2] ar_i16
+            +ArU8.Length // uint8_t[2] ar_u8
+            +ArI8.Length // int8_t[2] ar_i8
+            +ArC.Length // char[32] ar_c
+            );
         }
 
 
@@ -1429,7 +1598,8 @@ namespace Asv.Mavlink.PythonArrayTest
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("ar_d",
+            new(0,
+            "ar_d",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -1438,7 +1608,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Double, 
             2, 
             false),
-            new("v3",
+            new(1,
+            "v3",
             "Stub field",
             string.Empty, 
             string.Empty, 
@@ -1447,7 +1618,8 @@ namespace Asv.Mavlink.PythonArrayTest
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("ar_u16",
+            new(2,
+            "ar_u16",
             "Value array",
             string.Empty, 
             string.Empty, 
@@ -1464,6 +1636,22 @@ namespace Asv.Mavlink.PythonArrayTest
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.ArD);
+            writer.Write(StaticFields[1], Payload.V3);
+            writer.Write(StaticFields[2], Payload.ArU16);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadDoubleArray(StaticFields[0], Payload.ArD);
+            Payload.V3 = reader.ReadUInt(StaticFields[1]);
+            reader.ReadUShortArray(StaticFields[2], Payload.ArU16);
+        
+            
+        }
     }
 
     /// <summary>
@@ -1475,14 +1663,14 @@ namespace Asv.Mavlink.PythonArrayTest
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArD.Length * 8; //ArD
-            sum+=4; //V3
-            sum+=ArU16.Length * 2; //ArU16
-            return (byte)sum;
+            return (byte)(
+            +ArD.Length * 8 // double[2] ar_d
+            +4 // uint32_t v3
+            +ArU16.Length * 2 // uint16_t[2] ar_u16
+            );
         }
 
 

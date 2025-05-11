@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -78,7 +78,8 @@ namespace Asv.Mavlink.Cubepilot
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("rc_raw",
+            new(0,
+            "rc_raw",
             "",
             string.Empty, 
             string.Empty, 
@@ -93,6 +94,18 @@ namespace Asv.Mavlink.Cubepilot
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RcRaw);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            reader.ReadByteArray(StaticFields[0], Payload.RcRaw);
+        
+            
+        }
     }
 
     /// <summary>
@@ -104,12 +117,12 @@ namespace Asv.Mavlink.Cubepilot
         public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=RcRaw.Length; //RcRaw
-            return (byte)sum;
+            return (byte)(
+            +RcRaw.Length // uint8_t[32] rc_raw
+            );
         }
 
 
@@ -174,7 +187,8 @@ namespace Asv.Mavlink.Cubepilot
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("framerate",
+            new(0,
+            "framerate",
             "Frame rate.",
             string.Empty, 
             @"Hz", 
@@ -183,7 +197,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Float32, 
             0, 
             false),
-            new("bitrate",
+            new(1,
+            "bitrate",
             "Bit rate.",
             string.Empty, 
             @"bits/s", 
@@ -192,7 +207,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("resolution_h",
+            new(2,
+            "resolution_h",
             "Horizontal resolution.",
             string.Empty, 
             @"pix", 
@@ -201,7 +217,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("resolution_v",
+            new(3,
+            "resolution_v",
             "Vertical resolution.",
             string.Empty, 
             @"pix", 
@@ -210,7 +227,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("rotation",
+            new(4,
+            "rotation",
             "Video image rotation clockwise.",
             string.Empty, 
             @"deg", 
@@ -219,7 +237,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint16, 
             0, 
             false),
-            new("camera_id",
+            new(5,
+            "camera_id",
             "Video Stream ID (1 for first, 2 for second, etc.)",
             string.Empty, 
             string.Empty, 
@@ -228,7 +247,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("status",
+            new(6,
+            "status",
             "Number of streams available.",
             string.Empty, 
             string.Empty, 
@@ -237,7 +257,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("uri",
+            new(7,
+            "uri",
             "Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).",
             string.Empty, 
             string.Empty, 
@@ -259,6 +280,32 @@ namespace Asv.Mavlink.Cubepilot
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Framerate);
+            writer.Write(StaticFields[1], Payload.Bitrate);
+            writer.Write(StaticFields[2], Payload.ResolutionH);
+            writer.Write(StaticFields[3], Payload.ResolutionV);
+            writer.Write(StaticFields[4], Payload.Rotation);
+            writer.Write(StaticFields[5], Payload.CameraId);
+            writer.Write(StaticFields[6], Payload.Status);
+            writer.Write(StaticFields[7], Payload.Uri);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Framerate = reader.ReadFloat(StaticFields[0]);
+            Payload.Bitrate = reader.ReadUInt(StaticFields[1]);
+            Payload.ResolutionH = reader.ReadUShort(StaticFields[2]);
+            Payload.ResolutionV = reader.ReadUShort(StaticFields[3]);
+            Payload.Rotation = reader.ReadUShort(StaticFields[4]);
+            Payload.CameraId = reader.ReadByte(StaticFields[5]);
+            Payload.Status = reader.ReadByte(StaticFields[6]);
+            reader.ReadCharArray(StaticFields[7], Payload.Uri);
+        
+            
+        }
     }
 
     /// <summary>
@@ -270,19 +317,19 @@ namespace Asv.Mavlink.Cubepilot
         public byte GetMaxByteSize() => 246; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 246; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Framerate
-            sum+=4; //Bitrate
-            sum+=2; //ResolutionH
-            sum+=2; //ResolutionV
-            sum+=2; //Rotation
-            sum+=1; //CameraId
-            sum+=1; //Status
-            sum+=Uri.Length; //Uri
-            return (byte)sum;
+            return (byte)(
+            +4 // float framerate
+            +4 // uint32_t bitrate
+            +2 // uint16_t resolution_h
+            +2 // uint16_t resolution_v
+            +2 // uint16_t rotation
+            +1 // uint8_t camera_id
+            +1 // uint8_t status
+            +Uri.Length // char[230] uri
+            );
         }
 
 
@@ -408,7 +455,8 @@ namespace Asv.Mavlink.Cubepilot
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("rf_freq",
+            new(0,
+            "rf_freq",
             "",
             string.Empty, 
             string.Empty, 
@@ -417,7 +465,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("link_bw",
+            new(1,
+            "link_bw",
             "",
             string.Empty, 
             string.Empty, 
@@ -426,7 +475,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("link_rate",
+            new(2,
+            "link_rate",
             "",
             string.Empty, 
             string.Empty, 
@@ -435,7 +485,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("snr",
+            new(3,
+            "snr",
             "",
             string.Empty, 
             string.Empty, 
@@ -444,7 +495,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Int16, 
             0, 
             false),
-            new("cpu_temp",
+            new(4,
+            "cpu_temp",
             "",
             string.Empty, 
             string.Empty, 
@@ -453,7 +505,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Int16, 
             0, 
             false),
-            new("board_temp",
+            new(5,
+            "board_temp",
             "",
             string.Empty, 
             string.Empty, 
@@ -462,7 +515,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Int16, 
             0, 
             false),
-            new("rssi",
+            new(6,
+            "rssi",
             "",
             string.Empty, 
             string.Empty, 
@@ -483,6 +537,30 @@ namespace Asv.Mavlink.Cubepilot
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.RfFreq);
+            writer.Write(StaticFields[1], Payload.LinkBw);
+            writer.Write(StaticFields[2], Payload.LinkRate);
+            writer.Write(StaticFields[3], Payload.Snr);
+            writer.Write(StaticFields[4], Payload.CpuTemp);
+            writer.Write(StaticFields[5], Payload.BoardTemp);
+            writer.Write(StaticFields[6], Payload.Rssi);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.RfFreq = reader.ReadUInt(StaticFields[0]);
+            Payload.LinkBw = reader.ReadUInt(StaticFields[1]);
+            Payload.LinkRate = reader.ReadUInt(StaticFields[2]);
+            Payload.Snr = reader.ReadShort(StaticFields[3]);
+            Payload.CpuTemp = reader.ReadShort(StaticFields[4]);
+            Payload.BoardTemp = reader.ReadShort(StaticFields[5]);
+            Payload.Rssi = reader.ReadByte(StaticFields[6]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -494,18 +572,18 @@ namespace Asv.Mavlink.Cubepilot
         public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RfFreq
-            sum+=4; //LinkBw
-            sum+=4; //LinkRate
-            sum+=2; //Snr
-            sum+=2; //CpuTemp
-            sum+=2; //BoardTemp
-            sum+=1; //Rssi
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t rf_freq
+            +4 // uint32_t link_bw
+            +4 // uint32_t link_rate
+            +2 // int16_t snr
+            +2 // int16_t cpu_temp
+            +2 // int16_t board_temp
+            +1 // uint8_t rssi
+            );
         }
 
 
@@ -599,7 +677,8 @@ namespace Asv.Mavlink.Cubepilot
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("size",
+            new(0,
+            "size",
             "FW Size.",
             string.Empty, 
             @"bytes", 
@@ -608,7 +687,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("crc",
+            new(1,
+            "crc",
             "FW CRC.",
             string.Empty, 
             string.Empty, 
@@ -617,7 +697,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("target_system",
+            new(2,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -626,7 +707,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(3,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -644,6 +726,24 @@ namespace Asv.Mavlink.Cubepilot
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Size);
+            writer.Write(StaticFields[1], Payload.Crc);
+            writer.Write(StaticFields[2], Payload.TargetSystem);
+            writer.Write(StaticFields[3], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Size = reader.ReadUInt(StaticFields[0]);
+            Payload.Crc = reader.ReadUInt(StaticFields[1]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[2]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[3]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -655,15 +755,15 @@ namespace Asv.Mavlink.Cubepilot
         public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Size
-            sum+=4; //Crc
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t size
+            +4 // uint32_t crc
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -736,7 +836,8 @@ namespace Asv.Mavlink.Cubepilot
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("offset",
+            new(0,
+            "offset",
             "FW Offset.",
             string.Empty, 
             @"bytes", 
@@ -745,7 +846,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("target_system",
+            new(1,
+            "target_system",
             "System ID.",
             string.Empty, 
             string.Empty, 
@@ -754,7 +856,8 @@ namespace Asv.Mavlink.Cubepilot
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("target_component",
+            new(2,
+            "target_component",
             "Component ID.",
             string.Empty, 
             string.Empty, 
@@ -771,6 +874,22 @@ namespace Asv.Mavlink.Cubepilot
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Offset);
+            writer.Write(StaticFields[1], Payload.TargetSystem);
+            writer.Write(StaticFields[2], Payload.TargetComponent);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Offset = reader.ReadUInt(StaticFields[0]);
+            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
+            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -782,14 +901,14 @@ namespace Asv.Mavlink.Cubepilot
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Offset
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t offset
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 

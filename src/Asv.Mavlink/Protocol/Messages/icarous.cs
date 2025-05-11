@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -125,7 +125,8 @@ namespace Asv.Mavlink.Icarous
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("status",
+            new(0,
+            "status",
             "See the FMS_STATE enum.",
             string.Empty, 
             string.Empty, 
@@ -140,6 +141,18 @@ namespace Asv.Mavlink.Icarous
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Status);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Status = (IcarousFmsState)reader.ReadEnum(StaticFields[0]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -151,12 +164,12 @@ namespace Asv.Mavlink.Icarous
         public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // Status
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t status
+            );
         }
 
 
@@ -208,7 +221,8 @@ namespace Asv.Mavlink.Icarous
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("min1",
+            new(0,
+            "min1",
             "min angle (degrees)",
             string.Empty, 
             @"deg", 
@@ -217,7 +231,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Float32, 
             0, 
             false),
-            new("max1",
+            new(1,
+            "max1",
             "max angle (degrees)",
             string.Empty, 
             @"deg", 
@@ -226,7 +241,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Float32, 
             0, 
             false),
-            new("min2",
+            new(2,
+            "min2",
             "min angle (degrees)",
             string.Empty, 
             @"deg", 
@@ -235,7 +251,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Float32, 
             0, 
             false),
-            new("max2",
+            new(3,
+            "max2",
             "max angle (degrees)",
             string.Empty, 
             @"deg", 
@@ -244,7 +261,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Float32, 
             0, 
             false),
-            new("min3",
+            new(4,
+            "min3",
             "min angle (degrees)",
             string.Empty, 
             @"deg", 
@@ -253,7 +271,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Float32, 
             0, 
             false),
-            new("max3",
+            new(5,
+            "max3",
             "max angle (degrees)",
             string.Empty, 
             @"deg", 
@@ -262,7 +281,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Float32, 
             0, 
             false),
-            new("min4",
+            new(6,
+            "min4",
             "min angle (degrees)",
             string.Empty, 
             @"deg", 
@@ -271,7 +291,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Float32, 
             0, 
             false),
-            new("max4",
+            new(7,
+            "max4",
             "max angle (degrees)",
             string.Empty, 
             @"deg", 
@@ -280,7 +301,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Float32, 
             0, 
             false),
-            new("min5",
+            new(8,
+            "min5",
             "min angle (degrees)",
             string.Empty, 
             @"deg", 
@@ -289,7 +311,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Float32, 
             0, 
             false),
-            new("max5",
+            new(9,
+            "max5",
             "max angle (degrees)",
             string.Empty, 
             @"deg", 
@@ -298,7 +321,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Float32, 
             0, 
             false),
-            new("numBands",
+            new(10,
+            "numBands",
             "Number of track bands",
             string.Empty, 
             string.Empty, 
@@ -307,7 +331,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Int8, 
             0, 
             false),
-            new("type1",
+            new(11,
+            "type1",
             "See the TRACK_BAND_TYPES enum.",
             string.Empty, 
             string.Empty, 
@@ -316,7 +341,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("type2",
+            new(12,
+            "type2",
             "See the TRACK_BAND_TYPES enum.",
             string.Empty, 
             string.Empty, 
@@ -325,7 +351,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("type3",
+            new(13,
+            "type3",
             "See the TRACK_BAND_TYPES enum.",
             string.Empty, 
             string.Empty, 
@@ -334,7 +361,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("type4",
+            new(14,
+            "type4",
             "See the TRACK_BAND_TYPES enum.",
             string.Empty, 
             string.Empty, 
@@ -343,7 +371,8 @@ namespace Asv.Mavlink.Icarous
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("type5",
+            new(15,
+            "type5",
             "See the TRACK_BAND_TYPES enum.",
             string.Empty, 
             string.Empty, 
@@ -373,6 +402,48 @@ namespace Asv.Mavlink.Icarous
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.Min1);
+            writer.Write(StaticFields[1], Payload.Max1);
+            writer.Write(StaticFields[2], Payload.Min2);
+            writer.Write(StaticFields[3], Payload.Max2);
+            writer.Write(StaticFields[4], Payload.Min3);
+            writer.Write(StaticFields[5], Payload.Max3);
+            writer.Write(StaticFields[6], Payload.Min4);
+            writer.Write(StaticFields[7], Payload.Max4);
+            writer.Write(StaticFields[8], Payload.Min5);
+            writer.Write(StaticFields[9], Payload.Max5);
+            writer.Write(StaticFields[10], Payload.Numbands);
+            writer.Write(StaticFields[11], Payload.Type1);
+            writer.Write(StaticFields[12], Payload.Type2);
+            writer.Write(StaticFields[13], Payload.Type3);
+            writer.Write(StaticFields[14], Payload.Type4);
+            writer.Write(StaticFields[15], Payload.Type5);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.Min1 = reader.ReadFloat(StaticFields[0]);
+            Payload.Max1 = reader.ReadFloat(StaticFields[1]);
+            Payload.Min2 = reader.ReadFloat(StaticFields[2]);
+            Payload.Max2 = reader.ReadFloat(StaticFields[3]);
+            Payload.Min3 = reader.ReadFloat(StaticFields[4]);
+            Payload.Max3 = reader.ReadFloat(StaticFields[5]);
+            Payload.Min4 = reader.ReadFloat(StaticFields[6]);
+            Payload.Max4 = reader.ReadFloat(StaticFields[7]);
+            Payload.Min5 = reader.ReadFloat(StaticFields[8]);
+            Payload.Max5 = reader.ReadFloat(StaticFields[9]);
+            Payload.Numbands = reader.ReadSByte(StaticFields[10]);
+            Payload.Type1 = (IcarousTrackBandTypes)reader.ReadEnum(StaticFields[11]);
+            Payload.Type2 = (IcarousTrackBandTypes)reader.ReadEnum(StaticFields[12]);
+            Payload.Type3 = (IcarousTrackBandTypes)reader.ReadEnum(StaticFields[13]);
+            Payload.Type4 = (IcarousTrackBandTypes)reader.ReadEnum(StaticFields[14]);
+            Payload.Type5 = (IcarousTrackBandTypes)reader.ReadEnum(StaticFields[15]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -384,27 +455,27 @@ namespace Asv.Mavlink.Icarous
         public byte GetMaxByteSize() => 46; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 46; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Min1
-            sum+=4; //Max1
-            sum+=4; //Min2
-            sum+=4; //Max2
-            sum+=4; //Min3
-            sum+=4; //Max3
-            sum+=4; //Min4
-            sum+=4; //Max4
-            sum+=4; //Min5
-            sum+=4; //Max5
-            sum+=1; //Numbands
-            sum+= 1; // Type1
-            sum+= 1; // Type2
-            sum+= 1; // Type3
-            sum+= 1; // Type4
-            sum+= 1; // Type5
-            return (byte)sum;
+            return (byte)(
+            +4 // float min1
+            +4 // float max1
+            +4 // float min2
+            +4 // float max2
+            +4 // float min3
+            +4 // float max3
+            +4 // float min4
+            +4 // float max4
+            +4 // float min5
+            +4 // float max5
+            +1 // int8_t numBands
+            + 1 // uint8_t type1
+            + 1 // uint8_t type2
+            + 1 // uint8_t type3
+            + 1 // uint8_t type4
+            + 1 // uint8_t type5
+            );
         }
 
 

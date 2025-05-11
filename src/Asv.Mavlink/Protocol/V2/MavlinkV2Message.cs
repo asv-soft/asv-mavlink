@@ -25,6 +25,8 @@ public abstract class MavlinkV2Message : MavlinkMessage
     
     public override int GetByteSize() => GetPayload().GetByteSize() + (Signature.IsPresent ? MavlinkV2Protocol.SignatureByteSize : 0) + 12 /*HEADER*/;
 
+    
+    
     public override void Serialize(ref Span<byte> buffer)
     {
         var fillBuffer = buffer[..];
@@ -154,6 +156,8 @@ public abstract class MavlinkV2Message<TPayload> : MavlinkV2Message
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override IPayload GetPayload() => Payload;
+
     
-    
+
+
 }

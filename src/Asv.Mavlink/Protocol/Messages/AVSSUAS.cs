@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.14+613eac956231b473246c80e7d407c06ce1728417 25-04-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
 
 using System;
 using System.Text;
@@ -299,7 +299,8 @@ namespace Asv.Mavlink.Avssuas
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_boot_ms",
+            new(0,
+            "time_boot_ms",
             "Timestamp (time since PRS boot).",
             string.Empty, 
             @"ms", 
@@ -308,7 +309,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("error_status",
+            new(1,
+            "error_status",
             "PRS error statuses",
             string.Empty, 
             string.Empty, 
@@ -317,7 +319,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("battery_status",
+            new(2,
+            "battery_status",
             "Estimated battery run-time without a remote connection and PRS battery voltage",
             string.Empty, 
             string.Empty, 
@@ -326,7 +329,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("arm_status",
+            new(3,
+            "arm_status",
             "PRS arm statuses",
             string.Empty, 
             string.Empty, 
@@ -335,7 +339,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("charge_status",
+            new(4,
+            "charge_status",
             "PRS battery charge statuses",
             string.Empty, 
             string.Empty, 
@@ -354,6 +359,26 @@ namespace Asv.Mavlink.Avssuas
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeBootMs);
+            writer.Write(StaticFields[1], Payload.ErrorStatus);
+            writer.Write(StaticFields[2], Payload.BatteryStatus);
+            writer.Write(StaticFields[3], Payload.ArmStatus);
+            writer.Write(StaticFields[4], Payload.ChargeStatus);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
+            Payload.ErrorStatus = reader.ReadUInt(StaticFields[1]);
+            Payload.BatteryStatus = reader.ReadUInt(StaticFields[2]);
+            Payload.ArmStatus = reader.ReadByte(StaticFields[3]);
+            Payload.ChargeStatus = reader.ReadByte(StaticFields[4]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -365,16 +390,16 @@ namespace Asv.Mavlink.Avssuas
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //TimeBootMs
-            sum+=4; //ErrorStatus
-            sum+=4; //BatteryStatus
-            sum+=1; //ArmStatus
-            sum+=1; //ChargeStatus
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t time_boot_ms
+            +4 // uint32_t error_status
+            +4 // uint32_t battery_status
+            +1 // uint8_t arm_status
+            +1 // uint8_t charge_status
+            );
         }
 
 
@@ -454,7 +479,8 @@ namespace Asv.Mavlink.Avssuas
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_boot_ms",
+            new(0,
+            "time_boot_ms",
             "Timestamp (time since FC boot).",
             string.Empty, 
             @"ms", 
@@ -463,7 +489,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("lat",
+            new(1,
+            "lat",
             "Latitude, expressed",
             string.Empty, 
             @"degE7", 
@@ -472,7 +499,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Int32, 
             0, 
             false),
-            new("lon",
+            new(2,
+            "lon",
             "Longitude, expressed",
             string.Empty, 
             @"degE7", 
@@ -481,7 +509,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Int32, 
             0, 
             false),
-            new("alt",
+            new(3,
+            "alt",
             "Altitude (MSL). Note that virtually all GPS modules provide both WGS84 and MSL.",
             string.Empty, 
             @"mm", 
@@ -490,7 +519,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Int32, 
             0, 
             false),
-            new("ground_alt",
+            new(4,
+            "ground_alt",
             "Altitude above ground, This altitude is measured by a ultrasound, Laser rangefinder or millimeter-wave radar",
             string.Empty, 
             @"m", 
@@ -499,7 +529,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Float32, 
             0, 
             false),
-            new("barometer_alt",
+            new(5,
+            "barometer_alt",
             "This altitude is measured by a barometer",
             string.Empty, 
             @"m", 
@@ -519,6 +550,28 @@ namespace Asv.Mavlink.Avssuas
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeBootMs);
+            writer.Write(StaticFields[1], Payload.Lat);
+            writer.Write(StaticFields[2], Payload.Lon);
+            writer.Write(StaticFields[3], Payload.Alt);
+            writer.Write(StaticFields[4], Payload.GroundAlt);
+            writer.Write(StaticFields[5], Payload.BarometerAlt);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
+            Payload.Lat = reader.ReadInt(StaticFields[1]);
+            Payload.Lon = reader.ReadInt(StaticFields[2]);
+            Payload.Alt = reader.ReadInt(StaticFields[3]);
+            Payload.GroundAlt = reader.ReadFloat(StaticFields[4]);
+            Payload.BarometerAlt = reader.ReadFloat(StaticFields[5]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -530,17 +583,17 @@ namespace Asv.Mavlink.Avssuas
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //TimeBootMs
-            sum+=4; //Lat
-            sum+=4; //Lon
-            sum+=4; //Alt
-            sum+=4; //GroundAlt
-            sum+=4; //BarometerAlt
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t time_boot_ms
+            +4 // int32_t lat
+            +4 // int32_t lon
+            +4 // int32_t alt
+            +4 // float ground_alt
+            +4 // float barometer_alt
+            );
         }
 
 
@@ -627,7 +680,8 @@ namespace Asv.Mavlink.Avssuas
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_boot_ms",
+            new(0,
+            "time_boot_ms",
             "Timestamp (time since FC boot).",
             string.Empty, 
             @"ms", 
@@ -636,7 +690,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("q1",
+            new(1,
+            "q1",
             "Quaternion component 1, w (1 in null-rotation)",
             string.Empty, 
             string.Empty, 
@@ -645,7 +700,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Float32, 
             0, 
             false),
-            new("q2",
+            new(2,
+            "q2",
             "Quaternion component 2, x (0 in null-rotation)",
             string.Empty, 
             string.Empty, 
@@ -654,7 +710,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Float32, 
             0, 
             false),
-            new("q3",
+            new(3,
+            "q3",
             "Quaternion component 3, y (0 in null-rotation)",
             string.Empty, 
             string.Empty, 
@@ -663,7 +720,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Float32, 
             0, 
             false),
-            new("q4",
+            new(4,
+            "q4",
             "Quaternion component 4, z (0 in null-rotation)",
             string.Empty, 
             string.Empty, 
@@ -672,7 +730,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Float32, 
             0, 
             false),
-            new("xacc",
+            new(5,
+            "xacc",
             "X acceleration",
             string.Empty, 
             @"m/s/s", 
@@ -681,7 +740,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Float32, 
             0, 
             false),
-            new("yacc",
+            new(6,
+            "yacc",
             "Y acceleration",
             string.Empty, 
             @"m/s/s", 
@@ -690,7 +750,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Float32, 
             0, 
             false),
-            new("zacc",
+            new(7,
+            "zacc",
             "Z acceleration",
             string.Empty, 
             @"m/s/s", 
@@ -699,7 +760,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Float32, 
             0, 
             false),
-            new("xgyro",
+            new(8,
+            "xgyro",
             "Angular speed around X axis",
             string.Empty, 
             @"rad/s", 
@@ -708,7 +770,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Float32, 
             0, 
             false),
-            new("ygyro",
+            new(9,
+            "ygyro",
             "Angular speed around Y axis",
             string.Empty, 
             @"rad/s", 
@@ -717,7 +780,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Float32, 
             0, 
             false),
-            new("zgyro",
+            new(10,
+            "zgyro",
             "Angular speed around Z axis",
             string.Empty, 
             @"rad/s", 
@@ -742,6 +806,38 @@ namespace Asv.Mavlink.Avssuas
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeBootMs);
+            writer.Write(StaticFields[1], Payload.Q1);
+            writer.Write(StaticFields[2], Payload.Q2);
+            writer.Write(StaticFields[3], Payload.Q3);
+            writer.Write(StaticFields[4], Payload.Q4);
+            writer.Write(StaticFields[5], Payload.Xacc);
+            writer.Write(StaticFields[6], Payload.Yacc);
+            writer.Write(StaticFields[7], Payload.Zacc);
+            writer.Write(StaticFields[8], Payload.Xgyro);
+            writer.Write(StaticFields[9], Payload.Ygyro);
+            writer.Write(StaticFields[10], Payload.Zgyro);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
+            Payload.Q1 = reader.ReadFloat(StaticFields[1]);
+            Payload.Q2 = reader.ReadFloat(StaticFields[2]);
+            Payload.Q3 = reader.ReadFloat(StaticFields[3]);
+            Payload.Q4 = reader.ReadFloat(StaticFields[4]);
+            Payload.Xacc = reader.ReadFloat(StaticFields[5]);
+            Payload.Yacc = reader.ReadFloat(StaticFields[6]);
+            Payload.Zacc = reader.ReadFloat(StaticFields[7]);
+            Payload.Xgyro = reader.ReadFloat(StaticFields[8]);
+            Payload.Ygyro = reader.ReadFloat(StaticFields[9]);
+            Payload.Zgyro = reader.ReadFloat(StaticFields[10]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -753,22 +849,22 @@ namespace Asv.Mavlink.Avssuas
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //TimeBootMs
-            sum+=4; //Q1
-            sum+=4; //Q2
-            sum+=4; //Q3
-            sum+=4; //Q4
-            sum+=4; //Xacc
-            sum+=4; //Yacc
-            sum+=4; //Zacc
-            sum+=4; //Xgyro
-            sum+=4; //Ygyro
-            sum+=4; //Zgyro
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t time_boot_ms
+            +4 // float q1
+            +4 // float q2
+            +4 // float q3
+            +4 // float q4
+            +4 // float xacc
+            +4 // float yacc
+            +4 // float zacc
+            +4 // float xgyro
+            +4 // float ygyro
+            +4 // float zgyro
+            );
         }
 
 
@@ -890,7 +986,8 @@ namespace Asv.Mavlink.Avssuas
                 
         public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
         [
-            new("time_boot_ms",
+            new(0,
+            "time_boot_ms",
             "Timestamp (time since FC boot).",
             string.Empty, 
             @"ms", 
@@ -899,7 +996,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Uint32, 
             0, 
             false),
-            new("M300_operation_mode",
+            new(1,
+            "M300_operation_mode",
             "DJI M300 operation mode",
             string.Empty, 
             string.Empty, 
@@ -908,7 +1006,8 @@ namespace Asv.Mavlink.Avssuas
             MessageFieldType.Uint8, 
             0, 
             false),
-            new("horsefly_operation_mode",
+            new(2,
+            "horsefly_operation_mode",
             "horsefly operation mode",
             string.Empty, 
             string.Empty, 
@@ -925,6 +1024,22 @@ namespace Asv.Mavlink.Avssuas
         ;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string GetFormatMessage() => FormatMessage;
+        
+        public override void ReadFields(IMavlinkFieldWriter writer)
+        {
+            writer.Write(StaticFields[0], Payload.TimeBootMs);
+            writer.Write(StaticFields[1], Payload.M300OperationMode);
+            writer.Write(StaticFields[2], Payload.HorseflyOperationMode);
+        }
+        
+        public override void WriteFields(IMavlinkFieldReader reader)
+        {
+            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
+            Payload.M300OperationMode = reader.ReadByte(StaticFields[1]);
+            Payload.HorseflyOperationMode = reader.ReadByte(StaticFields[2]);
+        
+            
+        }
     }
 
     /// <summary>
@@ -936,14 +1051,14 @@ namespace Asv.Mavlink.Avssuas
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //TimeBootMs
-            sum+=1; //M300OperationMode
-            sum+=1; //HorseflyOperationMode
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t time_boot_ms
+            +1 // uint8_t M300_operation_mode
+            +1 // uint8_t horsefly_operation_mode
+            );
         }
 
 
