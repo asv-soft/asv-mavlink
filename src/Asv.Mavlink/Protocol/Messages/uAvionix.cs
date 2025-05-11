@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -459,11 +459,11 @@ namespace Asv.Mavlink.Uavionix
             Payload.Icao = reader.ReadUInt(StaticFields[0]);
             Payload.Stallspeed = reader.ReadUShort(StaticFields[1]);
             reader.ReadCharArray(StaticFields[2], Payload.Callsign);
-            Payload.Emittertype = (AdsbEmitterType)reader.ReadEnum(StaticFields[3]);
-            Payload.Aircraftsize = (UavionixAdsbOutCfgAircraftSize)reader.ReadEnum(StaticFields[4]);
-            Payload.Gpsoffsetlat = (UavionixAdsbOutCfgGpsOffsetLat)reader.ReadEnum(StaticFields[5]);
-            Payload.Gpsoffsetlon = (UavionixAdsbOutCfgGpsOffsetLon)reader.ReadEnum(StaticFields[6]);
-            Payload.Rfselect = (UavionixAdsbOutRfSelect)reader.ReadEnum(StaticFields[7]);
+            Payload.Emittertype = (AdsbEmitterType)reader.ReadByte(StaticFields[3]);
+            Payload.Aircraftsize = (UavionixAdsbOutCfgAircraftSize)reader.ReadByte(StaticFields[4]);
+            Payload.Gpsoffsetlat = (UavionixAdsbOutCfgGpsOffsetLat)reader.ReadByte(StaticFields[5]);
+            Payload.Gpsoffsetlon = (UavionixAdsbOutCfgGpsOffsetLon)reader.ReadByte(StaticFields[6]);
+            Payload.Rfselect = (UavionixAdsbOutRfSelect)reader.ReadByte(StaticFields[7]);
         
             
         }
@@ -831,11 +831,11 @@ namespace Asv.Mavlink.Uavionix
             Payload.Velvert = reader.ReadShort(StaticFields[8]);
             Payload.Velns = reader.ReadShort(StaticFields[9]);
             Payload.Velew = reader.ReadShort(StaticFields[10]);
-            Payload.State = (UavionixAdsbOutDynamicState)reader.ReadEnum(StaticFields[11]);
+            Payload.State = (UavionixAdsbOutDynamicState)reader.ReadUShort(StaticFields[11]);
             Payload.Squawk = reader.ReadUShort(StaticFields[12]);
-            Payload.Gpsfix = (UavionixAdsbOutDynamicGpsFix)reader.ReadEnum(StaticFields[13]);
+            Payload.Gpsfix = (UavionixAdsbOutDynamicGpsFix)reader.ReadByte(StaticFields[13]);
             Payload.Numsats = reader.ReadByte(StaticFields[14]);
-            Payload.Emergencystatus = (UavionixAdsbEmergencyStatus)reader.ReadEnum(StaticFields[15]);
+            Payload.Emergencystatus = (UavionixAdsbEmergencyStatus)reader.ReadByte(StaticFields[15]);
         
             
         }
@@ -1051,7 +1051,7 @@ namespace Asv.Mavlink.Uavionix
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Rfhealth = (UavionixAdsbRfHealth)reader.ReadEnum(StaticFields[0]);
+            Payload.Rfhealth = (UavionixAdsbRfHealth)reader.ReadByte(StaticFields[0]);
         
             
         }

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -268,8 +268,8 @@ namespace Asv.Mavlink.AsvRadio
             Payload.TxLevel = reader.ReadFloat(StaticFields[1]);
             Payload.RxLevel = reader.ReadFloat(StaticFields[2]);
             Payload.RxEstimatedLevel = reader.ReadFloat(StaticFields[3]);
-            Payload.RfMode = (AsvRadioRfModeFlag)reader.ReadEnum(StaticFields[4]);
-            Payload.Modulation = (AsvRadioModulation)reader.ReadEnum(StaticFields[5]);
+            Payload.RfMode = (AsvRadioRfModeFlag)reader.ReadUInt(StaticFields[4]);
+            Payload.Modulation = (AsvRadioModulation)reader.ReadByte(StaticFields[5]);
         
             
         }
@@ -954,12 +954,12 @@ namespace Asv.Mavlink.AsvRadio
         {
             Payload.All = reader.ReadUShort(StaticFields[0]);
             Payload.Skip = reader.ReadUShort(StaticFields[1]);
-            var array = reader.ReadEnumArray(StaticFields[2]);
+            var array = new ushort[Payload.Codecs.Length];
+            reader.ReadUShortArray(StaticFields[2], array);
             for(var i=0;i<array.Length;i++)
             {
-                Payload.Codecs[i] = (AsvAudioCodec)(array.GetValue(i) ?? throw new InvalidOperationException());
-            }            
-            
+                Payload.Codecs[i] = (AsvAudioCodec)array[i];
+            }
             Payload.Count = reader.ReadByte(StaticFields[3]);
         
             

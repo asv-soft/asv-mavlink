@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -443,7 +443,7 @@ namespace Asv.Mavlink.AsvChart
             Payload.RequestId = reader.ReadUShort(StaticFields[0]);
             Payload.ItemsCount = reader.ReadUShort(StaticFields[1]);
             Payload.ChatListHash = reader.ReadUShort(StaticFields[2]);
-            Payload.Result = (AsvChartRequestAck)reader.ReadEnum(StaticFields[3]);
+            Payload.Result = (AsvChartRequestAck)reader.ReadByte(StaticFields[3]);
         
             
         }
@@ -854,15 +854,15 @@ namespace Asv.Mavlink.AsvChart
             Payload.AxesYMax = reader.ReadFloat(StaticFields[3]);
             Payload.ChartId = reader.ReadUShort(StaticFields[4]);
             Payload.ChartInfoHash = reader.ReadUShort(StaticFields[5]);
-            Payload.AxesXUnit = (AsvChartUnitType)reader.ReadEnum(StaticFields[6]);
+            Payload.AxesXUnit = (AsvChartUnitType)reader.ReadUShort(StaticFields[6]);
             Payload.AxesXCount = reader.ReadUShort(StaticFields[7]);
-            Payload.AxesYUnit = (AsvChartUnitType)reader.ReadEnum(StaticFields[8]);
+            Payload.AxesYUnit = (AsvChartUnitType)reader.ReadUShort(StaticFields[8]);
             Payload.AxesYCount = reader.ReadUShort(StaticFields[9]);
             reader.ReadCharArray(StaticFields[10], Payload.ChartName);
-            Payload.ChartType = (AsvChartType)reader.ReadEnum(StaticFields[11]);
+            Payload.ChartType = (AsvChartType)reader.ReadByte(StaticFields[11]);
             reader.ReadCharArray(StaticFields[12], Payload.AxesXName);
             reader.ReadCharArray(StaticFields[13], Payload.AxesYName);
-            Payload.Format = (AsvChartDataFormat)reader.ReadEnum(StaticFields[14]);
+            Payload.Format = (AsvChartDataFormat)reader.ReadByte(StaticFields[14]);
         
             
         }
@@ -1200,7 +1200,7 @@ namespace Asv.Mavlink.AsvChart
             Payload.ChatInfoHash = reader.ReadUShort(StaticFields[2]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
-            Payload.DataTrigger = (AsvChartDataTrigger)reader.ReadEnum(StaticFields[5]);
+            Payload.DataTrigger = (AsvChartDataTrigger)reader.ReadByte(StaticFields[5]);
         
             
         }
@@ -1387,8 +1387,8 @@ namespace Asv.Mavlink.AsvChart
             Payload.DataRate = reader.ReadFloat(StaticFields[0]);
             Payload.ChatId = reader.ReadUShort(StaticFields[1]);
             Payload.ChatInfoHash = reader.ReadUShort(StaticFields[2]);
-            Payload.Result = (AsvChartRequestAck)reader.ReadEnum(StaticFields[3]);
-            Payload.DataTrigger = (AsvChartDataTrigger)reader.ReadEnum(StaticFields[4]);
+            Payload.Result = (AsvChartRequestAck)reader.ReadByte(StaticFields[3]);
+            Payload.DataTrigger = (AsvChartDataTrigger)reader.ReadByte(StaticFields[4]);
         
             
         }

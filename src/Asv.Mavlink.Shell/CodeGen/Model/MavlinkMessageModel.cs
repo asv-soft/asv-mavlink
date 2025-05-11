@@ -30,6 +30,17 @@ namespace Asv.Mavlink.Shell
         
         public static void ReorderFieldsAndClacCrc(this MavlinkMessageModel src)
         {
+            // Message payload fields are reordered for transmission as follows:
+            // 
+            // Fields are sorted according to their native data size:
+            // (u)int64_t, double (8 bytes)
+            // (u)int32_t, float (4)
+            // (u)int16_t (2)
+            // (u)int8_t, char (1)
+            // If two fields have the same length, their order is preserved as it was present before the data field size ordering
+            // Arrays are handled based on the data type they use, not based on the total array size
+            // The over-the-air order is the same as for the struct and thus represents the reordered fields
+
             src.Fields = src.Fields.OrderByDescending(_ => _.FieldTypeByteSize).ToList();
 
             var crc = X25Crc.Accumulate($"{src.Name} ", X25Crc.CrcSeed);

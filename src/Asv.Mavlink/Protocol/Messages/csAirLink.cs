@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -278,7 +278,7 @@ namespace Asv.Mavlink.Csairlink
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.RespType = (AirlinkAuthResponseType)reader.ReadEnum(StaticFields[0]);
+            Payload.RespType = (AirlinkAuthResponseType)reader.ReadByte(StaticFields[0]);
         
             
         }

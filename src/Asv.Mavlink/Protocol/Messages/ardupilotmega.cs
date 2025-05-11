@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -3762,7 +3762,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.MountMode = (MavMountMode)reader.ReadEnum(StaticFields[2]);
+            Payload.MountMode = (MavMountMode)reader.ReadByte(StaticFields[2]);
             Payload.StabRoll = reader.ReadByte(StaticFields[3]);
             Payload.StabPitch = reader.ReadByte(StaticFields[4]);
             Payload.StabYaw = reader.ReadByte(StaticFields[5]);
@@ -4167,7 +4167,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.PointingC = reader.ReadInt(StaticFields[2]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
-            Payload.MountMode = (MavMountMode)reader.ReadEnum(StaticFields[5]);
+            Payload.MountMode = (MavMountMode)reader.ReadByte(StaticFields[5]);
         
             
         }
@@ -5612,10 +5612,10 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.LastRecovery = reader.ReadUInt(StaticFields[2]);
             Payload.LastClear = reader.ReadUInt(StaticFields[3]);
             Payload.BreachCount = reader.ReadUShort(StaticFields[4]);
-            Payload.LimitsState = (LimitsState)reader.ReadEnum(StaticFields[5]);
-            Payload.ModsEnabled = (LimitModule)reader.ReadEnum(StaticFields[6]);
-            Payload.ModsRequired = (LimitModule)reader.ReadEnum(StaticFields[7]);
-            Payload.ModsTriggered = (LimitModule)reader.ReadEnum(StaticFields[8]);
+            Payload.LimitsState = (LimitsState)reader.ReadByte(StaticFields[5]);
+            Payload.ModsEnabled = (LimitModule)reader.ReadByte(StaticFields[6]);
+            Payload.ModsRequired = (LimitModule)reader.ReadByte(StaticFields[7]);
+            Payload.ModsTriggered = (LimitModule)reader.ReadByte(StaticFields[8]);
         
             
         }
@@ -7078,7 +7078,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.TargetComponent = reader.ReadByte(StaticFields[6]);
             Payload.Idx = reader.ReadByte(StaticFields[7]);
             Payload.Count = reader.ReadByte(StaticFields[8]);
-            Payload.Flags = (RallyFlags)reader.ReadEnum(StaticFields[9]);
+            Payload.Flags = (RallyFlags)reader.ReadByte(StaticFields[9]);
         
             
         }
@@ -7890,7 +7890,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.ImgIdx = reader.ReadUShort(StaticFields[5]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
             Payload.CamIdx = reader.ReadByte(StaticFields[7]);
-            Payload.EventId = (CameraStatusTypes)reader.ReadEnum(StaticFields[8]);
+            Payload.EventId = (CameraStatusTypes)reader.ReadByte(StaticFields[8]);
         
             
         }
@@ -8218,7 +8218,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.ImgIdx = reader.ReadUShort(StaticFields[9]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[10]);
             Payload.CamIdx = reader.ReadByte(StaticFields[11]);
-            Payload.Flags = (CameraFeedbackFlags)reader.ReadEnum(StaticFields[12]);
+            Payload.Flags = (CameraFeedbackFlags)reader.ReadByte(StaticFields[12]);
             Payload.CompletedCaptures = reader.ReadUShort(StaticFields[13]);
         
             
@@ -8976,7 +8976,7 @@ namespace Asv.Mavlink.Ardupilotmega
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Seqno = (MavRemoteLogDataBlockCommands)reader.ReadEnum(StaticFields[0]);
+            Payload.Seqno = (MavRemoteLogDataBlockCommands)reader.ReadUInt(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
             reader.ReadByteArray(StaticFields[3], Payload.Data);
@@ -9151,7 +9151,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.Seqno = reader.ReadUInt(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.Status = (MavRemoteLogDataBlockStatuses)reader.ReadEnum(StaticFields[3]);
+            Payload.Status = (MavRemoteLogDataBlockStatuses)reader.ReadByte(StaticFields[3]);
         
             
         }
@@ -9586,7 +9586,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.DirectionZ = reader.ReadFloat(StaticFields[2]);
             Payload.CompassId = reader.ReadByte(StaticFields[3]);
             Payload.CalMask = reader.ReadByte(StaticFields[4]);
-            Payload.CalStatus = (MagCalStatus)reader.ReadEnum(StaticFields[5]);
+            Payload.CalStatus = (MagCalStatus)reader.ReadByte(StaticFields[5]);
             Payload.Attempt = reader.ReadByte(StaticFields[6]);
             Payload.CompletionPct = reader.ReadByte(StaticFields[7]);
             reader.ReadByteArray(StaticFields[8], Payload.CompletionMask);
@@ -9839,7 +9839,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.PosVertVariance = reader.ReadFloat(StaticFields[2]);
             Payload.CompassVariance = reader.ReadFloat(StaticFields[3]);
             Payload.TerrainAltVariance = reader.ReadFloat(StaticFields[4]);
-            Payload.Flags = (EkfStatusFlags)reader.ReadEnum(StaticFields[5]);
+            Payload.Flags = (EkfStatusFlags)reader.ReadUShort(StaticFields[5]);
             Payload.AirspeedVariance = reader.ReadFloat(StaticFields[6]);
         
             
@@ -10088,7 +10088,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.P = reader.ReadFloat(StaticFields[3]);
             Payload.I = reader.ReadFloat(StaticFields[4]);
             Payload.D = reader.ReadFloat(StaticFields[5]);
-            Payload.Axis = (PidTuningAxis)reader.ReadEnum(StaticFields[6]);
+            Payload.Axis = (PidTuningAxis)reader.ReadByte(StaticFields[6]);
             Payload.Srate = reader.ReadFloat(StaticFields[7]);
             Payload.Pdmod = reader.ReadFloat(StaticFields[8]);
         
@@ -10371,7 +10371,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.Altitude = reader.ReadFloat(StaticFields[6]);
             Payload.ExpectedTravelDistance = reader.ReadFloat(StaticFields[7]);
             Payload.CrossTrackError = reader.ReadFloat(StaticFields[8]);
-            Payload.Stage = (DeepstallStage)reader.ReadEnum(StaticFields[9]);
+            Payload.Stage = (DeepstallStage)reader.ReadByte(StaticFields[9]);
         
             
         }
@@ -11250,9 +11250,9 @@ namespace Asv.Mavlink.Ardupilotmega
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Status = (GoproHeartbeatStatus)reader.ReadEnum(StaticFields[0]);
-            Payload.CaptureMode = (GoproCaptureMode)reader.ReadEnum(StaticFields[1]);
-            Payload.Flags = (GoproHeartbeatFlags)reader.ReadEnum(StaticFields[2]);
+            Payload.Status = (GoproHeartbeatStatus)reader.ReadByte(StaticFields[0]);
+            Payload.CaptureMode = (GoproCaptureMode)reader.ReadByte(StaticFields[1]);
+            Payload.Flags = (GoproHeartbeatFlags)reader.ReadByte(StaticFields[2]);
         
             
         }
@@ -11390,7 +11390,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.CmdId = (GoproCommand)reader.ReadEnum(StaticFields[2]);
+            Payload.CmdId = (GoproCommand)reader.ReadByte(StaticFields[2]);
         
             
         }
@@ -11526,8 +11526,8 @@ namespace Asv.Mavlink.Ardupilotmega
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.CmdId = (GoproCommand)reader.ReadEnum(StaticFields[0]);
-            Payload.Status = (GoproRequestStatus)reader.ReadEnum(StaticFields[1]);
+            Payload.CmdId = (GoproCommand)reader.ReadByte(StaticFields[0]);
+            Payload.Status = (GoproRequestStatus)reader.ReadByte(StaticFields[1]);
             reader.ReadByteArray(StaticFields[2], Payload.Value);
         
             
@@ -11691,7 +11691,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.CmdId = (GoproCommand)reader.ReadEnum(StaticFields[2]);
+            Payload.CmdId = (GoproCommand)reader.ReadByte(StaticFields[2]);
             reader.ReadByteArray(StaticFields[3], Payload.Value);
         
             
@@ -11837,8 +11837,8 @@ namespace Asv.Mavlink.Ardupilotmega
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.CmdId = (GoproCommand)reader.ReadEnum(StaticFields[0]);
-            Payload.Status = (GoproRequestStatus)reader.ReadEnum(StaticFields[1]);
+            Payload.CmdId = (GoproCommand)reader.ReadByte(StaticFields[0]);
+            Payload.Status = (GoproRequestStatus)reader.ReadByte(StaticFields[1]);
         
             
         }
@@ -12170,7 +12170,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.RequestId = reader.ReadUInt(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.Bustype = (DeviceOpBustype)reader.ReadEnum(StaticFields[3]);
+            Payload.Bustype = (DeviceOpBustype)reader.ReadByte(StaticFields[3]);
             Payload.Bus = reader.ReadByte(StaticFields[4]);
             Payload.Address = reader.ReadByte(StaticFields[5]);
             reader.ReadCharArray(StaticFields[6], Payload.Busname);
@@ -12710,7 +12710,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.RequestId = reader.ReadUInt(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.Bustype = (DeviceOpBustype)reader.ReadEnum(StaticFields[3]);
+            Payload.Bustype = (DeviceOpBustype)reader.ReadByte(StaticFields[3]);
             Payload.Bus = reader.ReadByte(StaticFields[4]);
             Payload.Address = reader.ReadByte(StaticFields[5]);
             reader.ReadCharArray(StaticFields[6], Payload.Busname);
@@ -13201,7 +13201,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.F = reader.ReadFloat(StaticFields[9]);
             Payload.FDot = reader.ReadFloat(StaticFields[10]);
             Payload.U = reader.ReadFloat(StaticFields[11]);
-            Payload.Axis = (PidTuningAxis)reader.ReadEnum(StaticFields[12]);
+            Payload.Axis = (PidTuningAxis)reader.ReadByte(StaticFields[12]);
         
             
         }
@@ -14611,7 +14611,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.OsdScreen = reader.ReadByte(StaticFields[6]);
             Payload.OsdIndex = reader.ReadByte(StaticFields[7]);
             reader.ReadCharArray(StaticFields[8], Payload.ParamId);
-            Payload.ConfigType = (OsdParamConfigType)reader.ReadEnum(StaticFields[9]);
+            Payload.ConfigType = (OsdParamConfigType)reader.ReadByte(StaticFields[9]);
         
             
         }
@@ -14817,7 +14817,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.RequestId = reader.ReadUInt(StaticFields[0]);
-            Payload.Result = (OsdParamConfigError)reader.ReadEnum(StaticFields[1]);
+            Payload.Result = (OsdParamConfigError)reader.ReadByte(StaticFields[1]);
         
             
         }
@@ -15177,9 +15177,9 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.MinValue = reader.ReadFloat(StaticFields[1]);
             Payload.MaxValue = reader.ReadFloat(StaticFields[2]);
             Payload.Increment = reader.ReadFloat(StaticFields[3]);
-            Payload.Result = (OsdParamConfigError)reader.ReadEnum(StaticFields[4]);
+            Payload.Result = (OsdParamConfigError)reader.ReadByte(StaticFields[4]);
             reader.ReadCharArray(StaticFields[5], Payload.ParamId);
-            Payload.ConfigType = (OsdParamConfigType)reader.ReadEnum(StaticFields[6]);
+            Payload.ConfigType = (OsdParamConfigType)reader.ReadByte(StaticFields[6]);
         
             
         }
@@ -15451,8 +15451,8 @@ namespace Asv.Mavlink.Ardupilotmega
             Payload.MinDistance = reader.ReadFloat(StaticFields[4]);
             Payload.MaxDistance = reader.ReadFloat(StaticFields[5]);
             Payload.ObstacleId = reader.ReadUShort(StaticFields[6]);
-            Payload.SensorType = (MavDistanceSensor)reader.ReadEnum(StaticFields[7]);
-            Payload.Frame = (MavFrame)reader.ReadEnum(StaticFields[8]);
+            Payload.SensorType = (MavDistanceSensor)reader.ReadByte(StaticFields[7]);
+            Payload.Frame = (MavFrame)reader.ReadByte(StaticFields[8]);
         
             
         }

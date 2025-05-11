@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -601,15 +601,15 @@ namespace Asv.Mavlink.AsvSdr
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.SupportedModes = (AsvSdrCustomModeFlag)reader.ReadEnum(StaticFields[0]);
+            Payload.SupportedModes = (AsvSdrCustomModeFlag)reader.ReadULong(StaticFields[0]);
             Payload.Size = reader.ReadULong(StaticFields[1]);
             Payload.RecordCount = reader.ReadUShort(StaticFields[2]);
             Payload.CurrentMissionIndex = reader.ReadUShort(StaticFields[3]);
             reader.ReadByteArray(StaticFields[4], Payload.CurrentRecordGuid);
-            Payload.CurrentRecordMode = (AsvSdrCustomMode)reader.ReadEnum(StaticFields[5]);
+            Payload.CurrentRecordMode = (AsvSdrCustomMode)reader.ReadByte(StaticFields[5]);
             reader.ReadCharArray(StaticFields[6], Payload.CurrentRecordName);
-            Payload.MissionState = (AsvSdrMissionState)reader.ReadEnum(StaticFields[7]);
-            Payload.CalibState = (AsvSdrCalibState)reader.ReadEnum(StaticFields[8]);
+            Payload.MissionState = (AsvSdrMissionState)reader.ReadByte(StaticFields[7]);
+            Payload.CalibState = (AsvSdrCalibState)reader.ReadByte(StaticFields[8]);
             Payload.CalibTableCount = reader.ReadUShort(StaticFields[9]);
             Payload.RefPower = reader.ReadFloat(StaticFields[10]);
             Payload.SignalOverflow = reader.ReadFloat(StaticFields[11]);
@@ -1043,7 +1043,7 @@ namespace Asv.Mavlink.AsvSdr
         {
             Payload.RequestId = reader.ReadUShort(StaticFields[0]);
             Payload.ItemsCount = reader.ReadUShort(StaticFields[1]);
-            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[2]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadByte(StaticFields[2]);
         
             
         }
@@ -1253,7 +1253,7 @@ namespace Asv.Mavlink.AsvSdr
         {
             Payload.Frequency = reader.ReadULong(StaticFields[0]);
             Payload.CreatedUnixUs = reader.ReadULong(StaticFields[1]);
-            Payload.DataType = (AsvSdrCustomMode)reader.ReadEnum(StaticFields[2]);
+            Payload.DataType = (AsvSdrCustomMode)reader.ReadUInt(StaticFields[2]);
             Payload.DurationSec = reader.ReadUInt(StaticFields[3]);
             Payload.DataCount = reader.ReadUInt(StaticFields[4]);
             Payload.Size = reader.ReadUInt(StaticFields[5]);
@@ -1649,7 +1649,7 @@ namespace Asv.Mavlink.AsvSdr
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.RequestId = reader.ReadUShort(StaticFields[0]);
-            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[1]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadByte(StaticFields[1]);
             reader.ReadByteArray(StaticFields[2], Payload.RecordGuid);
         
             
@@ -2015,7 +2015,7 @@ namespace Asv.Mavlink.AsvSdr
         {
             Payload.RequestId = reader.ReadUShort(StaticFields[0]);
             Payload.ItemsCount = reader.ReadUShort(StaticFields[1]);
-            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[2]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadByte(StaticFields[2]);
         
             
         }
@@ -2178,7 +2178,7 @@ namespace Asv.Mavlink.AsvSdr
             reader.ReadByteArray(StaticFields[0], Payload.RecordGuid);
             reader.ReadByteArray(StaticFields[1], Payload.TagGuid);
             reader.ReadCharArray(StaticFields[2], Payload.TagName);
-            Payload.TagType = (AsvSdrRecordTagType)reader.ReadEnum(StaticFields[3]);
+            Payload.TagType = (AsvSdrRecordTagType)reader.ReadByte(StaticFields[3]);
             reader.ReadByteArray(StaticFields[4], Payload.TagValue);
         
             
@@ -2594,7 +2594,7 @@ namespace Asv.Mavlink.AsvSdr
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.RequestId = reader.ReadUShort(StaticFields[0]);
-            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[1]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadByte(StaticFields[1]);
             reader.ReadByteArray(StaticFields[2], Payload.RecordGuid);
             reader.ReadByteArray(StaticFields[3], Payload.TagGuid);
         
@@ -2999,10 +2999,10 @@ namespace Asv.Mavlink.AsvSdr
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.DataType = (AsvSdrCustomMode)reader.ReadEnum(StaticFields[0]);
+            Payload.DataType = (AsvSdrCustomMode)reader.ReadUInt(StaticFields[0]);
             Payload.ItemsCount = reader.ReadUInt(StaticFields[1]);
             Payload.RequestId = reader.ReadUShort(StaticFields[2]);
-            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[3]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadByte(StaticFields[3]);
             reader.ReadByteArray(StaticFields[4], Payload.RecordGuid);
         
             
@@ -3157,7 +3157,7 @@ namespace Asv.Mavlink.AsvSdr
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.RequestId = reader.ReadUShort(StaticFields[0]);
-            Payload.Result = (AsvSdrRequestAck)reader.ReadEnum(StaticFields[1]);
+            Payload.Result = (AsvSdrRequestAck)reader.ReadByte(StaticFields[1]);
         
             
         }
@@ -4510,7 +4510,7 @@ namespace Asv.Mavlink.AsvSdr
             Payload.Start = reader.ReadUShort(StaticFields[3]);
             Payload.Total = reader.ReadUShort(StaticFields[4]);
             reader.ReadCharArray(StaticFields[5], Payload.SignalName);
-            Payload.Format = (AsvSdrSignalFormat)reader.ReadEnum(StaticFields[6]);
+            Payload.Format = (AsvSdrSignalFormat)reader.ReadByte(StaticFields[6]);
             Payload.Count = reader.ReadByte(StaticFields[7]);
             reader.ReadByteArray(StaticFields[8], Payload.Data);
         
@@ -5366,7 +5366,7 @@ namespace Asv.Mavlink.AsvSdr
             Payload.CodeIdFreq1020 = reader.ReadShort(StaticFields[46]);
             Payload.MeasureTime = reader.ReadShort(StaticFields[47]);
             reader.ReadByteArray(StaticFields[48], Payload.RecordGuid);
-            Payload.GnssFixType = (GpsFixType)reader.ReadEnum(StaticFields[49]);
+            Payload.GnssFixType = (GpsFixType)reader.ReadByte(StaticFields[49]);
             Payload.GnssSatellitesVisible = reader.ReadByte(StaticFields[50]);
             reader.ReadCharArray(StaticFields[51], Payload.CodeId);
         
@@ -6528,7 +6528,7 @@ namespace Asv.Mavlink.AsvSdr
             Payload.TotalFreq150 = reader.ReadShort(StaticFields[44]);
             Payload.MeasureTime = reader.ReadShort(StaticFields[45]);
             reader.ReadByteArray(StaticFields[46], Payload.RecordGuid);
-            Payload.GnssFixType = (GpsFixType)reader.ReadEnum(StaticFields[47]);
+            Payload.GnssFixType = (GpsFixType)reader.ReadByte(StaticFields[47]);
             Payload.GnssSatellitesVisible = reader.ReadByte(StaticFields[48]);
         
             
@@ -7527,7 +7527,7 @@ namespace Asv.Mavlink.AsvSdr
             Payload.CodeIdFreq1020 = reader.ReadShort(StaticFields[34]);
             Payload.MeasureTime = reader.ReadShort(StaticFields[35]);
             reader.ReadByteArray(StaticFields[36], Payload.RecordGuid);
-            Payload.GnssFixType = (GpsFixType)reader.ReadEnum(StaticFields[37]);
+            Payload.GnssFixType = (GpsFixType)reader.ReadByte(StaticFields[37]);
             Payload.GnssSatellitesVisible = reader.ReadByte(StaticFields[38]);
             reader.ReadCharArray(StaticFields[39], Payload.CodeId);
         

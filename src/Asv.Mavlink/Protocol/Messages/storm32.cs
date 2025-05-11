@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -620,8 +620,8 @@ namespace Asv.Mavlink.Storm32
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.DeviceCapFlags = (GimbalDeviceCapFlags)reader.ReadEnum(StaticFields[0]);
-            Payload.ManagerCapFlags = (MavStorm32GimbalManagerCapFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.DeviceCapFlags = (GimbalDeviceCapFlags)reader.ReadUInt(StaticFields[0]);
+            Payload.ManagerCapFlags = (MavStorm32GimbalManagerCapFlags)reader.ReadUInt(StaticFields[1]);
             Payload.RollMin = reader.ReadFloat(StaticFields[2]);
             Payload.RollMax = reader.ReadFloat(StaticFields[3]);
             Payload.PitchMin = reader.ReadFloat(StaticFields[4]);
@@ -836,11 +836,11 @@ namespace Asv.Mavlink.Storm32
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadEnum(StaticFields[0]);
-            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadUShort(StaticFields[0]);
+            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadUShort(StaticFields[1]);
             Payload.GimbalId = reader.ReadByte(StaticFields[2]);
-            Payload.Supervisor = (MavStorm32GimbalManagerClient)reader.ReadEnum(StaticFields[3]);
-            Payload.Profile = (MavStorm32GimbalManagerProfile)reader.ReadEnum(StaticFields[4]);
+            Payload.Supervisor = (MavStorm32GimbalManagerClient)reader.ReadByte(StaticFields[3]);
+            Payload.Profile = (MavStorm32GimbalManagerProfile)reader.ReadByte(StaticFields[4]);
         
             
         }
@@ -1080,12 +1080,12 @@ namespace Asv.Mavlink.Storm32
             Payload.AngularVelocityX = reader.ReadFloat(StaticFields[1]);
             Payload.AngularVelocityY = reader.ReadFloat(StaticFields[2]);
             Payload.AngularVelocityZ = reader.ReadFloat(StaticFields[3]);
-            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadEnum(StaticFields[4]);
-            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadEnum(StaticFields[5]);
+            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadUShort(StaticFields[4]);
+            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadUShort(StaticFields[5]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[7]);
             Payload.GimbalId = reader.ReadByte(StaticFields[8]);
-            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadEnum(StaticFields[9]);
+            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadByte(StaticFields[9]);
         
             
         }
@@ -1378,12 +1378,12 @@ namespace Asv.Mavlink.Storm32
             Payload.Yaw = reader.ReadFloat(StaticFields[1]);
             Payload.PitchRate = reader.ReadFloat(StaticFields[2]);
             Payload.YawRate = reader.ReadFloat(StaticFields[3]);
-            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadEnum(StaticFields[4]);
-            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadEnum(StaticFields[5]);
+            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadUShort(StaticFields[4]);
+            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadUShort(StaticFields[5]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[7]);
             Payload.GimbalId = reader.ReadByte(StaticFields[8]);
-            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadEnum(StaticFields[9]);
+            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadByte(StaticFields[9]);
         
             
         }
@@ -1603,7 +1603,7 @@ namespace Asv.Mavlink.Storm32
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
             Payload.GimbalId = reader.ReadByte(StaticFields[3]);
-            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadEnum(StaticFields[4]);
+            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadByte(StaticFields[4]);
         
             
         }
@@ -1743,7 +1743,7 @@ namespace Asv.Mavlink.Storm32
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Mode = (MavQshotMode)reader.ReadEnum(StaticFields[0]);
+            Payload.Mode = (MavQshotMode)reader.ReadUShort(StaticFields[0]);
             Payload.ShotState = reader.ReadUShort(StaticFields[1]);
         
             
@@ -1873,7 +1873,7 @@ namespace Asv.Mavlink.Storm32
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.Count = reader.ReadByte(StaticFields[0]);
-            Payload.Flags = (RadioRcChannelsFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (RadioRcChannelsFlags)reader.ReadByte(StaticFields[1]);
             reader.ReadShortArray(StaticFields[2], Payload.Channels);
         
             
@@ -2166,7 +2166,7 @@ namespace Asv.Mavlink.Storm32
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Flags = (RadioLinkStatsFlags)reader.ReadEnum(StaticFields[0]);
+            Payload.Flags = (RadioLinkStatsFlags)reader.ReadByte(StaticFields[0]);
             Payload.RxLq = reader.ReadByte(StaticFields[1]);
             Payload.RxRssi1 = reader.ReadByte(StaticFields[2]);
             Payload.RxSnr1 = reader.ReadSByte(StaticFields[3]);

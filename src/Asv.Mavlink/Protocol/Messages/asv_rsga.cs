@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -879,7 +879,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.RequestId = reader.ReadUShort(StaticFields[0]);
-            Payload.Result = (AsvRsgaRequestAck)reader.ReadEnum(StaticFields[1]);
+            Payload.Result = (AsvRsgaRequestAck)reader.ReadByte(StaticFields[1]);
             reader.ReadByteArray(StaticFields[2], Payload.SupportedModes);
         
             
@@ -1234,7 +1234,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.DataIndex = reader.ReadUInt(StaticFields[2]);
             Payload.Lat = reader.ReadInt(StaticFields[3]);
             Payload.LatErr = reader.ReadInt(StaticFields[4]);
@@ -1249,10 +1249,10 @@ namespace Asv.Mavlink.AsvRsga
             Payload.Sog = reader.ReadUShort(StaticFields[13]);
             Payload.CogTrue = reader.ReadUShort(StaticFields[14]);
             Payload.CogMag = reader.ReadUShort(StaticFields[15]);
-            Payload.ReceiverType = (AsvRsgaRttGnssType)reader.ReadEnum(StaticFields[16]);
-            Payload.GnssFlags = (AsvRsgaRttGnssFlags)reader.ReadEnum(StaticFields[17]);
+            Payload.ReceiverType = (AsvRsgaRttGnssType)reader.ReadByte(StaticFields[16]);
+            Payload.GnssFlags = (AsvRsgaRttGnssFlags)reader.ReadByte(StaticFields[17]);
             Payload.SatCnt = reader.ReadByte(StaticFields[18]);
-            Payload.FixType = (GpsFixType)reader.ReadEnum(StaticFields[19]);
+            Payload.FixType = (GpsFixType)reader.ReadByte(StaticFields[19]);
         
             
         }
@@ -1525,7 +1525,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -1663,7 +1663,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -1801,7 +1801,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -1939,7 +1939,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -2077,7 +2077,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -2215,7 +2215,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -2353,7 +2353,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -2491,7 +2491,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -2629,7 +2629,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -3007,7 +3007,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.TxFreq = reader.ReadULong(StaticFields[2]);
             Payload.RxFreq = reader.ReadULong(StaticFields[3]);
             Payload.Index = reader.ReadUInt(StaticFields[4]);
@@ -3350,7 +3350,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -3488,7 +3488,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -3626,7 +3626,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -3764,7 +3764,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -3902,7 +3902,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             
@@ -4244,7 +4244,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.TxFreq = reader.ReadULong(StaticFields[2]);
             Payload.RxFreq = reader.ReadULong(StaticFields[3]);
             Payload.Index = reader.ReadUInt(StaticFields[4]);
@@ -4255,8 +4255,8 @@ namespace Asv.Mavlink.AsvRsga
             Payload.RxSignalOverflow = reader.ReadFloat(StaticFields[9]);
             Payload.RxGain = reader.ReadFloat(StaticFields[10]);
             Payload.IcaoAddress = reader.ReadUInt(StaticFields[11]);
-            Payload.UfCounterFlag = (AsvRsgaRttAdsbMsgUf)reader.ReadEnum(StaticFields[12]);
-            Payload.DfCounterPresent = (AsvRsgaRttAdsbMsgDf)reader.ReadEnum(StaticFields[13]);
+            Payload.UfCounterFlag = (AsvRsgaRttAdsbMsgUf)reader.ReadUInt(StaticFields[12]);
+            Payload.DfCounterPresent = (AsvRsgaRttAdsbMsgDf)reader.ReadUInt(StaticFields[13]);
             Payload.RxFreqOffset = reader.ReadShort(StaticFields[14]);
             Payload.RefId = reader.ReadUShort(StaticFields[15]);
             Payload.Squawk = reader.ReadUShort(StaticFields[16]);
@@ -4576,7 +4576,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeUnixUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Flags = (AsvRsgaDataFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (AsvRsgaDataFlags)reader.ReadULong(StaticFields[1]);
             Payload.Index = reader.ReadUInt(StaticFields[2]);
         
             

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -149,7 +149,7 @@ namespace Asv.Mavlink.Icarous
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Status = (IcarousFmsState)reader.ReadEnum(StaticFields[0]);
+            Payload.Status = (IcarousFmsState)reader.ReadByte(StaticFields[0]);
         
             
         }
@@ -436,11 +436,11 @@ namespace Asv.Mavlink.Icarous
             Payload.Min5 = reader.ReadFloat(StaticFields[8]);
             Payload.Max5 = reader.ReadFloat(StaticFields[9]);
             Payload.Numbands = reader.ReadSByte(StaticFields[10]);
-            Payload.Type1 = (IcarousTrackBandTypes)reader.ReadEnum(StaticFields[11]);
-            Payload.Type2 = (IcarousTrackBandTypes)reader.ReadEnum(StaticFields[12]);
-            Payload.Type3 = (IcarousTrackBandTypes)reader.ReadEnum(StaticFields[13]);
-            Payload.Type4 = (IcarousTrackBandTypes)reader.ReadEnum(StaticFields[14]);
-            Payload.Type5 = (IcarousTrackBandTypes)reader.ReadEnum(StaticFields[15]);
+            Payload.Type1 = (IcarousTrackBandTypes)reader.ReadByte(StaticFields[11]);
+            Payload.Type2 = (IcarousTrackBandTypes)reader.ReadByte(StaticFields[12]);
+            Payload.Type3 = (IcarousTrackBandTypes)reader.ReadByte(StaticFields[13]);
+            Payload.Type4 = (IcarousTrackBandTypes)reader.ReadByte(StaticFields[14]);
+            Payload.Type5 = (IcarousTrackBandTypes)reader.ReadByte(StaticFields[15]);
         
             
         }

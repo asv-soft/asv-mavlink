@@ -1,10 +1,14 @@
 using System;
+using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
+using Asv.Mavlink.Common;
 using Asv.Mavlink.PythonArrayTest;
 using AutoFixture;
 using DeepEqual.Syntax;
+using DotNext;
 using Xunit;
 using Xunit.Abstractions;
 using R3;
@@ -249,15 +253,47 @@ namespace Asv.Mavlink.Test
         [Fact]
         public void TestSerializeFields_Success()
         {
-            var fixture = new Fixture();
+            var seed = Random.Shared.Next();
+            var random = new Random(seed);
+            int count = 0;
             foreach (var id in MavlinkV2MessageFactory.Instance.GetSupportedIds())
             {
-                var packet = MavlinkV2MessageFactory.Instance.Create(id) as MavlinkV2Message<IPayload>;
+                var origin = MavlinkV2MessageFactory.Instance.Create(id) as MavlinkV2Message;
+
+                try
+                {
+                    Assert.NotNull(origin);
+                    origin.Randomize(random);
+                    var maxSize = origin.GetByteSize();
+                    var buff = new byte[maxSize];
+                    var serializeSpan = new Span<byte>(buff);
+                    origin.Serialize(ref serializeSpan);
+                    
+                    var readBuffer = new ReadOnlySpan<byte>(buff,0, buff.Length - serializeSpan.Length);
+                    var readPacket = MavlinkV2MessageFactory.Instance.Create(id) as MavlinkV2Message;
+                    Assert.NotNull(readPacket);
+                    readPacket.Deserialize(ref readBuffer);
+                    Assert.Equal(readBuffer.Length, 0);
+                    Assert.Equal(origin.SystemId, readPacket.SystemId);
+                    Assert.Equal(origin.ComponentId, readPacket.ComponentId);
+                    Assert.Equal(origin.CompatFlags, readPacket.CompatFlags);
+                    Assert.Equal(origin.IncompatFlags, readPacket.IncompatFlags);
+                    Assert.Equal(origin.Sequence, readPacket.Sequence);
+                    
+                    origin.ShouldDeepEqual(readPacket);
+                }
+                catch (Exception e)
+                {
+
+                    _output.WriteLine(
+                        $"ERROR EQUALITY MESSAGE=[{id}]({origin.Name})  size:{origin.GetByteSize()}. {origin.GetType().Name}. Random seed: {seed}");
+                    throw;
+                }
                 
-                
-                
-                
+                count++;
             }
+            
+            _output.WriteLine($"OK ({count})");
             
         }
 
@@ -380,4 +416,6 @@ namespace Asv.Mavlink.Test
 
         }
     }
+
+    
 }

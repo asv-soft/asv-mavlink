@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -1334,10 +1334,10 @@ namespace Asv.Mavlink.Minimal
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.CustomMode = reader.ReadUInt(StaticFields[0]);
-            Payload.Type = (MavType)reader.ReadEnum(StaticFields[1]);
-            Payload.Autopilot = (MavAutopilot)reader.ReadEnum(StaticFields[2]);
-            Payload.BaseMode = (MavModeFlag)reader.ReadEnum(StaticFields[3]);
-            Payload.SystemStatus = (MavState)reader.ReadEnum(StaticFields[4]);
+            Payload.Type = (MavType)reader.ReadByte(StaticFields[1]);
+            Payload.Autopilot = (MavAutopilot)reader.ReadByte(StaticFields[2]);
+            Payload.BaseMode = (MavModeFlag)reader.ReadByte(StaticFields[3]);
+            Payload.SystemStatus = (MavState)reader.ReadByte(StaticFields[4]);
             Payload.MavlinkVersion = reader.ReadByte(StaticFields[5]);
         
             

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -8753,9 +8753,9 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.OnboardControlSensorsPresent = (MavSysStatusSensor)reader.ReadEnum(StaticFields[0]);
-            Payload.OnboardControlSensorsEnabled = (MavSysStatusSensor)reader.ReadEnum(StaticFields[1]);
-            Payload.OnboardControlSensorsHealth = (MavSysStatusSensor)reader.ReadEnum(StaticFields[2]);
+            Payload.OnboardControlSensorsPresent = (MavSysStatusSensor)reader.ReadUInt(StaticFields[0]);
+            Payload.OnboardControlSensorsEnabled = (MavSysStatusSensor)reader.ReadUInt(StaticFields[1]);
+            Payload.OnboardControlSensorsHealth = (MavSysStatusSensor)reader.ReadUInt(StaticFields[2]);
             Payload.Load = reader.ReadUShort(StaticFields[3]);
             Payload.VoltageBattery = reader.ReadUShort(StaticFields[4]);
             Payload.CurrentBattery = reader.ReadShort(StaticFields[5]);
@@ -8766,9 +8766,9 @@ namespace Asv.Mavlink.Common
             Payload.ErrorsCount3 = reader.ReadUShort(StaticFields[10]);
             Payload.ErrorsCount4 = reader.ReadUShort(StaticFields[11]);
             Payload.BatteryRemaining = reader.ReadSByte(StaticFields[12]);
-            Payload.OnboardControlSensorsPresentExtended = (MavSysStatusSensorExtended)reader.ReadEnum(StaticFields[13]);
-            Payload.OnboardControlSensorsEnabledExtended = (MavSysStatusSensorExtended)reader.ReadEnum(StaticFields[14]);
-            Payload.OnboardControlSensorsHealthExtended = (MavSysStatusSensorExtended)reader.ReadEnum(StaticFields[15]);
+            Payload.OnboardControlSensorsPresentExtended = (MavSysStatusSensorExtended)reader.ReadUInt(StaticFields[13]);
+            Payload.OnboardControlSensorsEnabledExtended = (MavSysStatusSensorExtended)reader.ReadUInt(StaticFields[14]);
+            Payload.OnboardControlSensorsHealthExtended = (MavSysStatusSensorExtended)reader.ReadUInt(StaticFields[15]);
         
             
         }
@@ -10041,7 +10041,7 @@ namespace Asv.Mavlink.Common
         {
             Payload.CustomMode = reader.ReadUInt(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
-            Payload.BaseMode = (MavMode)reader.ReadEnum(StaticFields[2]);
+            Payload.BaseMode = (MavMode)reader.ReadByte(StaticFields[2]);
         
             
         }
@@ -10506,7 +10506,7 @@ namespace Asv.Mavlink.Common
             Payload.ParamCount = reader.ReadUShort(StaticFields[1]);
             Payload.ParamIndex = reader.ReadUShort(StaticFields[2]);
             reader.ReadCharArray(StaticFields[3], Payload.ParamId);
-            Payload.ParamType = (MavParamType)reader.ReadEnum(StaticFields[4]);
+            Payload.ParamType = (MavParamType)reader.ReadByte(StaticFields[4]);
         
             
         }
@@ -10713,7 +10713,7 @@ namespace Asv.Mavlink.Common
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
             reader.ReadCharArray(StaticFields[3], Payload.ParamId);
-            Payload.ParamType = (MavParamType)reader.ReadEnum(StaticFields[4]);
+            Payload.ParamType = (MavParamType)reader.ReadByte(StaticFields[4]);
         
             
         }
@@ -11055,7 +11055,7 @@ namespace Asv.Mavlink.Common
             Payload.Epv = reader.ReadUShort(StaticFields[5]);
             Payload.Vel = reader.ReadUShort(StaticFields[6]);
             Payload.Cog = reader.ReadUShort(StaticFields[7]);
-            Payload.FixType = (GpsFixType)reader.ReadEnum(StaticFields[8]);
+            Payload.FixType = (GpsFixType)reader.ReadByte(StaticFields[8]);
             Payload.SatellitesVisible = reader.ReadByte(StaticFields[9]);
             Payload.AltEllipsoid = reader.ReadInt(StaticFields[10]);
             Payload.HAcc = reader.ReadUInt(StaticFields[11]);
@@ -14655,7 +14655,7 @@ namespace Asv.Mavlink.Common
             Payload.EndIndex = reader.ReadShort(StaticFields[1]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[2]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[3]);
-            Payload.MissionType = (MavMissionType)reader.ReadEnum(StaticFields[4]);
+            Payload.MissionType = (MavMissionType)reader.ReadByte(StaticFields[4]);
         
             
         }
@@ -14837,7 +14837,7 @@ namespace Asv.Mavlink.Common
             Payload.EndIndex = reader.ReadShort(StaticFields[1]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[2]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[3]);
-            Payload.MissionType = (MavMissionType)reader.ReadEnum(StaticFields[4]);
+            Payload.MissionType = (MavMissionType)reader.ReadByte(StaticFields[4]);
         
             
         }
@@ -15144,13 +15144,13 @@ namespace Asv.Mavlink.Common
             Payload.Y = reader.ReadFloat(StaticFields[5]);
             Payload.Z = reader.ReadFloat(StaticFields[6]);
             Payload.Seq = reader.ReadUShort(StaticFields[7]);
-            Payload.Command = (MavCmd)reader.ReadEnum(StaticFields[8]);
+            Payload.Command = (MavCmd)reader.ReadUShort(StaticFields[8]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[9]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[10]);
-            Payload.Frame = (MavFrame)reader.ReadEnum(StaticFields[11]);
+            Payload.Frame = (MavFrame)reader.ReadByte(StaticFields[11]);
             Payload.Current = reader.ReadByte(StaticFields[12]);
             Payload.Autocontinue = reader.ReadByte(StaticFields[13]);
-            Payload.MissionType = (MavMissionType)reader.ReadEnum(StaticFields[14]);
+            Payload.MissionType = (MavMissionType)reader.ReadByte(StaticFields[14]);
         
             
         }
@@ -15399,7 +15399,7 @@ namespace Asv.Mavlink.Common
             Payload.Seq = reader.ReadUShort(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.MissionType = (MavMissionType)reader.ReadEnum(StaticFields[3]);
+            Payload.MissionType = (MavMissionType)reader.ReadByte(StaticFields[3]);
         
             
         }
@@ -15709,7 +15709,7 @@ namespace Asv.Mavlink.Common
         {
             Payload.Seq = reader.ReadUShort(StaticFields[0]);
             Payload.Total = reader.ReadUShort(StaticFields[1]);
-            Payload.MissionState = (MissionState)reader.ReadEnum(StaticFields[2]);
+            Payload.MissionState = (MissionState)reader.ReadByte(StaticFields[2]);
             Payload.MissionMode = reader.ReadByte(StaticFields[3]);
         
             
@@ -15862,7 +15862,7 @@ namespace Asv.Mavlink.Common
         {
             Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.MissionType = (MavMissionType)reader.ReadEnum(StaticFields[2]);
+            Payload.MissionType = (MavMissionType)reader.ReadByte(StaticFields[2]);
         
             
         }
@@ -16015,7 +16015,7 @@ namespace Asv.Mavlink.Common
             Payload.Count = reader.ReadUShort(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.MissionType = (MavMissionType)reader.ReadEnum(StaticFields[3]);
+            Payload.MissionType = (MavMissionType)reader.ReadByte(StaticFields[3]);
         
             
         }
@@ -16163,7 +16163,7 @@ namespace Asv.Mavlink.Common
         {
             Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.MissionType = (MavMissionType)reader.ReadEnum(StaticFields[2]);
+            Payload.MissionType = (MavMissionType)reader.ReadByte(StaticFields[2]);
         
             
         }
@@ -16411,8 +16411,8 @@ namespace Asv.Mavlink.Common
         {
             Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.Type = (MavMissionResult)reader.ReadEnum(StaticFields[2]);
-            Payload.MissionType = (MavMissionType)reader.ReadEnum(StaticFields[3]);
+            Payload.Type = (MavMissionResult)reader.ReadByte(StaticFields[2]);
+            Payload.MissionType = (MavMissionType)reader.ReadByte(StaticFields[3]);
         
             
         }
@@ -17205,7 +17205,7 @@ namespace Asv.Mavlink.Common
             Payload.Seq = reader.ReadUShort(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.MissionType = (MavMissionType)reader.ReadEnum(StaticFields[3]);
+            Payload.MissionType = (MavMissionType)reader.ReadByte(StaticFields[3]);
         
             
         }
@@ -17431,7 +17431,7 @@ namespace Asv.Mavlink.Common
             Payload.P2z = reader.ReadFloat(StaticFields[5]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[7]);
-            Payload.Frame = (MavFrame)reader.ReadEnum(StaticFields[8]);
+            Payload.Frame = (MavFrame)reader.ReadByte(StaticFields[8]);
         
             
         }
@@ -17669,7 +17669,7 @@ namespace Asv.Mavlink.Common
             Payload.P2x = reader.ReadFloat(StaticFields[3]);
             Payload.P2y = reader.ReadFloat(StaticFields[4]);
             Payload.P2z = reader.ReadFloat(StaticFields[5]);
-            Payload.Frame = (MavFrame)reader.ReadEnum(StaticFields[6]);
+            Payload.Frame = (MavFrame)reader.ReadByte(StaticFields[6]);
         
             
         }
@@ -18395,7 +18395,7 @@ namespace Asv.Mavlink.Common
             Payload.Vy = reader.ReadFloat(StaticFields[6]);
             Payload.Vz = reader.ReadFloat(StaticFields[7]);
             reader.ReadFloatArray(StaticFields[8], Payload.Covariance);
-            Payload.EstimatorType = (MavEstimatorType)reader.ReadEnum(StaticFields[9]);
+            Payload.EstimatorType = (MavEstimatorType)reader.ReadByte(StaticFields[9]);
         
             
         }
@@ -18719,7 +18719,7 @@ namespace Asv.Mavlink.Common
             Payload.Ay = reader.ReadFloat(StaticFields[8]);
             Payload.Az = reader.ReadFloat(StaticFields[9]);
             reader.ReadFloatArray(StaticFields[10], Payload.Covariance);
-            Payload.EstimatorType = (MavEstimatorType)reader.ReadEnum(StaticFields[11]);
+            Payload.EstimatorType = (MavEstimatorType)reader.ReadByte(StaticFields[11]);
         
             
         }
@@ -20873,13 +20873,13 @@ namespace Asv.Mavlink.Common
             Payload.Y = reader.ReadInt(StaticFields[5]);
             Payload.Z = reader.ReadFloat(StaticFields[6]);
             Payload.Seq = reader.ReadUShort(StaticFields[7]);
-            Payload.Command = (MavCmd)reader.ReadEnum(StaticFields[8]);
+            Payload.Command = (MavCmd)reader.ReadUShort(StaticFields[8]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[9]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[10]);
-            Payload.Frame = (MavFrame)reader.ReadEnum(StaticFields[11]);
+            Payload.Frame = (MavFrame)reader.ReadByte(StaticFields[11]);
             Payload.Current = reader.ReadByte(StaticFields[12]);
             Payload.Autocontinue = reader.ReadByte(StaticFields[13]);
-            Payload.MissionType = (MavMissionType)reader.ReadEnum(StaticFields[14]);
+            Payload.MissionType = (MavMissionType)reader.ReadByte(StaticFields[14]);
         
             
         }
@@ -21441,10 +21441,10 @@ namespace Asv.Mavlink.Common
             Payload.X = reader.ReadInt(StaticFields[4]);
             Payload.Y = reader.ReadInt(StaticFields[5]);
             Payload.Z = reader.ReadFloat(StaticFields[6]);
-            Payload.Command = (MavCmd)reader.ReadEnum(StaticFields[7]);
+            Payload.Command = (MavCmd)reader.ReadUShort(StaticFields[7]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[8]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[9]);
-            Payload.Frame = (MavFrame)reader.ReadEnum(StaticFields[10]);
+            Payload.Frame = (MavFrame)reader.ReadByte(StaticFields[10]);
             Payload.Current = reader.ReadByte(StaticFields[11]);
             Payload.Autocontinue = reader.ReadByte(StaticFields[12]);
         
@@ -21765,7 +21765,7 @@ namespace Asv.Mavlink.Common
             Payload.Param5 = reader.ReadFloat(StaticFields[4]);
             Payload.Param6 = reader.ReadFloat(StaticFields[5]);
             Payload.Param7 = reader.ReadFloat(StaticFields[6]);
-            Payload.Command = (MavCmd)reader.ReadEnum(StaticFields[7]);
+            Payload.Command = (MavCmd)reader.ReadUShort(StaticFields[7]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[8]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[9]);
             Payload.Confirmation = reader.ReadByte(StaticFields[10]);
@@ -22004,8 +22004,8 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Command = (MavCmd)reader.ReadEnum(StaticFields[0]);
-            Payload.Result = (MavResult)reader.ReadEnum(StaticFields[1]);
+            Payload.Command = (MavCmd)reader.ReadUShort(StaticFields[0]);
+            Payload.Result = (MavResult)reader.ReadByte(StaticFields[1]);
             Payload.Progress = reader.ReadByte(StaticFields[2]);
             Payload.ResultParam2 = reader.ReadInt(StaticFields[3]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[4]);
@@ -22177,7 +22177,7 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Command = (MavCmd)reader.ReadEnum(StaticFields[0]);
+            Payload.Command = (MavCmd)reader.ReadUShort(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
         
@@ -22629,7 +22629,7 @@ namespace Asv.Mavlink.Common
             Payload.Thrust = reader.ReadFloat(StaticFields[5]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[7]);
-            Payload.TypeMask = (AttitudeTargetTypemask)reader.ReadEnum(StaticFields[8]);
+            Payload.TypeMask = (AttitudeTargetTypemask)reader.ReadByte(StaticFields[8]);
             reader.ReadFloatArray(StaticFields[9], Payload.ThrustBody);
         
             
@@ -22899,7 +22899,7 @@ namespace Asv.Mavlink.Common
             Payload.BodyPitchRate = reader.ReadFloat(StaticFields[3]);
             Payload.BodyYawRate = reader.ReadFloat(StaticFields[4]);
             Payload.Thrust = reader.ReadFloat(StaticFields[5]);
-            Payload.TypeMask = (AttitudeTargetTypemask)reader.ReadEnum(StaticFields[6]);
+            Payload.TypeMask = (AttitudeTargetTypemask)reader.ReadByte(StaticFields[6]);
         
             
         }
@@ -23248,10 +23248,10 @@ namespace Asv.Mavlink.Common
             Payload.Afz = reader.ReadFloat(StaticFields[9]);
             Payload.Yaw = reader.ReadFloat(StaticFields[10]);
             Payload.YawRate = reader.ReadFloat(StaticFields[11]);
-            Payload.TypeMask = (PositionTargetTypemask)reader.ReadEnum(StaticFields[12]);
+            Payload.TypeMask = (PositionTargetTypemask)reader.ReadUShort(StaticFields[12]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[13]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[14]);
-            Payload.CoordinateFrame = (MavFrame)reader.ReadEnum(StaticFields[15]);
+            Payload.CoordinateFrame = (MavFrame)reader.ReadByte(StaticFields[15]);
         
             
         }
@@ -23635,8 +23635,8 @@ namespace Asv.Mavlink.Common
             Payload.Afz = reader.ReadFloat(StaticFields[9]);
             Payload.Yaw = reader.ReadFloat(StaticFields[10]);
             Payload.YawRate = reader.ReadFloat(StaticFields[11]);
-            Payload.TypeMask = (PositionTargetTypemask)reader.ReadEnum(StaticFields[12]);
-            Payload.CoordinateFrame = (MavFrame)reader.ReadEnum(StaticFields[13]);
+            Payload.TypeMask = (PositionTargetTypemask)reader.ReadUShort(StaticFields[12]);
+            Payload.CoordinateFrame = (MavFrame)reader.ReadByte(StaticFields[13]);
         
             
         }
@@ -24028,10 +24028,10 @@ namespace Asv.Mavlink.Common
             Payload.Afz = reader.ReadFloat(StaticFields[9]);
             Payload.Yaw = reader.ReadFloat(StaticFields[10]);
             Payload.YawRate = reader.ReadFloat(StaticFields[11]);
-            Payload.TypeMask = (PositionTargetTypemask)reader.ReadEnum(StaticFields[12]);
+            Payload.TypeMask = (PositionTargetTypemask)reader.ReadUShort(StaticFields[12]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[13]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[14]);
-            Payload.CoordinateFrame = (MavFrame)reader.ReadEnum(StaticFields[15]);
+            Payload.CoordinateFrame = (MavFrame)reader.ReadByte(StaticFields[15]);
         
             
         }
@@ -24415,8 +24415,8 @@ namespace Asv.Mavlink.Common
             Payload.Afz = reader.ReadFloat(StaticFields[9]);
             Payload.Yaw = reader.ReadFloat(StaticFields[10]);
             Payload.YawRate = reader.ReadFloat(StaticFields[11]);
-            Payload.TypeMask = (PositionTargetTypemask)reader.ReadEnum(StaticFields[12]);
-            Payload.CoordinateFrame = (MavFrame)reader.ReadEnum(StaticFields[13]);
+            Payload.TypeMask = (PositionTargetTypemask)reader.ReadUShort(StaticFields[12]);
+            Payload.CoordinateFrame = (MavFrame)reader.ReadByte(StaticFields[13]);
         
             
         }
@@ -25378,7 +25378,7 @@ namespace Asv.Mavlink.Common
             Payload.Aux2 = reader.ReadFloat(StaticFields[6]);
             Payload.Aux3 = reader.ReadFloat(StaticFields[7]);
             Payload.Aux4 = reader.ReadFloat(StaticFields[8]);
-            Payload.Mode = (MavMode)reader.ReadEnum(StaticFields[9]);
+            Payload.Mode = (MavMode)reader.ReadByte(StaticFields[9]);
             Payload.NavMode = reader.ReadByte(StaticFields[10]);
         
             
@@ -25963,7 +25963,7 @@ namespace Asv.Mavlink.Common
             Payload.TimeUsec = reader.ReadULong(StaticFields[0]);
             Payload.Flags = reader.ReadULong(StaticFields[1]);
             reader.ReadFloatArray(StaticFields[2], Payload.Controls);
-            Payload.Mode = (MavModeFlag)reader.ReadEnum(StaticFields[3]);
+            Payload.Mode = (MavModeFlag)reader.ReadByte(StaticFields[3]);
         
             
         }
@@ -27605,7 +27605,7 @@ namespace Asv.Mavlink.Common
             Payload.DiffPressure = reader.ReadFloat(StaticFields[11]);
             Payload.PressureAlt = reader.ReadFloat(StaticFields[12]);
             Payload.Temperature = reader.ReadFloat(StaticFields[13]);
-            Payload.FieldsUpdated = (HighresImuUpdatedFlags)reader.ReadEnum(StaticFields[14]);
+            Payload.FieldsUpdated = (HighresImuUpdatedFlags)reader.ReadUShort(StaticFields[14]);
             Payload.Id = reader.ReadByte(StaticFields[15]);
         
             
@@ -28345,7 +28345,7 @@ namespace Asv.Mavlink.Common
             Payload.DiffPressure = reader.ReadFloat(StaticFields[11]);
             Payload.PressureAlt = reader.ReadFloat(StaticFields[12]);
             Payload.Temperature = reader.ReadFloat(StaticFields[13]);
-            Payload.FieldsUpdated = (HilSensorUpdatedFlags)reader.ReadEnum(StaticFields[14]);
+            Payload.FieldsUpdated = (HilSensorUpdatedFlags)reader.ReadUInt(StaticFields[14]);
             Payload.Id = reader.ReadByte(StaticFields[15]);
         
             
@@ -32573,7 +32573,7 @@ namespace Asv.Mavlink.Common
             Payload.Epv = reader.ReadUShort(StaticFields[6]);
             Payload.Vel = reader.ReadUShort(StaticFields[7]);
             Payload.Cog = reader.ReadUShort(StaticFields[8]);
-            Payload.FixType = (GpsFixType)reader.ReadEnum(StaticFields[9]);
+            Payload.FixType = (GpsFixType)reader.ReadByte(StaticFields[9]);
             Payload.SatellitesVisible = reader.ReadByte(StaticFields[10]);
             Payload.DgpsNumch = reader.ReadByte(StaticFields[11]);
             Payload.Yaw = reader.ReadUShort(StaticFields[12]);
@@ -32851,7 +32851,7 @@ namespace Asv.Mavlink.Common
         {
             Payload.Vcc = reader.ReadUShort(StaticFields[0]);
             Payload.Vservo = reader.ReadUShort(StaticFields[1]);
-            Payload.Flags = (MavPowerStatus)reader.ReadEnum(StaticFields[2]);
+            Payload.Flags = (MavPowerStatus)reader.ReadUShort(StaticFields[2]);
         
             
         }
@@ -33049,8 +33049,8 @@ namespace Asv.Mavlink.Common
         {
             Payload.Baudrate = reader.ReadUInt(StaticFields[0]);
             Payload.Timeout = reader.ReadUShort(StaticFields[1]);
-            Payload.Device = (SerialControlDev)reader.ReadEnum(StaticFields[2]);
-            Payload.Flags = (SerialControlFlag)reader.ReadEnum(StaticFields[3]);
+            Payload.Device = (SerialControlDev)reader.ReadByte(StaticFields[2]);
+            Payload.Flags = (SerialControlFlag)reader.ReadByte(StaticFields[3]);
             Payload.Count = reader.ReadByte(StaticFields[4]);
             reader.ReadByteArray(StaticFields[5], Payload.Data);
             Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
@@ -33379,7 +33379,7 @@ namespace Asv.Mavlink.Common
             Payload.RtkHealth = reader.ReadByte(StaticFields[9]);
             Payload.RtkRate = reader.ReadByte(StaticFields[10]);
             Payload.Nsats = reader.ReadByte(StaticFields[11]);
-            Payload.BaselineCoordsType = (RtkBaselineCoordinateSystem)reader.ReadEnum(StaticFields[12]);
+            Payload.BaselineCoordsType = (RtkBaselineCoordinateSystem)reader.ReadByte(StaticFields[12]);
         
             
         }
@@ -33727,7 +33727,7 @@ namespace Asv.Mavlink.Common
             Payload.RtkHealth = reader.ReadByte(StaticFields[9]);
             Payload.RtkRate = reader.ReadByte(StaticFields[10]);
             Payload.Nsats = reader.ReadByte(StaticFields[11]);
-            Payload.BaselineCoordsType = (RtkBaselineCoordinateSystem)reader.ReadEnum(StaticFields[12]);
+            Payload.BaselineCoordsType = (RtkBaselineCoordinateSystem)reader.ReadByte(StaticFields[12]);
         
             
         }
@@ -34303,7 +34303,7 @@ namespace Asv.Mavlink.Common
             Payload.Width = reader.ReadUShort(StaticFields[1]);
             Payload.Height = reader.ReadUShort(StaticFields[2]);
             Payload.Packets = reader.ReadUShort(StaticFields[3]);
-            Payload.Type = (MavlinkDataStreamType)reader.ReadEnum(StaticFields[4]);
+            Payload.Type = (MavlinkDataStreamType)reader.ReadByte(StaticFields[4]);
             Payload.Payload = reader.ReadByte(StaticFields[5]);
             Payload.JpgQuality = reader.ReadByte(StaticFields[6]);
         
@@ -34715,9 +34715,9 @@ namespace Asv.Mavlink.Common
             Payload.MinDistance = reader.ReadUShort(StaticFields[1]);
             Payload.MaxDistance = reader.ReadUShort(StaticFields[2]);
             Payload.CurrentDistance = reader.ReadUShort(StaticFields[3]);
-            Payload.Type = (MavDistanceSensor)reader.ReadEnum(StaticFields[4]);
+            Payload.Type = (MavDistanceSensor)reader.ReadByte(StaticFields[4]);
             Payload.Id = reader.ReadByte(StaticFields[5]);
-            Payload.Orientation = (MavSensorOrientation)reader.ReadEnum(StaticFields[6]);
+            Payload.Orientation = (MavSensorOrientation)reader.ReadByte(StaticFields[6]);
             Payload.Covariance = reader.ReadByte(StaticFields[7]);
             Payload.HorizontalFov = reader.ReadFloat(StaticFields[8]);
             Payload.VerticalFov = reader.ReadFloat(StaticFields[9]);
@@ -37944,14 +37944,14 @@ namespace Asv.Mavlink.Common
             reader.ReadUShortArray(StaticFields[3], Payload.Voltages);
             Payload.CurrentBattery = reader.ReadShort(StaticFields[4]);
             Payload.Id = reader.ReadByte(StaticFields[5]);
-            Payload.BatteryFunction = (MavBatteryFunction)reader.ReadEnum(StaticFields[6]);
-            Payload.Type = (MavBatteryType)reader.ReadEnum(StaticFields[7]);
+            Payload.BatteryFunction = (MavBatteryFunction)reader.ReadByte(StaticFields[6]);
+            Payload.Type = (MavBatteryType)reader.ReadByte(StaticFields[7]);
             Payload.BatteryRemaining = reader.ReadSByte(StaticFields[8]);
             Payload.TimeRemaining = reader.ReadInt(StaticFields[9]);
-            Payload.ChargeState = (MavBatteryChargeState)reader.ReadEnum(StaticFields[10]);
+            Payload.ChargeState = (MavBatteryChargeState)reader.ReadByte(StaticFields[10]);
             reader.ReadUShortArray(StaticFields[11], Payload.VoltagesExt);
-            Payload.Mode = (MavBatteryMode)reader.ReadEnum(StaticFields[12]);
-            Payload.FaultBitmask = (MavBatteryFault)reader.ReadEnum(StaticFields[13]);
+            Payload.Mode = (MavBatteryMode)reader.ReadByte(StaticFields[12]);
+            Payload.FaultBitmask = (MavBatteryFault)reader.ReadUInt(StaticFields[13]);
         
             
         }
@@ -38314,7 +38314,7 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Capabilities = (MavProtocolCapability)reader.ReadEnum(StaticFields[0]);
+            Payload.Capabilities = (MavProtocolCapability)reader.ReadULong(StaticFields[0]);
             Payload.Uid = reader.ReadULong(StaticFields[1]);
             Payload.FlightSwVersion = reader.ReadUInt(StaticFields[2]);
             Payload.MiddlewareSwVersion = reader.ReadUInt(StaticFields[3]);
@@ -38711,12 +38711,12 @@ namespace Asv.Mavlink.Common
             Payload.SizeX = reader.ReadFloat(StaticFields[4]);
             Payload.SizeY = reader.ReadFloat(StaticFields[5]);
             Payload.TargetNum = reader.ReadByte(StaticFields[6]);
-            Payload.Frame = (MavFrame)reader.ReadEnum(StaticFields[7]);
+            Payload.Frame = (MavFrame)reader.ReadByte(StaticFields[7]);
             Payload.X = reader.ReadFloat(StaticFields[8]);
             Payload.Y = reader.ReadFloat(StaticFields[9]);
             Payload.Z = reader.ReadFloat(StaticFields[10]);
             reader.ReadFloatArray(StaticFields[11], Payload.Q);
-            Payload.Type = (LandingTargetType)reader.ReadEnum(StaticFields[12]);
+            Payload.Type = (LandingTargetType)reader.ReadByte(StaticFields[12]);
             Payload.PositionValid = reader.ReadByte(StaticFields[13]);
         
             
@@ -38990,8 +38990,8 @@ namespace Asv.Mavlink.Common
             Payload.BreachTime = reader.ReadUInt(StaticFields[0]);
             Payload.BreachCount = reader.ReadUShort(StaticFields[1]);
             Payload.BreachStatus = reader.ReadByte(StaticFields[2]);
-            Payload.BreachType = (FenceBreach)reader.ReadEnum(StaticFields[3]);
-            Payload.BreachMitigation = (FenceMitigate)reader.ReadEnum(StaticFields[4]);
+            Payload.BreachType = (FenceBreach)reader.ReadByte(StaticFields[3]);
+            Payload.BreachMitigation = (FenceMitigate)reader.ReadByte(StaticFields[4]);
         
             
         }
@@ -39337,11 +39337,11 @@ namespace Asv.Mavlink.Common
             Payload.OffdiagZ = reader.ReadFloat(StaticFields[9]);
             Payload.CompassId = reader.ReadByte(StaticFields[10]);
             Payload.CalMask = reader.ReadByte(StaticFields[11]);
-            Payload.CalStatus = (MagCalStatus)reader.ReadEnum(StaticFields[12]);
+            Payload.CalStatus = (MagCalStatus)reader.ReadByte(StaticFields[12]);
             Payload.Autosaved = reader.ReadByte(StaticFields[13]);
             Payload.OrientationConfidence = reader.ReadFloat(StaticFields[14]);
-            Payload.OldOrientation = (MavSensorOrientation)reader.ReadEnum(StaticFields[15]);
-            Payload.NewOrientation = (MavSensorOrientation)reader.ReadEnum(StaticFields[16]);
+            Payload.OldOrientation = (MavSensorOrientation)reader.ReadByte(StaticFields[15]);
+            Payload.NewOrientation = (MavSensorOrientation)reader.ReadByte(StaticFields[16]);
             Payload.ScaleFactor = reader.ReadFloat(StaticFields[17]);
         
             
@@ -40177,7 +40177,7 @@ namespace Asv.Mavlink.Common
             Payload.TasRatio = reader.ReadFloat(StaticFields[6]);
             Payload.PosHorizAccuracy = reader.ReadFloat(StaticFields[7]);
             Payload.PosVertAccuracy = reader.ReadFloat(StaticFields[8]);
-            Payload.Flags = (EstimatorStatusFlags)reader.ReadEnum(StaticFields[9]);
+            Payload.Flags = (EstimatorStatusFlags)reader.ReadUShort(StaticFields[9]);
         
             
         }
@@ -40838,7 +40838,7 @@ namespace Asv.Mavlink.Common
             Payload.SpeedAccuracy = reader.ReadFloat(StaticFields[10]);
             Payload.HorizAccuracy = reader.ReadFloat(StaticFields[11]);
             Payload.VertAccuracy = reader.ReadFloat(StaticFields[12]);
-            Payload.IgnoreFlags = (GpsInputIgnoreFlags)reader.ReadEnum(StaticFields[13]);
+            Payload.IgnoreFlags = (GpsInputIgnoreFlags)reader.ReadUShort(StaticFields[13]);
             Payload.TimeWeek = reader.ReadUShort(StaticFields[14]);
             Payload.GpsId = reader.ReadByte(StaticFields[15]);
             Payload.FixType = reader.ReadByte(StaticFields[16]);
@@ -41522,15 +41522,15 @@ namespace Asv.Mavlink.Common
             Payload.AltitudeAmsl = reader.ReadShort(StaticFields[7]);
             Payload.AltitudeSp = reader.ReadShort(StaticFields[8]);
             Payload.WpDistance = reader.ReadUShort(StaticFields[9]);
-            Payload.BaseMode = (MavModeFlag)reader.ReadEnum(StaticFields[10]);
-            Payload.LandedState = (MavLandedState)reader.ReadEnum(StaticFields[11]);
+            Payload.BaseMode = (MavModeFlag)reader.ReadByte(StaticFields[10]);
+            Payload.LandedState = (MavLandedState)reader.ReadByte(StaticFields[11]);
             Payload.Throttle = reader.ReadSByte(StaticFields[12]);
             Payload.Airspeed = reader.ReadByte(StaticFields[13]);
             Payload.AirspeedSp = reader.ReadByte(StaticFields[14]);
             Payload.Groundspeed = reader.ReadByte(StaticFields[15]);
             Payload.ClimbRate = reader.ReadSByte(StaticFields[16]);
             Payload.GpsNsat = reader.ReadByte(StaticFields[17]);
-            Payload.GpsFixType = (GpsFixType)reader.ReadEnum(StaticFields[18]);
+            Payload.GpsFixType = (GpsFixType)reader.ReadByte(StaticFields[18]);
             Payload.BatteryRemaining = reader.ReadByte(StaticFields[19]);
             Payload.Temperature = reader.ReadSByte(StaticFields[20]);
             Payload.TemperatureAir = reader.ReadSByte(StaticFields[21]);
@@ -42135,9 +42135,9 @@ namespace Asv.Mavlink.Common
             Payload.TargetAltitude = reader.ReadShort(StaticFields[5]);
             Payload.TargetDistance = reader.ReadUShort(StaticFields[6]);
             Payload.WpNum = reader.ReadUShort(StaticFields[7]);
-            Payload.FailureFlags = (HlFailureFlag)reader.ReadEnum(StaticFields[8]);
-            Payload.Type = (MavType)reader.ReadEnum(StaticFields[9]);
-            Payload.Autopilot = (MavAutopilot)reader.ReadEnum(StaticFields[10]);
+            Payload.FailureFlags = (HlFailureFlag)reader.ReadUShort(StaticFields[8]);
+            Payload.Type = (MavType)reader.ReadByte(StaticFields[9]);
+            Payload.Autopilot = (MavAutopilot)reader.ReadByte(StaticFields[10]);
             Payload.Heading = reader.ReadByte(StaticFields[11]);
             Payload.TargetHeading = reader.ReadByte(StaticFields[12]);
             Payload.Throttle = reader.ReadByte(StaticFields[13]);
@@ -43495,8 +43495,8 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.VtolState = (MavVtolState)reader.ReadEnum(StaticFields[0]);
-            Payload.LandedState = (MavLandedState)reader.ReadEnum(StaticFields[1]);
+            Payload.VtolState = (MavVtolState)reader.ReadByte(StaticFields[0]);
+            Payload.LandedState = (MavLandedState)reader.ReadByte(StaticFields[1]);
         
             
         }
@@ -43751,11 +43751,11 @@ namespace Asv.Mavlink.Common
             Payload.Heading = reader.ReadUShort(StaticFields[4]);
             Payload.HorVelocity = reader.ReadUShort(StaticFields[5]);
             Payload.VerVelocity = reader.ReadShort(StaticFields[6]);
-            Payload.Flags = (AdsbFlags)reader.ReadEnum(StaticFields[7]);
+            Payload.Flags = (AdsbFlags)reader.ReadUShort(StaticFields[7]);
             Payload.Squawk = reader.ReadUShort(StaticFields[8]);
-            Payload.AltitudeType = (AdsbAltitudeType)reader.ReadEnum(StaticFields[9]);
+            Payload.AltitudeType = (AdsbAltitudeType)reader.ReadByte(StaticFields[9]);
             reader.ReadCharArray(StaticFields[10], Payload.Callsign);
-            Payload.EmitterType = (AdsbEmitterType)reader.ReadEnum(StaticFields[11]);
+            Payload.EmitterType = (AdsbEmitterType)reader.ReadByte(StaticFields[11]);
             Payload.Tslc = reader.ReadByte(StaticFields[12]);
         
             
@@ -44049,9 +44049,9 @@ namespace Asv.Mavlink.Common
             Payload.TimeToMinimumDelta = reader.ReadFloat(StaticFields[1]);
             Payload.AltitudeMinimumDelta = reader.ReadFloat(StaticFields[2]);
             Payload.HorizontalMinimumDelta = reader.ReadFloat(StaticFields[3]);
-            Payload.Src = (MavCollisionSrc)reader.ReadEnum(StaticFields[4]);
-            Payload.Action = (MavCollisionAction)reader.ReadEnum(StaticFields[5]);
-            Payload.ThreatLevel = (MavCollisionThreatLevel)reader.ReadEnum(StaticFields[6]);
+            Payload.Src = (MavCollisionSrc)reader.ReadByte(StaticFields[4]);
+            Payload.Action = (MavCollisionAction)reader.ReadByte(StaticFields[5]);
+            Payload.ThreatLevel = (MavCollisionThreatLevel)reader.ReadByte(StaticFields[6]);
         
             
         }
@@ -45127,7 +45127,7 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Severity = (MavSeverity)reader.ReadEnum(StaticFields[0]);
+            Payload.Severity = (MavSeverity)reader.ReadByte(StaticFields[0]);
             reader.ReadCharArray(StaticFields[1], Payload.Text);
             Payload.Id = reader.ReadUShort(StaticFields[2]);
             Payload.ChunkSeq = reader.ReadByte(StaticFields[3]);
@@ -46094,7 +46094,7 @@ namespace Asv.Mavlink.Common
             Payload.FocalLength = reader.ReadFloat(StaticFields[2]);
             Payload.SensorSizeH = reader.ReadFloat(StaticFields[3]);
             Payload.SensorSizeV = reader.ReadFloat(StaticFields[4]);
-            Payload.Flags = (CameraCapFlags)reader.ReadEnum(StaticFields[5]);
+            Payload.Flags = (CameraCapFlags)reader.ReadUInt(StaticFields[5]);
             Payload.ResolutionH = reader.ReadUShort(StaticFields[6]);
             Payload.ResolutionV = reader.ReadUShort(StaticFields[7]);
             Payload.CamDefinitionVersion = reader.ReadUShort(StaticFields[8]);
@@ -46382,7 +46382,7 @@ namespace Asv.Mavlink.Common
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
-            Payload.ModeId = (CameraMode)reader.ReadEnum(StaticFields[1]);
+            Payload.ModeId = (CameraMode)reader.ReadByte(StaticFields[1]);
             Payload.Zoomlevel = reader.ReadFloat(StaticFields[2]);
             Payload.Focuslevel = reader.ReadFloat(StaticFields[3]);
         
@@ -46648,10 +46648,10 @@ namespace Asv.Mavlink.Common
             Payload.WriteSpeed = reader.ReadFloat(StaticFields[5]);
             Payload.StorageId = reader.ReadByte(StaticFields[6]);
             Payload.StorageCount = reader.ReadByte(StaticFields[7]);
-            Payload.Status = (StorageStatus)reader.ReadEnum(StaticFields[8]);
-            Payload.Type = (StorageType)reader.ReadEnum(StaticFields[9]);
+            Payload.Status = (StorageStatus)reader.ReadByte(StaticFields[8]);
+            Payload.Type = (StorageType)reader.ReadByte(StaticFields[9]);
             reader.ReadCharArray(StaticFields[10], Payload.Name);
-            Payload.StorageUsage = (StorageUsageFlag)reader.ReadEnum(StaticFields[11]);
+            Payload.StorageUsage = (StorageUsageFlag)reader.ReadByte(StaticFields[11]);
         
             
         }
@@ -48478,14 +48478,14 @@ namespace Asv.Mavlink.Common
         {
             Payload.Framerate = reader.ReadFloat(StaticFields[0]);
             Payload.Bitrate = reader.ReadUInt(StaticFields[1]);
-            Payload.Flags = (VideoStreamStatusFlags)reader.ReadEnum(StaticFields[2]);
+            Payload.Flags = (VideoStreamStatusFlags)reader.ReadUShort(StaticFields[2]);
             Payload.ResolutionH = reader.ReadUShort(StaticFields[3]);
             Payload.ResolutionV = reader.ReadUShort(StaticFields[4]);
             Payload.Rotation = reader.ReadUShort(StaticFields[5]);
             Payload.Hfov = reader.ReadUShort(StaticFields[6]);
             Payload.StreamId = reader.ReadByte(StaticFields[7]);
             Payload.Count = reader.ReadByte(StaticFields[8]);
-            Payload.Type = (VideoStreamType)reader.ReadEnum(StaticFields[9]);
+            Payload.Type = (VideoStreamType)reader.ReadByte(StaticFields[9]);
             reader.ReadCharArray(StaticFields[10], Payload.Name);
             reader.ReadCharArray(StaticFields[11], Payload.Uri);
         
@@ -48802,7 +48802,7 @@ namespace Asv.Mavlink.Common
         {
             Payload.Framerate = reader.ReadFloat(StaticFields[0]);
             Payload.Bitrate = reader.ReadUInt(StaticFields[1]);
-            Payload.Flags = (VideoStreamStatusFlags)reader.ReadEnum(StaticFields[2]);
+            Payload.Flags = (VideoStreamStatusFlags)reader.ReadUShort(StaticFields[2]);
             Payload.ResolutionH = reader.ReadUShort(StaticFields[3]);
             Payload.ResolutionV = reader.ReadUShort(StaticFields[4]);
             Payload.Rotation = reader.ReadUShort(StaticFields[5]);
@@ -49372,9 +49372,9 @@ namespace Asv.Mavlink.Common
             Payload.RecTopY = reader.ReadFloat(StaticFields[4]);
             Payload.RecBottomX = reader.ReadFloat(StaticFields[5]);
             Payload.RecBottomY = reader.ReadFloat(StaticFields[6]);
-            Payload.TrackingStatus = (CameraTrackingStatusFlags)reader.ReadEnum(StaticFields[7]);
-            Payload.TrackingMode = (CameraTrackingMode)reader.ReadEnum(StaticFields[8]);
-            Payload.TargetData = (CameraTrackingTargetData)reader.ReadEnum(StaticFields[9]);
+            Payload.TrackingStatus = (CameraTrackingStatusFlags)reader.ReadByte(StaticFields[7]);
+            Payload.TrackingMode = (CameraTrackingMode)reader.ReadByte(StaticFields[8]);
+            Payload.TargetData = (CameraTrackingTargetData)reader.ReadByte(StaticFields[9]);
         
             
         }
@@ -49698,7 +49698,7 @@ namespace Asv.Mavlink.Common
             Payload.Dist = reader.ReadFloat(StaticFields[9]);
             Payload.Hdg = reader.ReadFloat(StaticFields[10]);
             Payload.HdgAcc = reader.ReadFloat(StaticFields[11]);
-            Payload.TrackingStatus = (CameraTrackingStatusFlags)reader.ReadEnum(StaticFields[12]);
+            Payload.TrackingStatus = (CameraTrackingStatusFlags)reader.ReadByte(StaticFields[12]);
         
             
         }
@@ -49987,7 +49987,7 @@ namespace Asv.Mavlink.Common
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
-            Payload.CapFlags = (GimbalManagerCapFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.CapFlags = (GimbalManagerCapFlags)reader.ReadUInt(StaticFields[1]);
             Payload.RollMin = reader.ReadFloat(StaticFields[2]);
             Payload.RollMax = reader.ReadFloat(StaticFields[3]);
             Payload.PitchMin = reader.ReadFloat(StaticFields[4]);
@@ -50227,7 +50227,7 @@ namespace Asv.Mavlink.Common
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
-            Payload.Flags = (GimbalManagerFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (GimbalManagerFlags)reader.ReadUInt(StaticFields[1]);
             Payload.GimbalDeviceId = reader.ReadByte(StaticFields[2]);
             Payload.PrimaryControlSysid = reader.ReadByte(StaticFields[3]);
             Payload.PrimaryControlCompid = reader.ReadByte(StaticFields[4]);
@@ -50460,7 +50460,7 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Flags = (GimbalManagerFlags)reader.ReadEnum(StaticFields[0]);
+            Payload.Flags = (GimbalManagerFlags)reader.ReadUInt(StaticFields[0]);
             reader.ReadFloatArray(StaticFields[1], Payload.Q);
             Payload.AngularVelocityX = reader.ReadFloat(StaticFields[2]);
             Payload.AngularVelocityY = reader.ReadFloat(StaticFields[3]);
@@ -50822,7 +50822,7 @@ namespace Asv.Mavlink.Common
             Payload.PitchMax = reader.ReadFloat(StaticFields[7]);
             Payload.YawMin = reader.ReadFloat(StaticFields[8]);
             Payload.YawMax = reader.ReadFloat(StaticFields[9]);
-            Payload.CapFlags = (GimbalDeviceCapFlags)reader.ReadEnum(StaticFields[10]);
+            Payload.CapFlags = (GimbalDeviceCapFlags)reader.ReadUShort(StaticFields[10]);
             Payload.CustomCapFlags = reader.ReadUShort(StaticFields[11]);
             reader.ReadCharArray(StaticFields[12], Payload.VendorName);
             reader.ReadCharArray(StaticFields[13], Payload.ModelName);
@@ -51197,7 +51197,7 @@ namespace Asv.Mavlink.Common
             Payload.AngularVelocityX = reader.ReadFloat(StaticFields[1]);
             Payload.AngularVelocityY = reader.ReadFloat(StaticFields[2]);
             Payload.AngularVelocityZ = reader.ReadFloat(StaticFields[3]);
-            Payload.Flags = (GimbalDeviceFlags)reader.ReadEnum(StaticFields[4]);
+            Payload.Flags = (GimbalDeviceFlags)reader.ReadUShort(StaticFields[4]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[5]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[6]);
         
@@ -51507,8 +51507,8 @@ namespace Asv.Mavlink.Common
             Payload.AngularVelocityX = reader.ReadFloat(StaticFields[2]);
             Payload.AngularVelocityY = reader.ReadFloat(StaticFields[3]);
             Payload.AngularVelocityZ = reader.ReadFloat(StaticFields[4]);
-            Payload.FailureFlags = (GimbalDeviceErrorFlags)reader.ReadEnum(StaticFields[5]);
-            Payload.Flags = (GimbalDeviceFlags)reader.ReadEnum(StaticFields[6]);
+            Payload.FailureFlags = (GimbalDeviceErrorFlags)reader.ReadUInt(StaticFields[5]);
+            Payload.Flags = (GimbalDeviceFlags)reader.ReadUShort(StaticFields[6]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[7]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[8]);
             Payload.DeltaYaw = reader.ReadFloat(StaticFields[9]);
@@ -51868,10 +51868,10 @@ namespace Asv.Mavlink.Common
             Payload.Vz = reader.ReadFloat(StaticFields[5]);
             Payload.VEstimatedDelayUs = reader.ReadUInt(StaticFields[6]);
             Payload.FeedForwardAngularVelocityZ = reader.ReadFloat(StaticFields[7]);
-            Payload.EstimatorStatus = (EstimatorStatusFlags)reader.ReadEnum(StaticFields[8]);
+            Payload.EstimatorStatus = (EstimatorStatusFlags)reader.ReadUShort(StaticFields[8]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[9]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[10]);
-            Payload.LandedState = (MavLandedState)reader.ReadEnum(StaticFields[11]);
+            Payload.LandedState = (MavLandedState)reader.ReadByte(StaticFields[11]);
             Payload.AngularVelocityZ = reader.ReadFloat(StaticFields[12]);
         
             
@@ -52163,7 +52163,7 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Flags = (GimbalManagerFlags)reader.ReadEnum(StaticFields[0]);
+            Payload.Flags = (GimbalManagerFlags)reader.ReadUInt(StaticFields[0]);
             Payload.Pitch = reader.ReadFloat(StaticFields[1]);
             Payload.Yaw = reader.ReadFloat(StaticFields[2]);
             Payload.PitchRate = reader.ReadFloat(StaticFields[3]);
@@ -52406,7 +52406,7 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Flags = (GimbalManagerFlags)reader.ReadEnum(StaticFields[0]);
+            Payload.Flags = (GimbalManagerFlags)reader.ReadUInt(StaticFields[0]);
             Payload.Pitch = reader.ReadFloat(StaticFields[1]);
             Payload.Yaw = reader.ReadFloat(StaticFields[2]);
             Payload.PitchRate = reader.ReadFloat(StaticFields[3]);
@@ -52664,16 +52664,16 @@ namespace Asv.Mavlink.Common
             Payload.TimeUsec = reader.ReadULong(StaticFields[0]);
             reader.ReadUIntArray(StaticFields[1],Payload.ErrorCount);
             Payload.Counter = reader.ReadUShort(StaticFields[2]);
-            var array = reader.ReadEnumArray(StaticFields[3]);
+            var array = new ushort[Payload.FailureFlags.Length];
+            reader.ReadUShortArray(StaticFields[3], array);
             for(var i=0;i<array.Length;i++)
             {
-                Payload.FailureFlags[i] = (EscFailureFlags)(array.GetValue(i) ?? throw new InvalidOperationException());
-            }            
-            
+                Payload.FailureFlags[i] = (EscFailureFlags)array[i];
+            }
             reader.ReadShortArray(StaticFields[4], Payload.Temperature);
             Payload.Index = reader.ReadByte(StaticFields[5]);
             Payload.Count = reader.ReadByte(StaticFields[6]);
-            Payload.ConnectionType = (EscConnectionType)reader.ReadEnum(StaticFields[7]);
+            Payload.ConnectionType = (EscConnectionType)reader.ReadByte(StaticFields[7]);
             Payload.Info = reader.ReadByte(StaticFields[8]);
         
             
@@ -53112,8 +53112,8 @@ namespace Asv.Mavlink.Common
         {
             reader.ReadCharArray(StaticFields[0], Payload.Ssid);
             reader.ReadCharArray(StaticFields[1], Payload.Password);
-            Payload.Mode = (WifiConfigApMode)reader.ReadEnum(StaticFields[2]);
-            Payload.Response = (WifiConfigApResponse)reader.ReadEnum(StaticFields[3]);
+            Payload.Mode = (WifiConfigApMode)reader.ReadSByte(StaticFields[2]);
+            Payload.Response = (WifiConfigApResponse)reader.ReadSByte(StaticFields[3]);
         
             
         }
@@ -53483,10 +53483,10 @@ namespace Asv.Mavlink.Common
             Payload.DimensionBow = reader.ReadUShort(StaticFields[6]);
             Payload.DimensionStern = reader.ReadUShort(StaticFields[7]);
             Payload.Tslc = reader.ReadUShort(StaticFields[8]);
-            Payload.Flags = (AisFlags)reader.ReadEnum(StaticFields[9]);
+            Payload.Flags = (AisFlags)reader.ReadUShort(StaticFields[9]);
             Payload.TurnRate = reader.ReadSByte(StaticFields[10]);
-            Payload.NavigationalStatus = (AisNavStatus)reader.ReadEnum(StaticFields[11]);
-            Payload.Type = (AisType)reader.ReadEnum(StaticFields[12]);
+            Payload.NavigationalStatus = (AisNavStatus)reader.ReadByte(StaticFields[11]);
+            Payload.Type = (AisType)reader.ReadByte(StaticFields[12]);
             Payload.DimensionPort = reader.ReadByte(StaticFields[13]);
             Payload.DimensionStarboard = reader.ReadByte(StaticFields[14]);
             reader.ReadCharArray(StaticFields[15], Payload.Callsign);
@@ -53822,8 +53822,8 @@ namespace Asv.Mavlink.Common
             Payload.TimeUsec = reader.ReadULong(StaticFields[0]);
             Payload.UptimeSec = reader.ReadUInt(StaticFields[1]);
             Payload.VendorSpecificStatusCode = reader.ReadUShort(StaticFields[2]);
-            Payload.Health = (UavcanNodeHealth)reader.ReadEnum(StaticFields[3]);
-            Payload.Mode = (UavcanNodeMode)reader.ReadEnum(StaticFields[4]);
+            Payload.Health = (UavcanNodeHealth)reader.ReadByte(StaticFields[3]);
+            Payload.Mode = (UavcanNodeMode)reader.ReadByte(StaticFields[4]);
             Payload.SubMode = reader.ReadByte(StaticFields[5]);
         
             
@@ -54610,7 +54610,7 @@ namespace Asv.Mavlink.Common
             Payload.ParamIndex = reader.ReadUShort(StaticFields[1]);
             reader.ReadCharArray(StaticFields[2], Payload.ParamId);
             reader.ReadCharArray(StaticFields[3], Payload.ParamValue);
-            Payload.ParamType = (MavParamExtType)reader.ReadEnum(StaticFields[4]);
+            Payload.ParamType = (MavParamExtType)reader.ReadByte(StaticFields[4]);
         
             
         }
@@ -54835,7 +54835,7 @@ namespace Asv.Mavlink.Common
             Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
             reader.ReadCharArray(StaticFields[2], Payload.ParamId);
             reader.ReadCharArray(StaticFields[3], Payload.ParamValue);
-            Payload.ParamType = (MavParamExtType)reader.ReadEnum(StaticFields[4]);
+            Payload.ParamType = (MavParamExtType)reader.ReadByte(StaticFields[4]);
         
             
         }
@@ -55046,8 +55046,8 @@ namespace Asv.Mavlink.Common
         {
             reader.ReadCharArray(StaticFields[0], Payload.ParamId);
             reader.ReadCharArray(StaticFields[1], Payload.ParamValue);
-            Payload.ParamType = (MavParamExtType)reader.ReadEnum(StaticFields[2]);
-            Payload.ParamResult = (ParamAck)reader.ReadEnum(StaticFields[3]);
+            Payload.ParamType = (MavParamExtType)reader.ReadByte(StaticFields[2]);
+            Payload.ParamResult = (ParamAck)reader.ReadByte(StaticFields[3]);
         
             
         }
@@ -55312,11 +55312,11 @@ namespace Asv.Mavlink.Common
             reader.ReadUShortArray(StaticFields[1], Payload.Distances);
             Payload.MinDistance = reader.ReadUShort(StaticFields[2]);
             Payload.MaxDistance = reader.ReadUShort(StaticFields[3]);
-            Payload.SensorType = (MavDistanceSensor)reader.ReadEnum(StaticFields[4]);
+            Payload.SensorType = (MavDistanceSensor)reader.ReadByte(StaticFields[4]);
             Payload.Increment = reader.ReadByte(StaticFields[5]);
             Payload.IncrementF = reader.ReadFloat(StaticFields[6]);
             Payload.AngleOffset = reader.ReadFloat(StaticFields[7]);
-            Payload.Frame = (MavFrame)reader.ReadEnum(StaticFields[8]);
+            Payload.Frame = (MavFrame)reader.ReadByte(StaticFields[8]);
         
             
         }
@@ -55712,10 +55712,10 @@ namespace Asv.Mavlink.Common
             Payload.Yawspeed = reader.ReadFloat(StaticFields[10]);
             reader.ReadFloatArray(StaticFields[11], Payload.PoseCovariance);
             reader.ReadFloatArray(StaticFields[12], Payload.VelocityCovariance);
-            Payload.FrameId = (MavFrame)reader.ReadEnum(StaticFields[13]);
-            Payload.ChildFrameId = (MavFrame)reader.ReadEnum(StaticFields[14]);
+            Payload.FrameId = (MavFrame)reader.ReadByte(StaticFields[13]);
+            Payload.ChildFrameId = (MavFrame)reader.ReadByte(StaticFields[14]);
             Payload.ResetCounter = reader.ReadByte(StaticFields[15]);
-            Payload.EstimatorType = (MavEstimatorType)reader.ReadEnum(StaticFields[16]);
+            Payload.EstimatorType = (MavEstimatorType)reader.ReadByte(StaticFields[16]);
             Payload.Quality = reader.ReadSByte(StaticFields[17]);
         
             
@@ -56151,12 +56151,12 @@ namespace Asv.Mavlink.Common
             reader.ReadFloatArray(StaticFields[9], Payload.AccZ);
             reader.ReadFloatArray(StaticFields[10], Payload.PosYaw);
             reader.ReadFloatArray(StaticFields[11], Payload.VelYaw);
-            var array = reader.ReadEnumArray(StaticFields[12]);
+            var array = new ushort[Payload.Command.Length];
+            reader.ReadUShortArray(StaticFields[12], array);
             for(var i=0;i<array.Length;i++)
             {
-                Payload.Command[i] = (MavCmd)(array.GetValue(i) ?? throw new InvalidOperationException());
-            }            
-            
+                Payload.Command[i] = (MavCmd)array[i];
+            }
             Payload.ValidPoints = reader.ReadByte(StaticFields[13]);
         
             
@@ -56802,9 +56802,9 @@ namespace Asv.Mavlink.Common
             Payload.Mcc = reader.ReadUShort(StaticFields[0]);
             Payload.Mnc = reader.ReadUShort(StaticFields[1]);
             Payload.Lac = reader.ReadUShort(StaticFields[2]);
-            Payload.Status = (CellularStatusFlag)reader.ReadEnum(StaticFields[3]);
-            Payload.FailureReason = (CellularNetworkFailedReason)reader.ReadEnum(StaticFields[4]);
-            Payload.Type = (CellularNetworkRadioType)reader.ReadEnum(StaticFields[5]);
+            Payload.Status = (CellularStatusFlag)reader.ReadByte(StaticFields[3]);
+            Payload.FailureReason = (CellularNetworkFailedReason)reader.ReadByte(StaticFields[4]);
+            Payload.Type = (CellularNetworkRadioType)reader.ReadByte(StaticFields[5]);
             Payload.Quality = reader.ReadByte(StaticFields[6]);
         
             
@@ -57285,7 +57285,7 @@ namespace Asv.Mavlink.Common
             reader.ReadCharArray(StaticFields[4], Payload.Apn);
             reader.ReadCharArray(StaticFields[5], Payload.Puk);
             Payload.Roaming = reader.ReadByte(StaticFields[6]);
-            Payload.Response = (CellularConfigResponse)reader.ReadEnum(StaticFields[7]);
+            Payload.Response = (CellularConfigResponse)reader.ReadByte(StaticFields[7]);
         
             
         }
@@ -57859,8 +57859,8 @@ namespace Asv.Mavlink.Common
             Payload.VelAcc = reader.ReadUShort(StaticFields[13]);
             Payload.UpdateRate = reader.ReadUShort(StaticFields[14]);
             reader.ReadByteArray(StaticFields[15], Payload.UasId);
-            Payload.FlightState = (UtmFlightState)reader.ReadEnum(StaticFields[16]);
-            Payload.Flags = (UtmDataAvailFlags)reader.ReadEnum(StaticFields[17]);
+            Payload.FlightState = (UtmFlightState)reader.ReadByte(StaticFields[16]);
+            Payload.Flags = (UtmDataAvailFlags)reader.ReadByte(StaticFields[17]);
         
             
         }
@@ -58364,7 +58364,7 @@ namespace Asv.Mavlink.Common
             Payload.X = reader.ReadInt(StaticFields[2]);
             Payload.Y = reader.ReadInt(StaticFields[3]);
             Payload.Z = reader.ReadFloat(StaticFields[4]);
-            Payload.Frame = (MavFrame)reader.ReadEnum(StaticFields[5]);
+            Payload.Frame = (MavFrame)reader.ReadByte(StaticFields[5]);
         
             
         }
@@ -58700,8 +58700,8 @@ namespace Asv.Mavlink.Common
             Payload.ChargingMinimumVoltage = reader.ReadUShort(StaticFields[5]);
             Payload.RestingMinimumVoltage = reader.ReadUShort(StaticFields[6]);
             Payload.Id = reader.ReadByte(StaticFields[7]);
-            Payload.BatteryFunction = (MavBatteryFunction)reader.ReadEnum(StaticFields[8]);
-            Payload.Type = (MavBatteryType)reader.ReadEnum(StaticFields[9]);
+            Payload.BatteryFunction = (MavBatteryFunction)reader.ReadByte(StaticFields[8]);
+            Payload.Type = (MavBatteryType)reader.ReadByte(StaticFields[9]);
             reader.ReadCharArray(StaticFields[10], Payload.SerialNumber);
             reader.ReadCharArray(StaticFields[11], Payload.DeviceName);
             Payload.ChargingMaximumVoltage = reader.ReadUShort(StaticFields[12]);
@@ -59127,7 +59127,7 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Status = (MavGeneratorStatusFlag)reader.ReadEnum(StaticFields[0]);
+            Payload.Status = (MavGeneratorStatusFlag)reader.ReadULong(StaticFields[0]);
             Payload.BatteryCurrent = reader.ReadFloat(StaticFields[1]);
             Payload.LoadCurrent = reader.ReadFloat(StaticFields[2]);
             Payload.PowerGenerated = reader.ReadFloat(StaticFields[3]);
@@ -59692,7 +59692,7 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.PayloadType = (MavTunnelPayloadType)reader.ReadEnum(StaticFields[0]);
+            Payload.PayloadType = (MavTunnelPayloadType)reader.ReadUShort(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
             Payload.PayloadLength = reader.ReadByte(StaticFields[3]);
@@ -61100,7 +61100,7 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Format = (TuneFormat)reader.ReadEnum(StaticFields[0]);
+            Payload.Format = (TuneFormat)reader.ReadUInt(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
             reader.ReadCharArray(StaticFields[3], Payload.Tune);
@@ -61272,7 +61272,7 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Format = (TuneFormat)reader.ReadEnum(StaticFields[0]);
+            Payload.Format = (TuneFormat)reader.ReadUInt(StaticFields[0]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
         
@@ -61634,7 +61634,7 @@ namespace Asv.Mavlink.Common
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.Sequence = reader.ReadUShort(StaticFields[0]);
-            Payload.Flags = (MavEventCurrentSequenceFlags)reader.ReadEnum(StaticFields[1]);
+            Payload.Flags = (MavEventCurrentSequenceFlags)reader.ReadByte(StaticFields[1]);
         
             
         }
@@ -61949,7 +61949,7 @@ namespace Asv.Mavlink.Common
             Payload.SequenceOldestAvailable = reader.ReadUShort(StaticFields[1]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[2]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[3]);
-            Payload.Reason = (MavEventErrorReason)reader.ReadEnum(StaticFields[4]);
+            Payload.Reason = (MavEventErrorReason)reader.ReadByte(StaticFields[4]);
         
             
         }
@@ -62355,7 +62355,7 @@ namespace Asv.Mavlink.Common
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
             Payload.Bus = reader.ReadByte(StaticFields[3]);
-            Payload.Operation = (CanFilterOp)reader.ReadEnum(StaticFields[4]);
+            Payload.Operation = (CanFilterOp)reader.ReadByte(StaticFields[4]);
             Payload.NumIds = reader.ReadByte(StaticFields[5]);
         
             
@@ -62746,7 +62746,7 @@ namespace Asv.Mavlink.Common
             Payload.Tension = reader.ReadFloat(StaticFields[3]);
             Payload.Voltage = reader.ReadFloat(StaticFields[4]);
             Payload.Current = reader.ReadFloat(StaticFields[5]);
-            Payload.Status = (MavWinchStatusFlag)reader.ReadEnum(StaticFields[6]);
+            Payload.Status = (MavWinchStatusFlag)reader.ReadUInt(StaticFields[6]);
             Payload.Temperature = reader.ReadShort(StaticFields[7]);
         
             
@@ -62962,8 +62962,8 @@ namespace Asv.Mavlink.Common
             Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
             reader.ReadByteArray(StaticFields[2], Payload.IdOrMac);
-            Payload.IdType = (MavOdidIdType)reader.ReadEnum(StaticFields[3]);
-            Payload.UaType = (MavOdidUaType)reader.ReadEnum(StaticFields[4]);
+            Payload.IdType = (MavOdidIdType)reader.ReadByte(StaticFields[3]);
+            Payload.UaType = (MavOdidUaType)reader.ReadByte(StaticFields[4]);
             reader.ReadByteArray(StaticFields[5], Payload.UasId);
         
             
@@ -63349,13 +63349,13 @@ namespace Asv.Mavlink.Common
             Payload.TargetSystem = reader.ReadByte(StaticFields[9]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[10]);
             reader.ReadByteArray(StaticFields[11], Payload.IdOrMac);
-            Payload.Status = (MavOdidStatus)reader.ReadEnum(StaticFields[12]);
-            Payload.HeightReference = (MavOdidHeightRef)reader.ReadEnum(StaticFields[13]);
-            Payload.HorizontalAccuracy = (MavOdidHorAcc)reader.ReadEnum(StaticFields[14]);
-            Payload.VerticalAccuracy = (MavOdidVerAcc)reader.ReadEnum(StaticFields[15]);
-            Payload.BarometerAccuracy = (MavOdidVerAcc)reader.ReadEnum(StaticFields[16]);
-            Payload.SpeedAccuracy = (MavOdidSpeedAcc)reader.ReadEnum(StaticFields[17]);
-            Payload.TimestampAccuracy = (MavOdidTimeAcc)reader.ReadEnum(StaticFields[18]);
+            Payload.Status = (MavOdidStatus)reader.ReadByte(StaticFields[12]);
+            Payload.HeightReference = (MavOdidHeightRef)reader.ReadByte(StaticFields[13]);
+            Payload.HorizontalAccuracy = (MavOdidHorAcc)reader.ReadByte(StaticFields[14]);
+            Payload.VerticalAccuracy = (MavOdidVerAcc)reader.ReadByte(StaticFields[15]);
+            Payload.BarometerAccuracy = (MavOdidVerAcc)reader.ReadByte(StaticFields[16]);
+            Payload.SpeedAccuracy = (MavOdidSpeedAcc)reader.ReadByte(StaticFields[17]);
+            Payload.TimestampAccuracy = (MavOdidTimeAcc)reader.ReadByte(StaticFields[18]);
         
             
         }
@@ -63708,7 +63708,7 @@ namespace Asv.Mavlink.Common
             Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
             reader.ReadByteArray(StaticFields[3], Payload.IdOrMac);
-            Payload.AuthenticationType = (MavOdidAuthType)reader.ReadEnum(StaticFields[4]);
+            Payload.AuthenticationType = (MavOdidAuthType)reader.ReadByte(StaticFields[4]);
             Payload.DataPage = reader.ReadByte(StaticFields[5]);
             Payload.LastPageIndex = reader.ReadByte(StaticFields[6]);
             Payload.Length = reader.ReadByte(StaticFields[7]);
@@ -63944,7 +63944,7 @@ namespace Asv.Mavlink.Common
             Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
             reader.ReadByteArray(StaticFields[2], Payload.IdOrMac);
-            Payload.DescriptionType = (MavOdidDescType)reader.ReadEnum(StaticFields[3]);
+            Payload.DescriptionType = (MavOdidDescType)reader.ReadByte(StaticFields[3]);
             reader.ReadCharArray(StaticFields[4], Payload.Description);
         
             
@@ -64285,10 +64285,10 @@ namespace Asv.Mavlink.Common
             Payload.TargetSystem = reader.ReadByte(StaticFields[8]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[9]);
             reader.ReadByteArray(StaticFields[10], Payload.IdOrMac);
-            Payload.OperatorLocationType = (MavOdidOperatorLocationType)reader.ReadEnum(StaticFields[11]);
-            Payload.ClassificationType = (MavOdidClassificationType)reader.ReadEnum(StaticFields[12]);
-            Payload.CategoryEu = (MavOdidCategoryEu)reader.ReadEnum(StaticFields[13]);
-            Payload.ClassEu = (MavOdidClassEu)reader.ReadEnum(StaticFields[14]);
+            Payload.OperatorLocationType = (MavOdidOperatorLocationType)reader.ReadByte(StaticFields[11]);
+            Payload.ClassificationType = (MavOdidClassificationType)reader.ReadByte(StaticFields[12]);
+            Payload.CategoryEu = (MavOdidCategoryEu)reader.ReadByte(StaticFields[13]);
+            Payload.ClassEu = (MavOdidClassEu)reader.ReadByte(StaticFields[14]);
         
             
         }
@@ -64560,7 +64560,7 @@ namespace Asv.Mavlink.Common
             Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
             reader.ReadByteArray(StaticFields[2], Payload.IdOrMac);
-            Payload.OperatorIdType = (MavOdidOperatorIdType)reader.ReadEnum(StaticFields[3]);
+            Payload.OperatorIdType = (MavOdidOperatorIdType)reader.ReadByte(StaticFields[3]);
             reader.ReadCharArray(StaticFields[4], Payload.OperatorId);
         
             
@@ -64956,7 +64956,7 @@ namespace Asv.Mavlink.Common
         
         public override void WriteFields(IMavlinkFieldReader reader)
         {
-            Payload.Status = (MavOdidArmStatus)reader.ReadEnum(StaticFields[0]);
+            Payload.Status = (MavOdidArmStatus)reader.ReadByte(StaticFields[0]);
             reader.ReadCharArray(StaticFields[1], Payload.Error);
         
             

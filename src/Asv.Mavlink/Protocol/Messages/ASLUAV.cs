@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+3a942e4794bafbc9b7e025a76c610b9704955531 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
 
 using System;
 using System.Text;
@@ -371,10 +371,10 @@ namespace Asv.Mavlink.Asluav
             Payload.X = reader.ReadInt(StaticFields[6]);
             Payload.Y = reader.ReadInt(StaticFields[7]);
             Payload.Z = reader.ReadFloat(StaticFields[8]);
-            Payload.Command = (MavCmd)reader.ReadEnum(StaticFields[9]);
+            Payload.Command = (MavCmd)reader.ReadUShort(StaticFields[9]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[10]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[11]);
-            Payload.Frame = (MavFrame)reader.ReadEnum(StaticFields[12]);
+            Payload.Frame = (MavFrame)reader.ReadByte(StaticFields[12]);
             Payload.Current = reader.ReadByte(StaticFields[13]);
             Payload.Autocontinue = reader.ReadByte(StaticFields[14]);
         
@@ -737,7 +737,7 @@ namespace Asv.Mavlink.Asluav
             Payload.Param5 = reader.ReadFloat(StaticFields[6]);
             Payload.Param6 = reader.ReadFloat(StaticFields[7]);
             Payload.Param7 = reader.ReadFloat(StaticFields[8]);
-            Payload.Command = (MavCmd)reader.ReadEnum(StaticFields[9]);
+            Payload.Command = (MavCmd)reader.ReadUShort(StaticFields[9]);
             Payload.TargetSystem = reader.ReadByte(StaticFields[10]);
             Payload.TargetComponent = reader.ReadByte(StaticFields[11]);
             Payload.Confirmation = reader.ReadByte(StaticFields[12]);
@@ -4753,8 +4753,8 @@ namespace Asv.Mavlink.Asluav
         public override void WriteFields(IMavlinkFieldReader reader)
         {
             Payload.Timestamp = reader.ReadULong(StaticFields[0]);
-            Payload.GsmModemType = (GsmModemType)reader.ReadEnum(StaticFields[1]);
-            Payload.GsmLinkType = (GsmLinkType)reader.ReadEnum(StaticFields[2]);
+            Payload.GsmModemType = (GsmModemType)reader.ReadByte(StaticFields[1]);
+            Payload.GsmLinkType = (GsmLinkType)reader.ReadByte(StaticFields[2]);
             Payload.Rssi = reader.ReadByte(StaticFields[3]);
             Payload.RsrpRscp = reader.ReadByte(StaticFields[4]);
             Payload.SinrEcio = reader.ReadByte(StaticFields[5]);

@@ -145,20 +145,55 @@ namespace Asv.Mavlink.{{ Namespace }}
             {%- case field.Type -%}
             {%- when 'char' or 'double' or 'float'-%}
             ERROR => ENUM as 'char' or 'double' or 'float' ???????
-            {%- else -%}
-            var array = reader.ReadEnumArray(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'sbyte' -%}
+            var array = new sbyte[Payload.{{ field.CamelCaseName }}.Length];
+            reader.ReadSByteArray(StaticFields[{{ forloop.index0 }}], array);
+            {%- when 'byte' -%}
+            var array = new byte[Payload.{{ field.CamelCaseName }}.Length];
+            reader.ReadByteArray(StaticFields[{{ forloop.index0 }}], array);
+            {%- when 'short' -%}
+            var array = new short[Payload.{{ field.CamelCaseName }}.Length];
+            reader.ReadShortArray(StaticFields[{{ forloop.index0 }}], array);
+            {%- when 'ushort' -%}
+            var array = new ushort[Payload.{{ field.CamelCaseName }}.Length];
+            reader.ReadUShortArray(StaticFields[{{ forloop.index0 }}], array);
+            {%- when 'int' -%}
+            var array = new int[Payload.{{ field.CamelCaseName }}.Length];
+            reader.ReadIntArray(StaticFields[{{ forloop.index0 }}], array);
+            {%- when 'uint' -%}
+            var array = new uint[Payload.{{ field.CamelCaseName }}.Length];
+            reader.ReadUIntArray(StaticFields[{{ forloop.index0 }}], array);
+            {%- when 'long' -%}
+            var array = new long[Payload.{{ field.CamelCaseName }}.Length];
+            reader.ReadLongArray(StaticFields[{{ forloop.index0 }}], array);
+            {%- when 'ulong' -%}
+            var array = new ulong[Payload.{{ field.CamelCaseName }}.Length];
+            reader.ReadULongArray(StaticFields[{{ forloop.index0 }}], array);
+            {%- endcase -%}
             for(var i=0;i<array.Length;i++)
             {
-                Payload.{{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})(array.GetValue(i) ?? throw new InvalidOperationException());
-            }            
-            {%- endcase -%}
-            
+                Payload.{{ field.CamelCaseName }}[i] = ({{ field.EnumCamelCaseName }})array[i];
+            }
         {%- else -%}
             {%- case field.Type -%}
             {%- when 'char' or 'double' or 'float'-%}
             ERROR => ENUM as 'char' or 'double' or 'float' ???????
-            {%- else -%}
-            Payload.{{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})reader.ReadEnum(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'sbyte' -%}
+            Payload.{{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})reader.ReadSByte(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'byte' -%}
+            Payload.{{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})reader.ReadByte(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'short' -%}
+            Payload.{{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})reader.ReadShort(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'ushort' -%}
+            Payload.{{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})reader.ReadUShort(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'int' -%}
+            Payload.{{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})reader.ReadInt(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'uint' -%}
+            Payload.{{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})reader.ReadUInt(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'long' -%}
+            Payload.{{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})reader.ReadLong(StaticFields[{{ forloop.index0 }}]);
+            {%- when 'ulong' -%}
+            Payload.{{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})reader.ReadULong(StaticFields[{{ forloop.index0 }}]);
             {%- endcase -%}
         {%- endif -%}
     {%- else -%}
