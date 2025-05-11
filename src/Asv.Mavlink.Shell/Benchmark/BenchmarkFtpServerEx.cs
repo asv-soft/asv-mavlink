@@ -162,7 +162,6 @@ public class BenchmarkFtpServerEx
         );
         using var memory = MemoryPool<char>.Shared.Rent(256);
 
-        // Act
         await _server.ListDirectory(dirPath, 0, memory.Memory);
     }
     
@@ -181,7 +180,6 @@ public class BenchmarkFtpServerEx
         );
         using var memory = MemoryPool<char>.Shared.Rent(256);
 
-        // Act
         await _server.ListDirectoryAsync(dirPath, 0, memory.Memory);
     }
 }
