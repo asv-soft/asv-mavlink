@@ -20,9 +20,7 @@ namespace Asv.Mavlink.Shell
     }
 
 
-    [SimpleJob(RuntimeMoniker.Net461)] 
-    [SimpleJob(RuntimeMoniker.CoreRt50)]
-    //[SimpleJob(RuntimeMoniker.Mono)]
+    [SimpleJob(RuntimeMoniker.HostProcess)]
     [RPlotExporter]
     [MemoryDiagnoser]
     public class SerializationPacket

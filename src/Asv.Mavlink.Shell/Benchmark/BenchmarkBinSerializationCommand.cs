@@ -50,9 +50,7 @@ namespace Asv.Mavlink.Shell
         }
     }
 
-    [SimpleJob(RuntimeMoniker.Net461)]
-    [SimpleJob(RuntimeMoniker.CoreRt60)]
-    //[SimpleJob(RuntimeMoniker.Mono)]
+    [SimpleJob(RuntimeMoniker.HostProcess)]
     [RPlotExporter]
     [MemoryDiagnoser]
     public class BinSerialization

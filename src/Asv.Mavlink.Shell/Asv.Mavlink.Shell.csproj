@@ -27,7 +27,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
     <PackageReference Include="ConsoleAppFramework" Version="$(ConsoleAppFrameworkVersion)"/>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(DotNetVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(DotNetVersion)" />
@@ -42,8 +42,10 @@
     </PackageReference>
     <PackageReference Include="TestableIO.System.IO.Abstractions.Extensions" Version="2.2.5" />
     <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="$(SystemIOAbstractionsVersion)" />
+    <PackageReference Include="TimeProviderExtensions" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Asv.Mavlink.Test\Asv.Mavlink.Test.csproj" />
     <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />
   </ItemGroup>
   <ItemGroup>
