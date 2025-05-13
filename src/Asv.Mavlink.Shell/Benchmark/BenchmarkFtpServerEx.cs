@@ -39,6 +39,7 @@ public class BenchmarkFtpServerEx
         new() { RootDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp") };
     private readonly MavlinkFtpServerConfig _configBase = new();
 
+    // Each method in FtpServerEx is asynchronous, so benchmark is nonworking for now 
     [GlobalSetup]
     public void Setup()
     {
@@ -63,6 +64,7 @@ public class BenchmarkFtpServerEx
         _server = new FtpServerEx(new FtpServer(identity, _configBase, core), _config, _fileSystem);
     }
     
+    
     [Benchmark]
     public async Task OpenFileRead()
     {
@@ -78,7 +80,7 @@ public class BenchmarkFtpServerEx
         var filePath = _fileSystem.Path.Combine(_config.RootDirectory, "test.txt");
         _fileSystem.AddFile(filePath, new MockFileData("Test content"));
         
-        await _server.OpenFileReadAsync(filePath, _cts.Token);
+        await _server.OpenFileRead(filePath, _cts.Token);
     }
 
     [Benchmark]
@@ -96,7 +98,7 @@ public class BenchmarkFtpServerEx
         var filePath = _fileSystem.Path.Combine(_config.RootDirectory, "test.txt");
         _fileSystem.AddFile(filePath, new MockFileData("Test content"));
 
-        await _server.RemoveFileAsync("test.txt", _cts.Token);
+        await _server.RemoveFile("test.txt", _cts.Token);
     }
     
     [Benchmark]
@@ -114,7 +116,7 @@ public class BenchmarkFtpServerEx
         var filePath = _fileSystem.Path.Combine(_config.RootDirectory, "test.txt");
         _fileSystem.AddFile(filePath, new MockFileData("Test content"));
 
-        await _server.CalcFileCrc32Async("test.txt", _cts.Token);
+        await _server.CalcFileCrc32("test.txt", _cts.Token);
     }
     
     [Benchmark]
@@ -144,7 +146,7 @@ public class BenchmarkFtpServerEx
         _fileSystem.AddFile(filePath, new MockFileData("1234567890"));
         var request = new TruncateRequest(filePath, 5);
 
-        await _server.TruncateFileAsync(request);
+        await _server.TruncateFile(request);
     }
 
     [Benchmark]
@@ -180,6 +182,6 @@ public class BenchmarkFtpServerEx
         );
         using var memory = MemoryPool<char>.Shared.Rent(256);
 
-        await _server.ListDirectoryAsync(dirPath, 0, memory.Memory);
+        await _server.ListDirectory(dirPath, 0, memory.Memory);
     }
 }
