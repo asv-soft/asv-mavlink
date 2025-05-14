@@ -112,21 +112,17 @@ public static class MavlinkFtpHelper
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentException.ThrowIfNullOrWhiteSpace(relative);
 
-        // 1. Normalize root once
         var rootFull = fs.Path.GetFullPath(root).TrimEnd(
             fs.Path.DirectorySeparatorChar,
             fs.Path.AltDirectorySeparatorChar);
 
-        // 2. Remove leading separators to make it relative
         var rel = relative.TrimStart(
             fs.Path.DirectorySeparatorChar,
             fs.Path.AltDirectorySeparatorChar);
 
-        // 3. Combine + canonicalize
         var combined = fs.Path.Combine(rootFull, rel);
         var full = fs.Path.GetFullPath(combined);
 
-        // 4. Jail check
         if (!full.StartsWith(rootFull, StringComparison.OrdinalIgnoreCase))
         {
             throw new ArgumentException(
@@ -139,6 +135,38 @@ public static class MavlinkFtpHelper
         }
 
         return full;
+    }
+    
+    public static string Combine(string path1, string path2)
+    {
+        if (string.IsNullOrEmpty(path1)) return path2;
+        if (string.IsNullOrEmpty(path2)) return path1;
+
+        if (path1.EndsWith(DirectorySeparator) && path2.StartsWith(DirectorySeparator))
+        {
+            return path1 + path2[1..];
+        }
+
+        if (!path1.EndsWith(DirectorySeparator) && !path2.StartsWith(DirectorySeparator))
+        {
+            return path1 + DirectorySeparator + path2;
+        }
+
+        return path1 + path2;
+    }
+
+    public static string GetFileName(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return string.Empty;
+        }
+        var index = path.LastIndexOf(DirectorySeparator);
+        if (index == -1)
+        {
+            return path;
+        }
+        return path[(index + 1)..];
     }
 
     public static Encoding FtpEncoding { get; } = Encoding.ASCII;
