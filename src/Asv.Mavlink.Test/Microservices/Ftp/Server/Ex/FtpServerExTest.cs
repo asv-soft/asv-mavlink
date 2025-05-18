@@ -14,37 +14,29 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(FtpServerEx))]
 public class FtpServerExTest : ServerTestBase<FtpServerEx>
 {
-    private readonly TaskCompletionSource _tcs = new();
     private readonly CancellationTokenSource _cts;
     private readonly MockFileSystem _fileSystem;
 
-    public FtpServerExTest(ITestOutputHelper log) : base(log)
+    public FtpServerExTest(ITestOutputHelper log)
+        : base(log)
     {
         _cts = new CancellationTokenSource();
-        _cts.Token.Register(() => _tcs.TrySetCanceled());
         _fileSystem = SetUpFileSystem(_config.RootDirectory);
     }
 
     private static MockFileSystem SetUpFileSystem(string root)
     {
-        var mockFileCfg = new MockFileSystemOptions
-        {
-            CurrentDirectory = root
-        };
+        var mockFileCfg = new MockFileSystemOptions { CurrentDirectory = root };
         var fileSystem = new MockFileSystem(mockFileCfg);
         fileSystem.AddDirectory(mockFileCfg.CurrentDirectory);
 
         return fileSystem;
     }
 
-    private readonly MavlinkFtpServerExConfig _config = new()
-    {
-        RootDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp")
-    };
+    private readonly MavlinkFtpServerExConfig _config =
+        new() { RootDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "temp") };
 
-    private readonly MavlinkFtpServerConfig _configBase = new()
-    {
-    };
+    private readonly MavlinkFtpServerConfig _configBase = new();
 
     protected override FtpServerEx CreateServer(MavlinkIdentity identity, CoreServices core)
     {
@@ -63,6 +55,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
 
         // Assert
         Assert.Equal((uint)"Test content".Length, handle.Size);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -77,6 +70,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
 
         // Assert
         Assert.Equal(1, handle.Session);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -89,11 +83,16 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var buffer = new byte[4];
 
         // Act
-        var result = await Server.FileRead(new ReadRequest(handle.Session, 0, (byte)buffer.Length), buffer, _cts.Token);
+        var result = await Server.FileRead(
+            new ReadRequest(handle.Session, 0, (byte)buffer.Length),
+            buffer,
+            _cts.Token
+        );
 
         // Assert
         Assert.Equal((byte)buffer.Length, result.ReadCount);
         Assert.Equal("Test", System.Text.Encoding.UTF8.GetString(buffer));
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -104,7 +103,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         const byte session = 0;
         const byte size = 5;
         var buffer = new byte[] { 1, 2, 3, 4, 5 };
-
+        _fileSystem.AddEmptyFile(filePath);
         await Server.OpenFileWrite(filePath, _cts.Token);
 
         // Act
@@ -116,6 +115,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         await Server.OpenFileRead(filePath, _cts.Token);
         await Server.FileRead(new ReadRequest(session, 0, size), writtenData);
         Assert.Equal(buffer, writtenData);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -130,6 +130,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
 
         // Assert
         Assert.False(_fileSystem.File.Exists(filePath));
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -138,8 +139,14 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         // Arrange
         var dirPath = _fileSystem.Path.Combine(_config.RootDirectory, "testDir");
         _fileSystem.AddDirectory(dirPath);
-        _fileSystem.AddFile(_fileSystem.Path.Combine(dirPath, "file1.txt"), new MockFileData("File1 content"));
-        _fileSystem.AddFile(_fileSystem.Path.Combine(dirPath, "file2.txt"), new MockFileData("File2 content"));
+        _fileSystem.AddFile(
+            _fileSystem.Path.Combine(dirPath, "file1.txt"),
+            new MockFileData("File1 content")
+        );
+        _fileSystem.AddFile(
+            _fileSystem.Path.Combine(dirPath, "file2.txt"),
+            new MockFileData("File2 content")
+        );
         using var memory = MemoryPool<char>.Shared.Rent(256);
 
         // Act
@@ -149,6 +156,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         const string expectedOutput = "Ffile1.txt\t13\0Ffile2.txt\t13\0";
         var output = new string(memory.Memory.Span[..result]);
         Assert.Equal(expectedOutput, output);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -166,6 +174,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
 
         // Assert
         Assert.Equal(crc32, realCrc32);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -180,6 +189,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
 
         // Assert
         Assert.False(_fileSystem.Directory.Exists(dirPath));
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -193,6 +203,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
 
         // Assert
         Assert.True(_fileSystem.Directory.Exists(directory));
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -206,6 +217,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
 
         // Assert
         Assert.True(_fileSystem.File.Exists(file));
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -222,14 +234,15 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         // Assert
         Assert.False(_fileSystem.File.Exists(oldPath));
         Assert.True(_fileSystem.File.Exists(newPath));
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
     public async Task OpenFileWrite_WithEmptyFile_Success()
     {
         // Arrange
-        var fileName = "test.txt";
-        var fileDirName = "file";
+        const string fileName = "test.txt";
+        const string fileDirName = "file";
         var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
         var fileDir = _fileSystem.Path.Combine(root, fileDirName);
         var filePath = _fileSystem.Path.Combine(fileDir, fileName);
@@ -241,6 +254,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         // Assert
         Assert.Equal(0, result.Session);
         Assert.Equal(0u, result.Size);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Theory]
@@ -252,7 +266,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
     public async Task ListDirectory_WithOffset_Success(uint offset, string realListOfEntries)
     {
         // Arrange
-        var fileDirName = "files";
+        const string fileDirName = "files";
         var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
         var fileDir = _fileSystem.Path.Combine(root, fileDirName);
         var filePath = _fileSystem.Path.Combine(fileDir, "test.txt");
@@ -266,19 +280,25 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         using var memory = MemoryPool<char>.Shared.Rent();
 
         // Act
-        var result = await Server.ListDirectory(fileDir, offset, memory.Memory, CancellationToken.None);
+        var result = await Server.ListDirectory(
+            fileDir,
+            offset,
+            memory.Memory,
+            CancellationToken.None
+        );
 
         // Assert
         var listOfEntries = memory.Memory[..result].ToString();
         Assert.Equal(realListOfEntries.Length, result);
         Assert.Equal(realListOfEntries, listOfEntries);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
     public async Task ListDirectory_PastTheEndOfFile_ThrowsEOF()
     {
         // Arrange
-        var fileDirName = "files";
+        const string fileDirName = "files";
         var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
         var fileDir = _fileSystem.Path.Combine(root, fileDirName);
         var filePath = _fileSystem.Path.Combine(fileDir, "test.txt");
@@ -290,16 +310,20 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         _fileSystem.AddFile(filePath2, new MockFileData(string.Empty));
         using var memory = MemoryPool<char>.Shared.Rent();
 
-        // Act + Assert
-        await Assert.ThrowsAsync<FtpNackEndOfFileException>(async () =>
-            await Server.ListDirectory(fileDir, 5, memory.Memory, CancellationToken.None));
+        // Act
+        var task = Server.ListDirectory(fileDir, 5, memory.Memory, CancellationToken.None);
+
+        // Assert
+        await Assert.ThrowsAsync<FtpNackEndOfFileException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
     public async Task WriteFile_NoDuplicateFile_Success()
     {
-        var fileName = "test.txt";
-        var fileDirName = "file";
+        // Arrange
+        const string fileName = "test.txt";
+        const string fileDirName = "file";
         var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
         var fileDir = _fileSystem.Path.Combine(root, fileDirName);
         var filePath = _fileSystem.Path.Combine(fileDir, fileName);
@@ -308,59 +332,56 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var readRequest = new ReadRequest(0, 0, 5);
         var readBuffer = new byte[5];
         var buffer = new byte[] { 1, 2, 3, 4, 5 };
+
         // Act
         await Server.OpenFileWrite(filePath);
         await Server.WriteFile(request, buffer);
         await Server.TerminateSession(0);
         await Server.OpenFileRead(filePath);
         var readResult = await Server.FileRead(readRequest, readBuffer);
+
         // Assert
         Assert.True(readResult.ReadCount == buffer.Length);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
-    public async Task TerminateSession_ReadAfterResetOneOfActiveSessions_Fault()
+    public async Task TerminateSession_ReadAfterResetOneOfActiveSessions_ThrowsNack()
     {
         // Arrange
-        var fileName = "test.txt";
-        var fileName1 = "test1.txt";
-        var fileDirName = "file";
+        const string fileName = "test.txt";
+        const string fileName1 = "test1.txt";
+        const string fileDirName = "file";
         var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
         var fileDir = _fileSystem.Path.Combine(root, fileDirName);
         var filePath = _fileSystem.Path.Combine(fileDir, fileName);
         var filePath1 = _fileSystem.Path.Combine(fileDir, fileName1);
-        var relativeFilePath = _fileSystem.Path.Combine(fileDirName, fileName);
-        var relativeFilePath1 = _fileSystem.Path.Combine(fileDirName, fileName1);
         _fileSystem.AddFile(filePath, new MockFileData("12345"));
         _fileSystem.AddFile(filePath1, new MockFileData("12345"));
         var request = new ReadRequest(0, 0, 5);
         var request1 = new ReadRequest(1, 0, 5);
 
         var buffer = new byte[5];
+
         // Act
         await Server.OpenFileRead(filePath);
         await Server.OpenFileRead(filePath1);
         await Server.TerminateSession(0);
-        // Assert
-        try
-        {
-            await Server.FileRead(request, buffer);
-        }
-        catch (Exception)
-        {
-            Assert.True(true);
-        }
+        var task = Server.FileRead(request, buffer);
+        var activeSessionResult = await Server.FileRead(request1, buffer);
 
-        var result1 = await Server.FileRead(request1, buffer);
-        Assert.True(result1.ReadCount == 5);
+        // Assert
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.True(activeSessionResult.ReadCount == 5);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
-    public async Task ResetSessions_ReadAfterReset_Fault()
+    public async Task ResetSessions_ReadAfterReset_ThrowsNack()
     {
         // Arrange
-        var fileName = "test.txt";
-        var fileDirName = "file";
+        const string fileName = "test.txt";
+        const string fileDirName = "file";
         var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
 
         var fileDir = _fileSystem.Path.Combine(root, fileDirName);
@@ -369,38 +390,37 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
 
         var request = new ReadRequest(0, 0, 5);
         var buffer = new byte[2];
-        // Act
 
+        // Act
         await Server.OpenFileRead(filePath);
         await Server.ResetSessions();
-        try
-        {
-            await Server.FileRead(request, buffer);
-        }
-        catch (Exception)
-        {
-            // Assert
-            Assert.True(true);
-        }
+        var task = Server.FileRead(request, buffer);
+
+        // Assert
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
     public async Task TruncateFile_TruncatePart_Success()
     {
         // Arrange
-        var fileName = "test.txt";
-        var fileDirName = "file";
+        const string fileName = "test.txt";
+        const string fileDirName = "file";
         var root = _fileSystem.Path.Combine(_config.RootDirectory, "temp");
 
         var fileDir = _fileSystem.Path.Combine(root, fileDirName);
         var filePath = _fileSystem.Path.Combine(fileDir, fileName);
         _fileSystem.AddFile(filePath, new MockFileData("1234567890"));
         var request = new TruncateRequest(filePath, 5);
+
         // Act
         await Server.TruncateFile(request);
         var result = await Server.OpenFileRead(filePath);
+
         // Assert
         Assert.True(result.Size == request.Offset);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -410,15 +430,22 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         await _cts.CancelAsync();
         var dirPath = _fileSystem.Path.Combine(_config.RootDirectory, "testDir");
         _fileSystem.AddDirectory(dirPath);
-        _fileSystem.AddFile(_fileSystem.Path.Combine(dirPath, "file1.txt"), new MockFileData("File1 content"));
-        _fileSystem.AddFile(_fileSystem.Path.Combine(dirPath, "file2.txt"), new MockFileData("File2 content"));
+        _fileSystem.AddFile(
+            _fileSystem.Path.Combine(dirPath, "file1.txt"),
+            new MockFileData("File1 content")
+        );
+        _fileSystem.AddFile(
+            _fileSystem.Path.Combine(dirPath, "file2.txt"),
+            new MockFileData("File2 content")
+        );
         using var memory = MemoryPool<char>.Shared.Rent(256);
 
+        // Act
+        var task = Server.ListDirectory(dirPath, 0, memory.Memory, _cts.Token);
+
         // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () =>
-        {
-            await Server.ListDirectory(dirPath, 0, memory.Memory, _cts.Token);
-        });
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -429,10 +456,13 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var filePath = _fileSystem.Path.Combine(_config.RootDirectory, "test.txt");
         _fileSystem.AddFile(filePath, new MockFileData("Test content"));
 
-        // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () => { await Server.OpenFileRead(filePath, _cts.Token); });
-    }
+        // Act
+        var task = Server.OpenFileRead(filePath, _cts.Token);
 
+        // Assert
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+    }
 
     [Fact]
     public async Task OpenFileWrite_Cancel_ThrowsNack()
@@ -442,10 +472,13 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var filePath = _fileSystem.Path.Combine(_config.RootDirectory, "test.txt");
         _fileSystem.AddFile(filePath, new MockFileData("Test content"));
 
-        // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () => { await Server.OpenFileWrite(filePath, _cts.Token); });
-    }
+        // Act
+        var task = Server.OpenFileWrite(filePath, _cts.Token);
 
+        // Assert
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+    }
 
     [Fact]
     public async Task RemoveFile_Cancel_ThrowsNack()
@@ -455,8 +488,12 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var filePath = _fileSystem.Path.Combine(_config.RootDirectory, "test.txt");
         _fileSystem.AddFile(filePath, new MockFileData("Test content"));
 
+        // Act
+        var task = Server.RemoveFile(filePath, _cts.Token);
+
         // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () => { await Server.RemoveFile(filePath, _cts.Token); });
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -466,8 +503,12 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         await _cts.CancelAsync();
         var filePath = _fileSystem.Path.Combine(_config.RootDirectory, "test.txt");
 
+        // Act
+        var task = Server.CreateFile(filePath, _cts.Token);
+
         // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () => { await Server.CreateFile(filePath, _cts.Token); });
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -477,8 +518,12 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         await _cts.CancelAsync();
         var dirPath = _fileSystem.Path.Combine(_config.RootDirectory, "testDir");
 
+        // Act
+        var task = Server.CreateDirectory(dirPath, _cts.Token);
+
         // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () => { await Server.CreateDirectory(dirPath, _cts.Token); });
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -489,8 +534,12 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var dirPath = _fileSystem.Path.Combine(_config.RootDirectory, "testDir");
         _fileSystem.AddDirectory(dirPath);
 
+        // Act
+        var task = Server.RemoveDirectory(dirPath, _cts.Token);
+
         // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () => { await Server.RemoveDirectory(dirPath, _cts.Token); });
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -502,8 +551,12 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var newPath = _fileSystem.Path.Combine(_config.RootDirectory, "newName.txt");
         _fileSystem.AddFile(oldPath, new MockFileData("Test content"));
 
+        // Act
+        var task = Server.Rename(oldPath, newPath, _cts.Token);
+
         // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () => { await Server.Rename(oldPath, newPath, _cts.Token); });
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -515,8 +568,12 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         _fileSystem.AddFile(filePath, new MockFileData("1234567890"));
         var request = new TruncateRequest(filePath, 5);
 
+        // Act
+        var task = Server.TruncateFile(request, _cts.Token);
+
         // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () => { await Server.TruncateFile(request, _cts.Token); });
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -530,8 +587,12 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var buffer = new byte[5];
         var request = new ReadRequest(handle.Session, 0, 5);
 
+        // Act
+        var task = Server.FileRead(request, buffer, _cts.Token);
+
         // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () => { await Server.FileRead(request, buffer, _cts.Token); });
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
     [Fact]
@@ -544,13 +605,14 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var request = new WriteRequest(0, 0, 5);
         var buffer = new byte[] { 1, 2, 3, 4, 5 };
 
+        // Act
+        var task = Server.WriteFile(request, buffer, _cts.Token);
+
         // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () =>
-        {
-            await Server.WriteFile(request, buffer, _cts.Token);
-        });
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
-    
+
     [Fact]
     public async Task CalcFileCrc32_Cancel_ThrowsNack()
     {
@@ -559,10 +621,11 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var filePath = _fileSystem.Path.Combine(_config.RootDirectory, "test.txt");
         _fileSystem.AddFile(filePath, new MockFileData("Test content"));
 
+        // Act
+        var task = Server.CalcFileCrc32(filePath, _cts.Token);
+
         // Assert
-        await Assert.ThrowsAsync<FtpNackException>(async () =>
-        {
-            await Server.CalcFileCrc32(filePath, _cts.Token);
-        });
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 }
