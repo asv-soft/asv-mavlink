@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
 
 using System;
 using System.Text;
@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
 using Asv.IO;
 
 namespace Asv.Mavlink.Cubepilot
@@ -73,39 +74,6 @@ namespace Asv.Mavlink.Cubepilot
         public override CubepilotRawRcPayload Payload { get; } = new();
 
         public override string Name => "CUBEPILOT_RAW_RC";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "rc_raw",
-            "",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            32, 
-            false),
-        ];
-        public const string FormatMessage = "CUBEPILOT_RAW_RC:"
-        + "uint8_t[32] rc_raw;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.RcRaw);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            reader.ReadByteArray(StaticFields[0], Payload.RcRaw);
-        
-            
-        }
     }
 
     /// <summary>
@@ -132,7 +100,7 @@ namespace Asv.Mavlink.Cubepilot
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/32 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            RcRaw = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 RcRaw[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -148,17 +116,29 @@ namespace Asv.Mavlink.Cubepilot
             }
             /* PayloadByteSize = 32 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,RcRawField, 32,
+                (index,v) => UInt8Type.Accept(v, RcRawField, ref RcRaw[index]));    
 
+        }
 
         /// <summary>
         /// 
         /// OriginName: rc_raw, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field RcRawField = new Field.Builder()
+            .Name(nameof(RcRaw))
+            .Title("rc_raw")
+            .Description("")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,32))
+
+            .Build();
         public const int RcRawMaxItemsCount = 32;
-        public byte[] RcRaw { get; set; } = new byte[32];
+        public byte[] RcRaw { get; } = new byte[32];
         [Obsolete("This method is deprecated. Use GetRcRawMaxItemsCount instead.")]
         public byte GetRcRawMaxItemsCount() => 32;
     }
@@ -182,130 +162,6 @@ namespace Asv.Mavlink.Cubepilot
         public override HerelinkVideoStreamInformationPayload Payload { get; } = new();
 
         public override string Name => "HERELINK_VIDEO_STREAM_INFORMATION";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "framerate",
-            "Frame rate.",
-            string.Empty, 
-            @"Hz", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "bitrate",
-            "Bit rate.",
-            string.Empty, 
-            @"bits/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(2,
-            "resolution_h",
-            "Horizontal resolution.",
-            string.Empty, 
-            @"pix", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(3,
-            "resolution_v",
-            "Vertical resolution.",
-            string.Empty, 
-            @"pix", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(4,
-            "rotation",
-            "Video image rotation clockwise.",
-            string.Empty, 
-            @"deg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(5,
-            "camera_id",
-            "Video Stream ID (1 for first, 2 for second, etc.)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(6,
-            "status",
-            "Number of streams available.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "uri",
-            "Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Char, 
-            230, 
-            false),
-        ];
-        public const string FormatMessage = "HERELINK_VIDEO_STREAM_INFORMATION:"
-        + "float framerate;"
-        + "uint32_t bitrate;"
-        + "uint16_t resolution_h;"
-        + "uint16_t resolution_v;"
-        + "uint16_t rotation;"
-        + "uint8_t camera_id;"
-        + "uint8_t status;"
-        + "char[230] uri;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Framerate);
-            writer.Write(StaticFields[1], Payload.Bitrate);
-            writer.Write(StaticFields[2], Payload.ResolutionH);
-            writer.Write(StaticFields[3], Payload.ResolutionV);
-            writer.Write(StaticFields[4], Payload.Rotation);
-            writer.Write(StaticFields[5], Payload.CameraId);
-            writer.Write(StaticFields[6], Payload.Status);
-            writer.Write(StaticFields[7], Payload.Uri);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Framerate = reader.ReadFloat(StaticFields[0]);
-            Payload.Bitrate = reader.ReadUInt(StaticFields[1]);
-            Payload.ResolutionH = reader.ReadUShort(StaticFields[2]);
-            Payload.ResolutionV = reader.ReadUShort(StaticFields[3]);
-            Payload.Rotation = reader.ReadUShort(StaticFields[4]);
-            Payload.CameraId = reader.ReadByte(StaticFields[5]);
-            Payload.Status = reader.ReadByte(StaticFields[6]);
-            reader.ReadCharArray(StaticFields[7], Payload.Uri);
-        
-            
-        }
     }
 
     /// <summary>
@@ -346,7 +202,7 @@ namespace Asv.Mavlink.Cubepilot
             CameraId = (byte)BinSerialize.ReadByte(ref buffer);
             Status = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/230 - Math.Max(0,((/*PayloadByteSize*/246 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Uri = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -355,7 +211,7 @@ namespace Asv.Mavlink.Cubepilot
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Uri.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
 
         }
@@ -381,52 +237,145 @@ namespace Asv.Mavlink.Cubepilot
             
             /* PayloadByteSize = 246 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,FramerateField, ref _Framerate);    
+            UInt32Type.Accept(visitor,BitrateField, ref _Bitrate);    
+            UInt16Type.Accept(visitor,ResolutionHField, ref _ResolutionH);    
+            UInt16Type.Accept(visitor,ResolutionVField, ref _ResolutionV);    
+            UInt16Type.Accept(visitor,RotationField, ref _Rotation);    
+            UInt8Type.Accept(visitor,CameraIdField, ref _CameraId);    
+            UInt8Type.Accept(visitor,StatusField, ref _Status);    
+            ArrayType.Accept(visitor,UriField, 230, (index,v) =>
+            {
+                var tmp = (byte)Uri[index];
+                UInt8Type.Accept(v,UriField, ref tmp);
+                Uri[index] = (char)tmp;
+            });
 
+        }
 
         /// <summary>
         /// Frame rate.
         /// OriginName: framerate, Units: Hz, IsExtended: false
         /// </summary>
-        public float Framerate { get; set; }
+        public static readonly Field FramerateField = new Field.Builder()
+            .Name(nameof(Framerate))
+            .Title("framerate")
+            .Description("Frame rate.")
+            .FormatString(string.Empty)
+            .Units(@"Hz")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Framerate;
+        public float Framerate { get => _Framerate; set { _Framerate = value; } }
         /// <summary>
         /// Bit rate.
         /// OriginName: bitrate, Units: bits/s, IsExtended: false
         /// </summary>
-        public uint Bitrate { get; set; }
+        public static readonly Field BitrateField = new Field.Builder()
+            .Name(nameof(Bitrate))
+            .Title("bitrate")
+            .Description("Bit rate.")
+            .FormatString(string.Empty)
+            .Units(@"bits/s")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _Bitrate;
+        public uint Bitrate { get => _Bitrate; set { _Bitrate = value; } }
         /// <summary>
         /// Horizontal resolution.
         /// OriginName: resolution_h, Units: pix, IsExtended: false
         /// </summary>
-        public ushort ResolutionH { get; set; }
+        public static readonly Field ResolutionHField = new Field.Builder()
+            .Name(nameof(ResolutionH))
+            .Title("resolution_h")
+            .Description("Horizontal resolution.")
+            .FormatString(string.Empty)
+            .Units(@"pix")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _ResolutionH;
+        public ushort ResolutionH { get => _ResolutionH; set { _ResolutionH = value; } }
         /// <summary>
         /// Vertical resolution.
         /// OriginName: resolution_v, Units: pix, IsExtended: false
         /// </summary>
-        public ushort ResolutionV { get; set; }
+        public static readonly Field ResolutionVField = new Field.Builder()
+            .Name(nameof(ResolutionV))
+            .Title("resolution_v")
+            .Description("Vertical resolution.")
+            .FormatString(string.Empty)
+            .Units(@"pix")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _ResolutionV;
+        public ushort ResolutionV { get => _ResolutionV; set { _ResolutionV = value; } }
         /// <summary>
         /// Video image rotation clockwise.
         /// OriginName: rotation, Units: deg, IsExtended: false
         /// </summary>
-        public ushort Rotation { get; set; }
+        public static readonly Field RotationField = new Field.Builder()
+            .Name(nameof(Rotation))
+            .Title("rotation")
+            .Description("Video image rotation clockwise.")
+            .FormatString(string.Empty)
+            .Units(@"deg")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Rotation;
+        public ushort Rotation { get => _Rotation; set { _Rotation = value; } }
         /// <summary>
         /// Video Stream ID (1 for first, 2 for second, etc.)
         /// OriginName: camera_id, Units: , IsExtended: false
         /// </summary>
-        public byte CameraId { get; set; }
+        public static readonly Field CameraIdField = new Field.Builder()
+            .Name(nameof(CameraId))
+            .Title("camera_id")
+            .Description("Video Stream ID (1 for first, 2 for second, etc.)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _CameraId;
+        public byte CameraId { get => _CameraId; set { _CameraId = value; } }
         /// <summary>
         /// Number of streams available.
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
-        public byte Status { get; set; }
+        public static readonly Field StatusField = new Field.Builder()
+            .Name(nameof(Status))
+            .Title("status")
+            .Description("Number of streams available.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Status;
+        public byte Status { get => _Status; set { _Status = value; } }
         /// <summary>
         /// Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).
         /// OriginName: uri, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field UriField = new Field.Builder()
+            .Name(nameof(Uri))
+            .Title("uri")
+            .Description("Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,230))
+
+            .Build();
         public const int UriMaxItemsCount = 230;
-        public char[] Uri { get; set; } = new char[230];
+        public char[] Uri { get; } = new char[230];
         [Obsolete("This method is deprecated. Use GetUriMaxItemsCount instead.")]
         public byte GetUriMaxItemsCount() => 230;
     }
@@ -450,117 +399,6 @@ namespace Asv.Mavlink.Cubepilot
         public override HerelinkTelemPayload Payload { get; } = new();
 
         public override string Name => "HERELINK_TELEM";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "rf_freq",
-            "",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "link_bw",
-            "",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(2,
-            "link_rate",
-            "",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(3,
-            "snr",
-            "",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(4,
-            "cpu_temp",
-            "",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(5,
-            "board_temp",
-            "",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(6,
-            "rssi",
-            "",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "HERELINK_TELEM:"
-        + "uint32_t rf_freq;"
-        + "uint32_t link_bw;"
-        + "uint32_t link_rate;"
-        + "int16_t snr;"
-        + "int16_t cpu_temp;"
-        + "int16_t board_temp;"
-        + "uint8_t rssi;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.RfFreq);
-            writer.Write(StaticFields[1], Payload.LinkBw);
-            writer.Write(StaticFields[2], Payload.LinkRate);
-            writer.Write(StaticFields[3], Payload.Snr);
-            writer.Write(StaticFields[4], Payload.CpuTemp);
-            writer.Write(StaticFields[5], Payload.BoardTemp);
-            writer.Write(StaticFields[6], Payload.Rssi);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.RfFreq = reader.ReadUInt(StaticFields[0]);
-            Payload.LinkBw = reader.ReadUInt(StaticFields[1]);
-            Payload.LinkRate = reader.ReadUInt(StaticFields[2]);
-            Payload.Snr = reader.ReadShort(StaticFields[3]);
-            Payload.CpuTemp = reader.ReadShort(StaticFields[4]);
-            Payload.BoardTemp = reader.ReadShort(StaticFields[5]);
-            Payload.Rssi = reader.ReadByte(StaticFields[6]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -611,46 +449,124 @@ namespace Asv.Mavlink.Cubepilot
             BinSerialize.WriteByte(ref buffer,(byte)Rssi);
             /* PayloadByteSize = 19 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RfFreqField, ref _RfFreq);    
+            UInt32Type.Accept(visitor,LinkBwField, ref _LinkBw);    
+            UInt32Type.Accept(visitor,LinkRateField, ref _LinkRate);    
+            Int16Type.Accept(visitor,SnrField, ref _Snr);
+            Int16Type.Accept(visitor,CpuTempField, ref _CpuTemp);
+            Int16Type.Accept(visitor,BoardTempField, ref _BoardTemp);
+            UInt8Type.Accept(visitor,RssiField, ref _Rssi);    
 
+        }
 
         /// <summary>
         /// 
         /// OriginName: rf_freq, Units: , IsExtended: false
         /// </summary>
-        public uint RfFreq { get; set; }
+        public static readonly Field RfFreqField = new Field.Builder()
+            .Name(nameof(RfFreq))
+            .Title("rf_freq")
+            .Description("")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _RfFreq;
+        public uint RfFreq { get => _RfFreq; set { _RfFreq = value; } }
         /// <summary>
         /// 
         /// OriginName: link_bw, Units: , IsExtended: false
         /// </summary>
-        public uint LinkBw { get; set; }
+        public static readonly Field LinkBwField = new Field.Builder()
+            .Name(nameof(LinkBw))
+            .Title("link_bw")
+            .Description("")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _LinkBw;
+        public uint LinkBw { get => _LinkBw; set { _LinkBw = value; } }
         /// <summary>
         /// 
         /// OriginName: link_rate, Units: , IsExtended: false
         /// </summary>
-        public uint LinkRate { get; set; }
+        public static readonly Field LinkRateField = new Field.Builder()
+            .Name(nameof(LinkRate))
+            .Title("link_rate")
+            .Description("")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _LinkRate;
+        public uint LinkRate { get => _LinkRate; set { _LinkRate = value; } }
         /// <summary>
         /// 
         /// OriginName: snr, Units: , IsExtended: false
         /// </summary>
-        public short Snr { get; set; }
+        public static readonly Field SnrField = new Field.Builder()
+            .Name(nameof(Snr))
+            .Title("snr")
+            .Description("")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _Snr;
+        public short Snr { get => _Snr; set { _Snr = value; } }
         /// <summary>
         /// 
         /// OriginName: cpu_temp, Units: , IsExtended: false
         /// </summary>
-        public short CpuTemp { get; set; }
+        public static readonly Field CpuTempField = new Field.Builder()
+            .Name(nameof(CpuTemp))
+            .Title("cpu_temp")
+            .Description("")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _CpuTemp;
+        public short CpuTemp { get => _CpuTemp; set { _CpuTemp = value; } }
         /// <summary>
         /// 
         /// OriginName: board_temp, Units: , IsExtended: false
         /// </summary>
-        public short BoardTemp { get; set; }
+        public static readonly Field BoardTempField = new Field.Builder()
+            .Name(nameof(BoardTemp))
+            .Title("board_temp")
+            .Description("")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _BoardTemp;
+        public short BoardTemp { get => _BoardTemp; set { _BoardTemp = value; } }
         /// <summary>
         /// 
         /// OriginName: rssi, Units: , IsExtended: false
         /// </summary>
-        public byte Rssi { get; set; }
+        public static readonly Field RssiField = new Field.Builder()
+            .Name(nameof(Rssi))
+            .Title("rssi")
+            .Description("")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Rssi;
+        public byte Rssi { get => _Rssi; set { _Rssi = value; } }
     }
     /// <summary>
     /// Start firmware update with encapsulated data.
@@ -672,78 +588,6 @@ namespace Asv.Mavlink.Cubepilot
         public override CubepilotFirmwareUpdateStartPayload Payload { get; } = new();
 
         public override string Name => "CUBEPILOT_FIRMWARE_UPDATE_START";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "size",
-            "FW Size.",
-            string.Empty, 
-            @"bytes", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "crc",
-            "FW CRC.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(2,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "CUBEPILOT_FIRMWARE_UPDATE_START:"
-        + "uint32_t size;"
-        + "uint32_t crc;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Size);
-            writer.Write(StaticFields[1], Payload.Crc);
-            writer.Write(StaticFields[2], Payload.TargetSystem);
-            writer.Write(StaticFields[3], Payload.TargetComponent);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Size = reader.ReadUInt(StaticFields[0]);
-            Payload.Crc = reader.ReadUInt(StaticFields[1]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[2]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[3]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -785,31 +629,76 @@ namespace Asv.Mavlink.Cubepilot
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 10 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,SizeField, ref _Size);    
+            UInt32Type.Accept(visitor,CrcField, ref _Crc);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
 
+        }
 
         /// <summary>
         /// FW Size.
         /// OriginName: size, Units: bytes, IsExtended: false
         /// </summary>
-        public uint Size { get; set; }
+        public static readonly Field SizeField = new Field.Builder()
+            .Name(nameof(Size))
+            .Title("size")
+            .Description("FW Size.")
+            .FormatString(string.Empty)
+            .Units(@"bytes")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _Size;
+        public uint Size { get => _Size; set { _Size = value; } }
         /// <summary>
         /// FW CRC.
         /// OriginName: crc, Units: , IsExtended: false
         /// </summary>
-        public uint Crc { get; set; }
+        public static readonly Field CrcField = new Field.Builder()
+            .Name(nameof(Crc))
+            .Title("crc")
+            .Description("FW CRC.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _Crc;
+        public uint Crc { get => _Crc; set { _Crc = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
     }
     /// <summary>
     /// offset response to encapsulated data.
@@ -831,65 +720,6 @@ namespace Asv.Mavlink.Cubepilot
         public override CubepilotFirmwareUpdateRespPayload Payload { get; } = new();
 
         public override string Name => "CUBEPILOT_FIRMWARE_UPDATE_RESP";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "offset",
-            "FW Offset.",
-            string.Empty, 
-            @"bytes", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "CUBEPILOT_FIRMWARE_UPDATE_RESP:"
-        + "uint32_t offset;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Offset);
-            writer.Write(StaticFields[1], Payload.TargetSystem);
-            writer.Write(StaticFields[2], Payload.TargetComponent);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Offset = reader.ReadUInt(StaticFields[0]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -928,27 +758,66 @@ namespace Asv.Mavlink.Cubepilot
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 6 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,OffsetField, ref _Offset);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
 
+        }
 
         /// <summary>
         /// FW Offset.
         /// OriginName: offset, Units: bytes, IsExtended: false
         /// </summary>
-        public uint Offset { get; set; }
+        public static readonly Field OffsetField = new Field.Builder()
+            .Name(nameof(Offset))
+            .Title("offset")
+            .Description("FW Offset.")
+            .FormatString(string.Empty)
+            .Units(@"bytes")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _Offset;
+        public uint Offset { get => _Offset; set { _Offset = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
     }
+
+
+
+
+        
 
 
 #endregion

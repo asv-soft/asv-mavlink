@@ -236,5 +236,11 @@ public readonly struct MavParamExtValue : IComparable<MavParamExtValue>, ICompar
             MavParamExtType.MavParamExtTypeCustom =>  _rawValue,
             _ => throw new ArgumentOutOfRangeException()
         };
-    
+
+    public void CopyTo(char[] payloadParamValue)
+    {
+        if (payloadParamValue.Length < RawValueBufferMaxLength)
+            throw new ArgumentException($"Payload param value length should be at least {RawValueBufferMaxLength} bytes");
+        Array.Copy(_rawValue, payloadParamValue, RawValueBufferMaxLength);
+    }
 }

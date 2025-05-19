@@ -170,8 +170,8 @@ public class AudioDeviceTest
     {
         // Arrange
         var device = CreateAudioDevice();
-        var initialFrame = new AsvAudioStreamPayload { FrameSeq = 1, PktSeq = 0, PktInFrame = 1, Data = new byte[10] };
-        var newFrame = new AsvAudioStreamPayload { FrameSeq = 2, PktSeq = 0, PktInFrame = 1, Data = new byte[10] };
+        var initialFrame = new AsvAudioStreamPayload { FrameSeq = 1, PktSeq = 0, PktInFrame = 1,  };
+        var newFrame = new AsvAudioStreamPayload { FrameSeq = 2, PktSeq = 0, PktInFrame = 1, };
 
         // Act
         device.OnInputAudioStream(initialFrame);

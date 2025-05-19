@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
 
 using System;
 using System.Text;
@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvAudio
@@ -161,65 +162,6 @@ namespace Asv.Mavlink.AsvAudio
         public override AsvAudioOnlinePayload Payload { get; } = new();
 
         public override string Name => "ASV_AUDIO_ONLINE";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "codec",
-            "Audio codec used by this device.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "mode",
-            "Device current work mode.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "name",
-            "Audio device name in voice chat.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Char, 
-            16, 
-            false),
-        ];
-        public const string FormatMessage = "ASV_AUDIO_ONLINE:"
-        + "uint16_t codec;"
-        + "uint8_t mode;"
-        + "char[16] name;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], (ulong)Payload.Codec);
-            writer.Write(StaticFields[1], (ulong)Payload.Mode);
-            writer.Write(StaticFields[2], Payload.Name);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Codec = (AsvAudioCodec)reader.ReadUShort(StaticFields[0]);
-            Payload.Mode = (AsvAudioModeFlag)reader.ReadByte(StaticFields[1]);
-            reader.ReadCharArray(StaticFields[2], Payload.Name);
-        
-            
-        }
     }
 
     /// <summary>
@@ -250,7 +192,7 @@ namespace Asv.Mavlink.AsvAudio
             Codec = (AsvAudioCodec)BinSerialize.ReadUShort(ref buffer);
             Mode = (AsvAudioModeFlag)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/19 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Name = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -259,7 +201,7 @@ namespace Asv.Mavlink.AsvAudio
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Name.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
 
         }
@@ -280,27 +222,69 @@ namespace Asv.Mavlink.AsvAudio
             
             /* PayloadByteSize = 19 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            var tmpCodec = (ushort)Codec;
+            UInt16Type.Accept(visitor,CodecField, ref tmpCodec);
+            Codec = (AsvAudioCodec)tmpCodec;
+            var tmpMode = (byte)Mode;
+            UInt8Type.Accept(visitor,ModeField, ref tmpMode);
+            Mode = (AsvAudioModeFlag)tmpMode;
+            ArrayType.Accept(visitor,NameField, 16, (index,v) =>
+            {
+                var tmp = (byte)Name[index];
+                UInt8Type.Accept(v,NameField, ref tmp);
+                Name[index] = (char)tmp;
+            });
 
+        }
 
         /// <summary>
         /// Audio codec used by this device.
         /// OriginName: codec, Units: , IsExtended: false
         /// </summary>
-        public AsvAudioCodec Codec { get; set; }
+        public static readonly Field CodecField = new Field.Builder()
+            .Name(nameof(Codec))
+            .Title("codec")
+            .Description("Audio codec used by this device.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        public AsvAudioCodec _Codec;
+        public AsvAudioCodec Codec { get => _Codec; set => _Codec = value; } 
         /// <summary>
         /// Device current work mode.
         /// OriginName: mode, Units: , IsExtended: false
         /// </summary>
-        public AsvAudioModeFlag Mode { get; set; }
+        public static readonly Field ModeField = new Field.Builder()
+            .Name(nameof(Mode))
+            .Title("mode")
+            .Description("Device current work mode.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public AsvAudioModeFlag _Mode;
+        public AsvAudioModeFlag Mode { get => _Mode; set => _Mode = value; } 
         /// <summary>
         /// Audio device name in voice chat.
         /// OriginName: name, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field NameField = new Field.Builder()
+            .Name(nameof(Name))
+            .Title("name")
+            .Description("Audio device name in voice chat.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,16))
+
+            .Build();
         public const int NameMaxItemsCount = 16;
-        public char[] Name { get; set; } = new char[16];
+        public char[] Name { get; } = new char[16];
         [Obsolete("This method is deprecated. Use GetNameMaxItemsCount instead.")]
         public byte GetNameMaxItemsCount() => 16;
     }
@@ -324,117 +308,6 @@ namespace Asv.Mavlink.AsvAudio
         public override AsvAudioStreamPayload Payload { get; } = new();
 
         public override string Name => "ASV_AUDIO_STREAM";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "frame_seq",
-            "Frame sequence number.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "pkt_in_frame",
-            "Number of packets for one encoded audio frame.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "pkt_seq",
-            "Packet sequence number (starting with 0 on every encoded frame).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "data_size",
-            "Size of data array.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(6,
-            "data",
-            "Audio data.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            230, 
-            false),
-        ];
-        public const string FormatMessage = "ASV_AUDIO_STREAM:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t frame_seq;"
-        + "uint8_t pkt_in_frame;"
-        + "uint8_t pkt_seq;"
-        + "uint8_t data_size;"
-        + "uint8_t[230] data;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TargetSystem);
-            writer.Write(StaticFields[1], Payload.TargetComponent);
-            writer.Write(StaticFields[2], Payload.FrameSeq);
-            writer.Write(StaticFields[3], Payload.PktInFrame);
-            writer.Write(StaticFields[4], Payload.PktSeq);
-            writer.Write(StaticFields[5], Payload.DataSize);
-            writer.Write(StaticFields[6], Payload.Data);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.FrameSeq = reader.ReadByte(StaticFields[2]);
-            Payload.PktInFrame = reader.ReadByte(StaticFields[3]);
-            Payload.PktSeq = reader.ReadByte(StaticFields[4]);
-            Payload.DataSize = reader.ReadByte(StaticFields[5]);
-            reader.ReadByteArray(StaticFields[6], Payload.Data);
-        
-            
-        }
     }
 
     /// <summary>
@@ -473,7 +346,7 @@ namespace Asv.Mavlink.AsvAudio
             PktSeq = (byte)BinSerialize.ReadByte(ref buffer);
             DataSize = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/230 - Math.Max(0,((/*PayloadByteSize*/236 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -495,50 +368,133 @@ namespace Asv.Mavlink.AsvAudio
             }
             /* PayloadByteSize = 236 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,FrameSeqField, ref _FrameSeq);    
+            UInt8Type.Accept(visitor,PktInFrameField, ref _PktInFrame);    
+            UInt8Type.Accept(visitor,PktSeqField, ref _PktSeq);    
+            UInt8Type.Accept(visitor,DataSizeField, ref _DataSize);    
+            ArrayType.Accept(visitor,DataField, 230,
+                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Frame sequence number.
         /// OriginName: frame_seq, Units: , IsExtended: false
         /// </summary>
-        public byte FrameSeq { get; set; }
+        public static readonly Field FrameSeqField = new Field.Builder()
+            .Name(nameof(FrameSeq))
+            .Title("frame_seq")
+            .Description("Frame sequence number.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _FrameSeq;
+        public byte FrameSeq { get => _FrameSeq; set { _FrameSeq = value; } }
         /// <summary>
         /// Number of packets for one encoded audio frame.
         /// OriginName: pkt_in_frame, Units: , IsExtended: false
         /// </summary>
-        public byte PktInFrame { get; set; }
+        public static readonly Field PktInFrameField = new Field.Builder()
+            .Name(nameof(PktInFrame))
+            .Title("pkt_in_frame")
+            .Description("Number of packets for one encoded audio frame.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _PktInFrame;
+        public byte PktInFrame { get => _PktInFrame; set { _PktInFrame = value; } }
         /// <summary>
         /// Packet sequence number (starting with 0 on every encoded frame).
         /// OriginName: pkt_seq, Units: , IsExtended: false
         /// </summary>
-        public byte PktSeq { get; set; }
+        public static readonly Field PktSeqField = new Field.Builder()
+            .Name(nameof(PktSeq))
+            .Title("pkt_seq")
+            .Description("Packet sequence number (starting with 0 on every encoded frame).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _PktSeq;
+        public byte PktSeq { get => _PktSeq; set { _PktSeq = value; } }
         /// <summary>
         /// Size of data array.
         /// OriginName: data_size, Units: , IsExtended: false
         /// </summary>
-        public byte DataSize { get; set; }
+        public static readonly Field DataSizeField = new Field.Builder()
+            .Name(nameof(DataSize))
+            .Title("data_size")
+            .Description("Size of data array.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _DataSize;
+        public byte DataSize { get => _DataSize; set { _DataSize = value; } }
         /// <summary>
         /// Audio data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Audio data.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,230))
+
+            .Build();
         public const int DataMaxItemsCount = 230;
-        public byte[] Data { get; set; } = new byte[230];
+        public byte[] Data { get; } = new byte[230];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 230;
     }
+
+
+
+
+        
 
 
 #endregion

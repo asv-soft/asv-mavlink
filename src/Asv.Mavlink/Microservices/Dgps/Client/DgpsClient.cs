@@ -51,8 +51,8 @@ namespace Asv.Mavlink
 
                     var dataLength = Math.Min(length - i1 * _maxMessageLength, _maxMessageLength);
                     var dataArray = new byte[dataLength];
-                    Array.Copy(data, i1 * _maxMessageLength, dataArray, 0, dataLength);
-                    pkt.Payload.Data = dataArray;
+                    Array.Copy(data, i1 * _maxMessageLength, pkt.Payload.Data, 0, dataLength);
+                    dataArray.CopyTo(pkt.Payload.Data,0) ;
 
                     pkt.Payload.Len = (byte)dataLength;
                 }, cancel).ConfigureAwait(false);

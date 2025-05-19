@@ -59,7 +59,6 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.CalcFileCRC32);
@@ -108,7 +107,6 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.TruncateFile);
@@ -154,7 +152,6 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.RemoveDirectory);
@@ -199,7 +196,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
+                
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.RemoveFile);
@@ -238,7 +235,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
+                
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.ResetSessions);
@@ -282,7 +279,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
+                
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.CreateDirectory);
@@ -321,7 +318,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
+                
             }
         };
 
@@ -377,7 +374,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
+                
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.ListDirectory);
@@ -432,7 +429,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
+                
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.ReadFile);
@@ -487,7 +484,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
+                
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.OpenFileRO);
@@ -537,7 +534,6 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[200],
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.OpenFileWO);
@@ -582,7 +578,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
+                
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.TerminateSession);
@@ -632,7 +628,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
+                
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.WriteFile);
@@ -693,7 +689,6 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = 0,
-                Payload = new byte[200],
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.BurstReadFile);
@@ -746,7 +741,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
+                
             }
         };
         requestPacket.WriteOpcode(FtpOpcode.CreateFile);
@@ -781,7 +776,7 @@ public class FtpServerTest : ServerTestBase<FtpServer>
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
+                
             }
         };
 

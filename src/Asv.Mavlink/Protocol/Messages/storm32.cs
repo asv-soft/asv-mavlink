@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
 
 using System;
 using System.Text;
@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
 using Asv.IO;
 
 namespace Asv.Mavlink.Storm32
@@ -495,143 +496,6 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerInformationPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_INFORMATION";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "device_cap_flags",
-            "Gimbal device capability flags. Same flags as reported by GIMBAL_DEVICE_INFORMATION. The flag is only 16 bit wide, but stored in 32 bit, for backwards compatibility (high word is zero).",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "manager_cap_flags",
-            "Gimbal manager capability flags.",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(2,
-            "roll_min",
-            "Hardware minimum roll angle (positive: roll to the right). NaN if unknown.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "roll_max",
-            "Hardware maximum roll angle (positive: roll to the right). NaN if unknown.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "pitch_min",
-            "Hardware minimum pitch/tilt angle (positive: tilt up). NaN if unknown.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "pitch_max",
-            "Hardware maximum pitch/tilt angle (positive: tilt up). NaN if unknown.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "yaw_min",
-            "Hardware minimum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(7,
-            "yaw_max",
-            "Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(8,
-            "gimbal_id",
-            "Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "STORM32_GIMBAL_MANAGER_INFORMATION:"
-        + "uint32_t device_cap_flags;"
-        + "uint32_t manager_cap_flags;"
-        + "float roll_min;"
-        + "float roll_max;"
-        + "float pitch_min;"
-        + "float pitch_max;"
-        + "float yaw_min;"
-        + "float yaw_max;"
-        + "uint8_t gimbal_id;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], (ulong)Payload.DeviceCapFlags);
-            writer.Write(StaticFields[1], (ulong)Payload.ManagerCapFlags);
-            writer.Write(StaticFields[2], Payload.RollMin);
-            writer.Write(StaticFields[3], Payload.RollMax);
-            writer.Write(StaticFields[4], Payload.PitchMin);
-            writer.Write(StaticFields[5], Payload.PitchMax);
-            writer.Write(StaticFields[6], Payload.YawMin);
-            writer.Write(StaticFields[7], Payload.YawMax);
-            writer.Write(StaticFields[8], Payload.GimbalId);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.DeviceCapFlags = (GimbalDeviceCapFlags)reader.ReadUInt(StaticFields[0]);
-            Payload.ManagerCapFlags = (MavStorm32GimbalManagerCapFlags)reader.ReadUInt(StaticFields[1]);
-            Payload.RollMin = reader.ReadFloat(StaticFields[2]);
-            Payload.RollMax = reader.ReadFloat(StaticFields[3]);
-            Payload.PitchMin = reader.ReadFloat(StaticFields[4]);
-            Payload.PitchMax = reader.ReadFloat(StaticFields[5]);
-            Payload.YawMin = reader.ReadFloat(StaticFields[6]);
-            Payload.YawMax = reader.ReadFloat(StaticFields[7]);
-            Payload.GimbalId = reader.ReadByte(StaticFields[8]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -688,56 +552,160 @@ namespace Asv.Mavlink.Storm32
             BinSerialize.WriteByte(ref buffer,(byte)GimbalId);
             /* PayloadByteSize = 33 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            var tmpDeviceCapFlags = (uint)DeviceCapFlags;
+            UInt32Type.Accept(visitor,DeviceCapFlagsField, ref tmpDeviceCapFlags);
+            DeviceCapFlags = (GimbalDeviceCapFlags)tmpDeviceCapFlags;
+            var tmpManagerCapFlags = (uint)ManagerCapFlags;
+            UInt32Type.Accept(visitor,ManagerCapFlagsField, ref tmpManagerCapFlags);
+            ManagerCapFlags = (MavStorm32GimbalManagerCapFlags)tmpManagerCapFlags;
+            FloatType.Accept(visitor,RollMinField, ref _RollMin);    
+            FloatType.Accept(visitor,RollMaxField, ref _RollMax);    
+            FloatType.Accept(visitor,PitchMinField, ref _PitchMin);    
+            FloatType.Accept(visitor,PitchMaxField, ref _PitchMax);    
+            FloatType.Accept(visitor,YawMinField, ref _YawMin);    
+            FloatType.Accept(visitor,YawMaxField, ref _YawMax);    
+            UInt8Type.Accept(visitor,GimbalIdField, ref _GimbalId);    
 
+        }
 
         /// <summary>
         /// Gimbal device capability flags. Same flags as reported by GIMBAL_DEVICE_INFORMATION. The flag is only 16 bit wide, but stored in 32 bit, for backwards compatibility (high word is zero).
         /// OriginName: device_cap_flags, Units: , IsExtended: false
         /// </summary>
-        public GimbalDeviceCapFlags DeviceCapFlags { get; set; }
+        public static readonly Field DeviceCapFlagsField = new Field.Builder()
+            .Name(nameof(DeviceCapFlags))
+            .Title("bitmask")
+            .Description("Gimbal device capability flags. Same flags as reported by GIMBAL_DEVICE_INFORMATION. The flag is only 16 bit wide, but stored in 32 bit, for backwards compatibility (high word is zero).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        public GimbalDeviceCapFlags _DeviceCapFlags;
+        public GimbalDeviceCapFlags DeviceCapFlags { get => _DeviceCapFlags; set => _DeviceCapFlags = value; } 
         /// <summary>
         /// Gimbal manager capability flags.
         /// OriginName: manager_cap_flags, Units: , IsExtended: false
         /// </summary>
-        public MavStorm32GimbalManagerCapFlags ManagerCapFlags { get; set; }
+        public static readonly Field ManagerCapFlagsField = new Field.Builder()
+            .Name(nameof(ManagerCapFlags))
+            .Title("bitmask")
+            .Description("Gimbal manager capability flags.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        public MavStorm32GimbalManagerCapFlags _ManagerCapFlags;
+        public MavStorm32GimbalManagerCapFlags ManagerCapFlags { get => _ManagerCapFlags; set => _ManagerCapFlags = value; } 
         /// <summary>
         /// Hardware minimum roll angle (positive: roll to the right). NaN if unknown.
         /// OriginName: roll_min, Units: rad, IsExtended: false
         /// </summary>
-        public float RollMin { get; set; }
+        public static readonly Field RollMinField = new Field.Builder()
+            .Name(nameof(RollMin))
+            .Title("roll_min")
+            .Description("Hardware minimum roll angle (positive: roll to the right). NaN if unknown.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _RollMin;
+        public float RollMin { get => _RollMin; set { _RollMin = value; } }
         /// <summary>
         /// Hardware maximum roll angle (positive: roll to the right). NaN if unknown.
         /// OriginName: roll_max, Units: rad, IsExtended: false
         /// </summary>
-        public float RollMax { get; set; }
+        public static readonly Field RollMaxField = new Field.Builder()
+            .Name(nameof(RollMax))
+            .Title("roll_max")
+            .Description("Hardware maximum roll angle (positive: roll to the right). NaN if unknown.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _RollMax;
+        public float RollMax { get => _RollMax; set { _RollMax = value; } }
         /// <summary>
         /// Hardware minimum pitch/tilt angle (positive: tilt up). NaN if unknown.
         /// OriginName: pitch_min, Units: rad, IsExtended: false
         /// </summary>
-        public float PitchMin { get; set; }
+        public static readonly Field PitchMinField = new Field.Builder()
+            .Name(nameof(PitchMin))
+            .Title("pitch_min")
+            .Description("Hardware minimum pitch/tilt angle (positive: tilt up). NaN if unknown.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _PitchMin;
+        public float PitchMin { get => _PitchMin; set { _PitchMin = value; } }
         /// <summary>
         /// Hardware maximum pitch/tilt angle (positive: tilt up). NaN if unknown.
         /// OriginName: pitch_max, Units: rad, IsExtended: false
         /// </summary>
-        public float PitchMax { get; set; }
+        public static readonly Field PitchMaxField = new Field.Builder()
+            .Name(nameof(PitchMax))
+            .Title("pitch_max")
+            .Description("Hardware maximum pitch/tilt angle (positive: tilt up). NaN if unknown.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _PitchMax;
+        public float PitchMax { get => _PitchMax; set { _PitchMax = value; } }
         /// <summary>
         /// Hardware minimum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.
         /// OriginName: yaw_min, Units: rad, IsExtended: false
         /// </summary>
-        public float YawMin { get; set; }
+        public static readonly Field YawMinField = new Field.Builder()
+            .Name(nameof(YawMin))
+            .Title("yaw_min")
+            .Description("Hardware minimum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _YawMin;
+        public float YawMin { get => _YawMin; set { _YawMin = value; } }
         /// <summary>
         /// Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.
         /// OriginName: yaw_max, Units: rad, IsExtended: false
         /// </summary>
-        public float YawMax { get; set; }
+        public static readonly Field YawMaxField = new Field.Builder()
+            .Name(nameof(YawMax))
+            .Title("yaw_max")
+            .Description("Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _YawMax;
+        public float YawMax { get => _YawMax; set { _YawMax = value; } }
         /// <summary>
         /// Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.
         /// OriginName: gimbal_id, Units: , IsExtended: false
         /// </summary>
-        public byte GimbalId { get; set; }
+        public static readonly Field GimbalIdField = new Field.Builder()
+            .Name(nameof(GimbalId))
+            .Title("gimbal_id")
+            .Description("Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _GimbalId;
+        public byte GimbalId { get => _GimbalId; set { _GimbalId = value; } }
     }
     /// <summary>
     /// Message reporting the current status of a gimbal manager. This message should be broadcast at a low regular rate (e.g. 1 Hz, may be increase momentarily to e.g. 5 Hz for a period of 1 sec after a change).
@@ -759,91 +727,6 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerStatusPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_STATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "device_flags",
-            "Gimbal device flags currently applied. Same flags as reported by GIMBAL_DEVICE_ATTITUDE_STATUS.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "manager_flags",
-            "Gimbal manager flags currently applied.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(2,
-            "gimbal_id",
-            "Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "supervisor",
-            "Client who is currently supervisor (0 = none).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "profile",
-            "Profile currently applied (0 = default).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "STORM32_GIMBAL_MANAGER_STATUS:"
-        + "uint16_t device_flags;"
-        + "uint16_t manager_flags;"
-        + "uint8_t gimbal_id;"
-        + "uint8_t supervisor;"
-        + "uint8_t profile;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], (ulong)Payload.DeviceFlags);
-            writer.Write(StaticFields[1], (ulong)Payload.ManagerFlags);
-            writer.Write(StaticFields[2], Payload.GimbalId);
-            writer.Write(StaticFields[3], (ulong)Payload.Supervisor);
-            writer.Write(StaticFields[4], (ulong)Payload.Profile);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadUShort(StaticFields[0]);
-            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadUShort(StaticFields[1]);
-            Payload.GimbalId = reader.ReadByte(StaticFields[2]);
-            Payload.Supervisor = (MavStorm32GimbalManagerClient)reader.ReadByte(StaticFields[3]);
-            Payload.Profile = (MavStorm32GimbalManagerProfile)reader.ReadByte(StaticFields[4]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -888,36 +771,100 @@ namespace Asv.Mavlink.Storm32
             BinSerialize.WriteByte(ref buffer,(byte)Profile);
             /* PayloadByteSize = 7 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            var tmpDeviceFlags = (ushort)DeviceFlags;
+            UInt16Type.Accept(visitor,DeviceFlagsField, ref tmpDeviceFlags);
+            DeviceFlags = (GimbalDeviceFlags)tmpDeviceFlags;
+            var tmpManagerFlags = (ushort)ManagerFlags;
+            UInt16Type.Accept(visitor,ManagerFlagsField, ref tmpManagerFlags);
+            ManagerFlags = (MavStorm32GimbalManagerFlags)tmpManagerFlags;
+            UInt8Type.Accept(visitor,GimbalIdField, ref _GimbalId);    
+            var tmpSupervisor = (byte)Supervisor;
+            UInt8Type.Accept(visitor,SupervisorField, ref tmpSupervisor);
+            Supervisor = (MavStorm32GimbalManagerClient)tmpSupervisor;
+            var tmpProfile = (byte)Profile;
+            UInt8Type.Accept(visitor,ProfileField, ref tmpProfile);
+            Profile = (MavStorm32GimbalManagerProfile)tmpProfile;
 
+        }
 
         /// <summary>
         /// Gimbal device flags currently applied. Same flags as reported by GIMBAL_DEVICE_ATTITUDE_STATUS.
         /// OriginName: device_flags, Units: , IsExtended: false
         /// </summary>
-        public GimbalDeviceFlags DeviceFlags { get; set; }
+        public static readonly Field DeviceFlagsField = new Field.Builder()
+            .Name(nameof(DeviceFlags))
+            .Title("device_flags")
+            .Description("Gimbal device flags currently applied. Same flags as reported by GIMBAL_DEVICE_ATTITUDE_STATUS.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        public GimbalDeviceFlags _DeviceFlags;
+        public GimbalDeviceFlags DeviceFlags { get => _DeviceFlags; set => _DeviceFlags = value; } 
         /// <summary>
         /// Gimbal manager flags currently applied.
         /// OriginName: manager_flags, Units: , IsExtended: false
         /// </summary>
-        public MavStorm32GimbalManagerFlags ManagerFlags { get; set; }
+        public static readonly Field ManagerFlagsField = new Field.Builder()
+            .Name(nameof(ManagerFlags))
+            .Title("manager_flags")
+            .Description("Gimbal manager flags currently applied.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        public MavStorm32GimbalManagerFlags _ManagerFlags;
+        public MavStorm32GimbalManagerFlags ManagerFlags { get => _ManagerFlags; set => _ManagerFlags = value; } 
         /// <summary>
         /// Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.
         /// OriginName: gimbal_id, Units: , IsExtended: false
         /// </summary>
-        public byte GimbalId { get; set; }
+        public static readonly Field GimbalIdField = new Field.Builder()
+            .Name(nameof(GimbalId))
+            .Title("gimbal_id")
+            .Description("Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _GimbalId;
+        public byte GimbalId { get => _GimbalId; set { _GimbalId = value; } }
         /// <summary>
         /// Client who is currently supervisor (0 = none).
         /// OriginName: supervisor, Units: , IsExtended: false
         /// </summary>
-        public MavStorm32GimbalManagerClient Supervisor { get; set; }
+        public static readonly Field SupervisorField = new Field.Builder()
+            .Name(nameof(Supervisor))
+            .Title("supervisor")
+            .Description("Client who is currently supervisor (0 = none).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavStorm32GimbalManagerClient _Supervisor;
+        public MavStorm32GimbalManagerClient Supervisor { get => _Supervisor; set => _Supervisor = value; } 
         /// <summary>
         /// Profile currently applied (0 = default).
         /// OriginName: profile, Units: , IsExtended: false
         /// </summary>
-        public MavStorm32GimbalManagerProfile Profile { get; set; }
+        public static readonly Field ProfileField = new Field.Builder()
+            .Name(nameof(Profile))
+            .Title("profile")
+            .Description("Profile currently applied (0 = default).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavStorm32GimbalManagerProfile _Profile;
+        public MavStorm32GimbalManagerProfile Profile { get => _Profile; set => _Profile = value; } 
     }
     /// <summary>
     /// Message to a gimbal manager to control the gimbal attitude. Angles and rates can be set to NaN according to use case. A gimbal device is never to react to this message.
@@ -939,156 +886,6 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerControlPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CONTROL";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "q",
-            "Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). Set first element to NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"[NaN:]", 
-            MessageFieldType.Float32, 
-            4, 
-            false),
-            new(1,
-            "angular_velocity_x",
-            "X component of angular velocity (positive: roll to the right). NaN to be ignored.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "angular_velocity_y",
-            "Y component of angular velocity (positive: tilt up). NaN to be ignored.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "angular_velocity_z",
-            "Z component of angular velocity (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "device_flags",
-            "Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"UINT16_MAX", 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(5,
-            "manager_flags",
-            "Gimbal manager flags to be applied (0 to be ignored).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"0", 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(6,
-            "target_system",
-            "System ID",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "target_component",
-            "Component ID",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "gimbal_id",
-            "Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(9,
-            "client",
-            "Client which is contacting the gimbal manager (must be set).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "STORM32_GIMBAL_MANAGER_CONTROL:"
-        + "float[4] q;"
-        + "float angular_velocity_x;"
-        + "float angular_velocity_y;"
-        + "float angular_velocity_z;"
-        + "uint16_t device_flags;"
-        + "uint16_t manager_flags;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t gimbal_id;"
-        + "uint8_t client;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Q);
-            writer.Write(StaticFields[1], Payload.AngularVelocityX);
-            writer.Write(StaticFields[2], Payload.AngularVelocityY);
-            writer.Write(StaticFields[3], Payload.AngularVelocityZ);
-            writer.Write(StaticFields[4], (ulong)Payload.DeviceFlags);
-            writer.Write(StaticFields[5], (ulong)Payload.ManagerFlags);
-            writer.Write(StaticFields[6], Payload.TargetSystem);
-            writer.Write(StaticFields[7], Payload.TargetComponent);
-            writer.Write(StaticFields[8], Payload.GimbalId);
-            writer.Write(StaticFields[9], (ulong)Payload.Client);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            reader.ReadFloatArray(StaticFields[0], Payload.Q);
-            Payload.AngularVelocityX = reader.ReadFloat(StaticFields[1]);
-            Payload.AngularVelocityY = reader.ReadFloat(StaticFields[2]);
-            Payload.AngularVelocityZ = reader.ReadFloat(StaticFields[3]);
-            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadUShort(StaticFields[4]);
-            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadUShort(StaticFields[5]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[7]);
-            Payload.GimbalId = reader.ReadByte(StaticFields[8]);
-            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadByte(StaticFields[9]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -1124,7 +921,7 @@ namespace Asv.Mavlink.Storm32
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/36 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            Q = new float[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Q[i] = BinSerialize.ReadFloat(ref buffer);
@@ -1158,64 +955,181 @@ namespace Asv.Mavlink.Storm32
             BinSerialize.WriteByte(ref buffer,(byte)Client);
             /* PayloadByteSize = 36 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,QField, 4,
+                (index,v) => FloatType.Accept(v, QField, ref Q[index]));
+            FloatType.Accept(visitor,AngularVelocityXField, ref _AngularVelocityX);    
+            FloatType.Accept(visitor,AngularVelocityYField, ref _AngularVelocityY);    
+            FloatType.Accept(visitor,AngularVelocityZField, ref _AngularVelocityZ);    
+            var tmpDeviceFlags = (ushort)DeviceFlags;
+            UInt16Type.Accept(visitor,DeviceFlagsField, ref tmpDeviceFlags);
+            DeviceFlags = (GimbalDeviceFlags)tmpDeviceFlags;
+            var tmpManagerFlags = (ushort)ManagerFlags;
+            UInt16Type.Accept(visitor,ManagerFlagsField, ref tmpManagerFlags);
+            ManagerFlags = (MavStorm32GimbalManagerFlags)tmpManagerFlags;
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,GimbalIdField, ref _GimbalId);    
+            var tmpClient = (byte)Client;
+            UInt8Type.Accept(visitor,ClientField, ref tmpClient);
+            Client = (MavStorm32GimbalManagerClient)tmpClient;
 
+        }
 
         /// <summary>
         /// Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). Set first element to NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.
         /// OriginName: q, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field QField = new Field.Builder()
+            .Name(nameof(Q))
+            .Title("q")
+            .Description("Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). Set first element to NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(FloatType.Default,4))        
+
+            .Build();
         public const int QMaxItemsCount = 4;
-        public float[] Q { get; set; } = new float[4];
+        public float[] Q { get; } = new float[4];
         [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
         public byte GetQMaxItemsCount() => 4;
         /// <summary>
         /// X component of angular velocity (positive: roll to the right). NaN to be ignored.
         /// OriginName: angular_velocity_x, Units: rad/s, IsExtended: false
         /// </summary>
-        public float AngularVelocityX { get; set; }
+        public static readonly Field AngularVelocityXField = new Field.Builder()
+            .Name(nameof(AngularVelocityX))
+            .Title("angular_velocity_x")
+            .Description("X component of angular velocity (positive: roll to the right). NaN to be ignored.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _AngularVelocityX;
+        public float AngularVelocityX { get => _AngularVelocityX; set { _AngularVelocityX = value; } }
         /// <summary>
         /// Y component of angular velocity (positive: tilt up). NaN to be ignored.
         /// OriginName: angular_velocity_y, Units: rad/s, IsExtended: false
         /// </summary>
-        public float AngularVelocityY { get; set; }
+        public static readonly Field AngularVelocityYField = new Field.Builder()
+            .Name(nameof(AngularVelocityY))
+            .Title("angular_velocity_y")
+            .Description("Y component of angular velocity (positive: tilt up). NaN to be ignored.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _AngularVelocityY;
+        public float AngularVelocityY { get => _AngularVelocityY; set { _AngularVelocityY = value; } }
         /// <summary>
         /// Z component of angular velocity (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.
         /// OriginName: angular_velocity_z, Units: rad/s, IsExtended: false
         /// </summary>
-        public float AngularVelocityZ { get; set; }
+        public static readonly Field AngularVelocityZField = new Field.Builder()
+            .Name(nameof(AngularVelocityZ))
+            .Title("angular_velocity_z")
+            .Description("Z component of angular velocity (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _AngularVelocityZ;
+        public float AngularVelocityZ { get => _AngularVelocityZ; set { _AngularVelocityZ = value; } }
         /// <summary>
         /// Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.
         /// OriginName: device_flags, Units: , IsExtended: false
         /// </summary>
-        public GimbalDeviceFlags DeviceFlags { get; set; }
+        public static readonly Field DeviceFlagsField = new Field.Builder()
+            .Name(nameof(DeviceFlags))
+            .Title("device_flags")
+            .Description("Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        public GimbalDeviceFlags _DeviceFlags;
+        public GimbalDeviceFlags DeviceFlags { get => _DeviceFlags; set => _DeviceFlags = value; } 
         /// <summary>
         /// Gimbal manager flags to be applied (0 to be ignored).
         /// OriginName: manager_flags, Units: , IsExtended: false
         /// </summary>
-        public MavStorm32GimbalManagerFlags ManagerFlags { get; set; }
+        public static readonly Field ManagerFlagsField = new Field.Builder()
+            .Name(nameof(ManagerFlags))
+            .Title("manager_flags")
+            .Description("Gimbal manager flags to be applied (0 to be ignored).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        public MavStorm32GimbalManagerFlags _ManagerFlags;
+        public MavStorm32GimbalManagerFlags ManagerFlags { get => _ManagerFlags; set => _ManagerFlags = value; } 
         /// <summary>
         /// System ID
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.
         /// OriginName: gimbal_id, Units: , IsExtended: false
         /// </summary>
-        public byte GimbalId { get; set; }
+        public static readonly Field GimbalIdField = new Field.Builder()
+            .Name(nameof(GimbalId))
+            .Title("gimbal_id")
+            .Description("Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _GimbalId;
+        public byte GimbalId { get => _GimbalId; set { _GimbalId = value; } }
         /// <summary>
         /// Client which is contacting the gimbal manager (must be set).
         /// OriginName: client, Units: , IsExtended: false
         /// </summary>
-        public MavStorm32GimbalManagerClient Client { get; set; }
+        public static readonly Field ClientField = new Field.Builder()
+            .Name(nameof(Client))
+            .Title("client")
+            .Description("Client which is contacting the gimbal manager (must be set).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavStorm32GimbalManagerClient _Client;
+        public MavStorm32GimbalManagerClient Client { get => _Client; set => _Client = value; } 
     }
     /// <summary>
     /// Message to a gimbal manager to control the gimbal tilt and pan angles. Angles and rates can be set to NaN according to use case. A gimbal device is never to react to this message.
@@ -1237,156 +1151,6 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerControlPitchyawPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CONTROL_PITCHYAW";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "pitch",
-            "Pitch/tilt angle (positive: tilt up). NaN to be ignored.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "yaw",
-            "Yaw/pan angle (positive: pan the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "pitch_rate",
-            "Pitch/tilt angular rate (positive: tilt up). NaN to be ignored.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "yaw_rate",
-            "Yaw/pan angular rate (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            @"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "device_flags",
-            "Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"UINT16_MAX", 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(5,
-            "manager_flags",
-            "Gimbal manager flags to be applied (0 to be ignored).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"0", 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(6,
-            "target_system",
-            "System ID",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "target_component",
-            "Component ID",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "gimbal_id",
-            "Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(9,
-            "client",
-            "Client which is contacting the gimbal manager (must be set).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "STORM32_GIMBAL_MANAGER_CONTROL_PITCHYAW:"
-        + "float pitch;"
-        + "float yaw;"
-        + "float pitch_rate;"
-        + "float yaw_rate;"
-        + "uint16_t device_flags;"
-        + "uint16_t manager_flags;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t gimbal_id;"
-        + "uint8_t client;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Pitch);
-            writer.Write(StaticFields[1], Payload.Yaw);
-            writer.Write(StaticFields[2], Payload.PitchRate);
-            writer.Write(StaticFields[3], Payload.YawRate);
-            writer.Write(StaticFields[4], (ulong)Payload.DeviceFlags);
-            writer.Write(StaticFields[5], (ulong)Payload.ManagerFlags);
-            writer.Write(StaticFields[6], Payload.TargetSystem);
-            writer.Write(StaticFields[7], Payload.TargetComponent);
-            writer.Write(StaticFields[8], Payload.GimbalId);
-            writer.Write(StaticFields[9], (ulong)Payload.Client);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Pitch = reader.ReadFloat(StaticFields[0]);
-            Payload.Yaw = reader.ReadFloat(StaticFields[1]);
-            Payload.PitchRate = reader.ReadFloat(StaticFields[2]);
-            Payload.YawRate = reader.ReadFloat(StaticFields[3]);
-            Payload.DeviceFlags = (GimbalDeviceFlags)reader.ReadUShort(StaticFields[4]);
-            Payload.ManagerFlags = (MavStorm32GimbalManagerFlags)reader.ReadUShort(StaticFields[5]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[7]);
-            Payload.GimbalId = reader.ReadByte(StaticFields[8]);
-            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadByte(StaticFields[9]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -1446,61 +1210,178 @@ namespace Asv.Mavlink.Storm32
             BinSerialize.WriteByte(ref buffer,(byte)Client);
             /* PayloadByteSize = 24 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,PitchField, ref _Pitch);    
+            FloatType.Accept(visitor,YawField, ref _Yaw);    
+            FloatType.Accept(visitor,PitchRateField, ref _PitchRate);    
+            FloatType.Accept(visitor,YawRateField, ref _YawRate);    
+            var tmpDeviceFlags = (ushort)DeviceFlags;
+            UInt16Type.Accept(visitor,DeviceFlagsField, ref tmpDeviceFlags);
+            DeviceFlags = (GimbalDeviceFlags)tmpDeviceFlags;
+            var tmpManagerFlags = (ushort)ManagerFlags;
+            UInt16Type.Accept(visitor,ManagerFlagsField, ref tmpManagerFlags);
+            ManagerFlags = (MavStorm32GimbalManagerFlags)tmpManagerFlags;
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,GimbalIdField, ref _GimbalId);    
+            var tmpClient = (byte)Client;
+            UInt8Type.Accept(visitor,ClientField, ref tmpClient);
+            Client = (MavStorm32GimbalManagerClient)tmpClient;
 
+        }
 
         /// <summary>
         /// Pitch/tilt angle (positive: tilt up). NaN to be ignored.
         /// OriginName: pitch, Units: rad, IsExtended: false
         /// </summary>
-        public float Pitch { get; set; }
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Pitch/tilt angle (positive: tilt up). NaN to be ignored.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Pitch;
+        public float Pitch { get => _Pitch; set { _Pitch = value; } }
         /// <summary>
         /// Yaw/pan angle (positive: pan the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.
         /// OriginName: yaw, Units: rad, IsExtended: false
         /// </summary>
-        public float Yaw { get; set; }
+        public static readonly Field YawField = new Field.Builder()
+            .Name(nameof(Yaw))
+            .Title("yaw")
+            .Description("Yaw/pan angle (positive: pan the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Yaw;
+        public float Yaw { get => _Yaw; set { _Yaw = value; } }
         /// <summary>
         /// Pitch/tilt angular rate (positive: tilt up). NaN to be ignored.
         /// OriginName: pitch_rate, Units: rad/s, IsExtended: false
         /// </summary>
-        public float PitchRate { get; set; }
+        public static readonly Field PitchRateField = new Field.Builder()
+            .Name(nameof(PitchRate))
+            .Title("pitch_rate")
+            .Description("Pitch/tilt angular rate (positive: tilt up). NaN to be ignored.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _PitchRate;
+        public float PitchRate { get => _PitchRate; set { _PitchRate = value; } }
         /// <summary>
         /// Yaw/pan angular rate (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.
         /// OriginName: yaw_rate, Units: rad/s, IsExtended: false
         /// </summary>
-        public float YawRate { get; set; }
+        public static readonly Field YawRateField = new Field.Builder()
+            .Name(nameof(YawRate))
+            .Title("yaw_rate")
+            .Description("Yaw/pan angular rate (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _YawRate;
+        public float YawRate { get => _YawRate; set { _YawRate = value; } }
         /// <summary>
         /// Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.
         /// OriginName: device_flags, Units: , IsExtended: false
         /// </summary>
-        public GimbalDeviceFlags DeviceFlags { get; set; }
+        public static readonly Field DeviceFlagsField = new Field.Builder()
+            .Name(nameof(DeviceFlags))
+            .Title("device_flags")
+            .Description("Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        public GimbalDeviceFlags _DeviceFlags;
+        public GimbalDeviceFlags DeviceFlags { get => _DeviceFlags; set => _DeviceFlags = value; } 
         /// <summary>
         /// Gimbal manager flags to be applied (0 to be ignored).
         /// OriginName: manager_flags, Units: , IsExtended: false
         /// </summary>
-        public MavStorm32GimbalManagerFlags ManagerFlags { get; set; }
+        public static readonly Field ManagerFlagsField = new Field.Builder()
+            .Name(nameof(ManagerFlags))
+            .Title("manager_flags")
+            .Description("Gimbal manager flags to be applied (0 to be ignored).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        public MavStorm32GimbalManagerFlags _ManagerFlags;
+        public MavStorm32GimbalManagerFlags ManagerFlags { get => _ManagerFlags; set => _ManagerFlags = value; } 
         /// <summary>
         /// System ID
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.
         /// OriginName: gimbal_id, Units: , IsExtended: false
         /// </summary>
-        public byte GimbalId { get; set; }
+        public static readonly Field GimbalIdField = new Field.Builder()
+            .Name(nameof(GimbalId))
+            .Title("gimbal_id")
+            .Description("Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _GimbalId;
+        public byte GimbalId { get => _GimbalId; set { _GimbalId = value; } }
         /// <summary>
         /// Client which is contacting the gimbal manager (must be set).
         /// OriginName: client, Units: , IsExtended: false
         /// </summary>
-        public MavStorm32GimbalManagerClient Client { get; set; }
+        public static readonly Field ClientField = new Field.Builder()
+            .Name(nameof(Client))
+            .Title("client")
+            .Description("Client which is contacting the gimbal manager (must be set).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavStorm32GimbalManagerClient _Client;
+        public MavStorm32GimbalManagerClient Client { get => _Client; set => _Client = value; } 
     }
     /// <summary>
     /// Message to a gimbal manager to correct the gimbal roll angle. This message is typically used to manually correct for a tilted horizon in operation. A gimbal device is never to react to this message.
@@ -1522,91 +1403,6 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerCorrectRollPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CORRECT_ROLL";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "roll",
-            "Roll angle (positive to roll to the right).",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "target_system",
-            "System ID",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "target_component",
-            "Component ID",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "gimbal_id",
-            "Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "client",
-            "Client which is contacting the gimbal manager (must be set).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "STORM32_GIMBAL_MANAGER_CORRECT_ROLL:"
-        + "float roll;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t gimbal_id;"
-        + "uint8_t client;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Roll);
-            writer.Write(StaticFields[1], Payload.TargetSystem);
-            writer.Write(StaticFields[2], Payload.TargetComponent);
-            writer.Write(StaticFields[3], Payload.GimbalId);
-            writer.Write(StaticFields[4], (ulong)Payload.Client);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Roll = reader.ReadFloat(StaticFields[0]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.GimbalId = reader.ReadByte(StaticFields[3]);
-            Payload.Client = (MavStorm32GimbalManagerClient)reader.ReadByte(StaticFields[4]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -1651,36 +1447,94 @@ namespace Asv.Mavlink.Storm32
             BinSerialize.WriteByte(ref buffer,(byte)Client);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,RollField, ref _Roll);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,GimbalIdField, ref _GimbalId);    
+            var tmpClient = (byte)Client;
+            UInt8Type.Accept(visitor,ClientField, ref tmpClient);
+            Client = (MavStorm32GimbalManagerClient)tmpClient;
 
+        }
 
         /// <summary>
         /// Roll angle (positive to roll to the right).
         /// OriginName: roll, Units: rad, IsExtended: false
         /// </summary>
-        public float Roll { get; set; }
+        public static readonly Field RollField = new Field.Builder()
+            .Name(nameof(Roll))
+            .Title("roll")
+            .Description("Roll angle (positive to roll to the right).")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Roll;
+        public float Roll { get => _Roll; set { _Roll = value; } }
         /// <summary>
         /// System ID
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.
         /// OriginName: gimbal_id, Units: , IsExtended: false
         /// </summary>
-        public byte GimbalId { get; set; }
+        public static readonly Field GimbalIdField = new Field.Builder()
+            .Name(nameof(GimbalId))
+            .Title("gimbal_id")
+            .Description("Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _GimbalId;
+        public byte GimbalId { get => _GimbalId; set { _GimbalId = value; } }
         /// <summary>
         /// Client which is contacting the gimbal manager (must be set).
         /// OriginName: client, Units: , IsExtended: false
         /// </summary>
-        public MavStorm32GimbalManagerClient Client { get; set; }
+        public static readonly Field ClientField = new Field.Builder()
+            .Name(nameof(Client))
+            .Title("client")
+            .Description("Client which is contacting the gimbal manager (must be set).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavStorm32GimbalManagerClient _Client;
+        public MavStorm32GimbalManagerClient Client { get => _Client; set => _Client = value; } 
     }
     /// <summary>
     /// Information about the shot operation.
@@ -1702,52 +1556,6 @@ namespace Asv.Mavlink.Storm32
         public override QshotStatusPayload Payload { get; } = new();
 
         public override string Name => "QSHOT_STATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "mode",
-            "Current shot mode.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "shot_state",
-            "Current state in the shot. States are specific to the selected shot mode.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "QSHOT_STATUS:"
-        + "uint16_t mode;"
-        + "uint16_t shot_state;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], (ulong)Payload.Mode);
-            writer.Write(StaticFields[1], Payload.ShotState);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Mode = (MavQshotMode)reader.ReadUShort(StaticFields[0]);
-            Payload.ShotState = reader.ReadUShort(StaticFields[1]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -1783,21 +1591,46 @@ namespace Asv.Mavlink.Storm32
             BinSerialize.WriteUShort(ref buffer,ShotState);
             /* PayloadByteSize = 4 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            var tmpMode = (ushort)Mode;
+            UInt16Type.Accept(visitor,ModeField, ref tmpMode);
+            Mode = (MavQshotMode)tmpMode;
+            UInt16Type.Accept(visitor,ShotStateField, ref _ShotState);    
 
+        }
 
         /// <summary>
         /// Current shot mode.
         /// OriginName: mode, Units: , IsExtended: false
         /// </summary>
-        public MavQshotMode Mode { get; set; }
+        public static readonly Field ModeField = new Field.Builder()
+            .Name(nameof(Mode))
+            .Title("mode")
+            .Description("Current shot mode.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        public MavQshotMode _Mode;
+        public MavQshotMode Mode { get => _Mode; set => _Mode = value; } 
         /// <summary>
         /// Current state in the shot. States are specific to the selected shot mode.
         /// OriginName: shot_state, Units: , IsExtended: false
         /// </summary>
-        public ushort ShotState { get; set; }
+        public static readonly Field ShotStateField = new Field.Builder()
+            .Name(nameof(ShotState))
+            .Title("shot_state")
+            .Description("Current state in the shot. States are specific to the selected shot mode.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _ShotState;
+        public ushort ShotState { get => _ShotState; set { _ShotState = value; } }
     }
     /// <summary>
     /// Radio channels. Supports up to 24 channels. Channel values are in centerd 13 bit format. Range is [-4096,4096], center is 0. Conversion to PWM is x * 5/32 + 1500. Should be emitted only by components with component id MAV_COMP_ID_TELEMETRY_RADIO.
@@ -1819,65 +1652,6 @@ namespace Asv.Mavlink.Storm32
         public override RadioRcChannelsPayload Payload { get; } = new();
 
         public override string Name => "RADIO_RC_CHANNELS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "count",
-            "Total number of RC channels being received. This can be larger than 24, indicating that more channels are available but not given in this message.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "flags",
-            "Radio channels status flags.",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "channels",
-            "RC channels. Channels above count should be set to 0, to benefit from MAVLink's zero padding.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            24, 
-            true),
-        ];
-        public const string FormatMessage = "RADIO_RC_CHANNELS:"
-        + "uint8_t count;"
-        + "uint8_t flags;"
-        + "int16_t[24] channels;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Count);
-            writer.Write(StaticFields[1], (ulong)Payload.Flags);
-            writer.Write(StaticFields[2], Payload.Channels);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Count = reader.ReadByte(StaticFields[0]);
-            Payload.Flags = (RadioRcChannelsFlags)reader.ReadByte(StaticFields[1]);
-            reader.ReadShortArray(StaticFields[2], Payload.Channels);
-        
-            
-        }
     }
 
     /// <summary>
@@ -1927,25 +1701,61 @@ namespace Asv.Mavlink.Storm32
             }
             /* PayloadByteSize = 50 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,CountField, ref _Count);    
+            var tmpFlags = (byte)Flags;
+            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
+            Flags = (RadioRcChannelsFlags)tmpFlags;
+            ArrayType.Accept(visitor,ChannelsField, 24,
+                (index,v) => Int16Type.Accept(v, ChannelsField, ref Channels[index]));    
 
+        }
 
         /// <summary>
         /// Total number of RC channels being received. This can be larger than 24, indicating that more channels are available but not given in this message.
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Total number of RC channels being received. This can be larger than 24, indicating that more channels are available but not given in this message.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Count;
+        public byte Count { get => _Count; set { _Count = value; } }
         /// <summary>
         /// Radio channels status flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public RadioRcChannelsFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("bitmask")
+            .Description("Radio channels status flags.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public RadioRcChannelsFlags _Flags;
+        public RadioRcChannelsFlags Flags { get => _Flags; set => _Flags = value; } 
         /// <summary>
         /// RC channels. Channels above count should be set to 0, to benefit from MAVLink's zero padding.
         /// OriginName: channels, Units: , IsExtended: true
         /// </summary>
+        public static readonly Field ChannelsField = new Field.Builder()
+            .Name(nameof(Channels))
+            .Title("channels")
+            .Description("RC channels. Channels above count should be set to 0, to benefit from MAVLink's zero padding.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(Int16Type.Default,24))
+
+            .Build();
         public const int ChannelsMaxItemsCount = 24;
         public short[] Channels { get; } = new short[24];
     }
@@ -1969,221 +1779,6 @@ namespace Asv.Mavlink.Storm32
         public override RadioLinkStatsPayload Payload { get; } = new();
 
         public override string Name => "RADIO_LINK_STATS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "flags",
-            "Radio link statistics flags.",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "rx_LQ",
-            "Values: 0..100. UINT8_MAX: invalid/unknown.",
-            string.Empty, 
-            @"c%", 
-            string.Empty, 
-            @"UINT8_MAX", 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "rx_rssi1",
-            "Rssi of antenna1. UINT8_MAX: invalid/unknown.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"UINT8_MAX", 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "rx_snr1",
-            "Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"INT8_MAX", 
-            MessageFieldType.Int8, 
-            0, 
-            false),
-            new(4,
-            "rx_rssi2",
-            "Rssi of antenna2. UINT8_MAX: ignore/unknown, use rx_rssi1.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"UINT8_MAX", 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "rx_snr2",
-            "Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use rx_snr1.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"INT8_MAX", 
-            MessageFieldType.Int8, 
-            0, 
-            false),
-            new(6,
-            "rx_receive_antenna",
-            "0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx receive diversity, use rx_rssi1, rx_snr1.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"UINT8_MAX", 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "rx_transmit_antenna",
-            "0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx transmit diversity.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"UINT8_MAX", 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "tx_LQ",
-            "Values: 0..100. UINT8_MAX: invalid/unknown.",
-            string.Empty, 
-            @"c%", 
-            string.Empty, 
-            @"UINT8_MAX", 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(9,
-            "tx_rssi1",
-            "Rssi of antenna1. UINT8_MAX: invalid/unknown.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"UINT8_MAX", 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(10,
-            "tx_snr1",
-            "Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"INT8_MAX", 
-            MessageFieldType.Int8, 
-            0, 
-            false),
-            new(11,
-            "tx_rssi2",
-            "Rssi of antenna2. UINT8_MAX: ignore/unknown, use tx_rssi1.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"UINT8_MAX", 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(12,
-            "tx_snr2",
-            "Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use tx_snr1.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"INT8_MAX", 
-            MessageFieldType.Int8, 
-            0, 
-            false),
-            new(13,
-            "tx_receive_antenna",
-            "0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx receive diversity, use tx_rssi1, tx_snr1.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"UINT8_MAX", 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(14,
-            "tx_transmit_antenna",
-            "0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx transmit diversity.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            @"UINT8_MAX", 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "RADIO_LINK_STATS:"
-        + "uint8_t flags;"
-        + "uint8_t rx_LQ;"
-        + "uint8_t rx_rssi1;"
-        + "int8_t rx_snr1;"
-        + "uint8_t rx_rssi2;"
-        + "int8_t rx_snr2;"
-        + "uint8_t rx_receive_antenna;"
-        + "uint8_t rx_transmit_antenna;"
-        + "uint8_t tx_LQ;"
-        + "uint8_t tx_rssi1;"
-        + "int8_t tx_snr1;"
-        + "uint8_t tx_rssi2;"
-        + "int8_t tx_snr2;"
-        + "uint8_t tx_receive_antenna;"
-        + "uint8_t tx_transmit_antenna;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], (ulong)Payload.Flags);
-            writer.Write(StaticFields[1], Payload.RxLq);
-            writer.Write(StaticFields[2], Payload.RxRssi1);
-            writer.Write(StaticFields[3], Payload.RxSnr1);
-            writer.Write(StaticFields[4], Payload.RxRssi2);
-            writer.Write(StaticFields[5], Payload.RxSnr2);
-            writer.Write(StaticFields[6], Payload.RxReceiveAntenna);
-            writer.Write(StaticFields[7], Payload.RxTransmitAntenna);
-            writer.Write(StaticFields[8], Payload.TxLq);
-            writer.Write(StaticFields[9], Payload.TxRssi1);
-            writer.Write(StaticFields[10], Payload.TxSnr1);
-            writer.Write(StaticFields[11], Payload.TxRssi2);
-            writer.Write(StaticFields[12], Payload.TxSnr2);
-            writer.Write(StaticFields[13], Payload.TxReceiveAntenna);
-            writer.Write(StaticFields[14], Payload.TxTransmitAntenna);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Flags = (RadioLinkStatsFlags)reader.ReadByte(StaticFields[0]);
-            Payload.RxLq = reader.ReadByte(StaticFields[1]);
-            Payload.RxRssi1 = reader.ReadByte(StaticFields[2]);
-            Payload.RxSnr1 = reader.ReadSByte(StaticFields[3]);
-            Payload.RxRssi2 = reader.ReadByte(StaticFields[4]);
-            Payload.RxSnr2 = reader.ReadSByte(StaticFields[5]);
-            Payload.RxReceiveAntenna = reader.ReadByte(StaticFields[6]);
-            Payload.RxTransmitAntenna = reader.ReadByte(StaticFields[7]);
-            Payload.TxLq = reader.ReadByte(StaticFields[8]);
-            Payload.TxRssi1 = reader.ReadByte(StaticFields[9]);
-            Payload.TxSnr1 = reader.ReadSByte(StaticFields[10]);
-            Payload.TxRssi2 = reader.ReadByte(StaticFields[11]);
-            Payload.TxSnr2 = reader.ReadSByte(StaticFields[12]);
-            Payload.TxReceiveAntenna = reader.ReadByte(StaticFields[13]);
-            Payload.TxTransmitAntenna = reader.ReadByte(StaticFields[14]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -2258,86 +1853,254 @@ namespace Asv.Mavlink.Storm32
             BinSerialize.WriteByte(ref buffer,(byte)TxTransmitAntenna);
             /* PayloadByteSize = 15 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            var tmpFlags = (byte)Flags;
+            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
+            Flags = (RadioLinkStatsFlags)tmpFlags;
+            UInt8Type.Accept(visitor,RxLqField, ref _RxLq);    
+            UInt8Type.Accept(visitor,RxRssi1Field, ref _RxRssi1);    
+            Int8Type.Accept(visitor,RxSnr1Field, ref _RxSnr1);                
+            UInt8Type.Accept(visitor,RxRssi2Field, ref _RxRssi2);    
+            Int8Type.Accept(visitor,RxSnr2Field, ref _RxSnr2);                
+            UInt8Type.Accept(visitor,RxReceiveAntennaField, ref _RxReceiveAntenna);    
+            UInt8Type.Accept(visitor,RxTransmitAntennaField, ref _RxTransmitAntenna);    
+            UInt8Type.Accept(visitor,TxLqField, ref _TxLq);    
+            UInt8Type.Accept(visitor,TxRssi1Field, ref _TxRssi1);    
+            Int8Type.Accept(visitor,TxSnr1Field, ref _TxSnr1);                
+            UInt8Type.Accept(visitor,TxRssi2Field, ref _TxRssi2);    
+            Int8Type.Accept(visitor,TxSnr2Field, ref _TxSnr2);                
+            UInt8Type.Accept(visitor,TxReceiveAntennaField, ref _TxReceiveAntenna);    
+            UInt8Type.Accept(visitor,TxTransmitAntennaField, ref _TxTransmitAntenna);    
 
+        }
 
         /// <summary>
         /// Radio link statistics flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public RadioLinkStatsFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("bitmask")
+            .Description("Radio link statistics flags.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public RadioLinkStatsFlags _Flags;
+        public RadioLinkStatsFlags Flags { get => _Flags; set => _Flags = value; } 
         /// <summary>
         /// Values: 0..100. UINT8_MAX: invalid/unknown.
         /// OriginName: rx_LQ, Units: c%, IsExtended: false
         /// </summary>
-        public byte RxLq { get; set; }
+        public static readonly Field RxLqField = new Field.Builder()
+            .Name(nameof(RxLq))
+            .Title("rx_LQ")
+            .Description("Values: 0..100. UINT8_MAX: invalid/unknown.")
+            .FormatString(string.Empty)
+            .Units(@"c%")
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _RxLq;
+        public byte RxLq { get => _RxLq; set { _RxLq = value; } }
         /// <summary>
         /// Rssi of antenna1. UINT8_MAX: invalid/unknown.
         /// OriginName: rx_rssi1, Units: , IsExtended: false
         /// </summary>
-        public byte RxRssi1 { get; set; }
+        public static readonly Field RxRssi1Field = new Field.Builder()
+            .Name(nameof(RxRssi1))
+            .Title("rx_rssi1")
+            .Description("Rssi of antenna1. UINT8_MAX: invalid/unknown.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _RxRssi1;
+        public byte RxRssi1 { get => _RxRssi1; set { _RxRssi1 = value; } }
         /// <summary>
         /// Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.
         /// OriginName: rx_snr1, Units: , IsExtended: false
         /// </summary>
-        public sbyte RxSnr1 { get; set; }
+        public static readonly Field RxSnr1Field = new Field.Builder()
+            .Name(nameof(RxSnr1))
+            .Title("rx_snr1")
+            .Description("Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int8Type.Default)
+
+            .Build();
+        private sbyte _RxSnr1;
+        public sbyte RxSnr1 { get => _RxSnr1; set { _RxSnr1 = value; } }
         /// <summary>
         /// Rssi of antenna2. UINT8_MAX: ignore/unknown, use rx_rssi1.
         /// OriginName: rx_rssi2, Units: , IsExtended: false
         /// </summary>
-        public byte RxRssi2 { get; set; }
+        public static readonly Field RxRssi2Field = new Field.Builder()
+            .Name(nameof(RxRssi2))
+            .Title("rx_rssi2")
+            .Description("Rssi of antenna2. UINT8_MAX: ignore/unknown, use rx_rssi1.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _RxRssi2;
+        public byte RxRssi2 { get => _RxRssi2; set { _RxRssi2 = value; } }
         /// <summary>
         /// Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use rx_snr1.
         /// OriginName: rx_snr2, Units: , IsExtended: false
         /// </summary>
-        public sbyte RxSnr2 { get; set; }
+        public static readonly Field RxSnr2Field = new Field.Builder()
+            .Name(nameof(RxSnr2))
+            .Title("rx_snr2")
+            .Description("Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use rx_snr1.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int8Type.Default)
+
+            .Build();
+        private sbyte _RxSnr2;
+        public sbyte RxSnr2 { get => _RxSnr2; set { _RxSnr2 = value; } }
         /// <summary>
         /// 0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx receive diversity, use rx_rssi1, rx_snr1.
         /// OriginName: rx_receive_antenna, Units: , IsExtended: false
         /// </summary>
-        public byte RxReceiveAntenna { get; set; }
+        public static readonly Field RxReceiveAntennaField = new Field.Builder()
+            .Name(nameof(RxReceiveAntenna))
+            .Title("rx_receive_antenna")
+            .Description("0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx receive diversity, use rx_rssi1, rx_snr1.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _RxReceiveAntenna;
+        public byte RxReceiveAntenna { get => _RxReceiveAntenna; set { _RxReceiveAntenna = value; } }
         /// <summary>
         /// 0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx transmit diversity.
         /// OriginName: rx_transmit_antenna, Units: , IsExtended: false
         /// </summary>
-        public byte RxTransmitAntenna { get; set; }
+        public static readonly Field RxTransmitAntennaField = new Field.Builder()
+            .Name(nameof(RxTransmitAntenna))
+            .Title("rx_transmit_antenna")
+            .Description("0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx transmit diversity.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _RxTransmitAntenna;
+        public byte RxTransmitAntenna { get => _RxTransmitAntenna; set { _RxTransmitAntenna = value; } }
         /// <summary>
         /// Values: 0..100. UINT8_MAX: invalid/unknown.
         /// OriginName: tx_LQ, Units: c%, IsExtended: false
         /// </summary>
-        public byte TxLq { get; set; }
+        public static readonly Field TxLqField = new Field.Builder()
+            .Name(nameof(TxLq))
+            .Title("tx_LQ")
+            .Description("Values: 0..100. UINT8_MAX: invalid/unknown.")
+            .FormatString(string.Empty)
+            .Units(@"c%")
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TxLq;
+        public byte TxLq { get => _TxLq; set { _TxLq = value; } }
         /// <summary>
         /// Rssi of antenna1. UINT8_MAX: invalid/unknown.
         /// OriginName: tx_rssi1, Units: , IsExtended: false
         /// </summary>
-        public byte TxRssi1 { get; set; }
+        public static readonly Field TxRssi1Field = new Field.Builder()
+            .Name(nameof(TxRssi1))
+            .Title("tx_rssi1")
+            .Description("Rssi of antenna1. UINT8_MAX: invalid/unknown.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TxRssi1;
+        public byte TxRssi1 { get => _TxRssi1; set { _TxRssi1 = value; } }
         /// <summary>
         /// Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.
         /// OriginName: tx_snr1, Units: , IsExtended: false
         /// </summary>
-        public sbyte TxSnr1 { get; set; }
+        public static readonly Field TxSnr1Field = new Field.Builder()
+            .Name(nameof(TxSnr1))
+            .Title("tx_snr1")
+            .Description("Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int8Type.Default)
+
+            .Build();
+        private sbyte _TxSnr1;
+        public sbyte TxSnr1 { get => _TxSnr1; set { _TxSnr1 = value; } }
         /// <summary>
         /// Rssi of antenna2. UINT8_MAX: ignore/unknown, use tx_rssi1.
         /// OriginName: tx_rssi2, Units: , IsExtended: false
         /// </summary>
-        public byte TxRssi2 { get; set; }
+        public static readonly Field TxRssi2Field = new Field.Builder()
+            .Name(nameof(TxRssi2))
+            .Title("tx_rssi2")
+            .Description("Rssi of antenna2. UINT8_MAX: ignore/unknown, use tx_rssi1.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TxRssi2;
+        public byte TxRssi2 { get => _TxRssi2; set { _TxRssi2 = value; } }
         /// <summary>
         /// Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use tx_snr1.
         /// OriginName: tx_snr2, Units: , IsExtended: false
         /// </summary>
-        public sbyte TxSnr2 { get; set; }
+        public static readonly Field TxSnr2Field = new Field.Builder()
+            .Name(nameof(TxSnr2))
+            .Title("tx_snr2")
+            .Description("Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use tx_snr1.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int8Type.Default)
+
+            .Build();
+        private sbyte _TxSnr2;
+        public sbyte TxSnr2 { get => _TxSnr2; set { _TxSnr2 = value; } }
         /// <summary>
         /// 0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx receive diversity, use tx_rssi1, tx_snr1.
         /// OriginName: tx_receive_antenna, Units: , IsExtended: false
         /// </summary>
-        public byte TxReceiveAntenna { get; set; }
+        public static readonly Field TxReceiveAntennaField = new Field.Builder()
+            .Name(nameof(TxReceiveAntenna))
+            .Title("tx_receive_antenna")
+            .Description("0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx receive diversity, use tx_rssi1, tx_snr1.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TxReceiveAntenna;
+        public byte TxReceiveAntenna { get => _TxReceiveAntenna; set { _TxReceiveAntenna = value; } }
         /// <summary>
         /// 0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx transmit diversity.
         /// OriginName: tx_transmit_antenna, Units: , IsExtended: false
         /// </summary>
-        public byte TxTransmitAntenna { get; set; }
+        public static readonly Field TxTransmitAntennaField = new Field.Builder()
+            .Name(nameof(TxTransmitAntenna))
+            .Title("tx_transmit_antenna")
+            .Description("0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx transmit diversity.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TxTransmitAntenna;
+        public byte TxTransmitAntenna { get => _TxTransmitAntenna; set { _TxTransmitAntenna = value; } }
     }
     /// <summary>
     /// Frsky SPort passthrough multi packet container.
@@ -2359,65 +2122,6 @@ namespace Asv.Mavlink.Storm32
         public override FrskyPassthroughArrayPayload Payload { get; } = new();
 
         public override string Name => "FRSKY_PASSTHROUGH_ARRAY";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "time_boot_ms",
-            "Timestamp (time since system boot).",
-            string.Empty, 
-            @"ms", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "count",
-            "Number of passthrough packets in this message.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "packet_buf",
-            "Passthrough packet buffer. A packet has 6 bytes: uint16_t id + uint32_t data. The array has space for 40 packets.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            240, 
-            false),
-        ];
-        public const string FormatMessage = "FRSKY_PASSTHROUGH_ARRAY:"
-        + "uint32_t time_boot_ms;"
-        + "uint8_t count;"
-        + "uint8_t[240] packet_buf;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TimeBootMs);
-            writer.Write(StaticFields[1], Payload.Count);
-            writer.Write(StaticFields[2], Payload.PacketBuf);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
-            Payload.Count = reader.ReadByte(StaticFields[1]);
-            reader.ReadByteArray(StaticFields[2], Payload.PacketBuf);
-        
-            
-        }
     }
 
     /// <summary>
@@ -2448,7 +2152,7 @@ namespace Asv.Mavlink.Storm32
             TimeBootMs = BinSerialize.ReadUInt(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/240 - Math.Max(0,((/*PayloadByteSize*/245 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            PacketBuf = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 PacketBuf[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -2466,27 +2170,61 @@ namespace Asv.Mavlink.Storm32
             }
             /* PayloadByteSize = 245 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _TimeBootMs);    
+            UInt8Type.Accept(visitor,CountField, ref _Count);    
+            ArrayType.Accept(visitor,PacketBufField, 240,
+                (index,v) => UInt8Type.Accept(v, PacketBufField, ref PacketBuf[index]));    
 
+        }
 
         /// <summary>
         /// Timestamp (time since system boot).
         /// OriginName: time_boot_ms, Units: ms, IsExtended: false
         /// </summary>
-        public uint TimeBootMs { get; set; }
+        public static readonly Field TimeBootMsField = new Field.Builder()
+            .Name(nameof(TimeBootMs))
+            .Title("time_boot_ms")
+            .Description("Timestamp (time since system boot).")
+            .FormatString(string.Empty)
+            .Units(@"ms")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _TimeBootMs;
+        public uint TimeBootMs { get => _TimeBootMs; set { _TimeBootMs = value; } }
         /// <summary>
         /// Number of passthrough packets in this message.
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Number of passthrough packets in this message.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Count;
+        public byte Count { get => _Count; set { _Count = value; } }
         /// <summary>
         /// Passthrough packet buffer. A packet has 6 bytes: uint16_t id + uint32_t data. The array has space for 40 packets.
         /// OriginName: packet_buf, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field PacketBufField = new Field.Builder()
+            .Name(nameof(PacketBuf))
+            .Title("packet_buf")
+            .Description("Passthrough packet buffer. A packet has 6 bytes: uint16_t id + uint32_t data. The array has space for 40 packets.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,240))
+
+            .Build();
         public const int PacketBufMaxItemsCount = 240;
-        public byte[] PacketBuf { get; set; } = new byte[240];
+        public byte[] PacketBuf { get; } = new byte[240];
         [Obsolete("This method is deprecated. Use GetPacketBufMaxItemsCount instead.")]
         public byte GetPacketBufMaxItemsCount() => 240;
     }
@@ -2510,91 +2248,6 @@ namespace Asv.Mavlink.Storm32
         public override ParamValueArrayPayload Payload { get; } = new();
 
         public override string Name => "PARAM_VALUE_ARRAY";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "param_count",
-            "Total number of onboard parameters.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "param_index_first",
-            "Index of the first onboard parameter in this array.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(2,
-            "flags",
-            "Flags.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(3,
-            "param_array_len",
-            "Number of onboard parameters in this array.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "packet_buf",
-            "Parameters buffer. Contains a series of variable length parameter blocks, one per parameter, with format as specifed elsewhere.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            248, 
-            false),
-        ];
-        public const string FormatMessage = "PARAM_VALUE_ARRAY:"
-        + "uint16_t param_count;"
-        + "uint16_t param_index_first;"
-        + "uint16_t flags;"
-        + "uint8_t param_array_len;"
-        + "uint8_t[248] packet_buf;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.ParamCount);
-            writer.Write(StaticFields[1], Payload.ParamIndexFirst);
-            writer.Write(StaticFields[2], Payload.Flags);
-            writer.Write(StaticFields[3], Payload.ParamArrayLen);
-            writer.Write(StaticFields[4], Payload.PacketBuf);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.ParamCount = reader.ReadUShort(StaticFields[0]);
-            Payload.ParamIndexFirst = reader.ReadUShort(StaticFields[1]);
-            Payload.Flags = reader.ReadUShort(StaticFields[2]);
-            Payload.ParamArrayLen = reader.ReadByte(StaticFields[3]);
-            reader.ReadByteArray(StaticFields[4], Payload.PacketBuf);
-        
-            
-        }
     }
 
     /// <summary>
@@ -2629,7 +2282,7 @@ namespace Asv.Mavlink.Storm32
             Flags = BinSerialize.ReadUShort(ref buffer);
             ParamArrayLen = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/248 - Math.Max(0,((/*PayloadByteSize*/255 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            PacketBuf = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 PacketBuf[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -2649,40 +2302,101 @@ namespace Asv.Mavlink.Storm32
             }
             /* PayloadByteSize = 255 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,ParamCountField, ref _ParamCount);    
+            UInt16Type.Accept(visitor,ParamIndexFirstField, ref _ParamIndexFirst);    
+            UInt16Type.Accept(visitor,FlagsField, ref _Flags);    
+            UInt8Type.Accept(visitor,ParamArrayLenField, ref _ParamArrayLen);    
+            ArrayType.Accept(visitor,PacketBufField, 248,
+                (index,v) => UInt8Type.Accept(v, PacketBufField, ref PacketBuf[index]));    
 
+        }
 
         /// <summary>
         /// Total number of onboard parameters.
         /// OriginName: param_count, Units: , IsExtended: false
         /// </summary>
-        public ushort ParamCount { get; set; }
+        public static readonly Field ParamCountField = new Field.Builder()
+            .Name(nameof(ParamCount))
+            .Title("param_count")
+            .Description("Total number of onboard parameters.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _ParamCount;
+        public ushort ParamCount { get => _ParamCount; set { _ParamCount = value; } }
         /// <summary>
         /// Index of the first onboard parameter in this array.
         /// OriginName: param_index_first, Units: , IsExtended: false
         /// </summary>
-        public ushort ParamIndexFirst { get; set; }
+        public static readonly Field ParamIndexFirstField = new Field.Builder()
+            .Name(nameof(ParamIndexFirst))
+            .Title("param_index_first")
+            .Description("Index of the first onboard parameter in this array.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _ParamIndexFirst;
+        public ushort ParamIndexFirst { get => _ParamIndexFirst; set { _ParamIndexFirst = value; } }
         /// <summary>
         /// Flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public ushort Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Flags.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Flags;
+        public ushort Flags { get => _Flags; set { _Flags = value; } }
         /// <summary>
         /// Number of onboard parameters in this array.
         /// OriginName: param_array_len, Units: , IsExtended: false
         /// </summary>
-        public byte ParamArrayLen { get; set; }
+        public static readonly Field ParamArrayLenField = new Field.Builder()
+            .Name(nameof(ParamArrayLen))
+            .Title("param_array_len")
+            .Description("Number of onboard parameters in this array.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _ParamArrayLen;
+        public byte ParamArrayLen { get => _ParamArrayLen; set { _ParamArrayLen = value; } }
         /// <summary>
         /// Parameters buffer. Contains a series of variable length parameter blocks, one per parameter, with format as specifed elsewhere.
         /// OriginName: packet_buf, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field PacketBufField = new Field.Builder()
+            .Name(nameof(PacketBuf))
+            .Title("packet_buf")
+            .Description("Parameters buffer. Contains a series of variable length parameter blocks, one per parameter, with format as specifed elsewhere.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,248))
+
+            .Build();
         public const int PacketBufMaxItemsCount = 248;
-        public byte[] PacketBuf { get; set; } = new byte[248];
+        public byte[] PacketBuf { get; } = new byte[248];
         [Obsolete("This method is deprecated. Use GetPacketBufMaxItemsCount instead.")]
         public byte GetPacketBufMaxItemsCount() => 248;
     }
+
+
+
+
+        
 
 
 #endregion

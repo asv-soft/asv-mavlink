@@ -37,7 +37,10 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
         );
         
         // Act
-        await Server.SendParamExtValue(p => p.ParamValue = "test".ToCharArray(), _cancellationTokenSource.Token);
+        await Server.SendParamExtValue(p =>
+        {
+            "test".ToCharArray().CopyTo(p.ParamValue, 0);
+        }, _cancellationTokenSource.Token);
         
         // Assert
         var result = await _taskCompletionSource.Task as ParamExtValuePacket;
@@ -59,7 +62,10 @@ public class ParamsExtServerTest : ServerTestBase<ParamsExtServer>,IDisposable
         );
         
         // Act
-        await Server.SendParamExtAck(p => p.ParamValue = "test".ToCharArray(), _cancellationTokenSource.Token);
+        await Server.SendParamExtAck(p =>
+        {
+            "test".ToCharArray().CopyTo(p.ParamValue,0);
+        }, _cancellationTokenSource.Token);
         
         // Assert
         var result = await _taskCompletionSource.Task as ParamExtAckPacket;

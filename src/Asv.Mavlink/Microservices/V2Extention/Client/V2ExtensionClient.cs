@@ -34,7 +34,7 @@ namespace Asv.Mavlink
             return InternalSend<V2ExtensionPacket>(p =>
             {
                 p.Payload.MessageType = messageType;
-                p.Payload.Payload = data;
+                data.CopyTo(p.Payload.Payload, 0);
                 p.Payload.TargetComponent = _identity.Target.ComponentId;
                 p.Payload.TargetSystem = _identity.Target.SystemId;
                 p.Payload.TargetNetwork = targetNetworkId;

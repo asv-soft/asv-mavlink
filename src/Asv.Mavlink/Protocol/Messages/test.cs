@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
 
 using System;
 using System.Text;
@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
 using Asv.IO;
 
 namespace Asv.Mavlink.Test
@@ -69,312 +70,6 @@ namespace Asv.Mavlink.Test
         public override TestTypesPayload Payload { get; } = new();
 
         public override string Name => "TEST_TYPES";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "u64",
-            "uint64_t",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-            false),
-            new(1,
-            "s64",
-            "int64_t",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int64, 
-            0, 
-            false),
-            new(2,
-            "d",
-            "double",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Double, 
-            0, 
-            false),
-            new(3,
-            "u64_array",
-            "uint64_t_array",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint64, 
-            3, 
-            false),
-            new(4,
-            "s64_array",
-            "int64_t_array",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int64, 
-            3, 
-            false),
-            new(5,
-            "d_array",
-            "double_array",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Double, 
-            3, 
-            false),
-            new(6,
-            "u32",
-            "uint32_t",
-            "0x%08x", 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(7,
-            "s32",
-            "int32_t",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(8,
-            "f",
-            "float",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(9,
-            "u32_array",
-            "uint32_t_array",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            3, 
-            false),
-            new(10,
-            "s32_array",
-            "int32_t_array",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            3, 
-            false),
-            new(11,
-            "f_array",
-            "float_array",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            3, 
-            false),
-            new(12,
-            "u16",
-            "uint16_t",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(13,
-            "s16",
-            "int16_t",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(14,
-            "u16_array",
-            "uint16_t_array",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            3, 
-            false),
-            new(15,
-            "s16_array",
-            "int16_t_array",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            3, 
-            false),
-            new(16,
-            "c",
-            "char",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Char, 
-            0, 
-            false),
-            new(17,
-            "s",
-            "string",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Char, 
-            10, 
-            false),
-            new(18,
-            "u8",
-            "uint8_t",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(19,
-            "s8",
-            "int8_t",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int8, 
-            0, 
-            false),
-            new(20,
-            "u8_array",
-            "uint8_t_array",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            3, 
-            false),
-            new(21,
-            "s8_array",
-            "int8_t_array",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int8, 
-            3, 
-            false),
-        ];
-        public const string FormatMessage = "TEST_TYPES:"
-        + "uint64_t u64;"
-        + "int64_t s64;"
-        + "double d;"
-        + "uint64_t[3] u64_array;"
-        + "int64_t[3] s64_array;"
-        + "double[3] d_array;"
-        + "uint32_t u32;"
-        + "int32_t s32;"
-        + "float f;"
-        + "uint32_t[3] u32_array;"
-        + "int32_t[3] s32_array;"
-        + "float[3] f_array;"
-        + "uint16_t u16;"
-        + "int16_t s16;"
-        + "uint16_t[3] u16_array;"
-        + "int16_t[3] s16_array;"
-        + "char c;"
-        + "char[10] s;"
-        + "uint8_t u8;"
-        + "int8_t s8;"
-        + "uint8_t[3] u8_array;"
-        + "int8_t[3] s8_array;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.U64);
-            writer.Write(StaticFields[1], Payload.S64);
-            writer.Write(StaticFields[2], Payload.D);
-            writer.Write(StaticFields[3], Payload.U64Array);
-            writer.Write(StaticFields[4], Payload.S64Array);
-            writer.Write(StaticFields[5], Payload.DArray);
-            writer.Write(StaticFields[6], Payload.U32);
-            writer.Write(StaticFields[7], Payload.S32);
-            writer.Write(StaticFields[8], Payload.F);
-            writer.Write(StaticFields[9], Payload.U32Array);
-            writer.Write(StaticFields[10], Payload.S32Array);
-            writer.Write(StaticFields[11], Payload.FArray);
-            writer.Write(StaticFields[12], Payload.U16);
-            writer.Write(StaticFields[13], Payload.S16);
-            writer.Write(StaticFields[14], Payload.U16Array);
-            writer.Write(StaticFields[15], Payload.S16Array);
-            writer.Write(StaticFields[16], Payload.C);
-            writer.Write(StaticFields[17], Payload.S);
-            writer.Write(StaticFields[18], Payload.U8);
-            writer.Write(StaticFields[19], Payload.S8);
-            writer.Write(StaticFields[20], Payload.U8Array);
-            writer.Write(StaticFields[21], Payload.S8Array);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.U64 = reader.ReadULong(StaticFields[0]);
-            Payload.S64 = reader.ReadLong(StaticFields[1]);
-            Payload.D = reader.ReadDouble(StaticFields[2]);
-            reader.ReadULongArray(StaticFields[3], Payload.U64Array);
-            reader.ReadLongArray(StaticFields[4], Payload.S64Array);
-            reader.ReadDoubleArray(StaticFields[5], Payload.DArray);
-            Payload.U32 = reader.ReadUInt(StaticFields[6]);
-            Payload.S32 = reader.ReadInt(StaticFields[7]);
-            Payload.F = reader.ReadFloat(StaticFields[8]);
-            reader.ReadUIntArray(StaticFields[9],Payload.U32Array);
-            reader.ReadIntArray(StaticFields[10], Payload.S32Array);
-            reader.ReadFloatArray(StaticFields[11], Payload.FArray);
-            Payload.U16 = reader.ReadUShort(StaticFields[12]);
-            Payload.S16 = reader.ReadShort(StaticFields[13]);
-            reader.ReadUShortArray(StaticFields[14], Payload.U16Array);
-            reader.ReadShortArray(StaticFields[15], Payload.S16Array);
-            Payload.C = reader.ReadChar(StaticFields[16]);
-            reader.ReadCharArray(StaticFields[17], Payload.S);
-            Payload.U8 = reader.ReadByte(StaticFields[18]);
-            Payload.S8 = reader.ReadSByte(StaticFields[19]);
-            reader.ReadByteArray(StaticFields[20], Payload.U8Array);
-            reader.ReadSByteArray(StaticFields[21], Payload.S8Array);
-        
-            
-        }
     }
 
     /// <summary>
@@ -425,7 +120,7 @@ namespace Asv.Mavlink.Test
             S64 = BinSerialize.ReadLong(ref buffer);
             D = BinSerialize.ReadDouble(ref buffer);
             arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/179 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/));
-            U64Array = new ulong[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 U64Array[i] = BinSerialize.ReadULong(ref buffer);
@@ -482,7 +177,7 @@ namespace Asv.Mavlink.Test
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, S.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             U8 = (byte)BinSerialize.ReadByte(ref buffer);
             S8 = (sbyte)BinSerialize.ReadByte(ref buffer);
@@ -564,135 +259,389 @@ namespace Asv.Mavlink.Test
             }
             /* PayloadByteSize = 179 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,U64Field, ref _U64);    
+            Int64Type.Accept(visitor,S64Field, ref _S64);    
+            DoubleType.Accept(visitor,DField, ref _D);
+            ArrayType.Accept(visitor,U64ArrayField, 3,
+                (index,v) => UInt64Type.Accept(v, U64ArrayField, ref U64Array[index]));    
+            ArrayType.Accept(visitor,S64ArrayField, 3,
+                (index,v) => Int64Type.Accept(v, S64ArrayField, ref S64Array[index]));    
+            ArrayType.Accept(visitor,DArrayField, 3,
+                (index,v) => DoubleType.Accept(v, DArrayField, ref DArray[index]));    
+            UInt32Type.Accept(visitor,U32Field, ref _U32);    
+            Int32Type.Accept(visitor,S32Field, ref _S32);    
+            FloatType.Accept(visitor,FField, ref _F);    
+            ArrayType.Accept(visitor,U32ArrayField, 3,
+                (index,v) => UInt32Type.Accept(v, U32ArrayField, ref U32Array[index]));    
+            ArrayType.Accept(visitor,S32ArrayField, 3,
+                (index,v) => Int32Type.Accept(v, S32ArrayField, ref S32Array[index]));
+            ArrayType.Accept(visitor,FArrayField, 3,
+                (index,v) => FloatType.Accept(v, FArrayField, ref FArray[index]));
+            UInt16Type.Accept(visitor,U16Field, ref _U16);    
+            Int16Type.Accept(visitor,S16Field, ref _S16);
+            ArrayType.Accept(visitor,U16ArrayField, 3,
+                (index,v) => UInt16Type.Accept(v, U16ArrayField, ref U16Array[index]));    
+            ArrayType.Accept(visitor,S16ArrayField, 3,
+                (index,v) => Int16Type.Accept(v, S16ArrayField, ref S16Array[index]));    
+            var tmp = (byte)C;
+            UInt8Type.Accept(visitor,CField, ref tmp);
+            C = (char)tmp;   
+            ArrayType.Accept(visitor,SField, 10, (index,v) =>
+            {
+                var tmp = (byte)S[index];
+                UInt8Type.Accept(v,SField, ref tmp);
+                S[index] = (char)tmp;
+            });
+            UInt8Type.Accept(visitor,U8Field, ref _U8);    
+            Int8Type.Accept(visitor,S8Field, ref _S8);                
+            ArrayType.Accept(visitor,U8ArrayField, 3,
+                (index,v) => UInt8Type.Accept(v, U8ArrayField, ref U8Array[index]));    
+            ArrayType.Accept(visitor,S8ArrayField, 3, 
+                (index,v) => Int8Type.Accept(v, S8ArrayField, ref S8Array[index]));
 
+        }
 
         /// <summary>
         /// uint64_t
         /// OriginName: u64, Units: , IsExtended: false
         /// </summary>
-        public ulong U64 { get; set; }
+        public static readonly Field U64Field = new Field.Builder()
+            .Name(nameof(U64))
+            .Title("u64")
+            .Description("uint64_t")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt64Type.Default)
+
+            .Build();
+        private ulong _U64;
+        public ulong U64 { get => _U64; set { _U64 = value; } }
         /// <summary>
         /// int64_t
         /// OriginName: s64, Units: , IsExtended: false
         /// </summary>
-        public long S64 { get; set; }
+        public static readonly Field S64Field = new Field.Builder()
+            .Name(nameof(S64))
+            .Title("s64")
+            .Description("int64_t")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int64Type.Default)
+
+            .Build();
+        private long _S64;
+        public long S64 { get => _S64; set { _S64 = value; } }
         /// <summary>
         /// double
         /// OriginName: d, Units: , IsExtended: false
         /// </summary>
-        public double D { get; set; }
+        public static readonly Field DField = new Field.Builder()
+            .Name(nameof(D))
+            .Title("d")
+            .Description("double")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(DoubleType.Default)
+
+            .Build();
+        private double _D;
+        public double D { get => _D; set { _D = value; } }
         /// <summary>
         /// uint64_t_array
         /// OriginName: u64_array, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field U64ArrayField = new Field.Builder()
+            .Name(nameof(U64Array))
+            .Title("u64_array")
+            .Description("uint64_t_array")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt64Type.Default,3))            
+
+            .Build();
         public const int U64ArrayMaxItemsCount = 3;
-        public ulong[] U64Array { get; set; } = new ulong[3];
+        public ulong[] U64Array { get; } = new ulong[3];
         [Obsolete("This method is deprecated. Use GetU64ArrayMaxItemsCount instead.")]
         public byte GetU64ArrayMaxItemsCount() => 3;
         /// <summary>
         /// int64_t_array
         /// OriginName: s64_array, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field S64ArrayField = new Field.Builder()
+            .Name(nameof(S64Array))
+            .Title("s64_array")
+            .Description("int64_t_array")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(Int64Type.Default,3))        
+
+            .Build();
         public const int S64ArrayMaxItemsCount = 3;
         public long[] S64Array { get; } = new long[3];
         /// <summary>
         /// double_array
         /// OriginName: d_array, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DArrayField = new Field.Builder()
+            .Name(nameof(DArray))
+            .Title("d_array")
+            .Description("double_array")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(DoubleType.Default,3))        
+
+            .Build();
         public const int DArrayMaxItemsCount = 3;
         public double[] DArray { get; } = new double[3];
         /// <summary>
         /// uint32_t
         /// OriginName: u32, Units: , IsExtended: false
         /// </summary>
-        public uint U32 { get; set; }
+        public static readonly Field U32Field = new Field.Builder()
+            .Name(nameof(U32))
+            .Title("u32")
+            .Description("uint32_t")
+            .FormatString("0x%08x")
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _U32;
+        public uint U32 { get => _U32; set { _U32 = value; } }
         /// <summary>
         /// int32_t
         /// OriginName: s32, Units: , IsExtended: false
         /// </summary>
-        public int S32 { get; set; }
+        public static readonly Field S32Field = new Field.Builder()
+            .Name(nameof(S32))
+            .Title("s32")
+            .Description("int32_t")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _S32;
+        public int S32 { get => _S32; set { _S32 = value; } }
         /// <summary>
         /// float
         /// OriginName: f, Units: , IsExtended: false
         /// </summary>
-        public float F { get; set; }
+        public static readonly Field FField = new Field.Builder()
+            .Name(nameof(F))
+            .Title("f")
+            .Description("float")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _F;
+        public float F { get => _F; set { _F = value; } }
         /// <summary>
         /// uint32_t_array
         /// OriginName: u32_array, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field U32ArrayField = new Field.Builder()
+            .Name(nameof(U32Array))
+            .Title("u32_array")
+            .Description("uint32_t_array")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt32Type.Default,3))        
+
+            .Build();
         public const int U32ArrayMaxItemsCount = 3;
         public uint[] U32Array { get; } = new uint[3];
         /// <summary>
         /// int32_t_array
         /// OriginName: s32_array, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field S32ArrayField = new Field.Builder()
+            .Name(nameof(S32Array))
+            .Title("s32_array")
+            .Description("int32_t_array")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(Int32Type.Default,3))        
+
+            .Build();
         public const int S32ArrayMaxItemsCount = 3;
         public int[] S32Array { get; } = new int[3];
         /// <summary>
         /// float_array
         /// OriginName: f_array, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field FArrayField = new Field.Builder()
+            .Name(nameof(FArray))
+            .Title("f_array")
+            .Description("float_array")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(FloatType.Default,3))        
+
+            .Build();
         public const int FArrayMaxItemsCount = 3;
         public float[] FArray { get; } = new float[3];
         /// <summary>
         /// uint16_t
         /// OriginName: u16, Units: , IsExtended: false
         /// </summary>
-        public ushort U16 { get; set; }
+        public static readonly Field U16Field = new Field.Builder()
+            .Name(nameof(U16))
+            .Title("u16")
+            .Description("uint16_t")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _U16;
+        public ushort U16 { get => _U16; set { _U16 = value; } }
         /// <summary>
         /// int16_t
         /// OriginName: s16, Units: , IsExtended: false
         /// </summary>
-        public short S16 { get; set; }
+        public static readonly Field S16Field = new Field.Builder()
+            .Name(nameof(S16))
+            .Title("s16")
+            .Description("int16_t")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _S16;
+        public short S16 { get => _S16; set { _S16 = value; } }
         /// <summary>
         /// uint16_t_array
         /// OriginName: u16_array, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field U16ArrayField = new Field.Builder()
+            .Name(nameof(U16Array))
+            .Title("u16_array")
+            .Description("uint16_t_array")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt16Type.Default,3))
+
+            .Build();
         public const int U16ArrayMaxItemsCount = 3;
         public ushort[] U16Array { get; } = new ushort[3];
         /// <summary>
         /// int16_t_array
         /// OriginName: s16_array, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field S16ArrayField = new Field.Builder()
+            .Name(nameof(S16Array))
+            .Title("s16_array")
+            .Description("int16_t_array")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(Int16Type.Default,3))
+
+            .Build();
         public const int S16ArrayMaxItemsCount = 3;
         public short[] S16Array { get; } = new short[3];
         /// <summary>
         /// char
         /// OriginName: c, Units: , IsExtended: false
         /// </summary>
-        public char C { get; set; }
+        public static readonly Field CField = new Field.Builder()
+            .Name(nameof(C))
+            .Title("c")
+            .Description("char")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private char _C;
+        public char C { get => _C; set { _C = value; } }
         /// <summary>
         /// string
         /// OriginName: s, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field SField = new Field.Builder()
+            .Name(nameof(S))
+            .Title("s")
+            .Description("string")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,10))
+
+            .Build();
         public const int SMaxItemsCount = 10;
         public char[] S { get; } = new char[10];
         /// <summary>
         /// uint8_t
         /// OriginName: u8, Units: , IsExtended: false
         /// </summary>
-        public byte U8 { get; set; }
+        public static readonly Field U8Field = new Field.Builder()
+            .Name(nameof(U8))
+            .Title("u8")
+            .Description("uint8_t")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _U8;
+        public byte U8 { get => _U8; set { _U8 = value; } }
         /// <summary>
         /// int8_t
         /// OriginName: s8, Units: , IsExtended: false
         /// </summary>
-        public sbyte S8 { get; set; }
+        public static readonly Field S8Field = new Field.Builder()
+            .Name(nameof(S8))
+            .Title("s8")
+            .Description("int8_t")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int8Type.Default)
+
+            .Build();
+        private sbyte _S8;
+        public sbyte S8 { get => _S8; set { _S8 = value; } }
         /// <summary>
         /// uint8_t_array
         /// OriginName: u8_array, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field U8ArrayField = new Field.Builder()
+            .Name(nameof(U8Array))
+            .Title("u8_array")
+            .Description("uint8_t_array")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,3))
+
+            .Build();
         public const int U8ArrayMaxItemsCount = 3;
         public byte[] U8Array { get; } = new byte[3];
         /// <summary>
         /// int8_t_array
         /// OriginName: s8_array, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field S8ArrayField = new Field.Builder()
+            .Name(nameof(S8Array))
+            .Title("s8_array")
+            .Description("int8_t_array")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(Int8Type.Default,3))
+
+            .Build();
         public const int S8ArrayMaxItemsCount = 3;
         public sbyte[] S8Array { get; } = new sbyte[3];
     }
+
+
+
+
+        
 
 
 #endregion

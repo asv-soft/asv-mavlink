@@ -20,18 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
 
 using System;
 using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
-using System.Linq;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
-using Asv.IO;
 using Asv.Mavlink.AsvAudio;
+using Asv.IO;
 
 namespace Asv.Mavlink.AsvRadio
 {
@@ -176,104 +175,6 @@ namespace Asv.Mavlink.AsvRadio
         public override AsvRadioStatusPayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_STATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "freq",
-            "RF frequency.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "tx_level",
-            "Current TX power in dBm.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "rx_level",
-            "Measured RX power in dBm.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "rx_estimated_level",
-            "Estimated RX reference power in dBm.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "rf_mode",
-            "RF mode.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(5,
-            "modulation",
-            "Current RF modulation.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "ASV_RADIO_STATUS:"
-        + "float freq;"
-        + "float tx_level;"
-        + "float rx_level;"
-        + "float rx_estimated_level;"
-        + "uint32_t rf_mode;"
-        + "uint8_t modulation;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Freq);
-            writer.Write(StaticFields[1], Payload.TxLevel);
-            writer.Write(StaticFields[2], Payload.RxLevel);
-            writer.Write(StaticFields[3], Payload.RxEstimatedLevel);
-            writer.Write(StaticFields[4], (ulong)Payload.RfMode);
-            writer.Write(StaticFields[5], (ulong)Payload.Modulation);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Freq = reader.ReadFloat(StaticFields[0]);
-            Payload.TxLevel = reader.ReadFloat(StaticFields[1]);
-            Payload.RxLevel = reader.ReadFloat(StaticFields[2]);
-            Payload.RxEstimatedLevel = reader.ReadFloat(StaticFields[3]);
-            Payload.RfMode = (AsvRadioRfModeFlag)reader.ReadUInt(StaticFields[4]);
-            Payload.Modulation = (AsvRadioModulation)reader.ReadByte(StaticFields[5]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -321,41 +222,112 @@ namespace Asv.Mavlink.AsvRadio
             BinSerialize.WriteByte(ref buffer,(byte)Modulation);
             /* PayloadByteSize = 21 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,FreqField, ref _Freq);    
+            FloatType.Accept(visitor,TxLevelField, ref _TxLevel);    
+            FloatType.Accept(visitor,RxLevelField, ref _RxLevel);    
+            FloatType.Accept(visitor,RxEstimatedLevelField, ref _RxEstimatedLevel);    
+            var tmpRfMode = (uint)RfMode;
+            UInt32Type.Accept(visitor,RfModeField, ref tmpRfMode);
+            RfMode = (AsvRadioRfModeFlag)tmpRfMode;
+            var tmpModulation = (byte)Modulation;
+            UInt8Type.Accept(visitor,ModulationField, ref tmpModulation);
+            Modulation = (AsvRadioModulation)tmpModulation;
 
+        }
 
         /// <summary>
         /// RF frequency.
         /// OriginName: freq, Units: , IsExtended: false
         /// </summary>
-        public float Freq { get; set; }
+        public static readonly Field FreqField = new Field.Builder()
+            .Name(nameof(Freq))
+            .Title("freq")
+            .Description("RF frequency.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Freq;
+        public float Freq { get => _Freq; set { _Freq = value; } }
         /// <summary>
         /// Current TX power in dBm.
         /// OriginName: tx_level, Units: , IsExtended: false
         /// </summary>
-        public float TxLevel { get; set; }
+        public static readonly Field TxLevelField = new Field.Builder()
+            .Name(nameof(TxLevel))
+            .Title("tx_level")
+            .Description("Current TX power in dBm.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _TxLevel;
+        public float TxLevel { get => _TxLevel; set { _TxLevel = value; } }
         /// <summary>
         /// Measured RX power in dBm.
         /// OriginName: rx_level, Units: , IsExtended: false
         /// </summary>
-        public float RxLevel { get; set; }
+        public static readonly Field RxLevelField = new Field.Builder()
+            .Name(nameof(RxLevel))
+            .Title("rx_level")
+            .Description("Measured RX power in dBm.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _RxLevel;
+        public float RxLevel { get => _RxLevel; set { _RxLevel = value; } }
         /// <summary>
         /// Estimated RX reference power in dBm.
         /// OriginName: rx_estimated_level, Units: , IsExtended: false
         /// </summary>
-        public float RxEstimatedLevel { get; set; }
+        public static readonly Field RxEstimatedLevelField = new Field.Builder()
+            .Name(nameof(RxEstimatedLevel))
+            .Title("rx_estimated_level")
+            .Description("Estimated RX reference power in dBm.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _RxEstimatedLevel;
+        public float RxEstimatedLevel { get => _RxEstimatedLevel; set { _RxEstimatedLevel = value; } }
         /// <summary>
         /// RF mode.
         /// OriginName: rf_mode, Units: , IsExtended: false
         /// </summary>
-        public AsvRadioRfModeFlag RfMode { get; set; }
+        public static readonly Field RfModeField = new Field.Builder()
+            .Name(nameof(RfMode))
+            .Title("rf_mode")
+            .Description("RF mode.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        public AsvRadioRfModeFlag _RfMode;
+        public AsvRadioRfModeFlag RfMode { get => _RfMode; set => _RfMode = value; } 
         /// <summary>
         /// Current RF modulation.
         /// OriginName: modulation, Units: , IsExtended: false
         /// </summary>
-        public AsvRadioModulation Modulation { get; set; }
+        public static readonly Field ModulationField = new Field.Builder()
+            .Name(nameof(Modulation))
+            .Title("modulation")
+            .Description("Current RF modulation.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public AsvRadioModulation _Modulation;
+        public AsvRadioModulation Modulation { get => _Modulation; set => _Modulation = value; } 
     }
     /// <summary>
     /// Request for device capabilities. Devices must reply ASV_RADIO_CAPABILITIES_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -377,52 +349,6 @@ namespace Asv.Mavlink.AsvRadio
         public override AsvRadioCapabilitiesRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CAPABILITIES_REQUEST";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "target_system",
-            "System ID",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "target_component",
-            "Component ID",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "ASV_RADIO_CAPABILITIES_REQUEST:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TargetSystem);
-            writer.Write(StaticFields[1], Payload.TargetComponent);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -458,21 +384,44 @@ namespace Asv.Mavlink.AsvRadio
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 2 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
 
+        }
 
         /// <summary>
         /// System ID
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
     }
     /// <summary>
     /// Device capabilities. This is response for ASV_RADIO_CAPABILITIES_REQUEST message.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -494,117 +443,6 @@ namespace Asv.Mavlink.AsvRadio
         public override AsvRadioCapabilitiesResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CAPABILITIES_RESPONSE";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "max_rf_freq",
-            "Max RF frequency in Hz.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "min_rf_freq",
-            "Min RF frequency in Hz.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(2,
-            "max_tx_power",
-            "Max TX power in dBm.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "min_tx_power",
-            "Min TX power in dBm.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "max_rx_power",
-            "Max estimated RX power in dBm.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "min_rx_power",
-            "Min estimated RX power in dBm.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "supported_modulation",
-            "Supported RF modulations. Each bit of array is flag from ASV_RADIO_MODULATION(max 255 items) enum.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            32, 
-            false),
-        ];
-        public const string FormatMessage = "ASV_RADIO_CAPABILITIES_RESPONSE:"
-        + "uint32_t max_rf_freq;"
-        + "uint32_t min_rf_freq;"
-        + "float max_tx_power;"
-        + "float min_tx_power;"
-        + "float max_rx_power;"
-        + "float min_rx_power;"
-        + "uint8_t[32] supported_modulation;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.MaxRfFreq);
-            writer.Write(StaticFields[1], Payload.MinRfFreq);
-            writer.Write(StaticFields[2], Payload.MaxTxPower);
-            writer.Write(StaticFields[3], Payload.MinTxPower);
-            writer.Write(StaticFields[4], Payload.MaxRxPower);
-            writer.Write(StaticFields[5], Payload.MinRxPower);
-            writer.Write(StaticFields[6], Payload.SupportedModulation);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.MaxRfFreq = reader.ReadUInt(StaticFields[0]);
-            Payload.MinRfFreq = reader.ReadUInt(StaticFields[1]);
-            Payload.MaxTxPower = reader.ReadFloat(StaticFields[2]);
-            Payload.MinTxPower = reader.ReadFloat(StaticFields[3]);
-            Payload.MaxRxPower = reader.ReadFloat(StaticFields[4]);
-            Payload.MinRxPower = reader.ReadFloat(StaticFields[5]);
-            reader.ReadByteArray(StaticFields[6], Payload.SupportedModulation);
-        
-            
-        }
     }
 
     /// <summary>
@@ -643,7 +481,7 @@ namespace Asv.Mavlink.AsvRadio
             MaxRxPower = BinSerialize.ReadFloat(ref buffer);
             MinRxPower = BinSerialize.ReadFloat(ref buffer);
             arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/56 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            SupportedModulation = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 SupportedModulation[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -665,47 +503,125 @@ namespace Asv.Mavlink.AsvRadio
             }
             /* PayloadByteSize = 56 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,MaxRfFreqField, ref _MaxRfFreq);    
+            UInt32Type.Accept(visitor,MinRfFreqField, ref _MinRfFreq);    
+            FloatType.Accept(visitor,MaxTxPowerField, ref _MaxTxPower);    
+            FloatType.Accept(visitor,MinTxPowerField, ref _MinTxPower);    
+            FloatType.Accept(visitor,MaxRxPowerField, ref _MaxRxPower);    
+            FloatType.Accept(visitor,MinRxPowerField, ref _MinRxPower);    
+            ArrayType.Accept(visitor,SupportedModulationField, 32,
+                (index,v) => UInt8Type.Accept(v, SupportedModulationField, ref SupportedModulation[index]));    
 
+        }
 
         /// <summary>
         /// Max RF frequency in Hz.
         /// OriginName: max_rf_freq, Units: , IsExtended: false
         /// </summary>
-        public uint MaxRfFreq { get; set; }
+        public static readonly Field MaxRfFreqField = new Field.Builder()
+            .Name(nameof(MaxRfFreq))
+            .Title("max_rf_freq")
+            .Description("Max RF frequency in Hz.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _MaxRfFreq;
+        public uint MaxRfFreq { get => _MaxRfFreq; set { _MaxRfFreq = value; } }
         /// <summary>
         /// Min RF frequency in Hz.
         /// OriginName: min_rf_freq, Units: , IsExtended: false
         /// </summary>
-        public uint MinRfFreq { get; set; }
+        public static readonly Field MinRfFreqField = new Field.Builder()
+            .Name(nameof(MinRfFreq))
+            .Title("min_rf_freq")
+            .Description("Min RF frequency in Hz.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _MinRfFreq;
+        public uint MinRfFreq { get => _MinRfFreq; set { _MinRfFreq = value; } }
         /// <summary>
         /// Max TX power in dBm.
         /// OriginName: max_tx_power, Units: , IsExtended: false
         /// </summary>
-        public float MaxTxPower { get; set; }
+        public static readonly Field MaxTxPowerField = new Field.Builder()
+            .Name(nameof(MaxTxPower))
+            .Title("max_tx_power")
+            .Description("Max TX power in dBm.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _MaxTxPower;
+        public float MaxTxPower { get => _MaxTxPower; set { _MaxTxPower = value; } }
         /// <summary>
         /// Min TX power in dBm.
         /// OriginName: min_tx_power, Units: , IsExtended: false
         /// </summary>
-        public float MinTxPower { get; set; }
+        public static readonly Field MinTxPowerField = new Field.Builder()
+            .Name(nameof(MinTxPower))
+            .Title("min_tx_power")
+            .Description("Min TX power in dBm.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _MinTxPower;
+        public float MinTxPower { get => _MinTxPower; set { _MinTxPower = value; } }
         /// <summary>
         /// Max estimated RX power in dBm.
         /// OriginName: max_rx_power, Units: , IsExtended: false
         /// </summary>
-        public float MaxRxPower { get; set; }
+        public static readonly Field MaxRxPowerField = new Field.Builder()
+            .Name(nameof(MaxRxPower))
+            .Title("max_rx_power")
+            .Description("Max estimated RX power in dBm.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _MaxRxPower;
+        public float MaxRxPower { get => _MaxRxPower; set { _MaxRxPower = value; } }
         /// <summary>
         /// Min estimated RX power in dBm.
         /// OriginName: min_rx_power, Units: , IsExtended: false
         /// </summary>
-        public float MinRxPower { get; set; }
+        public static readonly Field MinRxPowerField = new Field.Builder()
+            .Name(nameof(MinRxPower))
+            .Title("min_rx_power")
+            .Description("Min estimated RX power in dBm.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _MinRxPower;
+        public float MinRxPower { get => _MinRxPower; set { _MinRxPower = value; } }
         /// <summary>
         /// Supported RF modulations. Each bit of array is flag from ASV_RADIO_MODULATION(max 255 items) enum.
         /// OriginName: supported_modulation, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field SupportedModulationField = new Field.Builder()
+            .Name(nameof(SupportedModulation))
+            .Title("supported_modulation")
+            .Description("Supported RF modulations. Each bit of array is flag from ASV_RADIO_MODULATION(max 255 items) enum.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,32))
+
+            .Build();
         public const int SupportedModulationMaxItemsCount = 32;
-        public byte[] SupportedModulation { get; set; } = new byte[32];
+        public byte[] SupportedModulation { get; } = new byte[32];
         [Obsolete("This method is deprecated. Use GetSupportedModulationMaxItemsCount instead.")]
         public byte GetSupportedModulationMaxItemsCount() => 32;
     }
@@ -729,78 +645,6 @@ namespace Asv.Mavlink.AsvRadio
         public override AsvRadioCodecCapabilitiesRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CODEC_CAPABILITIES_REQUEST";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "skip",
-            "Skip index.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "target_system",
-            "System ID",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "target_component",
-            "Component ID",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "count",
-            "Codec count at ASV_RADIO_CODEC_CAPABILITIES_RESPONSE.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "ASV_RADIO_CODEC_CAPABILITIES_REQUEST:"
-        + "uint16_t skip;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t count;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Skip);
-            writer.Write(StaticFields[1], Payload.TargetSystem);
-            writer.Write(StaticFields[2], Payload.TargetComponent);
-            writer.Write(StaticFields[3], Payload.Count);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Skip = reader.ReadUShort(StaticFields[0]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.Count = reader.ReadByte(StaticFields[3]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -842,31 +686,76 @@ namespace Asv.Mavlink.AsvRadio
             BinSerialize.WriteByte(ref buffer,(byte)Count);
             /* PayloadByteSize = 5 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,SkipField, ref _Skip);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,CountField, ref _Count);    
 
+        }
 
         /// <summary>
         /// Skip index.
         /// OriginName: skip, Units: , IsExtended: false
         /// </summary>
-        public ushort Skip { get; set; }
+        public static readonly Field SkipField = new Field.Builder()
+            .Name(nameof(Skip))
+            .Title("skip")
+            .Description("Skip index.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Skip;
+        public ushort Skip { get => _Skip; set { _Skip = value; } }
         /// <summary>
         /// System ID
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Codec count at ASV_RADIO_CODEC_CAPABILITIES_RESPONSE.
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Codec count at ASV_RADIO_CODEC_CAPABILITIES_RESPONSE.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Count;
+        public byte Count { get => _Count; set { _Count = value; } }
     }
     /// <summary>
     /// Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_CAPABILITIES_REQUEST message.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -888,83 +777,6 @@ namespace Asv.Mavlink.AsvRadio
         public override AsvRadioCodecCapabilitiesResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_RADIO_CODEC_CAPABILITIES_RESPONSE";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "all",
-            "All codec codecs.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "skip",
-            "Skip index codec.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(2,
-            "codecs",
-            "Supported codec array.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            100, 
-            false),
-            new(3,
-            "count",
-            "Array size.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "ASV_RADIO_CODEC_CAPABILITIES_RESPONSE:"
-        + "uint16_t all;"
-        + "uint16_t skip;"
-        + "uint16_t[100] codecs;"
-        + "uint8_t count;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.All);
-            writer.Write(StaticFields[1], Payload.Skip);
-            writer.Write(StaticFields[2], Payload.Codecs.Select(x=>(ulong)x).ToArray());
-            writer.Write(StaticFields[3], Payload.Count);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.All = reader.ReadUShort(StaticFields[0]);
-            Payload.Skip = reader.ReadUShort(StaticFields[1]);
-            var array = new ushort[Payload.Codecs.Length];
-            reader.ReadUShortArray(StaticFields[2], array);
-            for(var i=0;i<array.Length;i++)
-            {
-                Payload.Codecs[i] = (AsvAudioCodec)array[i];
-            }
-            Payload.Count = reader.ReadByte(StaticFields[3]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -997,7 +809,7 @@ namespace Asv.Mavlink.AsvRadio
             All = BinSerialize.ReadUShort(ref buffer);
             Skip = BinSerialize.ReadUShort(ref buffer);
             arraySize = /*ArrayLength*/100 - Math.Max(0,((/*PayloadByteSize*/205 - payloadSize - /*ExtendedFieldsLength*/0)/*FieldTypeByteSize*/ /2));
-            Codecs = new AsvAudioCodec[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Codecs[i] = (AsvAudioCodec)BinSerialize.ReadUShort(ref buffer);
@@ -1018,33 +830,87 @@ namespace Asv.Mavlink.AsvRadio
             BinSerialize.WriteByte(ref buffer,(byte)Count);
             /* PayloadByteSize = 205 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,AllField, ref _All);    
+            UInt16Type.Accept(visitor,SkipField, ref _Skip);    
+            ArrayType.Accept(visitor,CodecsField, 100, (index,v) =>
+            {
+                var tmp = (ushort)Codecs[index];
+                UInt16Type.Accept(v, CodecsField, ref tmp);
+                Codecs[index] = (AsvAudioCodec)tmp;
+            });
+            UInt8Type.Accept(visitor,CountField, ref _Count);    
 
+        }
 
         /// <summary>
         /// All codec codecs.
         /// OriginName: all, Units: , IsExtended: false
         /// </summary>
-        public ushort All { get; set; }
+        public static readonly Field AllField = new Field.Builder()
+            .Name(nameof(All))
+            .Title("all")
+            .Description("All codec codecs.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _All;
+        public ushort All { get => _All; set { _All = value; } }
         /// <summary>
         /// Skip index codec.
         /// OriginName: skip, Units: , IsExtended: false
         /// </summary>
-        public ushort Skip { get; set; }
+        public static readonly Field SkipField = new Field.Builder()
+            .Name(nameof(Skip))
+            .Title("skip")
+            .Description("Skip index codec.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Skip;
+        public ushort Skip { get => _Skip; set { _Skip = value; } }
         /// <summary>
         /// Supported codec array.
         /// OriginName: codecs, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CodecsField = new Field.Builder()
+            .Name(nameof(Codecs))
+            .Title("codecs")
+            .Description("Supported codec array.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt16Type.Default,100))
+
+            .Build();
         public const int CodecsMaxItemsCount = 100;    
-        public AsvAudioCodec[] Codecs { get; set; } = new AsvAudioCodec[100];
+        public AsvAudioCodec[] Codecs { get; } = new AsvAudioCodec[100];
         /// <summary>
         /// Array size.
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Array size.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Count;
+        public byte Count { get => _Count; set { _Count = value; } }
     }
+
+
+
+
+        
 
 
 #endregion

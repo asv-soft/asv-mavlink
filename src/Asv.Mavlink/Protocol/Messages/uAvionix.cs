@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
 
 using System;
 using System.Text;
@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
 using Asv.IO;
 
 namespace Asv.Mavlink.Uavionix
@@ -343,130 +344,6 @@ namespace Asv.Mavlink.Uavionix
         public override UavionixAdsbOutCfgPayload Payload { get; } = new();
 
         public override string Name => "UAVIONIX_ADSB_OUT_CFG";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "ICAO",
-            "Vehicle address (24 bit)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "stallSpeed",
-            "Aircraft stall speed in cm/s",
-            string.Empty, 
-            @"cm/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(2,
-            "callsign",
-            "Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, \" \" only)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Char, 
-            9, 
-            false),
-            new(3,
-            "emitterType",
-            "Transmitting vehicle type. See ADSB_EMITTER_TYPE enum",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "aircraftSize",
-            "Aircraft length and width encoding (table 2-35 of DO-282B)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "gpsOffsetLat",
-            "GPS antenna lateral offset (table 2-36 of DO-282B)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(6,
-            "gpsOffsetLon",
-            "GPS antenna longitudinal offset from nose [if non-zero, take position (in meters) divide by 2 and add one] (table 2-37 DO-282B)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "rfSelect",
-            "ADS-B transponder receiver and transmit enable flags",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "UAVIONIX_ADSB_OUT_CFG:"
-        + "uint32_t ICAO;"
-        + "uint16_t stallSpeed;"
-        + "char[9] callsign;"
-        + "uint8_t emitterType;"
-        + "uint8_t aircraftSize;"
-        + "uint8_t gpsOffsetLat;"
-        + "uint8_t gpsOffsetLon;"
-        + "uint8_t rfSelect;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Icao);
-            writer.Write(StaticFields[1], Payload.Stallspeed);
-            writer.Write(StaticFields[2], Payload.Callsign);
-            writer.Write(StaticFields[3], (ulong)Payload.Emittertype);
-            writer.Write(StaticFields[4], (ulong)Payload.Aircraftsize);
-            writer.Write(StaticFields[5], (ulong)Payload.Gpsoffsetlat);
-            writer.Write(StaticFields[6], (ulong)Payload.Gpsoffsetlon);
-            writer.Write(StaticFields[7], (ulong)Payload.Rfselect);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Icao = reader.ReadUInt(StaticFields[0]);
-            Payload.Stallspeed = reader.ReadUShort(StaticFields[1]);
-            reader.ReadCharArray(StaticFields[2], Payload.Callsign);
-            Payload.Emittertype = (AdsbEmitterType)reader.ReadByte(StaticFields[3]);
-            Payload.Aircraftsize = (UavionixAdsbOutCfgAircraftSize)reader.ReadByte(StaticFields[4]);
-            Payload.Gpsoffsetlat = (UavionixAdsbOutCfgGpsOffsetLat)reader.ReadByte(StaticFields[5]);
-            Payload.Gpsoffsetlon = (UavionixAdsbOutCfgGpsOffsetLon)reader.ReadByte(StaticFields[6]);
-            Payload.Rfselect = (UavionixAdsbOutRfSelect)reader.ReadByte(StaticFields[7]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -502,7 +379,7 @@ namespace Asv.Mavlink.Uavionix
             Icao = BinSerialize.ReadUInt(ref buffer);
             Stallspeed = BinSerialize.ReadUShort(ref buffer);
             arraySize = /*ArrayLength*/9 - Math.Max(0,((/*PayloadByteSize*/20 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Callsign = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -511,7 +388,7 @@ namespace Asv.Mavlink.Uavionix
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Callsign.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             Emittertype = (AdsbEmitterType)BinSerialize.ReadByte(ref buffer);
             Aircraftsize = (UavionixAdsbOutCfgAircraftSize)BinSerialize.ReadByte(ref buffer);
@@ -542,54 +419,157 @@ namespace Asv.Mavlink.Uavionix
             BinSerialize.WriteByte(ref buffer,(byte)Rfselect);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,IcaoField, ref _Icao);    
+            UInt16Type.Accept(visitor,StallspeedField, ref _Stallspeed);    
+            ArrayType.Accept(visitor,CallsignField, 9, (index,v) =>
+            {
+                var tmp = (byte)Callsign[index];
+                UInt8Type.Accept(v,CallsignField, ref tmp);
+                Callsign[index] = (char)tmp;
+            });
+            var tmpEmittertype = (byte)Emittertype;
+            UInt8Type.Accept(visitor,EmittertypeField, ref tmpEmittertype);
+            Emittertype = (AdsbEmitterType)tmpEmittertype;
+            var tmpAircraftsize = (byte)Aircraftsize;
+            UInt8Type.Accept(visitor,AircraftsizeField, ref tmpAircraftsize);
+            Aircraftsize = (UavionixAdsbOutCfgAircraftSize)tmpAircraftsize;
+            var tmpGpsoffsetlat = (byte)Gpsoffsetlat;
+            UInt8Type.Accept(visitor,GpsoffsetlatField, ref tmpGpsoffsetlat);
+            Gpsoffsetlat = (UavionixAdsbOutCfgGpsOffsetLat)tmpGpsoffsetlat;
+            var tmpGpsoffsetlon = (byte)Gpsoffsetlon;
+            UInt8Type.Accept(visitor,GpsoffsetlonField, ref tmpGpsoffsetlon);
+            Gpsoffsetlon = (UavionixAdsbOutCfgGpsOffsetLon)tmpGpsoffsetlon;
+            var tmpRfselect = (byte)Rfselect;
+            UInt8Type.Accept(visitor,RfselectField, ref tmpRfselect);
+            Rfselect = (UavionixAdsbOutRfSelect)tmpRfselect;
 
+        }
 
         /// <summary>
         /// Vehicle address (24 bit)
         /// OriginName: ICAO, Units: , IsExtended: false
         /// </summary>
-        public uint Icao { get; set; }
+        public static readonly Field IcaoField = new Field.Builder()
+            .Name(nameof(Icao))
+            .Title("ICAO")
+            .Description("Vehicle address (24 bit)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _Icao;
+        public uint Icao { get => _Icao; set { _Icao = value; } }
         /// <summary>
         /// Aircraft stall speed in cm/s
         /// OriginName: stallSpeed, Units: cm/s, IsExtended: false
         /// </summary>
-        public ushort Stallspeed { get; set; }
+        public static readonly Field StallspeedField = new Field.Builder()
+            .Name(nameof(Stallspeed))
+            .Title("stallSpeed")
+            .Description("Aircraft stall speed in cm/s")
+            .FormatString(string.Empty)
+            .Units(@"cm/s")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Stallspeed;
+        public ushort Stallspeed { get => _Stallspeed; set { _Stallspeed = value; } }
         /// <summary>
         /// Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, " " only)
         /// OriginName: callsign, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CallsignField = new Field.Builder()
+            .Name(nameof(Callsign))
+            .Title("callsign")
+            .Description("Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, \" \" only)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,9))
+
+            .Build();
         public const int CallsignMaxItemsCount = 9;
-        public char[] Callsign { get; set; } = new char[9];
+        public char[] Callsign { get; } = new char[9];
         [Obsolete("This method is deprecated. Use GetCallsignMaxItemsCount instead.")]
         public byte GetCallsignMaxItemsCount() => 9;
         /// <summary>
         /// Transmitting vehicle type. See ADSB_EMITTER_TYPE enum
         /// OriginName: emitterType, Units: , IsExtended: false
         /// </summary>
-        public AdsbEmitterType Emittertype { get; set; }
+        public static readonly Field EmittertypeField = new Field.Builder()
+            .Name(nameof(Emittertype))
+            .Title("emitterType")
+            .Description("Transmitting vehicle type. See ADSB_EMITTER_TYPE enum")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public AdsbEmitterType _Emittertype;
+        public AdsbEmitterType Emittertype { get => _Emittertype; set => _Emittertype = value; } 
         /// <summary>
         /// Aircraft length and width encoding (table 2-35 of DO-282B)
         /// OriginName: aircraftSize, Units: , IsExtended: false
         /// </summary>
-        public UavionixAdsbOutCfgAircraftSize Aircraftsize { get; set; }
+        public static readonly Field AircraftsizeField = new Field.Builder()
+            .Name(nameof(Aircraftsize))
+            .Title("aircraftSize")
+            .Description("Aircraft length and width encoding (table 2-35 of DO-282B)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public UavionixAdsbOutCfgAircraftSize _Aircraftsize;
+        public UavionixAdsbOutCfgAircraftSize Aircraftsize { get => _Aircraftsize; set => _Aircraftsize = value; } 
         /// <summary>
         /// GPS antenna lateral offset (table 2-36 of DO-282B)
         /// OriginName: gpsOffsetLat, Units: , IsExtended: false
         /// </summary>
-        public UavionixAdsbOutCfgGpsOffsetLat Gpsoffsetlat { get; set; }
+        public static readonly Field GpsoffsetlatField = new Field.Builder()
+            .Name(nameof(Gpsoffsetlat))
+            .Title("gpsOffsetLat")
+            .Description("GPS antenna lateral offset (table 2-36 of DO-282B)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public UavionixAdsbOutCfgGpsOffsetLat _Gpsoffsetlat;
+        public UavionixAdsbOutCfgGpsOffsetLat Gpsoffsetlat { get => _Gpsoffsetlat; set => _Gpsoffsetlat = value; } 
         /// <summary>
         /// GPS antenna longitudinal offset from nose [if non-zero, take position (in meters) divide by 2 and add one] (table 2-37 DO-282B)
         /// OriginName: gpsOffsetLon, Units: , IsExtended: false
         /// </summary>
-        public UavionixAdsbOutCfgGpsOffsetLon Gpsoffsetlon { get; set; }
+        public static readonly Field GpsoffsetlonField = new Field.Builder()
+            .Name(nameof(Gpsoffsetlon))
+            .Title("gpsOffsetLon")
+            .Description("GPS antenna longitudinal offset from nose [if non-zero, take position (in meters) divide by 2 and add one] (table 2-37 DO-282B)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public UavionixAdsbOutCfgGpsOffsetLon _Gpsoffsetlon;
+        public UavionixAdsbOutCfgGpsOffsetLon Gpsoffsetlon { get => _Gpsoffsetlon; set => _Gpsoffsetlon = value; } 
         /// <summary>
         /// ADS-B transponder receiver and transmit enable flags
         /// OriginName: rfSelect, Units: , IsExtended: false
         /// </summary>
-        public UavionixAdsbOutRfSelect Rfselect { get; set; }
+        public static readonly Field RfselectField = new Field.Builder()
+            .Name(nameof(Rfselect))
+            .Title("bitmask")
+            .Description("ADS-B transponder receiver and transmit enable flags")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public UavionixAdsbOutRfSelect _Rfselect;
+        public UavionixAdsbOutRfSelect Rfselect { get => _Rfselect; set => _Rfselect = value; } 
     }
     /// <summary>
     /// Dynamic data used to generate ADS-B out transponder data (send at 5Hz)
@@ -611,234 +591,6 @@ namespace Asv.Mavlink.Uavionix
         public override UavionixAdsbOutDynamicPayload Payload { get; } = new();
 
         public override string Name => "UAVIONIX_ADSB_OUT_DYNAMIC";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "utcTime",
-            "UTC time in seconds since GPS epoch (Jan 6, 1980). If unknown set to UINT32_MAX",
-            string.Empty, 
-            @"s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "gpsLat",
-            "Latitude WGS84 (deg * 1E7). If unknown set to INT32_MAX",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(2,
-            "gpsLon",
-            "Longitude WGS84 (deg * 1E7). If unknown set to INT32_MAX",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(3,
-            "gpsAlt",
-            "Altitude (WGS84). UP +ve. If unknown set to INT32_MAX",
-            string.Empty, 
-            @"mm", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(4,
-            "baroAltMSL",
-            "Barometric pressure altitude (MSL) relative to a standard atmosphere of 1013.2 mBar and NOT bar corrected altitude (m * 1E-3). (up +ve). If unknown set to INT32_MAX",
-            string.Empty, 
-            @"mbar", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(5,
-            "accuracyHor",
-            "Horizontal accuracy in mm (m * 1E-3). If unknown set to UINT32_MAX",
-            string.Empty, 
-            @"mm", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(6,
-            "accuracyVert",
-            "Vertical accuracy in cm. If unknown set to UINT16_MAX",
-            string.Empty, 
-            @"cm", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(7,
-            "accuracyVel",
-            "Velocity accuracy in mm/s (m * 1E-3). If unknown set to UINT16_MAX",
-            string.Empty, 
-            @"mm/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(8,
-            "velVert",
-            "GPS vertical speed in cm/s. If unknown set to INT16_MAX",
-            string.Empty, 
-            @"cm/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(9,
-            "velNS",
-            "North-South velocity over ground in cm/s North +ve. If unknown set to INT16_MAX",
-            string.Empty, 
-            @"cm/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(10,
-            "VelEW",
-            "East-West velocity over ground in cm/s East +ve. If unknown set to INT16_MAX",
-            string.Empty, 
-            @"cm/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(11,
-            "state",
-            "ADS-B transponder dynamic input state flags",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(12,
-            "squawk",
-            "Mode A code (typically 1200 [0x04B0] for VFR)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(13,
-            "gpsFix",
-            "0-1: no fix, 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(14,
-            "numSats",
-            "Number of satellites visible. If unknown set to UINT8_MAX",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(15,
-            "emergencyStatus",
-            "Emergency status",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "UAVIONIX_ADSB_OUT_DYNAMIC:"
-        + "uint32_t utcTime;"
-        + "int32_t gpsLat;"
-        + "int32_t gpsLon;"
-        + "int32_t gpsAlt;"
-        + "int32_t baroAltMSL;"
-        + "uint32_t accuracyHor;"
-        + "uint16_t accuracyVert;"
-        + "uint16_t accuracyVel;"
-        + "int16_t velVert;"
-        + "int16_t velNS;"
-        + "int16_t VelEW;"
-        + "uint16_t state;"
-        + "uint16_t squawk;"
-        + "uint8_t gpsFix;"
-        + "uint8_t numSats;"
-        + "uint8_t emergencyStatus;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Utctime);
-            writer.Write(StaticFields[1], Payload.Gpslat);
-            writer.Write(StaticFields[2], Payload.Gpslon);
-            writer.Write(StaticFields[3], Payload.Gpsalt);
-            writer.Write(StaticFields[4], Payload.Baroaltmsl);
-            writer.Write(StaticFields[5], Payload.Accuracyhor);
-            writer.Write(StaticFields[6], Payload.Accuracyvert);
-            writer.Write(StaticFields[7], Payload.Accuracyvel);
-            writer.Write(StaticFields[8], Payload.Velvert);
-            writer.Write(StaticFields[9], Payload.Velns);
-            writer.Write(StaticFields[10], Payload.Velew);
-            writer.Write(StaticFields[11], (ulong)Payload.State);
-            writer.Write(StaticFields[12], Payload.Squawk);
-            writer.Write(StaticFields[13], (ulong)Payload.Gpsfix);
-            writer.Write(StaticFields[14], Payload.Numsats);
-            writer.Write(StaticFields[15], (ulong)Payload.Emergencystatus);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Utctime = reader.ReadUInt(StaticFields[0]);
-            Payload.Gpslat = reader.ReadInt(StaticFields[1]);
-            Payload.Gpslon = reader.ReadInt(StaticFields[2]);
-            Payload.Gpsalt = reader.ReadInt(StaticFields[3]);
-            Payload.Baroaltmsl = reader.ReadInt(StaticFields[4]);
-            Payload.Accuracyhor = reader.ReadUInt(StaticFields[5]);
-            Payload.Accuracyvert = reader.ReadUShort(StaticFields[6]);
-            Payload.Accuracyvel = reader.ReadUShort(StaticFields[7]);
-            Payload.Velvert = reader.ReadShort(StaticFields[8]);
-            Payload.Velns = reader.ReadShort(StaticFields[9]);
-            Payload.Velew = reader.ReadShort(StaticFields[10]);
-            Payload.State = (UavionixAdsbOutDynamicState)reader.ReadUShort(StaticFields[11]);
-            Payload.Squawk = reader.ReadUShort(StaticFields[12]);
-            Payload.Gpsfix = (UavionixAdsbOutDynamicGpsFix)reader.ReadByte(StaticFields[13]);
-            Payload.Numsats = reader.ReadByte(StaticFields[14]);
-            Payload.Emergencystatus = (UavionixAdsbEmergencyStatus)reader.ReadByte(StaticFields[15]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -916,91 +668,274 @@ namespace Asv.Mavlink.Uavionix
             BinSerialize.WriteByte(ref buffer,(byte)Emergencystatus);
             /* PayloadByteSize = 41 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,UtctimeField, ref _Utctime);    
+            Int32Type.Accept(visitor,GpslatField, ref _Gpslat);    
+            Int32Type.Accept(visitor,GpslonField, ref _Gpslon);    
+            Int32Type.Accept(visitor,GpsaltField, ref _Gpsalt);    
+            Int32Type.Accept(visitor,BaroaltmslField, ref _Baroaltmsl);    
+            UInt32Type.Accept(visitor,AccuracyhorField, ref _Accuracyhor);    
+            UInt16Type.Accept(visitor,AccuracyvertField, ref _Accuracyvert);    
+            UInt16Type.Accept(visitor,AccuracyvelField, ref _Accuracyvel);    
+            Int16Type.Accept(visitor,VelvertField, ref _Velvert);
+            Int16Type.Accept(visitor,VelnsField, ref _Velns);
+            Int16Type.Accept(visitor,VelewField, ref _Velew);
+            var tmpState = (ushort)State;
+            UInt16Type.Accept(visitor,StateField, ref tmpState);
+            State = (UavionixAdsbOutDynamicState)tmpState;
+            UInt16Type.Accept(visitor,SquawkField, ref _Squawk);    
+            var tmpGpsfix = (byte)Gpsfix;
+            UInt8Type.Accept(visitor,GpsfixField, ref tmpGpsfix);
+            Gpsfix = (UavionixAdsbOutDynamicGpsFix)tmpGpsfix;
+            UInt8Type.Accept(visitor,NumsatsField, ref _Numsats);    
+            var tmpEmergencystatus = (byte)Emergencystatus;
+            UInt8Type.Accept(visitor,EmergencystatusField, ref tmpEmergencystatus);
+            Emergencystatus = (UavionixAdsbEmergencyStatus)tmpEmergencystatus;
 
+        }
 
         /// <summary>
         /// UTC time in seconds since GPS epoch (Jan 6, 1980). If unknown set to UINT32_MAX
         /// OriginName: utcTime, Units: s, IsExtended: false
         /// </summary>
-        public uint Utctime { get; set; }
+        public static readonly Field UtctimeField = new Field.Builder()
+            .Name(nameof(Utctime))
+            .Title("utcTime")
+            .Description("UTC time in seconds since GPS epoch (Jan 6, 1980). If unknown set to UINT32_MAX")
+            .FormatString(string.Empty)
+            .Units(@"s")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _Utctime;
+        public uint Utctime { get => _Utctime; set { _Utctime = value; } }
         /// <summary>
         /// Latitude WGS84 (deg * 1E7). If unknown set to INT32_MAX
         /// OriginName: gpsLat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Gpslat { get; set; }
+        public static readonly Field GpslatField = new Field.Builder()
+            .Name(nameof(Gpslat))
+            .Title("gpsLat")
+            .Description("Latitude WGS84 (deg * 1E7). If unknown set to INT32_MAX")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Gpslat;
+        public int Gpslat { get => _Gpslat; set { _Gpslat = value; } }
         /// <summary>
         /// Longitude WGS84 (deg * 1E7). If unknown set to INT32_MAX
         /// OriginName: gpsLon, Units: degE7, IsExtended: false
         /// </summary>
-        public int Gpslon { get; set; }
+        public static readonly Field GpslonField = new Field.Builder()
+            .Name(nameof(Gpslon))
+            .Title("gpsLon")
+            .Description("Longitude WGS84 (deg * 1E7). If unknown set to INT32_MAX")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Gpslon;
+        public int Gpslon { get => _Gpslon; set { _Gpslon = value; } }
         /// <summary>
         /// Altitude (WGS84). UP +ve. If unknown set to INT32_MAX
         /// OriginName: gpsAlt, Units: mm, IsExtended: false
         /// </summary>
-        public int Gpsalt { get; set; }
+        public static readonly Field GpsaltField = new Field.Builder()
+            .Name(nameof(Gpsalt))
+            .Title("gpsAlt")
+            .Description("Altitude (WGS84). UP +ve. If unknown set to INT32_MAX")
+            .FormatString(string.Empty)
+            .Units(@"mm")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Gpsalt;
+        public int Gpsalt { get => _Gpsalt; set { _Gpsalt = value; } }
         /// <summary>
         /// Barometric pressure altitude (MSL) relative to a standard atmosphere of 1013.2 mBar and NOT bar corrected altitude (m * 1E-3). (up +ve). If unknown set to INT32_MAX
         /// OriginName: baroAltMSL, Units: mbar, IsExtended: false
         /// </summary>
-        public int Baroaltmsl { get; set; }
+        public static readonly Field BaroaltmslField = new Field.Builder()
+            .Name(nameof(Baroaltmsl))
+            .Title("baroAltMSL")
+            .Description("Barometric pressure altitude (MSL) relative to a standard atmosphere of 1013.2 mBar and NOT bar corrected altitude (m * 1E-3). (up +ve). If unknown set to INT32_MAX")
+            .FormatString(string.Empty)
+            .Units(@"mbar")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Baroaltmsl;
+        public int Baroaltmsl { get => _Baroaltmsl; set { _Baroaltmsl = value; } }
         /// <summary>
         /// Horizontal accuracy in mm (m * 1E-3). If unknown set to UINT32_MAX
         /// OriginName: accuracyHor, Units: mm, IsExtended: false
         /// </summary>
-        public uint Accuracyhor { get; set; }
+        public static readonly Field AccuracyhorField = new Field.Builder()
+            .Name(nameof(Accuracyhor))
+            .Title("accuracyHor")
+            .Description("Horizontal accuracy in mm (m * 1E-3). If unknown set to UINT32_MAX")
+            .FormatString(string.Empty)
+            .Units(@"mm")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _Accuracyhor;
+        public uint Accuracyhor { get => _Accuracyhor; set { _Accuracyhor = value; } }
         /// <summary>
         /// Vertical accuracy in cm. If unknown set to UINT16_MAX
         /// OriginName: accuracyVert, Units: cm, IsExtended: false
         /// </summary>
-        public ushort Accuracyvert { get; set; }
+        public static readonly Field AccuracyvertField = new Field.Builder()
+            .Name(nameof(Accuracyvert))
+            .Title("accuracyVert")
+            .Description("Vertical accuracy in cm. If unknown set to UINT16_MAX")
+            .FormatString(string.Empty)
+            .Units(@"cm")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Accuracyvert;
+        public ushort Accuracyvert { get => _Accuracyvert; set { _Accuracyvert = value; } }
         /// <summary>
         /// Velocity accuracy in mm/s (m * 1E-3). If unknown set to UINT16_MAX
         /// OriginName: accuracyVel, Units: mm/s, IsExtended: false
         /// </summary>
-        public ushort Accuracyvel { get; set; }
+        public static readonly Field AccuracyvelField = new Field.Builder()
+            .Name(nameof(Accuracyvel))
+            .Title("accuracyVel")
+            .Description("Velocity accuracy in mm/s (m * 1E-3). If unknown set to UINT16_MAX")
+            .FormatString(string.Empty)
+            .Units(@"mm/s")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Accuracyvel;
+        public ushort Accuracyvel { get => _Accuracyvel; set { _Accuracyvel = value; } }
         /// <summary>
         /// GPS vertical speed in cm/s. If unknown set to INT16_MAX
         /// OriginName: velVert, Units: cm/s, IsExtended: false
         /// </summary>
-        public short Velvert { get; set; }
+        public static readonly Field VelvertField = new Field.Builder()
+            .Name(nameof(Velvert))
+            .Title("velVert")
+            .Description("GPS vertical speed in cm/s. If unknown set to INT16_MAX")
+            .FormatString(string.Empty)
+            .Units(@"cm/s")
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _Velvert;
+        public short Velvert { get => _Velvert; set { _Velvert = value; } }
         /// <summary>
         /// North-South velocity over ground in cm/s North +ve. If unknown set to INT16_MAX
         /// OriginName: velNS, Units: cm/s, IsExtended: false
         /// </summary>
-        public short Velns { get; set; }
+        public static readonly Field VelnsField = new Field.Builder()
+            .Name(nameof(Velns))
+            .Title("velNS")
+            .Description("North-South velocity over ground in cm/s North +ve. If unknown set to INT16_MAX")
+            .FormatString(string.Empty)
+            .Units(@"cm/s")
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _Velns;
+        public short Velns { get => _Velns; set { _Velns = value; } }
         /// <summary>
         /// East-West velocity over ground in cm/s East +ve. If unknown set to INT16_MAX
         /// OriginName: VelEW, Units: cm/s, IsExtended: false
         /// </summary>
-        public short Velew { get; set; }
+        public static readonly Field VelewField = new Field.Builder()
+            .Name(nameof(Velew))
+            .Title("VelEW")
+            .Description("East-West velocity over ground in cm/s East +ve. If unknown set to INT16_MAX")
+            .FormatString(string.Empty)
+            .Units(@"cm/s")
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _Velew;
+        public short Velew { get => _Velew; set { _Velew = value; } }
         /// <summary>
         /// ADS-B transponder dynamic input state flags
         /// OriginName: state, Units: , IsExtended: false
         /// </summary>
-        public UavionixAdsbOutDynamicState State { get; set; }
+        public static readonly Field StateField = new Field.Builder()
+            .Name(nameof(State))
+            .Title("bitmask")
+            .Description("ADS-B transponder dynamic input state flags")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        public UavionixAdsbOutDynamicState _State;
+        public UavionixAdsbOutDynamicState State { get => _State; set => _State = value; } 
         /// <summary>
         /// Mode A code (typically 1200 [0x04B0] for VFR)
         /// OriginName: squawk, Units: , IsExtended: false
         /// </summary>
-        public ushort Squawk { get; set; }
+        public static readonly Field SquawkField = new Field.Builder()
+            .Name(nameof(Squawk))
+            .Title("squawk")
+            .Description("Mode A code (typically 1200 [0x04B0] for VFR)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Squawk;
+        public ushort Squawk { get => _Squawk; set { _Squawk = value; } }
         /// <summary>
         /// 0-1: no fix, 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK
         /// OriginName: gpsFix, Units: , IsExtended: false
         /// </summary>
-        public UavionixAdsbOutDynamicGpsFix Gpsfix { get; set; }
+        public static readonly Field GpsfixField = new Field.Builder()
+            .Name(nameof(Gpsfix))
+            .Title("gpsFix")
+            .Description("0-1: no fix, 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public UavionixAdsbOutDynamicGpsFix _Gpsfix;
+        public UavionixAdsbOutDynamicGpsFix Gpsfix { get => _Gpsfix; set => _Gpsfix = value; } 
         /// <summary>
         /// Number of satellites visible. If unknown set to UINT8_MAX
         /// OriginName: numSats, Units: , IsExtended: false
         /// </summary>
-        public byte Numsats { get; set; }
+        public static readonly Field NumsatsField = new Field.Builder()
+            .Name(nameof(Numsats))
+            .Title("numSats")
+            .Description("Number of satellites visible. If unknown set to UINT8_MAX")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Numsats;
+        public byte Numsats { get => _Numsats; set { _Numsats = value; } }
         /// <summary>
         /// Emergency status
         /// OriginName: emergencyStatus, Units: , IsExtended: false
         /// </summary>
-        public UavionixAdsbEmergencyStatus Emergencystatus { get; set; }
+        public static readonly Field EmergencystatusField = new Field.Builder()
+            .Name(nameof(Emergencystatus))
+            .Title("emergencyStatus")
+            .Description("Emergency status")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public UavionixAdsbEmergencyStatus _Emergencystatus;
+        public UavionixAdsbEmergencyStatus Emergencystatus { get => _Emergencystatus; set => _Emergencystatus = value; } 
     }
     /// <summary>
     /// Transceiver heartbeat with health report (updated every 10s)
@@ -1022,39 +957,6 @@ namespace Asv.Mavlink.Uavionix
         public override UavionixAdsbTransceiverHealthReportPayload Payload { get; } = new();
 
         public override string Name => "UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "rfHealth",
-            "ADS-B transponder messages",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT:"
-        + "uint8_t rfHealth;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], (ulong)Payload.Rfhealth);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Rfhealth = (UavionixAdsbRfHealth)reader.ReadByte(StaticFields[0]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -1087,17 +989,36 @@ namespace Asv.Mavlink.Uavionix
             BinSerialize.WriteByte(ref buffer,(byte)Rfhealth);
             /* PayloadByteSize = 1 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            var tmpRfhealth = (byte)Rfhealth;
+            UInt8Type.Accept(visitor,RfhealthField, ref tmpRfhealth);
+            Rfhealth = (UavionixAdsbRfHealth)tmpRfhealth;
 
+        }
 
         /// <summary>
         /// ADS-B transponder messages
         /// OriginName: rfHealth, Units: , IsExtended: false
         /// </summary>
-        public UavionixAdsbRfHealth Rfhealth { get; set; }
+        public static readonly Field RfhealthField = new Field.Builder()
+            .Name(nameof(Rfhealth))
+            .Title("bitmask")
+            .Description("ADS-B transponder messages")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public UavionixAdsbRfHealth _Rfhealth;
+        public UavionixAdsbRfHealth Rfhealth { get => _Rfhealth; set => _Rfhealth = value; } 
     }
+
+
+
+
+        
 
 
 #endregion

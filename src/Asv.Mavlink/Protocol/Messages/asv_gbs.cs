@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
 
 using System;
 using System.Text;
@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvGbs
@@ -160,208 +161,6 @@ namespace Asv.Mavlink.AsvGbs
         public override AsvGbsOutStatusPayload Payload { get; } = new();
 
         public override string Name => "ASV_GBS_OUT_STATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "lat",
-            "Latitude of GBS (value / 10000000D).",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(1,
-            "lng",
-            "Longitude of GBS (value / 10000000D).",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(2,
-            "alt",
-            "Altitude of GBS.",
-            string.Empty, 
-            @"mm", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(3,
-            "accuracy",
-            "Current position accuracy (cm).",
-            string.Empty, 
-            @"cm", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(4,
-            "observation",
-            "Observation time (seconds).",
-            string.Empty, 
-            @"s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(5,
-            "dgps_rate",
-            "Rate of GPS_RTCM_DATA data.",
-            string.Empty, 
-            @"bytes\seconds", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(6,
-            "sat_all",
-            "All GNSS satellite count.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "sat_gps",
-            "GPS satellite count.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "sat_glo",
-            "GLONASS satellite count.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(9,
-            "sat_bdu",
-            "BeiDou satellite count.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(10,
-            "sat_gal",
-            "Galileo satellite count.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(11,
-            "sat_qzs",
-            "QZSS satellite count.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(12,
-            "sat_ime",
-            "IMES satellite count.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(13,
-            "sat_sbs",
-            "SBAS satellite count.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "ASV_GBS_OUT_STATUS:"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        + "int32_t alt;"
-        + "uint16_t accuracy;"
-        + "uint16_t observation;"
-        + "uint16_t dgps_rate;"
-        + "uint8_t sat_all;"
-        + "uint8_t sat_gps;"
-        + "uint8_t sat_glo;"
-        + "uint8_t sat_bdu;"
-        + "uint8_t sat_gal;"
-        + "uint8_t sat_qzs;"
-        + "uint8_t sat_ime;"
-        + "uint8_t sat_sbs;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Lat);
-            writer.Write(StaticFields[1], Payload.Lng);
-            writer.Write(StaticFields[2], Payload.Alt);
-            writer.Write(StaticFields[3], Payload.Accuracy);
-            writer.Write(StaticFields[4], Payload.Observation);
-            writer.Write(StaticFields[5], Payload.DgpsRate);
-            writer.Write(StaticFields[6], Payload.SatAll);
-            writer.Write(StaticFields[7], Payload.SatGps);
-            writer.Write(StaticFields[8], Payload.SatGlo);
-            writer.Write(StaticFields[9], Payload.SatBdu);
-            writer.Write(StaticFields[10], Payload.SatGal);
-            writer.Write(StaticFields[11], Payload.SatQzs);
-            writer.Write(StaticFields[12], Payload.SatIme);
-            writer.Write(StaticFields[13], Payload.SatSbs);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Lat = reader.ReadInt(StaticFields[0]);
-            Payload.Lng = reader.ReadInt(StaticFields[1]);
-            Payload.Alt = reader.ReadInt(StaticFields[2]);
-            Payload.Accuracy = reader.ReadUShort(StaticFields[3]);
-            Payload.Observation = reader.ReadUShort(StaticFields[4]);
-            Payload.DgpsRate = reader.ReadUShort(StaticFields[5]);
-            Payload.SatAll = reader.ReadByte(StaticFields[6]);
-            Payload.SatGps = reader.ReadByte(StaticFields[7]);
-            Payload.SatGlo = reader.ReadByte(StaticFields[8]);
-            Payload.SatBdu = reader.ReadByte(StaticFields[9]);
-            Payload.SatGal = reader.ReadByte(StaticFields[10]);
-            Payload.SatQzs = reader.ReadByte(StaticFields[11]);
-            Payload.SatIme = reader.ReadByte(StaticFields[12]);
-            Payload.SatSbs = reader.ReadByte(StaticFields[13]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -433,82 +232,242 @@ namespace Asv.Mavlink.AsvGbs
             BinSerialize.WriteByte(ref buffer,(byte)SatSbs);
             /* PayloadByteSize = 26 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            Int32Type.Accept(visitor,LatField, ref _Lat);    
+            Int32Type.Accept(visitor,LngField, ref _Lng);    
+            Int32Type.Accept(visitor,AltField, ref _Alt);    
+            UInt16Type.Accept(visitor,AccuracyField, ref _Accuracy);    
+            UInt16Type.Accept(visitor,ObservationField, ref _Observation);    
+            UInt16Type.Accept(visitor,DgpsRateField, ref _DgpsRate);    
+            UInt8Type.Accept(visitor,SatAllField, ref _SatAll);    
+            UInt8Type.Accept(visitor,SatGpsField, ref _SatGps);    
+            UInt8Type.Accept(visitor,SatGloField, ref _SatGlo);    
+            UInt8Type.Accept(visitor,SatBduField, ref _SatBdu);    
+            UInt8Type.Accept(visitor,SatGalField, ref _SatGal);    
+            UInt8Type.Accept(visitor,SatQzsField, ref _SatQzs);    
+            UInt8Type.Accept(visitor,SatImeField, ref _SatIme);    
+            UInt8Type.Accept(visitor,SatSbsField, ref _SatSbs);    
 
+        }
 
         /// <summary>
         /// Latitude of GBS (value / 10000000D).
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude of GBS (value / 10000000D).")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lat;
+        public int Lat { get => _Lat; set { _Lat = value; } }
         /// <summary>
         /// Longitude of GBS (value / 10000000D).
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude of GBS (value / 10000000D).")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lng;
+        public int Lng { get => _Lng; set { _Lng = value; } }
         /// <summary>
         /// Altitude of GBS.
         /// OriginName: alt, Units: mm, IsExtended: false
         /// </summary>
-        public int Alt { get; set; }
+        public static readonly Field AltField = new Field.Builder()
+            .Name(nameof(Alt))
+            .Title("alt")
+            .Description("Altitude of GBS.")
+            .FormatString(string.Empty)
+            .Units(@"mm")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Alt;
+        public int Alt { get => _Alt; set { _Alt = value; } }
         /// <summary>
         /// Current position accuracy (cm).
         /// OriginName: accuracy, Units: cm, IsExtended: false
         /// </summary>
-        public ushort Accuracy { get; set; }
+        public static readonly Field AccuracyField = new Field.Builder()
+            .Name(nameof(Accuracy))
+            .Title("accuracy")
+            .Description("Current position accuracy (cm).")
+            .FormatString(string.Empty)
+            .Units(@"cm")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Accuracy;
+        public ushort Accuracy { get => _Accuracy; set { _Accuracy = value; } }
         /// <summary>
         /// Observation time (seconds).
         /// OriginName: observation, Units: s, IsExtended: false
         /// </summary>
-        public ushort Observation { get; set; }
+        public static readonly Field ObservationField = new Field.Builder()
+            .Name(nameof(Observation))
+            .Title("observation")
+            .Description("Observation time (seconds).")
+            .FormatString(string.Empty)
+            .Units(@"s")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Observation;
+        public ushort Observation { get => _Observation; set { _Observation = value; } }
         /// <summary>
         /// Rate of GPS_RTCM_DATA data.
         /// OriginName: dgps_rate, Units: bytes\seconds, IsExtended: false
         /// </summary>
-        public ushort DgpsRate { get; set; }
+        public static readonly Field DgpsRateField = new Field.Builder()
+            .Name(nameof(DgpsRate))
+            .Title("dgps_rate")
+            .Description("Rate of GPS_RTCM_DATA data.")
+            .FormatString(string.Empty)
+            .Units(@"bytes\seconds")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _DgpsRate;
+        public ushort DgpsRate { get => _DgpsRate; set { _DgpsRate = value; } }
         /// <summary>
         /// All GNSS satellite count.
         /// OriginName: sat_all, Units: , IsExtended: false
         /// </summary>
-        public byte SatAll { get; set; }
+        public static readonly Field SatAllField = new Field.Builder()
+            .Name(nameof(SatAll))
+            .Title("sat_all")
+            .Description("All GNSS satellite count.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _SatAll;
+        public byte SatAll { get => _SatAll; set { _SatAll = value; } }
         /// <summary>
         /// GPS satellite count.
         /// OriginName: sat_gps, Units: , IsExtended: false
         /// </summary>
-        public byte SatGps { get; set; }
+        public static readonly Field SatGpsField = new Field.Builder()
+            .Name(nameof(SatGps))
+            .Title("sat_gps")
+            .Description("GPS satellite count.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _SatGps;
+        public byte SatGps { get => _SatGps; set { _SatGps = value; } }
         /// <summary>
         /// GLONASS satellite count.
         /// OriginName: sat_glo, Units: , IsExtended: false
         /// </summary>
-        public byte SatGlo { get; set; }
+        public static readonly Field SatGloField = new Field.Builder()
+            .Name(nameof(SatGlo))
+            .Title("sat_glo")
+            .Description("GLONASS satellite count.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _SatGlo;
+        public byte SatGlo { get => _SatGlo; set { _SatGlo = value; } }
         /// <summary>
         /// BeiDou satellite count.
         /// OriginName: sat_bdu, Units: , IsExtended: false
         /// </summary>
-        public byte SatBdu { get; set; }
+        public static readonly Field SatBduField = new Field.Builder()
+            .Name(nameof(SatBdu))
+            .Title("sat_bdu")
+            .Description("BeiDou satellite count.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _SatBdu;
+        public byte SatBdu { get => _SatBdu; set { _SatBdu = value; } }
         /// <summary>
         /// Galileo satellite count.
         /// OriginName: sat_gal, Units: , IsExtended: false
         /// </summary>
-        public byte SatGal { get; set; }
+        public static readonly Field SatGalField = new Field.Builder()
+            .Name(nameof(SatGal))
+            .Title("sat_gal")
+            .Description("Galileo satellite count.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _SatGal;
+        public byte SatGal { get => _SatGal; set { _SatGal = value; } }
         /// <summary>
         /// QZSS satellite count.
         /// OriginName: sat_qzs, Units: , IsExtended: false
         /// </summary>
-        public byte SatQzs { get; set; }
+        public static readonly Field SatQzsField = new Field.Builder()
+            .Name(nameof(SatQzs))
+            .Title("sat_qzs")
+            .Description("QZSS satellite count.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _SatQzs;
+        public byte SatQzs { get => _SatQzs; set { _SatQzs = value; } }
         /// <summary>
         /// IMES satellite count.
         /// OriginName: sat_ime, Units: , IsExtended: false
         /// </summary>
-        public byte SatIme { get; set; }
+        public static readonly Field SatImeField = new Field.Builder()
+            .Name(nameof(SatIme))
+            .Title("sat_ime")
+            .Description("IMES satellite count.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _SatIme;
+        public byte SatIme { get => _SatIme; set { _SatIme = value; } }
         /// <summary>
         /// SBAS satellite count.
         /// OriginName: sat_sbs, Units: , IsExtended: false
         /// </summary>
-        public byte SatSbs { get; set; }
+        public static readonly Field SatSbsField = new Field.Builder()
+            .Name(nameof(SatSbs))
+            .Title("sat_sbs")
+            .Description("SBAS satellite count.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _SatSbs;
+        public byte SatSbs { get => _SatSbs; set { _SatSbs = value; } }
     }
+
+
+
+
+        
 
 
 #endregion

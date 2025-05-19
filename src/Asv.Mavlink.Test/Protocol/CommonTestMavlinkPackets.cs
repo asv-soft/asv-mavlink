@@ -41,10 +41,7 @@ namespace Asv.Mavlink.Test
                     U64 = 1,
                     S64 = 2,
                     D = 3,
-                    U64Array = new ulong[]
-                    {
-                        1, 2, 3
-                    },
+                   
                     U32 = 1,
                     S32 = 2,
                     F = 3,
@@ -86,10 +83,7 @@ namespace Asv.Mavlink.Test
                     U64 = 1,
                     S64 = 2,
                     D = 3,
-                    U64Array = new ulong[]
-                    {
-                        1, 2, 3
-                    },
+                    
                     U32 = 1,
                     S32 = 2,
                     F = 3,
@@ -128,10 +122,7 @@ namespace Asv.Mavlink.Test
                     U64 = 1,
                     S64 = 2,
                     D = 3,
-                    U64Array = new ulong[]
-                    {
-                        1, 2, 3
-                    },
+                    
                     U32 = 1,
                     S32 = 2,
                     F = 3,
@@ -166,10 +157,7 @@ namespace Asv.Mavlink.Test
                     U64 = 1,
                     S64 = 2,
                     D = 3,
-                    U64Array = new ulong[]
-                    {
-                        1, 2, 3
-                    },
+                    
                     U32 = 1,
                     S32 = 2,
                     F = 3,

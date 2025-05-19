@@ -48,7 +48,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
                 TargetSystem = requestPacket.SystemId,
                 TargetComponent = requestPacket.ComponentId,
                 TargetNetwork = requestPacket.Payload.TargetNetwork,
-                Payload = new byte[251],
+                
             }
         };
 

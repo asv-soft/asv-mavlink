@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
 
 using System;
 using System.Text;
@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
 using Asv.IO;
 
 namespace Asv.Mavlink.Csairlink
@@ -87,52 +88,6 @@ namespace Asv.Mavlink.Csairlink
         public override AirlinkAuthPayload Payload { get; } = new();
 
         public override string Name => "AIRLINK_AUTH";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "login",
-            "Login",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Char, 
-            50, 
-            false),
-            new(1,
-            "password",
-            "Password",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Char, 
-            50, 
-            false),
-        ];
-        public const string FormatMessage = "AIRLINK_AUTH:"
-        + "char[50] login;"
-        + "char[50] password;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Login);
-            writer.Write(StaticFields[1], Payload.Password);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            reader.ReadCharArray(StaticFields[0], Payload.Login);
-            reader.ReadCharArray(StaticFields[1], Payload.Password);
-        
-            
-        }
     }
 
     /// <summary>
@@ -160,7 +115,7 @@ namespace Asv.Mavlink.Csairlink
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/100 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Login = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -169,7 +124,7 @@ namespace Asv.Mavlink.Csairlink
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Login.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             arraySize = 50;
             unsafe
@@ -180,7 +135,7 @@ namespace Asv.Mavlink.Csairlink
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Password.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
 
         }
@@ -209,23 +164,54 @@ namespace Asv.Mavlink.Csairlink
             
             /* PayloadByteSize = 100 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,LoginField, 50, (index,v) =>
+            {
+                var tmp = (byte)Login[index];
+                UInt8Type.Accept(v,LoginField, ref tmp);
+                Login[index] = (char)tmp;
+            });
+            ArrayType.Accept(visitor,PasswordField, 50, (index,v) =>
+            {
+                var tmp = (byte)Password[index];
+                UInt8Type.Accept(v,PasswordField, ref tmp);
+                Password[index] = (char)tmp;
+            });
 
+        }
 
         /// <summary>
         /// Login
         /// OriginName: login, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field LoginField = new Field.Builder()
+            .Name(nameof(Login))
+            .Title("login")
+            .Description("Login")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,50))
+
+            .Build();
         public const int LoginMaxItemsCount = 50;
-        public char[] Login { get; set; } = new char[50];
+        public char[] Login { get; } = new char[50];
         [Obsolete("This method is deprecated. Use GetLoginMaxItemsCount instead.")]
         public byte GetLoginMaxItemsCount() => 50;
         /// <summary>
         /// Password
         /// OriginName: password, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field PasswordField = new Field.Builder()
+            .Name(nameof(Password))
+            .Title("password")
+            .Description("Password")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,50))
+
+            .Build();
         public const int PasswordMaxItemsCount = 50;
         public char[] Password { get; } = new char[50];
     }
@@ -249,39 +235,6 @@ namespace Asv.Mavlink.Csairlink
         public override AirlinkAuthResponsePayload Payload { get; } = new();
 
         public override string Name => "AIRLINK_AUTH_RESPONSE";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "resp_type",
-            "Response type",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AIRLINK_AUTH_RESPONSE:"
-        + "uint8_t resp_type;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], (ulong)Payload.RespType);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.RespType = (AirlinkAuthResponseType)reader.ReadByte(StaticFields[0]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -314,17 +267,36 @@ namespace Asv.Mavlink.Csairlink
             BinSerialize.WriteByte(ref buffer,(byte)RespType);
             /* PayloadByteSize = 1 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            var tmpRespType = (byte)RespType;
+            UInt8Type.Accept(visitor,RespTypeField, ref tmpRespType);
+            RespType = (AirlinkAuthResponseType)tmpRespType;
 
+        }
 
         /// <summary>
         /// Response type
         /// OriginName: resp_type, Units: , IsExtended: false
         /// </summary>
-        public AirlinkAuthResponseType RespType { get; set; }
+        public static readonly Field RespTypeField = new Field.Builder()
+            .Name(nameof(RespType))
+            .Title("resp_type")
+            .Description("Response type")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public AirlinkAuthResponseType _RespType;
+        public AirlinkAuthResponseType RespType { get => _RespType; set => _RespType = value; } 
     }
+
+
+
+
+        
 
 
 #endregion

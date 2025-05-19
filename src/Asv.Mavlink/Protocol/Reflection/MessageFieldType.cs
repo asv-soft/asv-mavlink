@@ -23,10 +23,11 @@ public static class MessageFieldTypeExt
     public static T Randomize<T>(this T src, Random random)
         where T : MavlinkMessage
     {
-        src.WriteFields(new RandomFieldWriter(random));
+        /*src.WriteFields(new RandomFieldWriter(random));
         src.SystemId = random.Next<byte>();
         src.ComponentId = random.Next<byte>();
         src.Sequence = random.Next<byte>();
+        return src;*/
         return src;
     }
     

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
 
 using System;
 using System.Text;
@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
 using Asv.IO;
 
 namespace Asv.Mavlink.Avssuas
@@ -294,91 +295,6 @@ namespace Asv.Mavlink.Avssuas
         public override AvssPrsSysStatusPayload Payload { get; } = new();
 
         public override string Name => "AVSS_PRS_SYS_STATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "time_boot_ms",
-            "Timestamp (time since PRS boot).",
-            string.Empty, 
-            @"ms", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "error_status",
-            "PRS error statuses",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(2,
-            "battery_status",
-            "Estimated battery run-time without a remote connection and PRS battery voltage",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(3,
-            "arm_status",
-            "PRS arm statuses",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "charge_status",
-            "PRS battery charge statuses",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AVSS_PRS_SYS_STATUS:"
-        + "uint32_t time_boot_ms;"
-        + "uint32_t error_status;"
-        + "uint32_t battery_status;"
-        + "uint8_t arm_status;"
-        + "uint8_t charge_status;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TimeBootMs);
-            writer.Write(StaticFields[1], Payload.ErrorStatus);
-            writer.Write(StaticFields[2], Payload.BatteryStatus);
-            writer.Write(StaticFields[3], Payload.ArmStatus);
-            writer.Write(StaticFields[4], Payload.ChargeStatus);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
-            Payload.ErrorStatus = reader.ReadUInt(StaticFields[1]);
-            Payload.BatteryStatus = reader.ReadUInt(StaticFields[2]);
-            Payload.ArmStatus = reader.ReadByte(StaticFields[3]);
-            Payload.ChargeStatus = reader.ReadByte(StaticFields[4]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -423,36 +339,92 @@ namespace Asv.Mavlink.Avssuas
             BinSerialize.WriteByte(ref buffer,(byte)ChargeStatus);
             /* PayloadByteSize = 14 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _TimeBootMs);    
+            UInt32Type.Accept(visitor,ErrorStatusField, ref _ErrorStatus);    
+            UInt32Type.Accept(visitor,BatteryStatusField, ref _BatteryStatus);    
+            UInt8Type.Accept(visitor,ArmStatusField, ref _ArmStatus);    
+            UInt8Type.Accept(visitor,ChargeStatusField, ref _ChargeStatus);    
 
+        }
 
         /// <summary>
         /// Timestamp (time since PRS boot).
         /// OriginName: time_boot_ms, Units: ms, IsExtended: false
         /// </summary>
-        public uint TimeBootMs { get; set; }
+        public static readonly Field TimeBootMsField = new Field.Builder()
+            .Name(nameof(TimeBootMs))
+            .Title("time_boot_ms")
+            .Description("Timestamp (time since PRS boot).")
+            .FormatString(string.Empty)
+            .Units(@"ms")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _TimeBootMs;
+        public uint TimeBootMs { get => _TimeBootMs; set { _TimeBootMs = value; } }
         /// <summary>
         /// PRS error statuses
         /// OriginName: error_status, Units: , IsExtended: false
         /// </summary>
-        public uint ErrorStatus { get; set; }
+        public static readonly Field ErrorStatusField = new Field.Builder()
+            .Name(nameof(ErrorStatus))
+            .Title("error_status")
+            .Description("PRS error statuses")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _ErrorStatus;
+        public uint ErrorStatus { get => _ErrorStatus; set { _ErrorStatus = value; } }
         /// <summary>
         /// Estimated battery run-time without a remote connection and PRS battery voltage
         /// OriginName: battery_status, Units: , IsExtended: false
         /// </summary>
-        public uint BatteryStatus { get; set; }
+        public static readonly Field BatteryStatusField = new Field.Builder()
+            .Name(nameof(BatteryStatus))
+            .Title("battery_status")
+            .Description("Estimated battery run-time without a remote connection and PRS battery voltage")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _BatteryStatus;
+        public uint BatteryStatus { get => _BatteryStatus; set { _BatteryStatus = value; } }
         /// <summary>
         /// PRS arm statuses
         /// OriginName: arm_status, Units: , IsExtended: false
         /// </summary>
-        public byte ArmStatus { get; set; }
+        public static readonly Field ArmStatusField = new Field.Builder()
+            .Name(nameof(ArmStatus))
+            .Title("arm_status")
+            .Description("PRS arm statuses")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _ArmStatus;
+        public byte ArmStatus { get => _ArmStatus; set { _ArmStatus = value; } }
         /// <summary>
         /// PRS battery charge statuses
         /// OriginName: charge_status, Units: , IsExtended: false
         /// </summary>
-        public byte ChargeStatus { get; set; }
+        public static readonly Field ChargeStatusField = new Field.Builder()
+            .Name(nameof(ChargeStatus))
+            .Title("charge_status")
+            .Description("PRS battery charge statuses")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _ChargeStatus;
+        public byte ChargeStatus { get => _ChargeStatus; set { _ChargeStatus = value; } }
     }
     /// <summary>
     ///  Drone position.
@@ -474,104 +446,6 @@ namespace Asv.Mavlink.Avssuas
         public override AvssDronePositionPayload Payload { get; } = new();
 
         public override string Name => "AVSS_DRONE_POSITION";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "time_boot_ms",
-            "Timestamp (time since FC boot).",
-            string.Empty, 
-            @"ms", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "lat",
-            "Latitude, expressed",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(2,
-            "lon",
-            "Longitude, expressed",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(3,
-            "alt",
-            "Altitude (MSL). Note that virtually all GPS modules provide both WGS84 and MSL.",
-            string.Empty, 
-            @"mm", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(4,
-            "ground_alt",
-            "Altitude above ground, This altitude is measured by a ultrasound, Laser rangefinder or millimeter-wave radar",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "barometer_alt",
-            "This altitude is measured by a barometer",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AVSS_DRONE_POSITION:"
-        + "uint32_t time_boot_ms;"
-        + "int32_t lat;"
-        + "int32_t lon;"
-        + "int32_t alt;"
-        + "float ground_alt;"
-        + "float barometer_alt;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TimeBootMs);
-            writer.Write(StaticFields[1], Payload.Lat);
-            writer.Write(StaticFields[2], Payload.Lon);
-            writer.Write(StaticFields[3], Payload.Alt);
-            writer.Write(StaticFields[4], Payload.GroundAlt);
-            writer.Write(StaticFields[5], Payload.BarometerAlt);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
-            Payload.Lat = reader.ReadInt(StaticFields[1]);
-            Payload.Lon = reader.ReadInt(StaticFields[2]);
-            Payload.Alt = reader.ReadInt(StaticFields[3]);
-            Payload.GroundAlt = reader.ReadFloat(StaticFields[4]);
-            Payload.BarometerAlt = reader.ReadFloat(StaticFields[5]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -619,41 +493,108 @@ namespace Asv.Mavlink.Avssuas
             BinSerialize.WriteFloat(ref buffer,BarometerAlt);
             /* PayloadByteSize = 24 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _TimeBootMs);    
+            Int32Type.Accept(visitor,LatField, ref _Lat);    
+            Int32Type.Accept(visitor,LonField, ref _Lon);    
+            Int32Type.Accept(visitor,AltField, ref _Alt);    
+            FloatType.Accept(visitor,GroundAltField, ref _GroundAlt);    
+            FloatType.Accept(visitor,BarometerAltField, ref _BarometerAlt);    
 
+        }
 
         /// <summary>
         /// Timestamp (time since FC boot).
         /// OriginName: time_boot_ms, Units: ms, IsExtended: false
         /// </summary>
-        public uint TimeBootMs { get; set; }
+        public static readonly Field TimeBootMsField = new Field.Builder()
+            .Name(nameof(TimeBootMs))
+            .Title("time_boot_ms")
+            .Description("Timestamp (time since FC boot).")
+            .FormatString(string.Empty)
+            .Units(@"ms")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _TimeBootMs;
+        public uint TimeBootMs { get => _TimeBootMs; set { _TimeBootMs = value; } }
         /// <summary>
         /// Latitude, expressed
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude, expressed")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lat;
+        public int Lat { get => _Lat; set { _Lat = value; } }
         /// <summary>
         /// Longitude, expressed
         /// OriginName: lon, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lon { get; set; }
+        public static readonly Field LonField = new Field.Builder()
+            .Name(nameof(Lon))
+            .Title("lon")
+            .Description("Longitude, expressed")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lon;
+        public int Lon { get => _Lon; set { _Lon = value; } }
         /// <summary>
         /// Altitude (MSL). Note that virtually all GPS modules provide both WGS84 and MSL.
         /// OriginName: alt, Units: mm, IsExtended: false
         /// </summary>
-        public int Alt { get; set; }
+        public static readonly Field AltField = new Field.Builder()
+            .Name(nameof(Alt))
+            .Title("alt")
+            .Description("Altitude (MSL). Note that virtually all GPS modules provide both WGS84 and MSL.")
+            .FormatString(string.Empty)
+            .Units(@"mm")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Alt;
+        public int Alt { get => _Alt; set { _Alt = value; } }
         /// <summary>
         /// Altitude above ground, This altitude is measured by a ultrasound, Laser rangefinder or millimeter-wave radar
         /// OriginName: ground_alt, Units: m, IsExtended: false
         /// </summary>
-        public float GroundAlt { get; set; }
+        public static readonly Field GroundAltField = new Field.Builder()
+            .Name(nameof(GroundAlt))
+            .Title("ground_alt")
+            .Description("Altitude above ground, This altitude is measured by a ultrasound, Laser rangefinder or millimeter-wave radar")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _GroundAlt;
+        public float GroundAlt { get => _GroundAlt; set { _GroundAlt = value; } }
         /// <summary>
         /// This altitude is measured by a barometer
         /// OriginName: barometer_alt, Units: m, IsExtended: false
         /// </summary>
-        public float BarometerAlt { get; set; }
+        public static readonly Field BarometerAltField = new Field.Builder()
+            .Name(nameof(BarometerAlt))
+            .Title("barometer_alt")
+            .Description("This altitude is measured by a barometer")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _BarometerAlt;
+        public float BarometerAlt { get => _BarometerAlt; set { _BarometerAlt = value; } }
     }
     /// <summary>
     ///  Drone IMU data. Quaternion order is w, x, y, z and a zero rotation would be expressed as (1 0 0 0).
@@ -675,169 +616,6 @@ namespace Asv.Mavlink.Avssuas
         public override AvssDroneImuPayload Payload { get; } = new();
 
         public override string Name => "AVSS_DRONE_IMU";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "time_boot_ms",
-            "Timestamp (time since FC boot).",
-            string.Empty, 
-            @"ms", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "q1",
-            "Quaternion component 1, w (1 in null-rotation)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "q2",
-            "Quaternion component 2, x (0 in null-rotation)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "q3",
-            "Quaternion component 3, y (0 in null-rotation)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "q4",
-            "Quaternion component 4, z (0 in null-rotation)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "xacc",
-            "X acceleration",
-            string.Empty, 
-            @"m/s/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "yacc",
-            "Y acceleration",
-            string.Empty, 
-            @"m/s/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(7,
-            "zacc",
-            "Z acceleration",
-            string.Empty, 
-            @"m/s/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(8,
-            "xgyro",
-            "Angular speed around X axis",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(9,
-            "ygyro",
-            "Angular speed around Y axis",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(10,
-            "zgyro",
-            "Angular speed around Z axis",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AVSS_DRONE_IMU:"
-        + "uint32_t time_boot_ms;"
-        + "float q1;"
-        + "float q2;"
-        + "float q3;"
-        + "float q4;"
-        + "float xacc;"
-        + "float yacc;"
-        + "float zacc;"
-        + "float xgyro;"
-        + "float ygyro;"
-        + "float zgyro;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TimeBootMs);
-            writer.Write(StaticFields[1], Payload.Q1);
-            writer.Write(StaticFields[2], Payload.Q2);
-            writer.Write(StaticFields[3], Payload.Q3);
-            writer.Write(StaticFields[4], Payload.Q4);
-            writer.Write(StaticFields[5], Payload.Xacc);
-            writer.Write(StaticFields[6], Payload.Yacc);
-            writer.Write(StaticFields[7], Payload.Zacc);
-            writer.Write(StaticFields[8], Payload.Xgyro);
-            writer.Write(StaticFields[9], Payload.Ygyro);
-            writer.Write(StaticFields[10], Payload.Zgyro);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
-            Payload.Q1 = reader.ReadFloat(StaticFields[1]);
-            Payload.Q2 = reader.ReadFloat(StaticFields[2]);
-            Payload.Q3 = reader.ReadFloat(StaticFields[3]);
-            Payload.Q4 = reader.ReadFloat(StaticFields[4]);
-            Payload.Xacc = reader.ReadFloat(StaticFields[5]);
-            Payload.Yacc = reader.ReadFloat(StaticFields[6]);
-            Payload.Zacc = reader.ReadFloat(StaticFields[7]);
-            Payload.Xgyro = reader.ReadFloat(StaticFields[8]);
-            Payload.Ygyro = reader.ReadFloat(StaticFields[9]);
-            Payload.Zgyro = reader.ReadFloat(StaticFields[10]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -900,66 +678,188 @@ namespace Asv.Mavlink.Avssuas
             BinSerialize.WriteFloat(ref buffer,Zgyro);
             /* PayloadByteSize = 44 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _TimeBootMs);    
+            FloatType.Accept(visitor,Q1Field, ref _Q1);    
+            FloatType.Accept(visitor,Q2Field, ref _Q2);    
+            FloatType.Accept(visitor,Q3Field, ref _Q3);    
+            FloatType.Accept(visitor,Q4Field, ref _Q4);    
+            FloatType.Accept(visitor,XaccField, ref _Xacc);    
+            FloatType.Accept(visitor,YaccField, ref _Yacc);    
+            FloatType.Accept(visitor,ZaccField, ref _Zacc);    
+            FloatType.Accept(visitor,XgyroField, ref _Xgyro);    
+            FloatType.Accept(visitor,YgyroField, ref _Ygyro);    
+            FloatType.Accept(visitor,ZgyroField, ref _Zgyro);    
 
+        }
 
         /// <summary>
         /// Timestamp (time since FC boot).
         /// OriginName: time_boot_ms, Units: ms, IsExtended: false
         /// </summary>
-        public uint TimeBootMs { get; set; }
+        public static readonly Field TimeBootMsField = new Field.Builder()
+            .Name(nameof(TimeBootMs))
+            .Title("time_boot_ms")
+            .Description("Timestamp (time since FC boot).")
+            .FormatString(string.Empty)
+            .Units(@"ms")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _TimeBootMs;
+        public uint TimeBootMs { get => _TimeBootMs; set { _TimeBootMs = value; } }
         /// <summary>
         /// Quaternion component 1, w (1 in null-rotation)
         /// OriginName: q1, Units: , IsExtended: false
         /// </summary>
-        public float Q1 { get; set; }
+        public static readonly Field Q1Field = new Field.Builder()
+            .Name(nameof(Q1))
+            .Title("q1")
+            .Description("Quaternion component 1, w (1 in null-rotation)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Q1;
+        public float Q1 { get => _Q1; set { _Q1 = value; } }
         /// <summary>
         /// Quaternion component 2, x (0 in null-rotation)
         /// OriginName: q2, Units: , IsExtended: false
         /// </summary>
-        public float Q2 { get; set; }
+        public static readonly Field Q2Field = new Field.Builder()
+            .Name(nameof(Q2))
+            .Title("q2")
+            .Description("Quaternion component 2, x (0 in null-rotation)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Q2;
+        public float Q2 { get => _Q2; set { _Q2 = value; } }
         /// <summary>
         /// Quaternion component 3, y (0 in null-rotation)
         /// OriginName: q3, Units: , IsExtended: false
         /// </summary>
-        public float Q3 { get; set; }
+        public static readonly Field Q3Field = new Field.Builder()
+            .Name(nameof(Q3))
+            .Title("q3")
+            .Description("Quaternion component 3, y (0 in null-rotation)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Q3;
+        public float Q3 { get => _Q3; set { _Q3 = value; } }
         /// <summary>
         /// Quaternion component 4, z (0 in null-rotation)
         /// OriginName: q4, Units: , IsExtended: false
         /// </summary>
-        public float Q4 { get; set; }
+        public static readonly Field Q4Field = new Field.Builder()
+            .Name(nameof(Q4))
+            .Title("q4")
+            .Description("Quaternion component 4, z (0 in null-rotation)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Q4;
+        public float Q4 { get => _Q4; set { _Q4 = value; } }
         /// <summary>
         /// X acceleration
         /// OriginName: xacc, Units: m/s/s, IsExtended: false
         /// </summary>
-        public float Xacc { get; set; }
+        public static readonly Field XaccField = new Field.Builder()
+            .Name(nameof(Xacc))
+            .Title("xacc")
+            .Description("X acceleration")
+            .FormatString(string.Empty)
+            .Units(@"m/s/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Xacc;
+        public float Xacc { get => _Xacc; set { _Xacc = value; } }
         /// <summary>
         /// Y acceleration
         /// OriginName: yacc, Units: m/s/s, IsExtended: false
         /// </summary>
-        public float Yacc { get; set; }
+        public static readonly Field YaccField = new Field.Builder()
+            .Name(nameof(Yacc))
+            .Title("yacc")
+            .Description("Y acceleration")
+            .FormatString(string.Empty)
+            .Units(@"m/s/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Yacc;
+        public float Yacc { get => _Yacc; set { _Yacc = value; } }
         /// <summary>
         /// Z acceleration
         /// OriginName: zacc, Units: m/s/s, IsExtended: false
         /// </summary>
-        public float Zacc { get; set; }
+        public static readonly Field ZaccField = new Field.Builder()
+            .Name(nameof(Zacc))
+            .Title("zacc")
+            .Description("Z acceleration")
+            .FormatString(string.Empty)
+            .Units(@"m/s/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Zacc;
+        public float Zacc { get => _Zacc; set { _Zacc = value; } }
         /// <summary>
         /// Angular speed around X axis
         /// OriginName: xgyro, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Xgyro { get; set; }
+        public static readonly Field XgyroField = new Field.Builder()
+            .Name(nameof(Xgyro))
+            .Title("xgyro")
+            .Description("Angular speed around X axis")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Xgyro;
+        public float Xgyro { get => _Xgyro; set { _Xgyro = value; } }
         /// <summary>
         /// Angular speed around Y axis
         /// OriginName: ygyro, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Ygyro { get; set; }
+        public static readonly Field YgyroField = new Field.Builder()
+            .Name(nameof(Ygyro))
+            .Title("ygyro")
+            .Description("Angular speed around Y axis")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Ygyro;
+        public float Ygyro { get => _Ygyro; set { _Ygyro = value; } }
         /// <summary>
         /// Angular speed around Z axis
         /// OriginName: zgyro, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Zgyro { get; set; }
+        public static readonly Field ZgyroField = new Field.Builder()
+            .Name(nameof(Zgyro))
+            .Title("zgyro")
+            .Description("Angular speed around Z axis")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Zgyro;
+        public float Zgyro { get => _Zgyro; set { _Zgyro = value; } }
     }
     /// <summary>
     ///  Drone operation mode.
@@ -981,65 +881,6 @@ namespace Asv.Mavlink.Avssuas
         public override AvssDroneOperationModePayload Payload { get; } = new();
 
         public override string Name => "AVSS_DRONE_OPERATION_MODE";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "time_boot_ms",
-            "Timestamp (time since FC boot).",
-            string.Empty, 
-            @"ms", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "M300_operation_mode",
-            "DJI M300 operation mode",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "horsefly_operation_mode",
-            "horsefly operation mode",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AVSS_DRONE_OPERATION_MODE:"
-        + "uint32_t time_boot_ms;"
-        + "uint8_t M300_operation_mode;"
-        + "uint8_t horsefly_operation_mode;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TimeBootMs);
-            writer.Write(StaticFields[1], Payload.M300OperationMode);
-            writer.Write(StaticFields[2], Payload.HorseflyOperationMode);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
-            Payload.M300OperationMode = reader.ReadByte(StaticFields[1]);
-            Payload.HorseflyOperationMode = reader.ReadByte(StaticFields[2]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -1078,27 +919,66 @@ namespace Asv.Mavlink.Avssuas
             BinSerialize.WriteByte(ref buffer,(byte)HorseflyOperationMode);
             /* PayloadByteSize = 6 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _TimeBootMs);    
+            UInt8Type.Accept(visitor,M300OperationModeField, ref _M300OperationMode);    
+            UInt8Type.Accept(visitor,HorseflyOperationModeField, ref _HorseflyOperationMode);    
 
+        }
 
         /// <summary>
         /// Timestamp (time since FC boot).
         /// OriginName: time_boot_ms, Units: ms, IsExtended: false
         /// </summary>
-        public uint TimeBootMs { get; set; }
+        public static readonly Field TimeBootMsField = new Field.Builder()
+            .Name(nameof(TimeBootMs))
+            .Title("time_boot_ms")
+            .Description("Timestamp (time since FC boot).")
+            .FormatString(string.Empty)
+            .Units(@"ms")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _TimeBootMs;
+        public uint TimeBootMs { get => _TimeBootMs; set { _TimeBootMs = value; } }
         /// <summary>
         /// DJI M300 operation mode
         /// OriginName: M300_operation_mode, Units: , IsExtended: false
         /// </summary>
-        public byte M300OperationMode { get; set; }
+        public static readonly Field M300OperationModeField = new Field.Builder()
+            .Name(nameof(M300OperationMode))
+            .Title("M300_operation_mode")
+            .Description("DJI M300 operation mode")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _M300OperationMode;
+        public byte M300OperationMode { get => _M300OperationMode; set { _M300OperationMode = value; } }
         /// <summary>
         /// horsefly operation mode
         /// OriginName: horsefly_operation_mode, Units: , IsExtended: false
         /// </summary>
-        public byte HorseflyOperationMode { get; set; }
+        public static readonly Field HorseflyOperationModeField = new Field.Builder()
+            .Name(nameof(HorseflyOperationMode))
+            .Title("horsefly_operation_mode")
+            .Description("horsefly operation mode")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _HorseflyOperationMode;
+        public byte HorseflyOperationMode { get => _HorseflyOperationMode; set { _HorseflyOperationMode = value; } }
     }
+
+
+
+
+        
 
 
 #endregion

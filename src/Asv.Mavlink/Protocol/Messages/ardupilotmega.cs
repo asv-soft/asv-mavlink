@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
 
 using System;
 using System.Text;
@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
 using Asv.IO;
 
 namespace Asv.Mavlink.Ardupilotmega
@@ -2232,182 +2233,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override SensorOffsetsPayload Payload { get; } = new();
 
         public override string Name => "SENSOR_OFFSETS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "mag_declination",
-            "Magnetic declination.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "raw_press",
-            "Raw pressure from barometer.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(2,
-            "raw_temp",
-            "Raw temperature from barometer.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(3,
-            "gyro_cal_x",
-            "Gyro X calibration.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "gyro_cal_y",
-            "Gyro Y calibration.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "gyro_cal_z",
-            "Gyro Z calibration.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "accel_cal_x",
-            "Accel X calibration.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(7,
-            "accel_cal_y",
-            "Accel Y calibration.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(8,
-            "accel_cal_z",
-            "Accel Z calibration.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(9,
-            "mag_ofs_x",
-            "Magnetometer X offset.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(10,
-            "mag_ofs_y",
-            "Magnetometer Y offset.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(11,
-            "mag_ofs_z",
-            "Magnetometer Z offset.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "SENSOR_OFFSETS:"
-        + "float mag_declination;"
-        + "int32_t raw_press;"
-        + "int32_t raw_temp;"
-        + "float gyro_cal_x;"
-        + "float gyro_cal_y;"
-        + "float gyro_cal_z;"
-        + "float accel_cal_x;"
-        + "float accel_cal_y;"
-        + "float accel_cal_z;"
-        + "int16_t mag_ofs_x;"
-        + "int16_t mag_ofs_y;"
-        + "int16_t mag_ofs_z;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.MagDeclination);
-            writer.Write(StaticFields[1], Payload.RawPress);
-            writer.Write(StaticFields[2], Payload.RawTemp);
-            writer.Write(StaticFields[3], Payload.GyroCalX);
-            writer.Write(StaticFields[4], Payload.GyroCalY);
-            writer.Write(StaticFields[5], Payload.GyroCalZ);
-            writer.Write(StaticFields[6], Payload.AccelCalX);
-            writer.Write(StaticFields[7], Payload.AccelCalY);
-            writer.Write(StaticFields[8], Payload.AccelCalZ);
-            writer.Write(StaticFields[9], Payload.MagOfsX);
-            writer.Write(StaticFields[10], Payload.MagOfsY);
-            writer.Write(StaticFields[11], Payload.MagOfsZ);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.MagDeclination = reader.ReadFloat(StaticFields[0]);
-            Payload.RawPress = reader.ReadInt(StaticFields[1]);
-            Payload.RawTemp = reader.ReadInt(StaticFields[2]);
-            Payload.GyroCalX = reader.ReadFloat(StaticFields[3]);
-            Payload.GyroCalY = reader.ReadFloat(StaticFields[4]);
-            Payload.GyroCalZ = reader.ReadFloat(StaticFields[5]);
-            Payload.AccelCalX = reader.ReadFloat(StaticFields[6]);
-            Payload.AccelCalY = reader.ReadFloat(StaticFields[7]);
-            Payload.AccelCalZ = reader.ReadFloat(StaticFields[8]);
-            Payload.MagOfsX = reader.ReadShort(StaticFields[9]);
-            Payload.MagOfsY = reader.ReadShort(StaticFields[10]);
-            Payload.MagOfsZ = reader.ReadShort(StaticFields[11]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -2473,71 +2298,204 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteShort(ref buffer,MagOfsZ);
             /* PayloadByteSize = 42 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,MagDeclinationField, ref _MagDeclination);    
+            Int32Type.Accept(visitor,RawPressField, ref _RawPress);    
+            Int32Type.Accept(visitor,RawTempField, ref _RawTemp);    
+            FloatType.Accept(visitor,GyroCalXField, ref _GyroCalX);    
+            FloatType.Accept(visitor,GyroCalYField, ref _GyroCalY);    
+            FloatType.Accept(visitor,GyroCalZField, ref _GyroCalZ);    
+            FloatType.Accept(visitor,AccelCalXField, ref _AccelCalX);    
+            FloatType.Accept(visitor,AccelCalYField, ref _AccelCalY);    
+            FloatType.Accept(visitor,AccelCalZField, ref _AccelCalZ);    
+            Int16Type.Accept(visitor,MagOfsXField, ref _MagOfsX);
+            Int16Type.Accept(visitor,MagOfsYField, ref _MagOfsY);
+            Int16Type.Accept(visitor,MagOfsZField, ref _MagOfsZ);
 
+        }
 
         /// <summary>
         /// Magnetic declination.
         /// OriginName: mag_declination, Units: rad, IsExtended: false
         /// </summary>
-        public float MagDeclination { get; set; }
+        public static readonly Field MagDeclinationField = new Field.Builder()
+            .Name(nameof(MagDeclination))
+            .Title("mag_declination")
+            .Description("Magnetic declination.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _MagDeclination;
+        public float MagDeclination { get => _MagDeclination; set { _MagDeclination = value; } }
         /// <summary>
         /// Raw pressure from barometer.
         /// OriginName: raw_press, Units: , IsExtended: false
         /// </summary>
-        public int RawPress { get; set; }
+        public static readonly Field RawPressField = new Field.Builder()
+            .Name(nameof(RawPress))
+            .Title("raw_press")
+            .Description("Raw pressure from barometer.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _RawPress;
+        public int RawPress { get => _RawPress; set { _RawPress = value; } }
         /// <summary>
         /// Raw temperature from barometer.
         /// OriginName: raw_temp, Units: , IsExtended: false
         /// </summary>
-        public int RawTemp { get; set; }
+        public static readonly Field RawTempField = new Field.Builder()
+            .Name(nameof(RawTemp))
+            .Title("raw_temp")
+            .Description("Raw temperature from barometer.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _RawTemp;
+        public int RawTemp { get => _RawTemp; set { _RawTemp = value; } }
         /// <summary>
         /// Gyro X calibration.
         /// OriginName: gyro_cal_x, Units: , IsExtended: false
         /// </summary>
-        public float GyroCalX { get; set; }
+        public static readonly Field GyroCalXField = new Field.Builder()
+            .Name(nameof(GyroCalX))
+            .Title("gyro_cal_x")
+            .Description("Gyro X calibration.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _GyroCalX;
+        public float GyroCalX { get => _GyroCalX; set { _GyroCalX = value; } }
         /// <summary>
         /// Gyro Y calibration.
         /// OriginName: gyro_cal_y, Units: , IsExtended: false
         /// </summary>
-        public float GyroCalY { get; set; }
+        public static readonly Field GyroCalYField = new Field.Builder()
+            .Name(nameof(GyroCalY))
+            .Title("gyro_cal_y")
+            .Description("Gyro Y calibration.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _GyroCalY;
+        public float GyroCalY { get => _GyroCalY; set { _GyroCalY = value; } }
         /// <summary>
         /// Gyro Z calibration.
         /// OriginName: gyro_cal_z, Units: , IsExtended: false
         /// </summary>
-        public float GyroCalZ { get; set; }
+        public static readonly Field GyroCalZField = new Field.Builder()
+            .Name(nameof(GyroCalZ))
+            .Title("gyro_cal_z")
+            .Description("Gyro Z calibration.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _GyroCalZ;
+        public float GyroCalZ { get => _GyroCalZ; set { _GyroCalZ = value; } }
         /// <summary>
         /// Accel X calibration.
         /// OriginName: accel_cal_x, Units: , IsExtended: false
         /// </summary>
-        public float AccelCalX { get; set; }
+        public static readonly Field AccelCalXField = new Field.Builder()
+            .Name(nameof(AccelCalX))
+            .Title("accel_cal_x")
+            .Description("Accel X calibration.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _AccelCalX;
+        public float AccelCalX { get => _AccelCalX; set { _AccelCalX = value; } }
         /// <summary>
         /// Accel Y calibration.
         /// OriginName: accel_cal_y, Units: , IsExtended: false
         /// </summary>
-        public float AccelCalY { get; set; }
+        public static readonly Field AccelCalYField = new Field.Builder()
+            .Name(nameof(AccelCalY))
+            .Title("accel_cal_y")
+            .Description("Accel Y calibration.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _AccelCalY;
+        public float AccelCalY { get => _AccelCalY; set { _AccelCalY = value; } }
         /// <summary>
         /// Accel Z calibration.
         /// OriginName: accel_cal_z, Units: , IsExtended: false
         /// </summary>
-        public float AccelCalZ { get; set; }
+        public static readonly Field AccelCalZField = new Field.Builder()
+            .Name(nameof(AccelCalZ))
+            .Title("accel_cal_z")
+            .Description("Accel Z calibration.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _AccelCalZ;
+        public float AccelCalZ { get => _AccelCalZ; set { _AccelCalZ = value; } }
         /// <summary>
         /// Magnetometer X offset.
         /// OriginName: mag_ofs_x, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsX { get; set; }
+        public static readonly Field MagOfsXField = new Field.Builder()
+            .Name(nameof(MagOfsX))
+            .Title("mag_ofs_x")
+            .Description("Magnetometer X offset.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _MagOfsX;
+        public short MagOfsX { get => _MagOfsX; set { _MagOfsX = value; } }
         /// <summary>
         /// Magnetometer Y offset.
         /// OriginName: mag_ofs_y, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsY { get; set; }
+        public static readonly Field MagOfsYField = new Field.Builder()
+            .Name(nameof(MagOfsY))
+            .Title("mag_ofs_y")
+            .Description("Magnetometer Y offset.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _MagOfsY;
+        public short MagOfsY { get => _MagOfsY; set { _MagOfsY = value; } }
         /// <summary>
         /// Magnetometer Z offset.
         /// OriginName: mag_ofs_z, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsZ { get; set; }
+        public static readonly Field MagOfsZField = new Field.Builder()
+            .Name(nameof(MagOfsZ))
+            .Title("mag_ofs_z")
+            .Description("Magnetometer Z offset.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _MagOfsZ;
+        public short MagOfsZ { get => _MagOfsZ; set { _MagOfsZ = value; } }
     }
     /// <summary>
     /// Set the magnetometer offsets
@@ -2559,91 +2517,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override SetMagOffsetsPayload Payload { get; } = new();
 
         public override string Name => "SET_MAG_OFFSETS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "mag_ofs_x",
-            "Magnetometer X offset.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(1,
-            "mag_ofs_y",
-            "Magnetometer Y offset.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(2,
-            "mag_ofs_z",
-            "Magnetometer Z offset.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(3,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "SET_MAG_OFFSETS:"
-        + "int16_t mag_ofs_x;"
-        + "int16_t mag_ofs_y;"
-        + "int16_t mag_ofs_z;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.MagOfsX);
-            writer.Write(StaticFields[1], Payload.MagOfsY);
-            writer.Write(StaticFields[2], Payload.MagOfsZ);
-            writer.Write(StaticFields[3], Payload.TargetSystem);
-            writer.Write(StaticFields[4], Payload.TargetComponent);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.MagOfsX = reader.ReadShort(StaticFields[0]);
-            Payload.MagOfsY = reader.ReadShort(StaticFields[1]);
-            Payload.MagOfsZ = reader.ReadShort(StaticFields[2]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -2688,36 +2561,92 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            Int16Type.Accept(visitor,MagOfsXField, ref _MagOfsX);
+            Int16Type.Accept(visitor,MagOfsYField, ref _MagOfsY);
+            Int16Type.Accept(visitor,MagOfsZField, ref _MagOfsZ);
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
 
+        }
 
         /// <summary>
         /// Magnetometer X offset.
         /// OriginName: mag_ofs_x, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsX { get; set; }
+        public static readonly Field MagOfsXField = new Field.Builder()
+            .Name(nameof(MagOfsX))
+            .Title("mag_ofs_x")
+            .Description("Magnetometer X offset.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _MagOfsX;
+        public short MagOfsX { get => _MagOfsX; set { _MagOfsX = value; } }
         /// <summary>
         /// Magnetometer Y offset.
         /// OriginName: mag_ofs_y, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsY { get; set; }
+        public static readonly Field MagOfsYField = new Field.Builder()
+            .Name(nameof(MagOfsY))
+            .Title("mag_ofs_y")
+            .Description("Magnetometer Y offset.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _MagOfsY;
+        public short MagOfsY { get => _MagOfsY; set { _MagOfsY = value; } }
         /// <summary>
         /// Magnetometer Z offset.
         /// OriginName: mag_ofs_z, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsZ { get; set; }
+        public static readonly Field MagOfsZField = new Field.Builder()
+            .Name(nameof(MagOfsZ))
+            .Title("mag_ofs_z")
+            .Description("Magnetometer Z offset.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _MagOfsZ;
+        public short MagOfsZ { get => _MagOfsZ; set { _MagOfsZ = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
     }
     /// <summary>
     /// State of autopilot RAM.
@@ -2739,65 +2668,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MeminfoPayload Payload { get; } = new();
 
         public override string Name => "MEMINFO";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "brkval",
-            "Heap top.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "freemem",
-            "Free memory.",
-            string.Empty, 
-            @"bytes", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(2,
-            "freemem32",
-            "Free memory (32 bit).",
-            string.Empty, 
-            @"bytes", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            true),
-        ];
-        public const string FormatMessage = "MEMINFO:"
-        + "uint16_t brkval;"
-        + "uint16_t freemem;"
-        + "uint32_t freemem32;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Brkval);
-            writer.Write(StaticFields[1], Payload.Freemem);
-            writer.Write(StaticFields[2], Payload.Freemem32);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Brkval = reader.ReadUShort(StaticFields[0]);
-            Payload.Freemem = reader.ReadUShort(StaticFields[1]);
-            Payload.Freemem32 = reader.ReadUInt(StaticFields[2]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -2838,26 +2708,60 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteUInt(ref buffer,Freemem32);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,BrkvalField, ref _Brkval);    
+            UInt16Type.Accept(visitor,FreememField, ref _Freemem);    
+            UInt32Type.Accept(visitor,Freemem32Field, ref _Freemem32);    
 
+        }
 
         /// <summary>
         /// Heap top.
         /// OriginName: brkval, Units: , IsExtended: false
         /// </summary>
-        public ushort Brkval { get; set; }
+        public static readonly Field BrkvalField = new Field.Builder()
+            .Name(nameof(Brkval))
+            .Title("brkval")
+            .Description("Heap top.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Brkval;
+        public ushort Brkval { get => _Brkval; set { _Brkval = value; } }
         /// <summary>
         /// Free memory.
         /// OriginName: freemem, Units: bytes, IsExtended: false
         /// </summary>
-        public ushort Freemem { get; set; }
+        public static readonly Field FreememField = new Field.Builder()
+            .Name(nameof(Freemem))
+            .Title("freemem")
+            .Description("Free memory.")
+            .FormatString(string.Empty)
+            .Units(@"bytes")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Freemem;
+        public ushort Freemem { get => _Freemem; set { _Freemem = value; } }
         /// <summary>
         /// Free memory (32 bit).
         /// OriginName: freemem32, Units: bytes, IsExtended: true
         /// </summary>
-        public uint Freemem32 { get; set; }
+        public static readonly Field Freemem32Field = new Field.Builder()
+            .Name(nameof(Freemem32))
+            .Title("freemem32")
+            .Description("Free memory (32 bit).")
+            .FormatString(string.Empty)
+            .Units(@"bytes")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _Freemem32;
+        public uint Freemem32 { get => _Freemem32; set { _Freemem32 = value; } }
     }
     /// <summary>
     /// Raw ADC output.
@@ -2879,104 +2783,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override ApAdcPayload Payload { get; } = new();
 
         public override string Name => "AP_ADC";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "adc1",
-            "ADC output 1.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "adc2",
-            "ADC output 2.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(2,
-            "adc3",
-            "ADC output 3.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(3,
-            "adc4",
-            "ADC output 4.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(4,
-            "adc5",
-            "ADC output 5.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(5,
-            "adc6",
-            "ADC output 6.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AP_ADC:"
-        + "uint16_t adc1;"
-        + "uint16_t adc2;"
-        + "uint16_t adc3;"
-        + "uint16_t adc4;"
-        + "uint16_t adc5;"
-        + "uint16_t adc6;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Adc1);
-            writer.Write(StaticFields[1], Payload.Adc2);
-            writer.Write(StaticFields[2], Payload.Adc3);
-            writer.Write(StaticFields[3], Payload.Adc4);
-            writer.Write(StaticFields[4], Payload.Adc5);
-            writer.Write(StaticFields[5], Payload.Adc6);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Adc1 = reader.ReadUShort(StaticFields[0]);
-            Payload.Adc2 = reader.ReadUShort(StaticFields[1]);
-            Payload.Adc3 = reader.ReadUShort(StaticFields[2]);
-            Payload.Adc4 = reader.ReadUShort(StaticFields[3]);
-            Payload.Adc5 = reader.ReadUShort(StaticFields[4]);
-            Payload.Adc6 = reader.ReadUShort(StaticFields[5]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -3024,41 +2830,108 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteUShort(ref buffer,Adc6);
             /* PayloadByteSize = 12 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,Adc1Field, ref _Adc1);    
+            UInt16Type.Accept(visitor,Adc2Field, ref _Adc2);    
+            UInt16Type.Accept(visitor,Adc3Field, ref _Adc3);    
+            UInt16Type.Accept(visitor,Adc4Field, ref _Adc4);    
+            UInt16Type.Accept(visitor,Adc5Field, ref _Adc5);    
+            UInt16Type.Accept(visitor,Adc6Field, ref _Adc6);    
 
+        }
 
         /// <summary>
         /// ADC output 1.
         /// OriginName: adc1, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc1 { get; set; }
+        public static readonly Field Adc1Field = new Field.Builder()
+            .Name(nameof(Adc1))
+            .Title("adc1")
+            .Description("ADC output 1.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Adc1;
+        public ushort Adc1 { get => _Adc1; set { _Adc1 = value; } }
         /// <summary>
         /// ADC output 2.
         /// OriginName: adc2, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc2 { get; set; }
+        public static readonly Field Adc2Field = new Field.Builder()
+            .Name(nameof(Adc2))
+            .Title("adc2")
+            .Description("ADC output 2.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Adc2;
+        public ushort Adc2 { get => _Adc2; set { _Adc2 = value; } }
         /// <summary>
         /// ADC output 3.
         /// OriginName: adc3, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc3 { get; set; }
+        public static readonly Field Adc3Field = new Field.Builder()
+            .Name(nameof(Adc3))
+            .Title("adc3")
+            .Description("ADC output 3.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Adc3;
+        public ushort Adc3 { get => _Adc3; set { _Adc3 = value; } }
         /// <summary>
         /// ADC output 4.
         /// OriginName: adc4, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc4 { get; set; }
+        public static readonly Field Adc4Field = new Field.Builder()
+            .Name(nameof(Adc4))
+            .Title("adc4")
+            .Description("ADC output 4.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Adc4;
+        public ushort Adc4 { get => _Adc4; set { _Adc4 = value; } }
         /// <summary>
         /// ADC output 5.
         /// OriginName: adc5, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc5 { get; set; }
+        public static readonly Field Adc5Field = new Field.Builder()
+            .Name(nameof(Adc5))
+            .Title("adc5")
+            .Description("ADC output 5.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Adc5;
+        public ushort Adc5 { get => _Adc5; set { _Adc5 = value; } }
         /// <summary>
         /// ADC output 6.
         /// OriginName: adc6, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc6 { get; set; }
+        public static readonly Field Adc6Field = new Field.Builder()
+            .Name(nameof(Adc6))
+            .Title("adc6")
+            .Description("ADC output 6.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Adc6;
+        public ushort Adc6 { get => _Adc6; set { _Adc6 = value; } }
     }
     /// <summary>
     /// Configure on-board Camera Control System.
@@ -3080,169 +2953,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DigicamConfigurePayload Payload { get; } = new();
 
         public override string Name => "DIGICAM_CONFIGURE";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "extra_value",
-            "Correspondent value to given extra_param.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "shutter_speed",
-            "Divisor number //e.g. 1000 means 1/1000 (0 means ignore).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(2,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "mode",
-            "Mode enumeration from 1 to N //P, TV, AV, M, etc. (0 means ignore).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "aperture",
-            "F stop number x 10 //e.g. 28 means 2.8 (0 means ignore).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(6,
-            "iso",
-            "ISO enumeration from 1 to N //e.g. 80, 100, 200, Etc (0 means ignore).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "exposure_type",
-            "Exposure type enumeration from 1 to N (0 means ignore).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "command_id",
-            "Command Identity (incremental loop: 0 to 255). //A command sent multiple times will be executed or pooled just once.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(9,
-            "engine_cut_off",
-            "Main engine cut-off time before camera trigger (0 means no cut-off).",
-            string.Empty, 
-            @"ds", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(10,
-            "extra_param",
-            "Extra parameters enumeration (0 means ignore).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "DIGICAM_CONFIGURE:"
-        + "float extra_value;"
-        + "uint16_t shutter_speed;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t mode;"
-        + "uint8_t aperture;"
-        + "uint8_t iso;"
-        + "uint8_t exposure_type;"
-        + "uint8_t command_id;"
-        + "uint8_t engine_cut_off;"
-        + "uint8_t extra_param;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.ExtraValue);
-            writer.Write(StaticFields[1], Payload.ShutterSpeed);
-            writer.Write(StaticFields[2], Payload.TargetSystem);
-            writer.Write(StaticFields[3], Payload.TargetComponent);
-            writer.Write(StaticFields[4], Payload.Mode);
-            writer.Write(StaticFields[5], Payload.Aperture);
-            writer.Write(StaticFields[6], Payload.Iso);
-            writer.Write(StaticFields[7], Payload.ExposureType);
-            writer.Write(StaticFields[8], Payload.CommandId);
-            writer.Write(StaticFields[9], Payload.EngineCutOff);
-            writer.Write(StaticFields[10], Payload.ExtraParam);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.ExtraValue = reader.ReadFloat(StaticFields[0]);
-            Payload.ShutterSpeed = reader.ReadUShort(StaticFields[1]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[2]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[3]);
-            Payload.Mode = reader.ReadByte(StaticFields[4]);
-            Payload.Aperture = reader.ReadByte(StaticFields[5]);
-            Payload.Iso = reader.ReadByte(StaticFields[6]);
-            Payload.ExposureType = reader.ReadByte(StaticFields[7]);
-            Payload.CommandId = reader.ReadByte(StaticFields[8]);
-            Payload.EngineCutOff = reader.ReadByte(StaticFields[9]);
-            Payload.ExtraParam = reader.ReadByte(StaticFields[10]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -3305,66 +3015,188 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)ExtraParam);
             /* PayloadByteSize = 15 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,ExtraValueField, ref _ExtraValue);    
+            UInt16Type.Accept(visitor,ShutterSpeedField, ref _ShutterSpeed);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,ModeField, ref _Mode);    
+            UInt8Type.Accept(visitor,ApertureField, ref _Aperture);    
+            UInt8Type.Accept(visitor,IsoField, ref _Iso);    
+            UInt8Type.Accept(visitor,ExposureTypeField, ref _ExposureType);    
+            UInt8Type.Accept(visitor,CommandIdField, ref _CommandId);    
+            UInt8Type.Accept(visitor,EngineCutOffField, ref _EngineCutOff);    
+            UInt8Type.Accept(visitor,ExtraParamField, ref _ExtraParam);    
 
+        }
 
         /// <summary>
         /// Correspondent value to given extra_param.
         /// OriginName: extra_value, Units: , IsExtended: false
         /// </summary>
-        public float ExtraValue { get; set; }
+        public static readonly Field ExtraValueField = new Field.Builder()
+            .Name(nameof(ExtraValue))
+            .Title("extra_value")
+            .Description("Correspondent value to given extra_param.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _ExtraValue;
+        public float ExtraValue { get => _ExtraValue; set { _ExtraValue = value; } }
         /// <summary>
         /// Divisor number //e.g. 1000 means 1/1000 (0 means ignore).
         /// OriginName: shutter_speed, Units: , IsExtended: false
         /// </summary>
-        public ushort ShutterSpeed { get; set; }
+        public static readonly Field ShutterSpeedField = new Field.Builder()
+            .Name(nameof(ShutterSpeed))
+            .Title("shutter_speed")
+            .Description("Divisor number //e.g. 1000 means 1/1000 (0 means ignore).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _ShutterSpeed;
+        public ushort ShutterSpeed { get => _ShutterSpeed; set { _ShutterSpeed = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Mode enumeration from 1 to N //P, TV, AV, M, etc. (0 means ignore).
         /// OriginName: mode, Units: , IsExtended: false
         /// </summary>
-        public byte Mode { get; set; }
+        public static readonly Field ModeField = new Field.Builder()
+            .Name(nameof(Mode))
+            .Title("mode")
+            .Description("Mode enumeration from 1 to N //P, TV, AV, M, etc. (0 means ignore).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Mode;
+        public byte Mode { get => _Mode; set { _Mode = value; } }
         /// <summary>
         /// F stop number x 10 //e.g. 28 means 2.8 (0 means ignore).
         /// OriginName: aperture, Units: , IsExtended: false
         /// </summary>
-        public byte Aperture { get; set; }
+        public static readonly Field ApertureField = new Field.Builder()
+            .Name(nameof(Aperture))
+            .Title("aperture")
+            .Description("F stop number x 10 //e.g. 28 means 2.8 (0 means ignore).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Aperture;
+        public byte Aperture { get => _Aperture; set { _Aperture = value; } }
         /// <summary>
         /// ISO enumeration from 1 to N //e.g. 80, 100, 200, Etc (0 means ignore).
         /// OriginName: iso, Units: , IsExtended: false
         /// </summary>
-        public byte Iso { get; set; }
+        public static readonly Field IsoField = new Field.Builder()
+            .Name(nameof(Iso))
+            .Title("iso")
+            .Description("ISO enumeration from 1 to N //e.g. 80, 100, 200, Etc (0 means ignore).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Iso;
+        public byte Iso { get => _Iso; set { _Iso = value; } }
         /// <summary>
         /// Exposure type enumeration from 1 to N (0 means ignore).
         /// OriginName: exposure_type, Units: , IsExtended: false
         /// </summary>
-        public byte ExposureType { get; set; }
+        public static readonly Field ExposureTypeField = new Field.Builder()
+            .Name(nameof(ExposureType))
+            .Title("exposure_type")
+            .Description("Exposure type enumeration from 1 to N (0 means ignore).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _ExposureType;
+        public byte ExposureType { get => _ExposureType; set { _ExposureType = value; } }
         /// <summary>
         /// Command Identity (incremental loop: 0 to 255). //A command sent multiple times will be executed or pooled just once.
         /// OriginName: command_id, Units: , IsExtended: false
         /// </summary>
-        public byte CommandId { get; set; }
+        public static readonly Field CommandIdField = new Field.Builder()
+            .Name(nameof(CommandId))
+            .Title("command_id")
+            .Description("Command Identity (incremental loop: 0 to 255). //A command sent multiple times will be executed or pooled just once.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _CommandId;
+        public byte CommandId { get => _CommandId; set { _CommandId = value; } }
         /// <summary>
         /// Main engine cut-off time before camera trigger (0 means no cut-off).
         /// OriginName: engine_cut_off, Units: ds, IsExtended: false
         /// </summary>
-        public byte EngineCutOff { get; set; }
+        public static readonly Field EngineCutOffField = new Field.Builder()
+            .Name(nameof(EngineCutOff))
+            .Title("engine_cut_off")
+            .Description("Main engine cut-off time before camera trigger (0 means no cut-off).")
+            .FormatString(string.Empty)
+            .Units(@"ds")
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _EngineCutOff;
+        public byte EngineCutOff { get => _EngineCutOff; set { _EngineCutOff = value; } }
         /// <summary>
         /// Extra parameters enumeration (0 means ignore).
         /// OriginName: extra_param, Units: , IsExtended: false
         /// </summary>
-        public byte ExtraParam { get; set; }
+        public static readonly Field ExtraParamField = new Field.Builder()
+            .Name(nameof(ExtraParam))
+            .Title("extra_param")
+            .Description("Extra parameters enumeration (0 means ignore).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _ExtraParam;
+        public byte ExtraParam { get => _ExtraParam; set { _ExtraParam = value; } }
     }
     /// <summary>
     /// Control on-board Camera Control System to take shots.
@@ -3386,156 +3218,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DigicamControlPayload Payload { get; } = new();
 
         public override string Name => "DIGICAM_CONTROL";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "extra_value",
-            "Correspondent value to given extra_param.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "session",
-            "0: stop, 1: start or keep it up //Session control e.g. show/hide lens.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "zoom_pos",
-            "1 to N //Zoom's absolute position (0 means ignore).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "zoom_step",
-            "-100 to 100 //Zooming step value to offset zoom from the current position.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int8, 
-            0, 
-            false),
-            new(6,
-            "focus_lock",
-            "0: unlock focus or keep unlocked, 1: lock focus or keep locked, 3: re-lock focus.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "shot",
-            "0: ignore, 1: shot or start filming.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "command_id",
-            "Command Identity (incremental loop: 0 to 255)//A command sent multiple times will be executed or pooled just once.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(9,
-            "extra_param",
-            "Extra parameters enumeration (0 means ignore).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "DIGICAM_CONTROL:"
-        + "float extra_value;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t session;"
-        + "uint8_t zoom_pos;"
-        + "int8_t zoom_step;"
-        + "uint8_t focus_lock;"
-        + "uint8_t shot;"
-        + "uint8_t command_id;"
-        + "uint8_t extra_param;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.ExtraValue);
-            writer.Write(StaticFields[1], Payload.TargetSystem);
-            writer.Write(StaticFields[2], Payload.TargetComponent);
-            writer.Write(StaticFields[3], Payload.Session);
-            writer.Write(StaticFields[4], Payload.ZoomPos);
-            writer.Write(StaticFields[5], Payload.ZoomStep);
-            writer.Write(StaticFields[6], Payload.FocusLock);
-            writer.Write(StaticFields[7], Payload.Shot);
-            writer.Write(StaticFields[8], Payload.CommandId);
-            writer.Write(StaticFields[9], Payload.ExtraParam);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.ExtraValue = reader.ReadFloat(StaticFields[0]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.Session = reader.ReadByte(StaticFields[3]);
-            Payload.ZoomPos = reader.ReadByte(StaticFields[4]);
-            Payload.ZoomStep = reader.ReadSByte(StaticFields[5]);
-            Payload.FocusLock = reader.ReadByte(StaticFields[6]);
-            Payload.Shot = reader.ReadByte(StaticFields[7]);
-            Payload.CommandId = reader.ReadByte(StaticFields[8]);
-            Payload.ExtraParam = reader.ReadByte(StaticFields[9]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -3595,61 +3277,172 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)ExtraParam);
             /* PayloadByteSize = 13 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,ExtraValueField, ref _ExtraValue);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,SessionField, ref _Session);    
+            UInt8Type.Accept(visitor,ZoomPosField, ref _ZoomPos);    
+            Int8Type.Accept(visitor,ZoomStepField, ref _ZoomStep);                
+            UInt8Type.Accept(visitor,FocusLockField, ref _FocusLock);    
+            UInt8Type.Accept(visitor,ShotField, ref _Shot);    
+            UInt8Type.Accept(visitor,CommandIdField, ref _CommandId);    
+            UInt8Type.Accept(visitor,ExtraParamField, ref _ExtraParam);    
 
+        }
 
         /// <summary>
         /// Correspondent value to given extra_param.
         /// OriginName: extra_value, Units: , IsExtended: false
         /// </summary>
-        public float ExtraValue { get; set; }
+        public static readonly Field ExtraValueField = new Field.Builder()
+            .Name(nameof(ExtraValue))
+            .Title("extra_value")
+            .Description("Correspondent value to given extra_param.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _ExtraValue;
+        public float ExtraValue { get => _ExtraValue; set { _ExtraValue = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// 0: stop, 1: start or keep it up //Session control e.g. show/hide lens.
         /// OriginName: session, Units: , IsExtended: false
         /// </summary>
-        public byte Session { get; set; }
+        public static readonly Field SessionField = new Field.Builder()
+            .Name(nameof(Session))
+            .Title("session")
+            .Description("0: stop, 1: start or keep it up //Session control e.g. show/hide lens.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Session;
+        public byte Session { get => _Session; set { _Session = value; } }
         /// <summary>
         /// 1 to N //Zoom's absolute position (0 means ignore).
         /// OriginName: zoom_pos, Units: , IsExtended: false
         /// </summary>
-        public byte ZoomPos { get; set; }
+        public static readonly Field ZoomPosField = new Field.Builder()
+            .Name(nameof(ZoomPos))
+            .Title("zoom_pos")
+            .Description("1 to N //Zoom's absolute position (0 means ignore).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _ZoomPos;
+        public byte ZoomPos { get => _ZoomPos; set { _ZoomPos = value; } }
         /// <summary>
         /// -100 to 100 //Zooming step value to offset zoom from the current position.
         /// OriginName: zoom_step, Units: , IsExtended: false
         /// </summary>
-        public sbyte ZoomStep { get; set; }
+        public static readonly Field ZoomStepField = new Field.Builder()
+            .Name(nameof(ZoomStep))
+            .Title("zoom_step")
+            .Description("-100 to 100 //Zooming step value to offset zoom from the current position.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int8Type.Default)
+
+            .Build();
+        private sbyte _ZoomStep;
+        public sbyte ZoomStep { get => _ZoomStep; set { _ZoomStep = value; } }
         /// <summary>
         /// 0: unlock focus or keep unlocked, 1: lock focus or keep locked, 3: re-lock focus.
         /// OriginName: focus_lock, Units: , IsExtended: false
         /// </summary>
-        public byte FocusLock { get; set; }
+        public static readonly Field FocusLockField = new Field.Builder()
+            .Name(nameof(FocusLock))
+            .Title("focus_lock")
+            .Description("0: unlock focus or keep unlocked, 1: lock focus or keep locked, 3: re-lock focus.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _FocusLock;
+        public byte FocusLock { get => _FocusLock; set { _FocusLock = value; } }
         /// <summary>
         /// 0: ignore, 1: shot or start filming.
         /// OriginName: shot, Units: , IsExtended: false
         /// </summary>
-        public byte Shot { get; set; }
+        public static readonly Field ShotField = new Field.Builder()
+            .Name(nameof(Shot))
+            .Title("shot")
+            .Description("0: ignore, 1: shot or start filming.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Shot;
+        public byte Shot { get => _Shot; set { _Shot = value; } }
         /// <summary>
         /// Command Identity (incremental loop: 0 to 255)//A command sent multiple times will be executed or pooled just once.
         /// OriginName: command_id, Units: , IsExtended: false
         /// </summary>
-        public byte CommandId { get; set; }
+        public static readonly Field CommandIdField = new Field.Builder()
+            .Name(nameof(CommandId))
+            .Title("command_id")
+            .Description("Command Identity (incremental loop: 0 to 255)//A command sent multiple times will be executed or pooled just once.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _CommandId;
+        public byte CommandId { get => _CommandId; set { _CommandId = value; } }
         /// <summary>
         /// Extra parameters enumeration (0 means ignore).
         /// OriginName: extra_param, Units: , IsExtended: false
         /// </summary>
-        public byte ExtraParam { get; set; }
+        public static readonly Field ExtraParamField = new Field.Builder()
+            .Name(nameof(ExtraParam))
+            .Title("extra_param")
+            .Description("Extra parameters enumeration (0 means ignore).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _ExtraParam;
+        public byte ExtraParam { get => _ExtraParam; set { _ExtraParam = value; } }
     }
     /// <summary>
     /// Message to configure a camera mount, directional antenna, etc.
@@ -3671,104 +3464,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MountConfigurePayload Payload { get; } = new();
 
         public override string Name => "MOUNT_CONFIGURE";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "mount_mode",
-            "Mount operating mode.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "stab_roll",
-            "(1 = yes, 0 = no).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "stab_pitch",
-            "(1 = yes, 0 = no).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "stab_yaw",
-            "(1 = yes, 0 = no).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "MOUNT_CONFIGURE:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t mount_mode;"
-        + "uint8_t stab_roll;"
-        + "uint8_t stab_pitch;"
-        + "uint8_t stab_yaw;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TargetSystem);
-            writer.Write(StaticFields[1], Payload.TargetComponent);
-            writer.Write(StaticFields[2], (ulong)Payload.MountMode);
-            writer.Write(StaticFields[3], Payload.StabRoll);
-            writer.Write(StaticFields[4], Payload.StabPitch);
-            writer.Write(StaticFields[5], Payload.StabYaw);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.MountMode = (MavMountMode)reader.ReadByte(StaticFields[2]);
-            Payload.StabRoll = reader.ReadByte(StaticFields[3]);
-            Payload.StabPitch = reader.ReadByte(StaticFields[4]);
-            Payload.StabYaw = reader.ReadByte(StaticFields[5]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -3816,41 +3511,110 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)StabYaw);
             /* PayloadByteSize = 6 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            var tmpMountMode = (byte)MountMode;
+            UInt8Type.Accept(visitor,MountModeField, ref tmpMountMode);
+            MountMode = (MavMountMode)tmpMountMode;
+            UInt8Type.Accept(visitor,StabRollField, ref _StabRoll);    
+            UInt8Type.Accept(visitor,StabPitchField, ref _StabPitch);    
+            UInt8Type.Accept(visitor,StabYawField, ref _StabYaw);    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Mount operating mode.
         /// OriginName: mount_mode, Units: , IsExtended: false
         /// </summary>
-        public MavMountMode MountMode { get; set; }
+        public static readonly Field MountModeField = new Field.Builder()
+            .Name(nameof(MountMode))
+            .Title("mount_mode")
+            .Description("Mount operating mode.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavMountMode _MountMode;
+        public MavMountMode MountMode { get => _MountMode; set => _MountMode = value; } 
         /// <summary>
         /// (1 = yes, 0 = no).
         /// OriginName: stab_roll, Units: , IsExtended: false
         /// </summary>
-        public byte StabRoll { get; set; }
+        public static readonly Field StabRollField = new Field.Builder()
+            .Name(nameof(StabRoll))
+            .Title("stab_roll")
+            .Description("(1 = yes, 0 = no).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _StabRoll;
+        public byte StabRoll { get => _StabRoll; set { _StabRoll = value; } }
         /// <summary>
         /// (1 = yes, 0 = no).
         /// OriginName: stab_pitch, Units: , IsExtended: false
         /// </summary>
-        public byte StabPitch { get; set; }
+        public static readonly Field StabPitchField = new Field.Builder()
+            .Name(nameof(StabPitch))
+            .Title("stab_pitch")
+            .Description("(1 = yes, 0 = no).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _StabPitch;
+        public byte StabPitch { get => _StabPitch; set { _StabPitch = value; } }
         /// <summary>
         /// (1 = yes, 0 = no).
         /// OriginName: stab_yaw, Units: , IsExtended: false
         /// </summary>
-        public byte StabYaw { get; set; }
+        public static readonly Field StabYawField = new Field.Builder()
+            .Name(nameof(StabYaw))
+            .Title("stab_yaw")
+            .Description("(1 = yes, 0 = no).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _StabYaw;
+        public byte StabYaw { get => _StabYaw; set { _StabYaw = value; } }
     }
     /// <summary>
     /// Message to control a camera mount, directional antenna, etc.
@@ -3872,104 +3636,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MountControlPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_CONTROL";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "input_a",
-            "Pitch (centi-degrees) or lat (degE7), depending on mount mode.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(1,
-            "input_b",
-            "Roll (centi-degrees) or lon (degE7) depending on mount mode.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(2,
-            "input_c",
-            "Yaw (centi-degrees) or alt (cm) depending on mount mode.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(3,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "save_position",
-            "If \"1\" it will save current trimmed position on EEPROM (just valid for NEUTRAL and LANDING).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "MOUNT_CONTROL:"
-        + "int32_t input_a;"
-        + "int32_t input_b;"
-        + "int32_t input_c;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t save_position;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.InputA);
-            writer.Write(StaticFields[1], Payload.InputB);
-            writer.Write(StaticFields[2], Payload.InputC);
-            writer.Write(StaticFields[3], Payload.TargetSystem);
-            writer.Write(StaticFields[4], Payload.TargetComponent);
-            writer.Write(StaticFields[5], Payload.SavePosition);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.InputA = reader.ReadInt(StaticFields[0]);
-            Payload.InputB = reader.ReadInt(StaticFields[1]);
-            Payload.InputC = reader.ReadInt(StaticFields[2]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
-            Payload.SavePosition = reader.ReadByte(StaticFields[5]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -4017,41 +3683,108 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)SavePosition);
             /* PayloadByteSize = 15 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            Int32Type.Accept(visitor,InputAField, ref _InputA);    
+            Int32Type.Accept(visitor,InputBField, ref _InputB);    
+            Int32Type.Accept(visitor,InputCField, ref _InputC);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,SavePositionField, ref _SavePosition);    
 
+        }
 
         /// <summary>
         /// Pitch (centi-degrees) or lat (degE7), depending on mount mode.
         /// OriginName: input_a, Units: , IsExtended: false
         /// </summary>
-        public int InputA { get; set; }
+        public static readonly Field InputAField = new Field.Builder()
+            .Name(nameof(InputA))
+            .Title("input_a")
+            .Description("Pitch (centi-degrees) or lat (degE7), depending on mount mode.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _InputA;
+        public int InputA { get => _InputA; set { _InputA = value; } }
         /// <summary>
         /// Roll (centi-degrees) or lon (degE7) depending on mount mode.
         /// OriginName: input_b, Units: , IsExtended: false
         /// </summary>
-        public int InputB { get; set; }
+        public static readonly Field InputBField = new Field.Builder()
+            .Name(nameof(InputB))
+            .Title("input_b")
+            .Description("Roll (centi-degrees) or lon (degE7) depending on mount mode.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _InputB;
+        public int InputB { get => _InputB; set { _InputB = value; } }
         /// <summary>
         /// Yaw (centi-degrees) or alt (cm) depending on mount mode.
         /// OriginName: input_c, Units: , IsExtended: false
         /// </summary>
-        public int InputC { get; set; }
+        public static readonly Field InputCField = new Field.Builder()
+            .Name(nameof(InputC))
+            .Title("input_c")
+            .Description("Yaw (centi-degrees) or alt (cm) depending on mount mode.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _InputC;
+        public int InputC { get => _InputC; set { _InputC = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// If "1" it will save current trimmed position on EEPROM (just valid for NEUTRAL and LANDING).
         /// OriginName: save_position, Units: , IsExtended: false
         /// </summary>
-        public byte SavePosition { get; set; }
+        public static readonly Field SavePositionField = new Field.Builder()
+            .Name(nameof(SavePosition))
+            .Title("save_position")
+            .Description("If \"1\" it will save current trimmed position on EEPROM (just valid for NEUTRAL and LANDING).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _SavePosition;
+        public byte SavePosition { get => _SavePosition; set { _SavePosition = value; } }
     }
     /// <summary>
     /// Message with some status from autopilot to GCS about camera or antenna mount.
@@ -4073,104 +3806,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MountStatusPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_STATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "pointing_a",
-            "Pitch.",
-            string.Empty, 
-            @"cdeg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(1,
-            "pointing_b",
-            "Roll.",
-            string.Empty, 
-            @"cdeg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(2,
-            "pointing_c",
-            "Yaw.",
-            string.Empty, 
-            @"cdeg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(3,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "mount_mode",
-            "Mount operating mode.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            true),
-        ];
-        public const string FormatMessage = "MOUNT_STATUS:"
-        + "int32_t pointing_a;"
-        + "int32_t pointing_b;"
-        + "int32_t pointing_c;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t mount_mode;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.PointingA);
-            writer.Write(StaticFields[1], Payload.PointingB);
-            writer.Write(StaticFields[2], Payload.PointingC);
-            writer.Write(StaticFields[3], Payload.TargetSystem);
-            writer.Write(StaticFields[4], Payload.TargetComponent);
-            writer.Write(StaticFields[5], (ulong)Payload.MountMode);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.PointingA = reader.ReadInt(StaticFields[0]);
-            Payload.PointingB = reader.ReadInt(StaticFields[1]);
-            Payload.PointingC = reader.ReadInt(StaticFields[2]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
-            Payload.MountMode = (MavMountMode)reader.ReadByte(StaticFields[5]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -4220,41 +3855,110 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)MountMode);
             /* PayloadByteSize = 15 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            Int32Type.Accept(visitor,PointingAField, ref _PointingA);    
+            Int32Type.Accept(visitor,PointingBField, ref _PointingB);    
+            Int32Type.Accept(visitor,PointingCField, ref _PointingC);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            var tmpMountMode = (byte)MountMode;
+            UInt8Type.Accept(visitor,MountModeField, ref tmpMountMode);
+            MountMode = (MavMountMode)tmpMountMode;
 
+        }
 
         /// <summary>
         /// Pitch.
         /// OriginName: pointing_a, Units: cdeg, IsExtended: false
         /// </summary>
-        public int PointingA { get; set; }
+        public static readonly Field PointingAField = new Field.Builder()
+            .Name(nameof(PointingA))
+            .Title("pointing_a")
+            .Description("Pitch.")
+            .FormatString(string.Empty)
+            .Units(@"cdeg")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _PointingA;
+        public int PointingA { get => _PointingA; set { _PointingA = value; } }
         /// <summary>
         /// Roll.
         /// OriginName: pointing_b, Units: cdeg, IsExtended: false
         /// </summary>
-        public int PointingB { get; set; }
+        public static readonly Field PointingBField = new Field.Builder()
+            .Name(nameof(PointingB))
+            .Title("pointing_b")
+            .Description("Roll.")
+            .FormatString(string.Empty)
+            .Units(@"cdeg")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _PointingB;
+        public int PointingB { get => _PointingB; set { _PointingB = value; } }
         /// <summary>
         /// Yaw.
         /// OriginName: pointing_c, Units: cdeg, IsExtended: false
         /// </summary>
-        public int PointingC { get; set; }
+        public static readonly Field PointingCField = new Field.Builder()
+            .Name(nameof(PointingC))
+            .Title("pointing_c")
+            .Description("Yaw.")
+            .FormatString(string.Empty)
+            .Units(@"cdeg")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _PointingC;
+        public int PointingC { get => _PointingC; set { _PointingC = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Mount operating mode.
         /// OriginName: mount_mode, Units: , IsExtended: true
         /// </summary>
-        public MavMountMode MountMode { get; set; }
+        public static readonly Field MountModeField = new Field.Builder()
+            .Name(nameof(MountMode))
+            .Title("mount_mode")
+            .Description("Mount operating mode.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavMountMode _MountMode;
+        public MavMountMode MountMode { get => _MountMode; set => _MountMode = value; } 
     }
     /// <summary>
     /// A fence point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
@@ -4276,104 +3980,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override FencePointPayload Payload { get; } = new();
 
         public override string Name => "FENCE_POINT";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "lat",
-            "Latitude of point.",
-            string.Empty, 
-            @"deg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "lng",
-            "Longitude of point.",
-            string.Empty, 
-            @"deg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "idx",
-            "Point index (first point is 1, 0 is for return point).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "count",
-            "Total number of points (for sanity checking).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "FENCE_POINT:"
-        + "float lat;"
-        + "float lng;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t idx;"
-        + "uint8_t count;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Lat);
-            writer.Write(StaticFields[1], Payload.Lng);
-            writer.Write(StaticFields[2], Payload.TargetSystem);
-            writer.Write(StaticFields[3], Payload.TargetComponent);
-            writer.Write(StaticFields[4], Payload.Idx);
-            writer.Write(StaticFields[5], Payload.Count);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Lat = reader.ReadFloat(StaticFields[0]);
-            Payload.Lng = reader.ReadFloat(StaticFields[1]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[2]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[3]);
-            Payload.Idx = reader.ReadByte(StaticFields[4]);
-            Payload.Count = reader.ReadByte(StaticFields[5]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -4421,41 +4027,108 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Count);
             /* PayloadByteSize = 12 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,LatField, ref _Lat);    
+            FloatType.Accept(visitor,LngField, ref _Lng);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,IdxField, ref _Idx);    
+            UInt8Type.Accept(visitor,CountField, ref _Count);    
 
+        }
 
         /// <summary>
         /// Latitude of point.
         /// OriginName: lat, Units: deg, IsExtended: false
         /// </summary>
-        public float Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude of point.")
+            .FormatString(string.Empty)
+            .Units(@"deg")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Lat;
+        public float Lat { get => _Lat; set { _Lat = value; } }
         /// <summary>
         /// Longitude of point.
         /// OriginName: lng, Units: deg, IsExtended: false
         /// </summary>
-        public float Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude of point.")
+            .FormatString(string.Empty)
+            .Units(@"deg")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Lng;
+        public float Lng { get => _Lng; set { _Lng = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Point index (first point is 1, 0 is for return point).
         /// OriginName: idx, Units: , IsExtended: false
         /// </summary>
-        public byte Idx { get; set; }
+        public static readonly Field IdxField = new Field.Builder()
+            .Name(nameof(Idx))
+            .Title("idx")
+            .Description("Point index (first point is 1, 0 is for return point).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Idx;
+        public byte Idx { get => _Idx; set { _Idx = value; } }
         /// <summary>
         /// Total number of points (for sanity checking).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Total number of points (for sanity checking).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Count;
+        public byte Count { get => _Count; set { _Count = value; } }
     }
     /// <summary>
     /// Request a current fence point from MAV.
@@ -4477,65 +4150,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override FenceFetchPointPayload Payload { get; } = new();
 
         public override string Name => "FENCE_FETCH_POINT";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "idx",
-            "Point index (first point is 1, 0 is for return point).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "FENCE_FETCH_POINT:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t idx;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TargetSystem);
-            writer.Write(StaticFields[1], Payload.TargetComponent);
-            writer.Write(StaticFields[2], Payload.Idx);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.Idx = reader.ReadByte(StaticFields[2]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -4574,26 +4188,60 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Idx);
             /* PayloadByteSize = 3 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,IdxField, ref _Idx);    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Point index (first point is 1, 0 is for return point).
         /// OriginName: idx, Units: , IsExtended: false
         /// </summary>
-        public byte Idx { get; set; }
+        public static readonly Field IdxField = new Field.Builder()
+            .Name(nameof(Idx))
+            .Title("idx")
+            .Description("Point index (first point is 1, 0 is for return point).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Idx;
+        public byte Idx { get => _Idx; set { _Idx = value; } }
     }
     /// <summary>
     /// Status of DCM attitude estimator.
@@ -4615,117 +4263,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AhrsPayload Payload { get; } = new();
 
         public override string Name => "AHRS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "omegaIx",
-            "X gyro drift estimate.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "omegaIy",
-            "Y gyro drift estimate.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "omegaIz",
-            "Z gyro drift estimate.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "accel_weight",
-            "Average accel_weight.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "renorm_val",
-            "Average renormalisation value.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "error_rp",
-            "Average error_roll_pitch value.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "error_yaw",
-            "Average error_yaw value.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AHRS:"
-        + "float omegaIx;"
-        + "float omegaIy;"
-        + "float omegaIz;"
-        + "float accel_weight;"
-        + "float renorm_val;"
-        + "float error_rp;"
-        + "float error_yaw;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Omegaix);
-            writer.Write(StaticFields[1], Payload.Omegaiy);
-            writer.Write(StaticFields[2], Payload.Omegaiz);
-            writer.Write(StaticFields[3], Payload.AccelWeight);
-            writer.Write(StaticFields[4], Payload.RenormVal);
-            writer.Write(StaticFields[5], Payload.ErrorRp);
-            writer.Write(StaticFields[6], Payload.ErrorYaw);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Omegaix = reader.ReadFloat(StaticFields[0]);
-            Payload.Omegaiy = reader.ReadFloat(StaticFields[1]);
-            Payload.Omegaiz = reader.ReadFloat(StaticFields[2]);
-            Payload.AccelWeight = reader.ReadFloat(StaticFields[3]);
-            Payload.RenormVal = reader.ReadFloat(StaticFields[4]);
-            Payload.ErrorRp = reader.ReadFloat(StaticFields[5]);
-            Payload.ErrorYaw = reader.ReadFloat(StaticFields[6]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -4776,46 +4313,124 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,ErrorYaw);
             /* PayloadByteSize = 28 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,OmegaixField, ref _Omegaix);    
+            FloatType.Accept(visitor,OmegaiyField, ref _Omegaiy);    
+            FloatType.Accept(visitor,OmegaizField, ref _Omegaiz);    
+            FloatType.Accept(visitor,AccelWeightField, ref _AccelWeight);    
+            FloatType.Accept(visitor,RenormValField, ref _RenormVal);    
+            FloatType.Accept(visitor,ErrorRpField, ref _ErrorRp);    
+            FloatType.Accept(visitor,ErrorYawField, ref _ErrorYaw);    
 
+        }
 
         /// <summary>
         /// X gyro drift estimate.
         /// OriginName: omegaIx, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Omegaix { get; set; }
+        public static readonly Field OmegaixField = new Field.Builder()
+            .Name(nameof(Omegaix))
+            .Title("omegaIx")
+            .Description("X gyro drift estimate.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Omegaix;
+        public float Omegaix { get => _Omegaix; set { _Omegaix = value; } }
         /// <summary>
         /// Y gyro drift estimate.
         /// OriginName: omegaIy, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Omegaiy { get; set; }
+        public static readonly Field OmegaiyField = new Field.Builder()
+            .Name(nameof(Omegaiy))
+            .Title("omegaIy")
+            .Description("Y gyro drift estimate.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Omegaiy;
+        public float Omegaiy { get => _Omegaiy; set { _Omegaiy = value; } }
         /// <summary>
         /// Z gyro drift estimate.
         /// OriginName: omegaIz, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Omegaiz { get; set; }
+        public static readonly Field OmegaizField = new Field.Builder()
+            .Name(nameof(Omegaiz))
+            .Title("omegaIz")
+            .Description("Z gyro drift estimate.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Omegaiz;
+        public float Omegaiz { get => _Omegaiz; set { _Omegaiz = value; } }
         /// <summary>
         /// Average accel_weight.
         /// OriginName: accel_weight, Units: , IsExtended: false
         /// </summary>
-        public float AccelWeight { get; set; }
+        public static readonly Field AccelWeightField = new Field.Builder()
+            .Name(nameof(AccelWeight))
+            .Title("accel_weight")
+            .Description("Average accel_weight.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _AccelWeight;
+        public float AccelWeight { get => _AccelWeight; set { _AccelWeight = value; } }
         /// <summary>
         /// Average renormalisation value.
         /// OriginName: renorm_val, Units: , IsExtended: false
         /// </summary>
-        public float RenormVal { get; set; }
+        public static readonly Field RenormValField = new Field.Builder()
+            .Name(nameof(RenormVal))
+            .Title("renorm_val")
+            .Description("Average renormalisation value.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _RenormVal;
+        public float RenormVal { get => _RenormVal; set { _RenormVal = value; } }
         /// <summary>
         /// Average error_roll_pitch value.
         /// OriginName: error_rp, Units: , IsExtended: false
         /// </summary>
-        public float ErrorRp { get; set; }
+        public static readonly Field ErrorRpField = new Field.Builder()
+            .Name(nameof(ErrorRp))
+            .Title("error_rp")
+            .Description("Average error_roll_pitch value.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _ErrorRp;
+        public float ErrorRp { get => _ErrorRp; set { _ErrorRp = value; } }
         /// <summary>
         /// Average error_yaw value.
         /// OriginName: error_yaw, Units: , IsExtended: false
         /// </summary>
-        public float ErrorYaw { get; set; }
+        public static readonly Field ErrorYawField = new Field.Builder()
+            .Name(nameof(ErrorYaw))
+            .Title("error_yaw")
+            .Description("Average error_yaw value.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _ErrorYaw;
+        public float ErrorYaw { get => _ErrorYaw; set { _ErrorYaw = value; } }
     }
     /// <summary>
     /// Status of simulation environment, if used.
@@ -4837,169 +4452,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override SimstatePayload Payload { get; } = new();
 
         public override string Name => "SIMSTATE";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "roll",
-            "Roll angle.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "pitch",
-            "Pitch angle.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "yaw",
-            "Yaw angle.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "xacc",
-            "X acceleration.",
-            string.Empty, 
-            @"m/s/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "yacc",
-            "Y acceleration.",
-            string.Empty, 
-            @"m/s/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "zacc",
-            "Z acceleration.",
-            string.Empty, 
-            @"m/s/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "xgyro",
-            "Angular speed around X axis.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(7,
-            "ygyro",
-            "Angular speed around Y axis.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(8,
-            "zgyro",
-            "Angular speed around Z axis.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(9,
-            "lat",
-            "Latitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(10,
-            "lng",
-            "Longitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "SIMSTATE:"
-        + "float roll;"
-        + "float pitch;"
-        + "float yaw;"
-        + "float xacc;"
-        + "float yacc;"
-        + "float zacc;"
-        + "float xgyro;"
-        + "float ygyro;"
-        + "float zgyro;"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Roll);
-            writer.Write(StaticFields[1], Payload.Pitch);
-            writer.Write(StaticFields[2], Payload.Yaw);
-            writer.Write(StaticFields[3], Payload.Xacc);
-            writer.Write(StaticFields[4], Payload.Yacc);
-            writer.Write(StaticFields[5], Payload.Zacc);
-            writer.Write(StaticFields[6], Payload.Xgyro);
-            writer.Write(StaticFields[7], Payload.Ygyro);
-            writer.Write(StaticFields[8], Payload.Zgyro);
-            writer.Write(StaticFields[9], Payload.Lat);
-            writer.Write(StaticFields[10], Payload.Lng);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Roll = reader.ReadFloat(StaticFields[0]);
-            Payload.Pitch = reader.ReadFloat(StaticFields[1]);
-            Payload.Yaw = reader.ReadFloat(StaticFields[2]);
-            Payload.Xacc = reader.ReadFloat(StaticFields[3]);
-            Payload.Yacc = reader.ReadFloat(StaticFields[4]);
-            Payload.Zacc = reader.ReadFloat(StaticFields[5]);
-            Payload.Xgyro = reader.ReadFloat(StaticFields[6]);
-            Payload.Ygyro = reader.ReadFloat(StaticFields[7]);
-            Payload.Zgyro = reader.ReadFloat(StaticFields[8]);
-            Payload.Lat = reader.ReadInt(StaticFields[9]);
-            Payload.Lng = reader.ReadInt(StaticFields[10]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -5062,66 +4514,188 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteInt(ref buffer,Lng);
             /* PayloadByteSize = 44 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,RollField, ref _Roll);    
+            FloatType.Accept(visitor,PitchField, ref _Pitch);    
+            FloatType.Accept(visitor,YawField, ref _Yaw);    
+            FloatType.Accept(visitor,XaccField, ref _Xacc);    
+            FloatType.Accept(visitor,YaccField, ref _Yacc);    
+            FloatType.Accept(visitor,ZaccField, ref _Zacc);    
+            FloatType.Accept(visitor,XgyroField, ref _Xgyro);    
+            FloatType.Accept(visitor,YgyroField, ref _Ygyro);    
+            FloatType.Accept(visitor,ZgyroField, ref _Zgyro);    
+            Int32Type.Accept(visitor,LatField, ref _Lat);    
+            Int32Type.Accept(visitor,LngField, ref _Lng);    
 
+        }
 
         /// <summary>
         /// Roll angle.
         /// OriginName: roll, Units: rad, IsExtended: false
         /// </summary>
-        public float Roll { get; set; }
+        public static readonly Field RollField = new Field.Builder()
+            .Name(nameof(Roll))
+            .Title("roll")
+            .Description("Roll angle.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Roll;
+        public float Roll { get => _Roll; set { _Roll = value; } }
         /// <summary>
         /// Pitch angle.
         /// OriginName: pitch, Units: rad, IsExtended: false
         /// </summary>
-        public float Pitch { get; set; }
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Pitch angle.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Pitch;
+        public float Pitch { get => _Pitch; set { _Pitch = value; } }
         /// <summary>
         /// Yaw angle.
         /// OriginName: yaw, Units: rad, IsExtended: false
         /// </summary>
-        public float Yaw { get; set; }
+        public static readonly Field YawField = new Field.Builder()
+            .Name(nameof(Yaw))
+            .Title("yaw")
+            .Description("Yaw angle.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Yaw;
+        public float Yaw { get => _Yaw; set { _Yaw = value; } }
         /// <summary>
         /// X acceleration.
         /// OriginName: xacc, Units: m/s/s, IsExtended: false
         /// </summary>
-        public float Xacc { get; set; }
+        public static readonly Field XaccField = new Field.Builder()
+            .Name(nameof(Xacc))
+            .Title("xacc")
+            .Description("X acceleration.")
+            .FormatString(string.Empty)
+            .Units(@"m/s/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Xacc;
+        public float Xacc { get => _Xacc; set { _Xacc = value; } }
         /// <summary>
         /// Y acceleration.
         /// OriginName: yacc, Units: m/s/s, IsExtended: false
         /// </summary>
-        public float Yacc { get; set; }
+        public static readonly Field YaccField = new Field.Builder()
+            .Name(nameof(Yacc))
+            .Title("yacc")
+            .Description("Y acceleration.")
+            .FormatString(string.Empty)
+            .Units(@"m/s/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Yacc;
+        public float Yacc { get => _Yacc; set { _Yacc = value; } }
         /// <summary>
         /// Z acceleration.
         /// OriginName: zacc, Units: m/s/s, IsExtended: false
         /// </summary>
-        public float Zacc { get; set; }
+        public static readonly Field ZaccField = new Field.Builder()
+            .Name(nameof(Zacc))
+            .Title("zacc")
+            .Description("Z acceleration.")
+            .FormatString(string.Empty)
+            .Units(@"m/s/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Zacc;
+        public float Zacc { get => _Zacc; set { _Zacc = value; } }
         /// <summary>
         /// Angular speed around X axis.
         /// OriginName: xgyro, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Xgyro { get; set; }
+        public static readonly Field XgyroField = new Field.Builder()
+            .Name(nameof(Xgyro))
+            .Title("xgyro")
+            .Description("Angular speed around X axis.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Xgyro;
+        public float Xgyro { get => _Xgyro; set { _Xgyro = value; } }
         /// <summary>
         /// Angular speed around Y axis.
         /// OriginName: ygyro, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Ygyro { get; set; }
+        public static readonly Field YgyroField = new Field.Builder()
+            .Name(nameof(Ygyro))
+            .Title("ygyro")
+            .Description("Angular speed around Y axis.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Ygyro;
+        public float Ygyro { get => _Ygyro; set { _Ygyro = value; } }
         /// <summary>
         /// Angular speed around Z axis.
         /// OriginName: zgyro, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Zgyro { get; set; }
+        public static readonly Field ZgyroField = new Field.Builder()
+            .Name(nameof(Zgyro))
+            .Title("zgyro")
+            .Description("Angular speed around Z axis.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Zgyro;
+        public float Zgyro { get => _Zgyro; set { _Zgyro = value; } }
         /// <summary>
         /// Latitude.
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lat;
+        public int Lat { get => _Lat; set { _Lat = value; } }
         /// <summary>
         /// Longitude.
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lng;
+        public int Lng { get => _Lng; set { _Lng = value; } }
     }
     /// <summary>
     /// Status of key hardware.
@@ -5143,52 +4717,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override HwstatusPayload Payload { get; } = new();
 
         public override string Name => "HWSTATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "Vcc",
-            "Board voltage.",
-            string.Empty, 
-            @"mV", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "I2Cerr",
-            "I2C error count.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "HWSTATUS:"
-        + "uint16_t Vcc;"
-        + "uint8_t I2Cerr;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Vcc);
-            writer.Write(StaticFields[1], Payload.I2cerr);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Vcc = reader.ReadUShort(StaticFields[0]);
-            Payload.I2cerr = reader.ReadByte(StaticFields[1]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -5224,21 +4752,44 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)I2cerr);
             /* PayloadByteSize = 3 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,VccField, ref _Vcc);    
+            UInt8Type.Accept(visitor,I2cerrField, ref _I2cerr);    
 
+        }
 
         /// <summary>
         /// Board voltage.
         /// OriginName: Vcc, Units: mV, IsExtended: false
         /// </summary>
-        public ushort Vcc { get; set; }
+        public static readonly Field VccField = new Field.Builder()
+            .Name(nameof(Vcc))
+            .Title("Vcc")
+            .Description("Board voltage.")
+            .FormatString(string.Empty)
+            .Units(@"mV")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Vcc;
+        public ushort Vcc { get => _Vcc; set { _Vcc = value; } }
         /// <summary>
         /// I2C error count.
         /// OriginName: I2Cerr, Units: , IsExtended: false
         /// </summary>
-        public byte I2cerr { get; set; }
+        public static readonly Field I2cerrField = new Field.Builder()
+            .Name(nameof(I2cerr))
+            .Title("I2Cerr")
+            .Description("I2C error count.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _I2cerr;
+        public byte I2cerr { get => _I2cerr; set { _I2cerr = value; } }
     }
     /// <summary>
     /// Status generated by radio.
@@ -5260,117 +4811,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RadioPayload Payload { get; } = new();
 
         public override string Name => "RADIO";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "rxerrors",
-            "Receive errors.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "fixed",
-            "Count of error corrected packets.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(2,
-            "rssi",
-            "Local signal strength.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "remrssi",
-            "Remote signal strength.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "txbuf",
-            "How full the tx buffer is.",
-            string.Empty, 
-            @"%", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "noise",
-            "Background noise level.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(6,
-            "remnoise",
-            "Remote background noise level.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "RADIO:"
-        + "uint16_t rxerrors;"
-        + "uint16_t fixed;"
-        + "uint8_t rssi;"
-        + "uint8_t remrssi;"
-        + "uint8_t txbuf;"
-        + "uint8_t noise;"
-        + "uint8_t remnoise;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Rxerrors);
-            writer.Write(StaticFields[1], Payload.Fixed);
-            writer.Write(StaticFields[2], Payload.Rssi);
-            writer.Write(StaticFields[3], Payload.Remrssi);
-            writer.Write(StaticFields[4], Payload.Txbuf);
-            writer.Write(StaticFields[5], Payload.Noise);
-            writer.Write(StaticFields[6], Payload.Remnoise);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Rxerrors = reader.ReadUShort(StaticFields[0]);
-            Payload.Fixed = reader.ReadUShort(StaticFields[1]);
-            Payload.Rssi = reader.ReadByte(StaticFields[2]);
-            Payload.Remrssi = reader.ReadByte(StaticFields[3]);
-            Payload.Txbuf = reader.ReadByte(StaticFields[4]);
-            Payload.Noise = reader.ReadByte(StaticFields[5]);
-            Payload.Remnoise = reader.ReadByte(StaticFields[6]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -5421,46 +4861,124 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Remnoise);
             /* PayloadByteSize = 9 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,RxerrorsField, ref _Rxerrors);    
+            UInt16Type.Accept(visitor,FixedField, ref _Fixed);    
+            UInt8Type.Accept(visitor,RssiField, ref _Rssi);    
+            UInt8Type.Accept(visitor,RemrssiField, ref _Remrssi);    
+            UInt8Type.Accept(visitor,TxbufField, ref _Txbuf);    
+            UInt8Type.Accept(visitor,NoiseField, ref _Noise);    
+            UInt8Type.Accept(visitor,RemnoiseField, ref _Remnoise);    
 
+        }
 
         /// <summary>
         /// Receive errors.
         /// OriginName: rxerrors, Units: , IsExtended: false
         /// </summary>
-        public ushort Rxerrors { get; set; }
+        public static readonly Field RxerrorsField = new Field.Builder()
+            .Name(nameof(Rxerrors))
+            .Title("rxerrors")
+            .Description("Receive errors.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Rxerrors;
+        public ushort Rxerrors { get => _Rxerrors; set { _Rxerrors = value; } }
         /// <summary>
         /// Count of error corrected packets.
         /// OriginName: fixed, Units: , IsExtended: false
         /// </summary>
-        public ushort Fixed { get; set; }
+        public static readonly Field FixedField = new Field.Builder()
+            .Name(nameof(Fixed))
+            .Title("fixed")
+            .Description("Count of error corrected packets.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Fixed;
+        public ushort Fixed { get => _Fixed; set { _Fixed = value; } }
         /// <summary>
         /// Local signal strength.
         /// OriginName: rssi, Units: , IsExtended: false
         /// </summary>
-        public byte Rssi { get; set; }
+        public static readonly Field RssiField = new Field.Builder()
+            .Name(nameof(Rssi))
+            .Title("rssi")
+            .Description("Local signal strength.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Rssi;
+        public byte Rssi { get => _Rssi; set { _Rssi = value; } }
         /// <summary>
         /// Remote signal strength.
         /// OriginName: remrssi, Units: , IsExtended: false
         /// </summary>
-        public byte Remrssi { get; set; }
+        public static readonly Field RemrssiField = new Field.Builder()
+            .Name(nameof(Remrssi))
+            .Title("remrssi")
+            .Description("Remote signal strength.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Remrssi;
+        public byte Remrssi { get => _Remrssi; set { _Remrssi = value; } }
         /// <summary>
         /// How full the tx buffer is.
         /// OriginName: txbuf, Units: %, IsExtended: false
         /// </summary>
-        public byte Txbuf { get; set; }
+        public static readonly Field TxbufField = new Field.Builder()
+            .Name(nameof(Txbuf))
+            .Title("txbuf")
+            .Description("How full the tx buffer is.")
+            .FormatString(string.Empty)
+            .Units(@"%")
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Txbuf;
+        public byte Txbuf { get => _Txbuf; set { _Txbuf = value; } }
         /// <summary>
         /// Background noise level.
         /// OriginName: noise, Units: , IsExtended: false
         /// </summary>
-        public byte Noise { get; set; }
+        public static readonly Field NoiseField = new Field.Builder()
+            .Name(nameof(Noise))
+            .Title("noise")
+            .Description("Background noise level.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Noise;
+        public byte Noise { get => _Noise; set { _Noise = value; } }
         /// <summary>
         /// Remote background noise level.
         /// OriginName: remnoise, Units: , IsExtended: false
         /// </summary>
-        public byte Remnoise { get; set; }
+        public static readonly Field RemnoiseField = new Field.Builder()
+            .Name(nameof(Remnoise))
+            .Title("remnoise")
+            .Description("Remote background noise level.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Remnoise;
+        public byte Remnoise { get => _Remnoise; set { _Remnoise = value; } }
     }
     /// <summary>
     /// Status of AP_Limits. Sent in extended status stream when AP_Limits is enabled.
@@ -5482,143 +5000,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override LimitsStatusPayload Payload { get; } = new();
 
         public override string Name => "LIMITS_STATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "last_trigger",
-            "Time (since boot) of last breach.",
-            string.Empty, 
-            @"ms", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "last_action",
-            "Time (since boot) of last recovery action.",
-            string.Empty, 
-            @"ms", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(2,
-            "last_recovery",
-            "Time (since boot) of last successful recovery.",
-            string.Empty, 
-            @"ms", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(3,
-            "last_clear",
-            "Time (since boot) of last all-clear.",
-            string.Empty, 
-            @"ms", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(4,
-            "breach_count",
-            "Number of fence breaches.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(5,
-            "limits_state",
-            "State of AP_Limits.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(6,
-            "mods_enabled",
-            "AP_Limit_Module bitfield of enabled modules.",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "mods_required",
-            "AP_Limit_Module bitfield of required modules.",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "mods_triggered",
-            "AP_Limit_Module bitfield of triggered modules.",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "LIMITS_STATUS:"
-        + "uint32_t last_trigger;"
-        + "uint32_t last_action;"
-        + "uint32_t last_recovery;"
-        + "uint32_t last_clear;"
-        + "uint16_t breach_count;"
-        + "uint8_t limits_state;"
-        + "uint8_t mods_enabled;"
-        + "uint8_t mods_required;"
-        + "uint8_t mods_triggered;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.LastTrigger);
-            writer.Write(StaticFields[1], Payload.LastAction);
-            writer.Write(StaticFields[2], Payload.LastRecovery);
-            writer.Write(StaticFields[3], Payload.LastClear);
-            writer.Write(StaticFields[4], Payload.BreachCount);
-            writer.Write(StaticFields[5], (ulong)Payload.LimitsState);
-            writer.Write(StaticFields[6], (ulong)Payload.ModsEnabled);
-            writer.Write(StaticFields[7], (ulong)Payload.ModsRequired);
-            writer.Write(StaticFields[8], (ulong)Payload.ModsTriggered);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.LastTrigger = reader.ReadUInt(StaticFields[0]);
-            Payload.LastAction = reader.ReadUInt(StaticFields[1]);
-            Payload.LastRecovery = reader.ReadUInt(StaticFields[2]);
-            Payload.LastClear = reader.ReadUInt(StaticFields[3]);
-            Payload.BreachCount = reader.ReadUShort(StaticFields[4]);
-            Payload.LimitsState = (LimitsState)reader.ReadByte(StaticFields[5]);
-            Payload.ModsEnabled = (LimitModule)reader.ReadByte(StaticFields[6]);
-            Payload.ModsRequired = (LimitModule)reader.ReadByte(StaticFields[7]);
-            Payload.ModsTriggered = (LimitModule)reader.ReadByte(StaticFields[8]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -5675,56 +5056,164 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)ModsTriggered);
             /* PayloadByteSize = 22 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,LastTriggerField, ref _LastTrigger);    
+            UInt32Type.Accept(visitor,LastActionField, ref _LastAction);    
+            UInt32Type.Accept(visitor,LastRecoveryField, ref _LastRecovery);    
+            UInt32Type.Accept(visitor,LastClearField, ref _LastClear);    
+            UInt16Type.Accept(visitor,BreachCountField, ref _BreachCount);    
+            var tmpLimitsState = (byte)LimitsState;
+            UInt8Type.Accept(visitor,LimitsStateField, ref tmpLimitsState);
+            LimitsState = (LimitsState)tmpLimitsState;
+            var tmpModsEnabled = (byte)ModsEnabled;
+            UInt8Type.Accept(visitor,ModsEnabledField, ref tmpModsEnabled);
+            ModsEnabled = (LimitModule)tmpModsEnabled;
+            var tmpModsRequired = (byte)ModsRequired;
+            UInt8Type.Accept(visitor,ModsRequiredField, ref tmpModsRequired);
+            ModsRequired = (LimitModule)tmpModsRequired;
+            var tmpModsTriggered = (byte)ModsTriggered;
+            UInt8Type.Accept(visitor,ModsTriggeredField, ref tmpModsTriggered);
+            ModsTriggered = (LimitModule)tmpModsTriggered;
 
+        }
 
         /// <summary>
         /// Time (since boot) of last breach.
         /// OriginName: last_trigger, Units: ms, IsExtended: false
         /// </summary>
-        public uint LastTrigger { get; set; }
+        public static readonly Field LastTriggerField = new Field.Builder()
+            .Name(nameof(LastTrigger))
+            .Title("last_trigger")
+            .Description("Time (since boot) of last breach.")
+            .FormatString(string.Empty)
+            .Units(@"ms")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _LastTrigger;
+        public uint LastTrigger { get => _LastTrigger; set { _LastTrigger = value; } }
         /// <summary>
         /// Time (since boot) of last recovery action.
         /// OriginName: last_action, Units: ms, IsExtended: false
         /// </summary>
-        public uint LastAction { get; set; }
+        public static readonly Field LastActionField = new Field.Builder()
+            .Name(nameof(LastAction))
+            .Title("last_action")
+            .Description("Time (since boot) of last recovery action.")
+            .FormatString(string.Empty)
+            .Units(@"ms")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _LastAction;
+        public uint LastAction { get => _LastAction; set { _LastAction = value; } }
         /// <summary>
         /// Time (since boot) of last successful recovery.
         /// OriginName: last_recovery, Units: ms, IsExtended: false
         /// </summary>
-        public uint LastRecovery { get; set; }
+        public static readonly Field LastRecoveryField = new Field.Builder()
+            .Name(nameof(LastRecovery))
+            .Title("last_recovery")
+            .Description("Time (since boot) of last successful recovery.")
+            .FormatString(string.Empty)
+            .Units(@"ms")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _LastRecovery;
+        public uint LastRecovery { get => _LastRecovery; set { _LastRecovery = value; } }
         /// <summary>
         /// Time (since boot) of last all-clear.
         /// OriginName: last_clear, Units: ms, IsExtended: false
         /// </summary>
-        public uint LastClear { get; set; }
+        public static readonly Field LastClearField = new Field.Builder()
+            .Name(nameof(LastClear))
+            .Title("last_clear")
+            .Description("Time (since boot) of last all-clear.")
+            .FormatString(string.Empty)
+            .Units(@"ms")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _LastClear;
+        public uint LastClear { get => _LastClear; set { _LastClear = value; } }
         /// <summary>
         /// Number of fence breaches.
         /// OriginName: breach_count, Units: , IsExtended: false
         /// </summary>
-        public ushort BreachCount { get; set; }
+        public static readonly Field BreachCountField = new Field.Builder()
+            .Name(nameof(BreachCount))
+            .Title("breach_count")
+            .Description("Number of fence breaches.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _BreachCount;
+        public ushort BreachCount { get => _BreachCount; set { _BreachCount = value; } }
         /// <summary>
         /// State of AP_Limits.
         /// OriginName: limits_state, Units: , IsExtended: false
         /// </summary>
-        public LimitsState LimitsState { get; set; }
+        public static readonly Field LimitsStateField = new Field.Builder()
+            .Name(nameof(LimitsState))
+            .Title("limits_state")
+            .Description("State of AP_Limits.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public LimitsState _LimitsState;
+        public LimitsState LimitsState { get => _LimitsState; set => _LimitsState = value; } 
         /// <summary>
         /// AP_Limit_Module bitfield of enabled modules.
         /// OriginName: mods_enabled, Units: , IsExtended: false
         /// </summary>
-        public LimitModule ModsEnabled { get; set; }
+        public static readonly Field ModsEnabledField = new Field.Builder()
+            .Name(nameof(ModsEnabled))
+            .Title("bitmask")
+            .Description("AP_Limit_Module bitfield of enabled modules.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public LimitModule _ModsEnabled;
+        public LimitModule ModsEnabled { get => _ModsEnabled; set => _ModsEnabled = value; } 
         /// <summary>
         /// AP_Limit_Module bitfield of required modules.
         /// OriginName: mods_required, Units: , IsExtended: false
         /// </summary>
-        public LimitModule ModsRequired { get; set; }
+        public static readonly Field ModsRequiredField = new Field.Builder()
+            .Name(nameof(ModsRequired))
+            .Title("bitmask")
+            .Description("AP_Limit_Module bitfield of required modules.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public LimitModule _ModsRequired;
+        public LimitModule ModsRequired { get => _ModsRequired; set => _ModsRequired = value; } 
         /// <summary>
         /// AP_Limit_Module bitfield of triggered modules.
         /// OriginName: mods_triggered, Units: , IsExtended: false
         /// </summary>
-        public LimitModule ModsTriggered { get; set; }
+        public static readonly Field ModsTriggeredField = new Field.Builder()
+            .Name(nameof(ModsTriggered))
+            .Title("bitmask")
+            .Description("AP_Limit_Module bitfield of triggered modules.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public LimitModule _ModsTriggered;
+        public LimitModule ModsTriggered { get => _ModsTriggered; set => _ModsTriggered = value; } 
     }
     /// <summary>
     /// Wind estimation.
@@ -5746,65 +5235,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override WindPayload Payload { get; } = new();
 
         public override string Name => "WIND";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "direction",
-            "Wind direction (that wind is coming from).",
-            string.Empty, 
-            @"deg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "speed",
-            "Wind speed in ground plane.",
-            string.Empty, 
-            @"m/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "speed_z",
-            "Vertical wind speed.",
-            string.Empty, 
-            @"m/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "WIND:"
-        + "float direction;"
-        + "float speed;"
-        + "float speed_z;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Direction);
-            writer.Write(StaticFields[1], Payload.Speed);
-            writer.Write(StaticFields[2], Payload.SpeedZ);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Direction = reader.ReadFloat(StaticFields[0]);
-            Payload.Speed = reader.ReadFloat(StaticFields[1]);
-            Payload.SpeedZ = reader.ReadFloat(StaticFields[2]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -5843,26 +5273,60 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,SpeedZ);
             /* PayloadByteSize = 12 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DirectionField, ref _Direction);    
+            FloatType.Accept(visitor,SpeedField, ref _Speed);    
+            FloatType.Accept(visitor,SpeedZField, ref _SpeedZ);    
 
+        }
 
         /// <summary>
         /// Wind direction (that wind is coming from).
         /// OriginName: direction, Units: deg, IsExtended: false
         /// </summary>
-        public float Direction { get; set; }
+        public static readonly Field DirectionField = new Field.Builder()
+            .Name(nameof(Direction))
+            .Title("direction")
+            .Description("Wind direction (that wind is coming from).")
+            .FormatString(string.Empty)
+            .Units(@"deg")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Direction;
+        public float Direction { get => _Direction; set { _Direction = value; } }
         /// <summary>
         /// Wind speed in ground plane.
         /// OriginName: speed, Units: m/s, IsExtended: false
         /// </summary>
-        public float Speed { get; set; }
+        public static readonly Field SpeedField = new Field.Builder()
+            .Name(nameof(Speed))
+            .Title("speed")
+            .Description("Wind speed in ground plane.")
+            .FormatString(string.Empty)
+            .Units(@"m/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Speed;
+        public float Speed { get => _Speed; set { _Speed = value; } }
         /// <summary>
         /// Vertical wind speed.
         /// OriginName: speed_z, Units: m/s, IsExtended: false
         /// </summary>
-        public float SpeedZ { get; set; }
+        public static readonly Field SpeedZField = new Field.Builder()
+            .Name(nameof(SpeedZ))
+            .Title("speed_z")
+            .Description("Vertical wind speed.")
+            .FormatString(string.Empty)
+            .Units(@"m/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _SpeedZ;
+        public float SpeedZ { get => _SpeedZ; set { _SpeedZ = value; } }
     }
     /// <summary>
     /// Data packet, size 16.
@@ -5884,65 +5348,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data16Payload Payload { get; } = new();
 
         public override string Name => "DATA16";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "type",
-            "Data type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "len",
-            "Data length.",
-            string.Empty, 
-            @"bytes", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "data",
-            "Raw data.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            16, 
-            false),
-        ];
-        public const string FormatMessage = "DATA16:"
-        + "uint8_t type;"
-        + "uint8_t len;"
-        + "uint8_t[16] data;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Type);
-            writer.Write(StaticFields[1], Payload.Len);
-            writer.Write(StaticFields[2], Payload.Data);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Type = reader.ReadByte(StaticFields[0]);
-            Payload.Len = reader.ReadByte(StaticFields[1]);
-            reader.ReadByteArray(StaticFields[2], Payload.Data);
-        
-            
-        }
     }
 
     /// <summary>
@@ -5973,7 +5378,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/18 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -5991,27 +5396,61 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 18 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TypeField, ref _Type);    
+            UInt8Type.Accept(visitor,LenField, ref _Len);    
+            ArrayType.Accept(visitor,DataField, 16,
+                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
 
+        }
 
         /// <summary>
         /// Data type.
         /// OriginName: type, Units: , IsExtended: false
         /// </summary>
-        public byte Type { get; set; }
+        public static readonly Field TypeField = new Field.Builder()
+            .Name(nameof(Type))
+            .Title("type")
+            .Description("Data type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Type;
+        public byte Type { get => _Type; set { _Type = value; } }
         /// <summary>
         /// Data length.
         /// OriginName: len, Units: bytes, IsExtended: false
         /// </summary>
-        public byte Len { get; set; }
+        public static readonly Field LenField = new Field.Builder()
+            .Name(nameof(Len))
+            .Title("len")
+            .Description("Data length.")
+            .FormatString(string.Empty)
+            .Units(@"bytes")
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Len;
+        public byte Len { get => _Len; set { _Len = value; } }
         /// <summary>
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Raw data.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,16))
+
+            .Build();
         public const int DataMaxItemsCount = 16;
-        public byte[] Data { get; set; } = new byte[16];
+        public byte[] Data { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 16;
     }
@@ -6035,65 +5474,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data32Payload Payload { get; } = new();
 
         public override string Name => "DATA32";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "type",
-            "Data type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "len",
-            "Data length.",
-            string.Empty, 
-            @"bytes", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "data",
-            "Raw data.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            32, 
-            false),
-        ];
-        public const string FormatMessage = "DATA32:"
-        + "uint8_t type;"
-        + "uint8_t len;"
-        + "uint8_t[32] data;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Type);
-            writer.Write(StaticFields[1], Payload.Len);
-            writer.Write(StaticFields[2], Payload.Data);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Type = reader.ReadByte(StaticFields[0]);
-            Payload.Len = reader.ReadByte(StaticFields[1]);
-            reader.ReadByteArray(StaticFields[2], Payload.Data);
-        
-            
-        }
     }
 
     /// <summary>
@@ -6124,7 +5504,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -6142,27 +5522,61 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 34 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TypeField, ref _Type);    
+            UInt8Type.Accept(visitor,LenField, ref _Len);    
+            ArrayType.Accept(visitor,DataField, 32,
+                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
 
+        }
 
         /// <summary>
         /// Data type.
         /// OriginName: type, Units: , IsExtended: false
         /// </summary>
-        public byte Type { get; set; }
+        public static readonly Field TypeField = new Field.Builder()
+            .Name(nameof(Type))
+            .Title("type")
+            .Description("Data type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Type;
+        public byte Type { get => _Type; set { _Type = value; } }
         /// <summary>
         /// Data length.
         /// OriginName: len, Units: bytes, IsExtended: false
         /// </summary>
-        public byte Len { get; set; }
+        public static readonly Field LenField = new Field.Builder()
+            .Name(nameof(Len))
+            .Title("len")
+            .Description("Data length.")
+            .FormatString(string.Empty)
+            .Units(@"bytes")
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Len;
+        public byte Len { get => _Len; set { _Len = value; } }
         /// <summary>
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Raw data.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,32))
+
+            .Build();
         public const int DataMaxItemsCount = 32;
-        public byte[] Data { get; set; } = new byte[32];
+        public byte[] Data { get; } = new byte[32];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 32;
     }
@@ -6186,65 +5600,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data64Payload Payload { get; } = new();
 
         public override string Name => "DATA64";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "type",
-            "Data type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "len",
-            "Data length.",
-            string.Empty, 
-            @"bytes", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "data",
-            "Raw data.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            64, 
-            false),
-        ];
-        public const string FormatMessage = "DATA64:"
-        + "uint8_t type;"
-        + "uint8_t len;"
-        + "uint8_t[64] data;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Type);
-            writer.Write(StaticFields[1], Payload.Len);
-            writer.Write(StaticFields[2], Payload.Data);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Type = reader.ReadByte(StaticFields[0]);
-            Payload.Len = reader.ReadByte(StaticFields[1]);
-            reader.ReadByteArray(StaticFields[2], Payload.Data);
-        
-            
-        }
     }
 
     /// <summary>
@@ -6275,7 +5630,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/64 - Math.Max(0,((/*PayloadByteSize*/66 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -6293,27 +5648,61 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 66 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TypeField, ref _Type);    
+            UInt8Type.Accept(visitor,LenField, ref _Len);    
+            ArrayType.Accept(visitor,DataField, 64,
+                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
 
+        }
 
         /// <summary>
         /// Data type.
         /// OriginName: type, Units: , IsExtended: false
         /// </summary>
-        public byte Type { get; set; }
+        public static readonly Field TypeField = new Field.Builder()
+            .Name(nameof(Type))
+            .Title("type")
+            .Description("Data type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Type;
+        public byte Type { get => _Type; set { _Type = value; } }
         /// <summary>
         /// Data length.
         /// OriginName: len, Units: bytes, IsExtended: false
         /// </summary>
-        public byte Len { get; set; }
+        public static readonly Field LenField = new Field.Builder()
+            .Name(nameof(Len))
+            .Title("len")
+            .Description("Data length.")
+            .FormatString(string.Empty)
+            .Units(@"bytes")
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Len;
+        public byte Len { get => _Len; set { _Len = value; } }
         /// <summary>
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Raw data.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,64))
+
+            .Build();
         public const int DataMaxItemsCount = 64;
-        public byte[] Data { get; set; } = new byte[64];
+        public byte[] Data { get; } = new byte[64];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 64;
     }
@@ -6337,65 +5726,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data96Payload Payload { get; } = new();
 
         public override string Name => "DATA96";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "type",
-            "Data type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "len",
-            "Data length.",
-            string.Empty, 
-            @"bytes", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "data",
-            "Raw data.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            96, 
-            false),
-        ];
-        public const string FormatMessage = "DATA96:"
-        + "uint8_t type;"
-        + "uint8_t len;"
-        + "uint8_t[96] data;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Type);
-            writer.Write(StaticFields[1], Payload.Len);
-            writer.Write(StaticFields[2], Payload.Data);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Type = reader.ReadByte(StaticFields[0]);
-            Payload.Len = reader.ReadByte(StaticFields[1]);
-            reader.ReadByteArray(StaticFields[2], Payload.Data);
-        
-            
-        }
     }
 
     /// <summary>
@@ -6426,7 +5756,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/96 - Math.Max(0,((/*PayloadByteSize*/98 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -6444,27 +5774,61 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 98 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TypeField, ref _Type);    
+            UInt8Type.Accept(visitor,LenField, ref _Len);    
+            ArrayType.Accept(visitor,DataField, 96,
+                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
 
+        }
 
         /// <summary>
         /// Data type.
         /// OriginName: type, Units: , IsExtended: false
         /// </summary>
-        public byte Type { get; set; }
+        public static readonly Field TypeField = new Field.Builder()
+            .Name(nameof(Type))
+            .Title("type")
+            .Description("Data type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Type;
+        public byte Type { get => _Type; set { _Type = value; } }
         /// <summary>
         /// Data length.
         /// OriginName: len, Units: bytes, IsExtended: false
         /// </summary>
-        public byte Len { get; set; }
+        public static readonly Field LenField = new Field.Builder()
+            .Name(nameof(Len))
+            .Title("len")
+            .Description("Data length.")
+            .FormatString(string.Empty)
+            .Units(@"bytes")
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Len;
+        public byte Len { get => _Len; set { _Len = value; } }
         /// <summary>
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Raw data.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,96))
+
+            .Build();
         public const int DataMaxItemsCount = 96;
-        public byte[] Data { get; set; } = new byte[96];
+        public byte[] Data { get; } = new byte[96];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 96;
     }
@@ -6488,52 +5852,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RangefinderPayload Payload { get; } = new();
 
         public override string Name => "RANGEFINDER";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "distance",
-            "Distance.",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "voltage",
-            "Raw voltage if available, zero otherwise.",
-            string.Empty, 
-            @"V", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "RANGEFINDER:"
-        + "float distance;"
-        + "float voltage;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Distance);
-            writer.Write(StaticFields[1], Payload.Voltage);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Distance = reader.ReadFloat(StaticFields[0]);
-            Payload.Voltage = reader.ReadFloat(StaticFields[1]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -6569,21 +5887,44 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,Voltage);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DistanceField, ref _Distance);    
+            FloatType.Accept(visitor,VoltageField, ref _Voltage);    
 
+        }
 
         /// <summary>
         /// Distance.
         /// OriginName: distance, Units: m, IsExtended: false
         /// </summary>
-        public float Distance { get; set; }
+        public static readonly Field DistanceField = new Field.Builder()
+            .Name(nameof(Distance))
+            .Title("distance")
+            .Description("Distance.")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Distance;
+        public float Distance { get => _Distance; set { _Distance = value; } }
         /// <summary>
         /// Raw voltage if available, zero otherwise.
         /// OriginName: voltage, Units: V, IsExtended: false
         /// </summary>
-        public float Voltage { get; set; }
+        public static readonly Field VoltageField = new Field.Builder()
+            .Name(nameof(Voltage))
+            .Title("voltage")
+            .Description("Raw voltage if available, zero otherwise.")
+            .FormatString(string.Empty)
+            .Units(@"V")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Voltage;
+        public float Voltage { get => _Voltage; set { _Voltage = value; } }
     }
     /// <summary>
     /// Airspeed auto-calibration.
@@ -6605,182 +5946,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AirspeedAutocalPayload Payload { get; } = new();
 
         public override string Name => "AIRSPEED_AUTOCAL";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "vx",
-            "GPS velocity north.",
-            string.Empty, 
-            @"m/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "vy",
-            "GPS velocity east.",
-            string.Empty, 
-            @"m/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "vz",
-            "GPS velocity down.",
-            string.Empty, 
-            @"m/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "diff_pressure",
-            "Differential pressure.",
-            string.Empty, 
-            @"Pa", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "EAS2TAS",
-            "Estimated to true airspeed ratio.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "ratio",
-            "Airspeed ratio.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "state_x",
-            "EKF state x.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(7,
-            "state_y",
-            "EKF state y.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(8,
-            "state_z",
-            "EKF state z.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(9,
-            "Pax",
-            "EKF Pax.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(10,
-            "Pby",
-            "EKF Pby.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(11,
-            "Pcz",
-            "EKF Pcz.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AIRSPEED_AUTOCAL:"
-        + "float vx;"
-        + "float vy;"
-        + "float vz;"
-        + "float diff_pressure;"
-        + "float EAS2TAS;"
-        + "float ratio;"
-        + "float state_x;"
-        + "float state_y;"
-        + "float state_z;"
-        + "float Pax;"
-        + "float Pby;"
-        + "float Pcz;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Vx);
-            writer.Write(StaticFields[1], Payload.Vy);
-            writer.Write(StaticFields[2], Payload.Vz);
-            writer.Write(StaticFields[3], Payload.DiffPressure);
-            writer.Write(StaticFields[4], Payload.Eas2tas);
-            writer.Write(StaticFields[5], Payload.Ratio);
-            writer.Write(StaticFields[6], Payload.StateX);
-            writer.Write(StaticFields[7], Payload.StateY);
-            writer.Write(StaticFields[8], Payload.StateZ);
-            writer.Write(StaticFields[9], Payload.Pax);
-            writer.Write(StaticFields[10], Payload.Pby);
-            writer.Write(StaticFields[11], Payload.Pcz);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Vx = reader.ReadFloat(StaticFields[0]);
-            Payload.Vy = reader.ReadFloat(StaticFields[1]);
-            Payload.Vz = reader.ReadFloat(StaticFields[2]);
-            Payload.DiffPressure = reader.ReadFloat(StaticFields[3]);
-            Payload.Eas2tas = reader.ReadFloat(StaticFields[4]);
-            Payload.Ratio = reader.ReadFloat(StaticFields[5]);
-            Payload.StateX = reader.ReadFloat(StaticFields[6]);
-            Payload.StateY = reader.ReadFloat(StaticFields[7]);
-            Payload.StateZ = reader.ReadFloat(StaticFields[8]);
-            Payload.Pax = reader.ReadFloat(StaticFields[9]);
-            Payload.Pby = reader.ReadFloat(StaticFields[10]);
-            Payload.Pcz = reader.ReadFloat(StaticFields[11]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -6846,71 +6011,204 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,Pcz);
             /* PayloadByteSize = 48 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,VxField, ref _Vx);    
+            FloatType.Accept(visitor,VyField, ref _Vy);    
+            FloatType.Accept(visitor,VzField, ref _Vz);    
+            FloatType.Accept(visitor,DiffPressureField, ref _DiffPressure);    
+            FloatType.Accept(visitor,Eas2tasField, ref _Eas2tas);    
+            FloatType.Accept(visitor,RatioField, ref _Ratio);    
+            FloatType.Accept(visitor,StateXField, ref _StateX);    
+            FloatType.Accept(visitor,StateYField, ref _StateY);    
+            FloatType.Accept(visitor,StateZField, ref _StateZ);    
+            FloatType.Accept(visitor,PaxField, ref _Pax);    
+            FloatType.Accept(visitor,PbyField, ref _Pby);    
+            FloatType.Accept(visitor,PczField, ref _Pcz);    
 
+        }
 
         /// <summary>
         /// GPS velocity north.
         /// OriginName: vx, Units: m/s, IsExtended: false
         /// </summary>
-        public float Vx { get; set; }
+        public static readonly Field VxField = new Field.Builder()
+            .Name(nameof(Vx))
+            .Title("vx")
+            .Description("GPS velocity north.")
+            .FormatString(string.Empty)
+            .Units(@"m/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Vx;
+        public float Vx { get => _Vx; set { _Vx = value; } }
         /// <summary>
         /// GPS velocity east.
         /// OriginName: vy, Units: m/s, IsExtended: false
         /// </summary>
-        public float Vy { get; set; }
+        public static readonly Field VyField = new Field.Builder()
+            .Name(nameof(Vy))
+            .Title("vy")
+            .Description("GPS velocity east.")
+            .FormatString(string.Empty)
+            .Units(@"m/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Vy;
+        public float Vy { get => _Vy; set { _Vy = value; } }
         /// <summary>
         /// GPS velocity down.
         /// OriginName: vz, Units: m/s, IsExtended: false
         /// </summary>
-        public float Vz { get; set; }
+        public static readonly Field VzField = new Field.Builder()
+            .Name(nameof(Vz))
+            .Title("vz")
+            .Description("GPS velocity down.")
+            .FormatString(string.Empty)
+            .Units(@"m/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Vz;
+        public float Vz { get => _Vz; set { _Vz = value; } }
         /// <summary>
         /// Differential pressure.
         /// OriginName: diff_pressure, Units: Pa, IsExtended: false
         /// </summary>
-        public float DiffPressure { get; set; }
+        public static readonly Field DiffPressureField = new Field.Builder()
+            .Name(nameof(DiffPressure))
+            .Title("diff_pressure")
+            .Description("Differential pressure.")
+            .FormatString(string.Empty)
+            .Units(@"Pa")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DiffPressure;
+        public float DiffPressure { get => _DiffPressure; set { _DiffPressure = value; } }
         /// <summary>
         /// Estimated to true airspeed ratio.
         /// OriginName: EAS2TAS, Units: , IsExtended: false
         /// </summary>
-        public float Eas2tas { get; set; }
+        public static readonly Field Eas2tasField = new Field.Builder()
+            .Name(nameof(Eas2tas))
+            .Title("EAS2TAS")
+            .Description("Estimated to true airspeed ratio.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Eas2tas;
+        public float Eas2tas { get => _Eas2tas; set { _Eas2tas = value; } }
         /// <summary>
         /// Airspeed ratio.
         /// OriginName: ratio, Units: , IsExtended: false
         /// </summary>
-        public float Ratio { get; set; }
+        public static readonly Field RatioField = new Field.Builder()
+            .Name(nameof(Ratio))
+            .Title("ratio")
+            .Description("Airspeed ratio.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Ratio;
+        public float Ratio { get => _Ratio; set { _Ratio = value; } }
         /// <summary>
         /// EKF state x.
         /// OriginName: state_x, Units: , IsExtended: false
         /// </summary>
-        public float StateX { get; set; }
+        public static readonly Field StateXField = new Field.Builder()
+            .Name(nameof(StateX))
+            .Title("state_x")
+            .Description("EKF state x.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _StateX;
+        public float StateX { get => _StateX; set { _StateX = value; } }
         /// <summary>
         /// EKF state y.
         /// OriginName: state_y, Units: , IsExtended: false
         /// </summary>
-        public float StateY { get; set; }
+        public static readonly Field StateYField = new Field.Builder()
+            .Name(nameof(StateY))
+            .Title("state_y")
+            .Description("EKF state y.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _StateY;
+        public float StateY { get => _StateY; set { _StateY = value; } }
         /// <summary>
         /// EKF state z.
         /// OriginName: state_z, Units: , IsExtended: false
         /// </summary>
-        public float StateZ { get; set; }
+        public static readonly Field StateZField = new Field.Builder()
+            .Name(nameof(StateZ))
+            .Title("state_z")
+            .Description("EKF state z.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _StateZ;
+        public float StateZ { get => _StateZ; set { _StateZ = value; } }
         /// <summary>
         /// EKF Pax.
         /// OriginName: Pax, Units: , IsExtended: false
         /// </summary>
-        public float Pax { get; set; }
+        public static readonly Field PaxField = new Field.Builder()
+            .Name(nameof(Pax))
+            .Title("Pax")
+            .Description("EKF Pax.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Pax;
+        public float Pax { get => _Pax; set { _Pax = value; } }
         /// <summary>
         /// EKF Pby.
         /// OriginName: Pby, Units: , IsExtended: false
         /// </summary>
-        public float Pby { get; set; }
+        public static readonly Field PbyField = new Field.Builder()
+            .Name(nameof(Pby))
+            .Title("Pby")
+            .Description("EKF Pby.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Pby;
+        public float Pby { get => _Pby; set { _Pby = value; } }
         /// <summary>
         /// EKF Pcz.
         /// OriginName: Pcz, Units: , IsExtended: false
         /// </summary>
-        public float Pcz { get; set; }
+        public static readonly Field PczField = new Field.Builder()
+            .Name(nameof(Pcz))
+            .Title("Pcz")
+            .Description("EKF Pcz.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Pcz;
+        public float Pcz { get => _Pcz; set { _Pcz = value; } }
     }
     /// <summary>
     /// A rally point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
@@ -6932,156 +6230,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RallyPointPayload Payload { get; } = new();
 
         public override string Name => "RALLY_POINT";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "lat",
-            "Latitude of point.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(1,
-            "lng",
-            "Longitude of point.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(2,
-            "alt",
-            "Transit / loiter altitude relative to home.",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(3,
-            "break_alt",
-            "Break altitude relative to home.",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(4,
-            "land_dir",
-            "Heading to aim for when landing.",
-            string.Empty, 
-            @"cdeg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(5,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(6,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "idx",
-            "Point index (first point is 0).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "count",
-            "Total number of points (for sanity checking).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(9,
-            "flags",
-            "Configuration flags.",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "RALLY_POINT:"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        + "int16_t alt;"
-        + "int16_t break_alt;"
-        + "uint16_t land_dir;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t idx;"
-        + "uint8_t count;"
-        + "uint8_t flags;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Lat);
-            writer.Write(StaticFields[1], Payload.Lng);
-            writer.Write(StaticFields[2], Payload.Alt);
-            writer.Write(StaticFields[3], Payload.BreakAlt);
-            writer.Write(StaticFields[4], Payload.LandDir);
-            writer.Write(StaticFields[5], Payload.TargetSystem);
-            writer.Write(StaticFields[6], Payload.TargetComponent);
-            writer.Write(StaticFields[7], Payload.Idx);
-            writer.Write(StaticFields[8], Payload.Count);
-            writer.Write(StaticFields[9], (ulong)Payload.Flags);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Lat = reader.ReadInt(StaticFields[0]);
-            Payload.Lng = reader.ReadInt(StaticFields[1]);
-            Payload.Alt = reader.ReadShort(StaticFields[2]);
-            Payload.BreakAlt = reader.ReadShort(StaticFields[3]);
-            Payload.LandDir = reader.ReadUShort(StaticFields[4]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[5]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[6]);
-            Payload.Idx = reader.ReadByte(StaticFields[7]);
-            Payload.Count = reader.ReadByte(StaticFields[8]);
-            Payload.Flags = (RallyFlags)reader.ReadByte(StaticFields[9]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -7141,61 +6289,174 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Flags);
             /* PayloadByteSize = 19 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            Int32Type.Accept(visitor,LatField, ref _Lat);    
+            Int32Type.Accept(visitor,LngField, ref _Lng);    
+            Int16Type.Accept(visitor,AltField, ref _Alt);
+            Int16Type.Accept(visitor,BreakAltField, ref _BreakAlt);
+            UInt16Type.Accept(visitor,LandDirField, ref _LandDir);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,IdxField, ref _Idx);    
+            UInt8Type.Accept(visitor,CountField, ref _Count);    
+            var tmpFlags = (byte)Flags;
+            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
+            Flags = (RallyFlags)tmpFlags;
 
+        }
 
         /// <summary>
         /// Latitude of point.
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude of point.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lat;
+        public int Lat { get => _Lat; set { _Lat = value; } }
         /// <summary>
         /// Longitude of point.
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude of point.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lng;
+        public int Lng { get => _Lng; set { _Lng = value; } }
         /// <summary>
         /// Transit / loiter altitude relative to home.
         /// OriginName: alt, Units: m, IsExtended: false
         /// </summary>
-        public short Alt { get; set; }
+        public static readonly Field AltField = new Field.Builder()
+            .Name(nameof(Alt))
+            .Title("alt")
+            .Description("Transit / loiter altitude relative to home.")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _Alt;
+        public short Alt { get => _Alt; set { _Alt = value; } }
         /// <summary>
         /// Break altitude relative to home.
         /// OriginName: break_alt, Units: m, IsExtended: false
         /// </summary>
-        public short BreakAlt { get; set; }
+        public static readonly Field BreakAltField = new Field.Builder()
+            .Name(nameof(BreakAlt))
+            .Title("break_alt")
+            .Description("Break altitude relative to home.")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _BreakAlt;
+        public short BreakAlt { get => _BreakAlt; set { _BreakAlt = value; } }
         /// <summary>
         /// Heading to aim for when landing.
         /// OriginName: land_dir, Units: cdeg, IsExtended: false
         /// </summary>
-        public ushort LandDir { get; set; }
+        public static readonly Field LandDirField = new Field.Builder()
+            .Name(nameof(LandDir))
+            .Title("land_dir")
+            .Description("Heading to aim for when landing.")
+            .FormatString(string.Empty)
+            .Units(@"cdeg")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _LandDir;
+        public ushort LandDir { get => _LandDir; set { _LandDir = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Point index (first point is 0).
         /// OriginName: idx, Units: , IsExtended: false
         /// </summary>
-        public byte Idx { get; set; }
+        public static readonly Field IdxField = new Field.Builder()
+            .Name(nameof(Idx))
+            .Title("idx")
+            .Description("Point index (first point is 0).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Idx;
+        public byte Idx { get => _Idx; set { _Idx = value; } }
         /// <summary>
         /// Total number of points (for sanity checking).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Total number of points (for sanity checking).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Count;
+        public byte Count { get => _Count; set { _Count = value; } }
         /// <summary>
         /// Configuration flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public RallyFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("bitmask")
+            .Description("Configuration flags.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public RallyFlags _Flags;
+        public RallyFlags Flags { get => _Flags; set => _Flags = value; } 
     }
     /// <summary>
     /// Request a current rally point from MAV. MAV should respond with a RALLY_POINT message. MAV should not respond if the request is invalid.
@@ -7217,65 +6478,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RallyFetchPointPayload Payload { get; } = new();
 
         public override string Name => "RALLY_FETCH_POINT";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "idx",
-            "Point index (first point is 0).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "RALLY_FETCH_POINT:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t idx;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TargetSystem);
-            writer.Write(StaticFields[1], Payload.TargetComponent);
-            writer.Write(StaticFields[2], Payload.Idx);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.Idx = reader.ReadByte(StaticFields[2]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -7314,26 +6516,60 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Idx);
             /* PayloadByteSize = 3 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,IdxField, ref _Idx);    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Point index (first point is 0).
         /// OriginName: idx, Units: , IsExtended: false
         /// </summary>
-        public byte Idx { get; set; }
+        public static readonly Field IdxField = new Field.Builder()
+            .Name(nameof(Idx))
+            .Title("idx")
+            .Description("Point index (first point is 0).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Idx;
+        public byte Idx { get => _Idx; set { _Idx = value; } }
     }
     /// <summary>
     /// Status of compassmot calibration.
@@ -7355,104 +6591,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override CompassmotStatusPayload Payload { get; } = new();
 
         public override string Name => "COMPASSMOT_STATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "current",
-            "Current.",
-            string.Empty, 
-            @"A", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "CompensationX",
-            "Motor Compensation X.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "CompensationY",
-            "Motor Compensation Y.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "CompensationZ",
-            "Motor Compensation Z.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "throttle",
-            "Throttle.",
-            string.Empty, 
-            @"d%", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(5,
-            "interference",
-            "Interference.",
-            string.Empty, 
-            @"%", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "COMPASSMOT_STATUS:"
-        + "float current;"
-        + "float CompensationX;"
-        + "float CompensationY;"
-        + "float CompensationZ;"
-        + "uint16_t throttle;"
-        + "uint16_t interference;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Current);
-            writer.Write(StaticFields[1], Payload.Compensationx);
-            writer.Write(StaticFields[2], Payload.Compensationy);
-            writer.Write(StaticFields[3], Payload.Compensationz);
-            writer.Write(StaticFields[4], Payload.Throttle);
-            writer.Write(StaticFields[5], Payload.Interference);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Current = reader.ReadFloat(StaticFields[0]);
-            Payload.Compensationx = reader.ReadFloat(StaticFields[1]);
-            Payload.Compensationy = reader.ReadFloat(StaticFields[2]);
-            Payload.Compensationz = reader.ReadFloat(StaticFields[3]);
-            Payload.Throttle = reader.ReadUShort(StaticFields[4]);
-            Payload.Interference = reader.ReadUShort(StaticFields[5]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -7500,41 +6638,108 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteUShort(ref buffer,Interference);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,CurrentField, ref _Current);    
+            FloatType.Accept(visitor,CompensationxField, ref _Compensationx);    
+            FloatType.Accept(visitor,CompensationyField, ref _Compensationy);    
+            FloatType.Accept(visitor,CompensationzField, ref _Compensationz);    
+            UInt16Type.Accept(visitor,ThrottleField, ref _Throttle);    
+            UInt16Type.Accept(visitor,InterferenceField, ref _Interference);    
 
+        }
 
         /// <summary>
         /// Current.
         /// OriginName: current, Units: A, IsExtended: false
         /// </summary>
-        public float Current { get; set; }
+        public static readonly Field CurrentField = new Field.Builder()
+            .Name(nameof(Current))
+            .Title("current")
+            .Description("Current.")
+            .FormatString(string.Empty)
+            .Units(@"A")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Current;
+        public float Current { get => _Current; set { _Current = value; } }
         /// <summary>
         /// Motor Compensation X.
         /// OriginName: CompensationX, Units: , IsExtended: false
         /// </summary>
-        public float Compensationx { get; set; }
+        public static readonly Field CompensationxField = new Field.Builder()
+            .Name(nameof(Compensationx))
+            .Title("CompensationX")
+            .Description("Motor Compensation X.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Compensationx;
+        public float Compensationx { get => _Compensationx; set { _Compensationx = value; } }
         /// <summary>
         /// Motor Compensation Y.
         /// OriginName: CompensationY, Units: , IsExtended: false
         /// </summary>
-        public float Compensationy { get; set; }
+        public static readonly Field CompensationyField = new Field.Builder()
+            .Name(nameof(Compensationy))
+            .Title("CompensationY")
+            .Description("Motor Compensation Y.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Compensationy;
+        public float Compensationy { get => _Compensationy; set { _Compensationy = value; } }
         /// <summary>
         /// Motor Compensation Z.
         /// OriginName: CompensationZ, Units: , IsExtended: false
         /// </summary>
-        public float Compensationz { get; set; }
+        public static readonly Field CompensationzField = new Field.Builder()
+            .Name(nameof(Compensationz))
+            .Title("CompensationZ")
+            .Description("Motor Compensation Z.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Compensationz;
+        public float Compensationz { get => _Compensationz; set { _Compensationz = value; } }
         /// <summary>
         /// Throttle.
         /// OriginName: throttle, Units: d%, IsExtended: false
         /// </summary>
-        public ushort Throttle { get; set; }
+        public static readonly Field ThrottleField = new Field.Builder()
+            .Name(nameof(Throttle))
+            .Title("throttle")
+            .Description("Throttle.")
+            .FormatString(string.Empty)
+            .Units(@"d%")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Throttle;
+        public ushort Throttle { get => _Throttle; set { _Throttle = value; } }
         /// <summary>
         /// Interference.
         /// OriginName: interference, Units: %, IsExtended: false
         /// </summary>
-        public ushort Interference { get; set; }
+        public static readonly Field InterferenceField = new Field.Builder()
+            .Name(nameof(Interference))
+            .Title("interference")
+            .Description("Interference.")
+            .FormatString(string.Empty)
+            .Units(@"%")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Interference;
+        public ushort Interference { get => _Interference; set { _Interference = value; } }
     }
     /// <summary>
     /// Status of secondary AHRS filter if available.
@@ -7556,104 +6761,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Ahrs2Payload Payload { get; } = new();
 
         public override string Name => "AHRS2";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "roll",
-            "Roll angle.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "pitch",
-            "Pitch angle.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "yaw",
-            "Yaw angle.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "altitude",
-            "Altitude (MSL).",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "lat",
-            "Latitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(5,
-            "lng",
-            "Longitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AHRS2:"
-        + "float roll;"
-        + "float pitch;"
-        + "float yaw;"
-        + "float altitude;"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Roll);
-            writer.Write(StaticFields[1], Payload.Pitch);
-            writer.Write(StaticFields[2], Payload.Yaw);
-            writer.Write(StaticFields[3], Payload.Altitude);
-            writer.Write(StaticFields[4], Payload.Lat);
-            writer.Write(StaticFields[5], Payload.Lng);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Roll = reader.ReadFloat(StaticFields[0]);
-            Payload.Pitch = reader.ReadFloat(StaticFields[1]);
-            Payload.Yaw = reader.ReadFloat(StaticFields[2]);
-            Payload.Altitude = reader.ReadFloat(StaticFields[3]);
-            Payload.Lat = reader.ReadInt(StaticFields[4]);
-            Payload.Lng = reader.ReadInt(StaticFields[5]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -7701,41 +6808,108 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteInt(ref buffer,Lng);
             /* PayloadByteSize = 24 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,RollField, ref _Roll);    
+            FloatType.Accept(visitor,PitchField, ref _Pitch);    
+            FloatType.Accept(visitor,YawField, ref _Yaw);    
+            FloatType.Accept(visitor,AltitudeField, ref _Altitude);    
+            Int32Type.Accept(visitor,LatField, ref _Lat);    
+            Int32Type.Accept(visitor,LngField, ref _Lng);    
 
+        }
 
         /// <summary>
         /// Roll angle.
         /// OriginName: roll, Units: rad, IsExtended: false
         /// </summary>
-        public float Roll { get; set; }
+        public static readonly Field RollField = new Field.Builder()
+            .Name(nameof(Roll))
+            .Title("roll")
+            .Description("Roll angle.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Roll;
+        public float Roll { get => _Roll; set { _Roll = value; } }
         /// <summary>
         /// Pitch angle.
         /// OriginName: pitch, Units: rad, IsExtended: false
         /// </summary>
-        public float Pitch { get; set; }
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Pitch angle.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Pitch;
+        public float Pitch { get => _Pitch; set { _Pitch = value; } }
         /// <summary>
         /// Yaw angle.
         /// OriginName: yaw, Units: rad, IsExtended: false
         /// </summary>
-        public float Yaw { get; set; }
+        public static readonly Field YawField = new Field.Builder()
+            .Name(nameof(Yaw))
+            .Title("yaw")
+            .Description("Yaw angle.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Yaw;
+        public float Yaw { get => _Yaw; set { _Yaw = value; } }
         /// <summary>
         /// Altitude (MSL).
         /// OriginName: altitude, Units: m, IsExtended: false
         /// </summary>
-        public float Altitude { get; set; }
+        public static readonly Field AltitudeField = new Field.Builder()
+            .Name(nameof(Altitude))
+            .Title("altitude")
+            .Description("Altitude (MSL).")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Altitude;
+        public float Altitude { get => _Altitude; set { _Altitude = value; } }
         /// <summary>
         /// Latitude.
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lat;
+        public int Lat { get => _Lat; set { _Lat = value; } }
         /// <summary>
         /// Longitude.
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lng;
+        public int Lng { get => _Lng; set { _Lng = value; } }
     }
     /// <summary>
     /// Camera Event.
@@ -7757,143 +6931,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override CameraStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_STATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "time_usec",
-            "Image timestamp (since UNIX epoch, according to camera clock).",
-            string.Empty, 
-            @"us", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-            false),
-            new(1,
-            "p1",
-            "Parameter 1 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "p2",
-            "Parameter 2 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "p3",
-            "Parameter 3 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "p4",
-            "Parameter 4 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "img_idx",
-            "Image index.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(6,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "cam_idx",
-            "Camera ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "event_id",
-            "Event type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "CAMERA_STATUS:"
-        + "uint64_t time_usec;"
-        + "float p1;"
-        + "float p2;"
-        + "float p3;"
-        + "float p4;"
-        + "uint16_t img_idx;"
-        + "uint8_t target_system;"
-        + "uint8_t cam_idx;"
-        + "uint8_t event_id;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TimeUsec);
-            writer.Write(StaticFields[1], Payload.P1);
-            writer.Write(StaticFields[2], Payload.P2);
-            writer.Write(StaticFields[3], Payload.P3);
-            writer.Write(StaticFields[4], Payload.P4);
-            writer.Write(StaticFields[5], Payload.ImgIdx);
-            writer.Write(StaticFields[6], Payload.TargetSystem);
-            writer.Write(StaticFields[7], Payload.CamIdx);
-            writer.Write(StaticFields[8], (ulong)Payload.EventId);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TimeUsec = reader.ReadULong(StaticFields[0]);
-            Payload.P1 = reader.ReadFloat(StaticFields[1]);
-            Payload.P2 = reader.ReadFloat(StaticFields[2]);
-            Payload.P3 = reader.ReadFloat(StaticFields[3]);
-            Payload.P4 = reader.ReadFloat(StaticFields[4]);
-            Payload.ImgIdx = reader.ReadUShort(StaticFields[5]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[6]);
-            Payload.CamIdx = reader.ReadByte(StaticFields[7]);
-            Payload.EventId = (CameraStatusTypes)reader.ReadByte(StaticFields[8]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -7950,56 +6987,158 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)EventId);
             /* PayloadByteSize = 29 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUsecField, ref _TimeUsec);    
+            FloatType.Accept(visitor,P1Field, ref _P1);    
+            FloatType.Accept(visitor,P2Field, ref _P2);    
+            FloatType.Accept(visitor,P3Field, ref _P3);    
+            FloatType.Accept(visitor,P4Field, ref _P4);    
+            UInt16Type.Accept(visitor,ImgIdxField, ref _ImgIdx);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,CamIdxField, ref _CamIdx);    
+            var tmpEventId = (byte)EventId;
+            UInt8Type.Accept(visitor,EventIdField, ref tmpEventId);
+            EventId = (CameraStatusTypes)tmpEventId;
 
+        }
 
         /// <summary>
         /// Image timestamp (since UNIX epoch, according to camera clock).
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUsec { get; set; }
+        public static readonly Field TimeUsecField = new Field.Builder()
+            .Name(nameof(TimeUsec))
+            .Title("time_usec")
+            .Description("Image timestamp (since UNIX epoch, according to camera clock).")
+            .FormatString(string.Empty)
+            .Units(@"us")
+            .DataType(UInt64Type.Default)
+
+            .Build();
+        private ulong _TimeUsec;
+        public ulong TimeUsec { get => _TimeUsec; set { _TimeUsec = value; } }
         /// <summary>
         /// Parameter 1 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).
         /// OriginName: p1, Units: , IsExtended: false
         /// </summary>
-        public float P1 { get; set; }
+        public static readonly Field P1Field = new Field.Builder()
+            .Name(nameof(P1))
+            .Title("p1")
+            .Description("Parameter 1 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _P1;
+        public float P1 { get => _P1; set { _P1 = value; } }
         /// <summary>
         /// Parameter 2 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).
         /// OriginName: p2, Units: , IsExtended: false
         /// </summary>
-        public float P2 { get; set; }
+        public static readonly Field P2Field = new Field.Builder()
+            .Name(nameof(P2))
+            .Title("p2")
+            .Description("Parameter 2 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _P2;
+        public float P2 { get => _P2; set { _P2 = value; } }
         /// <summary>
         /// Parameter 3 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).
         /// OriginName: p3, Units: , IsExtended: false
         /// </summary>
-        public float P3 { get; set; }
+        public static readonly Field P3Field = new Field.Builder()
+            .Name(nameof(P3))
+            .Title("p3")
+            .Description("Parameter 3 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _P3;
+        public float P3 { get => _P3; set { _P3 = value; } }
         /// <summary>
         /// Parameter 4 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).
         /// OriginName: p4, Units: , IsExtended: false
         /// </summary>
-        public float P4 { get; set; }
+        public static readonly Field P4Field = new Field.Builder()
+            .Name(nameof(P4))
+            .Title("p4")
+            .Description("Parameter 4 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _P4;
+        public float P4 { get => _P4; set { _P4 = value; } }
         /// <summary>
         /// Image index.
         /// OriginName: img_idx, Units: , IsExtended: false
         /// </summary>
-        public ushort ImgIdx { get; set; }
+        public static readonly Field ImgIdxField = new Field.Builder()
+            .Name(nameof(ImgIdx))
+            .Title("img_idx")
+            .Description("Image index.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _ImgIdx;
+        public ushort ImgIdx { get => _ImgIdx; set { _ImgIdx = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Camera ID.
         /// OriginName: cam_idx, Units: , IsExtended: false
         /// </summary>
-        public byte CamIdx { get; set; }
+        public static readonly Field CamIdxField = new Field.Builder()
+            .Name(nameof(CamIdx))
+            .Title("cam_idx")
+            .Description("Camera ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _CamIdx;
+        public byte CamIdx { get => _CamIdx; set { _CamIdx = value; } }
         /// <summary>
         /// Event type.
         /// OriginName: event_id, Units: , IsExtended: false
         /// </summary>
-        public CameraStatusTypes EventId { get; set; }
+        public static readonly Field EventIdField = new Field.Builder()
+            .Name(nameof(EventId))
+            .Title("event_id")
+            .Description("Event type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public CameraStatusTypes _EventId;
+        public CameraStatusTypes EventId { get => _EventId; set => _EventId = value; } 
     }
     /// <summary>
     /// Camera Capture Feedback.
@@ -8021,208 +7160,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override CameraFeedbackPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_FEEDBACK";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "time_usec",
-            "Image timestamp (since UNIX epoch), as passed in by CAMERA_STATUS message (or autopilot if no CCB).",
-            string.Empty, 
-            @"us", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-            false),
-            new(1,
-            "lat",
-            "Latitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(2,
-            "lng",
-            "Longitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(3,
-            "alt_msl",
-            "Altitude (MSL).",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "alt_rel",
-            "Altitude (Relative to HOME location).",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "roll",
-            "Camera Roll angle (earth frame, +-180).",
-            string.Empty, 
-            @"deg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "pitch",
-            "Camera Pitch angle (earth frame, +-180).",
-            string.Empty, 
-            @"deg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(7,
-            "yaw",
-            "Camera Yaw (earth frame, 0-360, true).",
-            string.Empty, 
-            @"deg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(8,
-            "foc_len",
-            "Focal Length.",
-            string.Empty, 
-            @"mm", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(9,
-            "img_idx",
-            "Image index.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(10,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(11,
-            "cam_idx",
-            "Camera ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(12,
-            "flags",
-            "Feedback flags.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(13,
-            "completed_captures",
-            "Completed image captures.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            true),
-        ];
-        public const string FormatMessage = "CAMERA_FEEDBACK:"
-        + "uint64_t time_usec;"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        + "float alt_msl;"
-        + "float alt_rel;"
-        + "float roll;"
-        + "float pitch;"
-        + "float yaw;"
-        + "float foc_len;"
-        + "uint16_t img_idx;"
-        + "uint8_t target_system;"
-        + "uint8_t cam_idx;"
-        + "uint8_t flags;"
-        + "uint16_t completed_captures;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TimeUsec);
-            writer.Write(StaticFields[1], Payload.Lat);
-            writer.Write(StaticFields[2], Payload.Lng);
-            writer.Write(StaticFields[3], Payload.AltMsl);
-            writer.Write(StaticFields[4], Payload.AltRel);
-            writer.Write(StaticFields[5], Payload.Roll);
-            writer.Write(StaticFields[6], Payload.Pitch);
-            writer.Write(StaticFields[7], Payload.Yaw);
-            writer.Write(StaticFields[8], Payload.FocLen);
-            writer.Write(StaticFields[9], Payload.ImgIdx);
-            writer.Write(StaticFields[10], Payload.TargetSystem);
-            writer.Write(StaticFields[11], Payload.CamIdx);
-            writer.Write(StaticFields[12], (ulong)Payload.Flags);
-            writer.Write(StaticFields[13], Payload.CompletedCaptures);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TimeUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Lat = reader.ReadInt(StaticFields[1]);
-            Payload.Lng = reader.ReadInt(StaticFields[2]);
-            Payload.AltMsl = reader.ReadFloat(StaticFields[3]);
-            Payload.AltRel = reader.ReadFloat(StaticFields[4]);
-            Payload.Roll = reader.ReadFloat(StaticFields[5]);
-            Payload.Pitch = reader.ReadFloat(StaticFields[6]);
-            Payload.Yaw = reader.ReadFloat(StaticFields[7]);
-            Payload.FocLen = reader.ReadFloat(StaticFields[8]);
-            Payload.ImgIdx = reader.ReadUShort(StaticFields[9]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[10]);
-            Payload.CamIdx = reader.ReadByte(StaticFields[11]);
-            Payload.Flags = (CameraFeedbackFlags)reader.ReadByte(StaticFields[12]);
-            Payload.CompletedCaptures = reader.ReadUShort(StaticFields[13]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -8296,81 +7233,238 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteUShort(ref buffer,CompletedCaptures);
             /* PayloadByteSize = 47 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUsecField, ref _TimeUsec);    
+            Int32Type.Accept(visitor,LatField, ref _Lat);    
+            Int32Type.Accept(visitor,LngField, ref _Lng);    
+            FloatType.Accept(visitor,AltMslField, ref _AltMsl);    
+            FloatType.Accept(visitor,AltRelField, ref _AltRel);    
+            FloatType.Accept(visitor,RollField, ref _Roll);    
+            FloatType.Accept(visitor,PitchField, ref _Pitch);    
+            FloatType.Accept(visitor,YawField, ref _Yaw);    
+            FloatType.Accept(visitor,FocLenField, ref _FocLen);    
+            UInt16Type.Accept(visitor,ImgIdxField, ref _ImgIdx);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,CamIdxField, ref _CamIdx);    
+            var tmpFlags = (byte)Flags;
+            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
+            Flags = (CameraFeedbackFlags)tmpFlags;
+            UInt16Type.Accept(visitor,CompletedCapturesField, ref _CompletedCaptures);    
 
+        }
 
         /// <summary>
         /// Image timestamp (since UNIX epoch), as passed in by CAMERA_STATUS message (or autopilot if no CCB).
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUsec { get; set; }
+        public static readonly Field TimeUsecField = new Field.Builder()
+            .Name(nameof(TimeUsec))
+            .Title("time_usec")
+            .Description("Image timestamp (since UNIX epoch), as passed in by CAMERA_STATUS message (or autopilot if no CCB).")
+            .FormatString(string.Empty)
+            .Units(@"us")
+            .DataType(UInt64Type.Default)
+
+            .Build();
+        private ulong _TimeUsec;
+        public ulong TimeUsec { get => _TimeUsec; set { _TimeUsec = value; } }
         /// <summary>
         /// Latitude.
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lat;
+        public int Lat { get => _Lat; set { _Lat = value; } }
         /// <summary>
         /// Longitude.
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lng;
+        public int Lng { get => _Lng; set { _Lng = value; } }
         /// <summary>
         /// Altitude (MSL).
         /// OriginName: alt_msl, Units: m, IsExtended: false
         /// </summary>
-        public float AltMsl { get; set; }
+        public static readonly Field AltMslField = new Field.Builder()
+            .Name(nameof(AltMsl))
+            .Title("alt_msl")
+            .Description("Altitude (MSL).")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _AltMsl;
+        public float AltMsl { get => _AltMsl; set { _AltMsl = value; } }
         /// <summary>
         /// Altitude (Relative to HOME location).
         /// OriginName: alt_rel, Units: m, IsExtended: false
         /// </summary>
-        public float AltRel { get; set; }
+        public static readonly Field AltRelField = new Field.Builder()
+            .Name(nameof(AltRel))
+            .Title("alt_rel")
+            .Description("Altitude (Relative to HOME location).")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _AltRel;
+        public float AltRel { get => _AltRel; set { _AltRel = value; } }
         /// <summary>
         /// Camera Roll angle (earth frame, +-180).
         /// OriginName: roll, Units: deg, IsExtended: false
         /// </summary>
-        public float Roll { get; set; }
+        public static readonly Field RollField = new Field.Builder()
+            .Name(nameof(Roll))
+            .Title("roll")
+            .Description("Camera Roll angle (earth frame, +-180).")
+            .FormatString(string.Empty)
+            .Units(@"deg")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Roll;
+        public float Roll { get => _Roll; set { _Roll = value; } }
         /// <summary>
         /// Camera Pitch angle (earth frame, +-180).
         /// OriginName: pitch, Units: deg, IsExtended: false
         /// </summary>
-        public float Pitch { get; set; }
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Camera Pitch angle (earth frame, +-180).")
+            .FormatString(string.Empty)
+            .Units(@"deg")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Pitch;
+        public float Pitch { get => _Pitch; set { _Pitch = value; } }
         /// <summary>
         /// Camera Yaw (earth frame, 0-360, true).
         /// OriginName: yaw, Units: deg, IsExtended: false
         /// </summary>
-        public float Yaw { get; set; }
+        public static readonly Field YawField = new Field.Builder()
+            .Name(nameof(Yaw))
+            .Title("yaw")
+            .Description("Camera Yaw (earth frame, 0-360, true).")
+            .FormatString(string.Empty)
+            .Units(@"deg")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Yaw;
+        public float Yaw { get => _Yaw; set { _Yaw = value; } }
         /// <summary>
         /// Focal Length.
         /// OriginName: foc_len, Units: mm, IsExtended: false
         /// </summary>
-        public float FocLen { get; set; }
+        public static readonly Field FocLenField = new Field.Builder()
+            .Name(nameof(FocLen))
+            .Title("foc_len")
+            .Description("Focal Length.")
+            .FormatString(string.Empty)
+            .Units(@"mm")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _FocLen;
+        public float FocLen { get => _FocLen; set { _FocLen = value; } }
         /// <summary>
         /// Image index.
         /// OriginName: img_idx, Units: , IsExtended: false
         /// </summary>
-        public ushort ImgIdx { get; set; }
+        public static readonly Field ImgIdxField = new Field.Builder()
+            .Name(nameof(ImgIdx))
+            .Title("img_idx")
+            .Description("Image index.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _ImgIdx;
+        public ushort ImgIdx { get => _ImgIdx; set { _ImgIdx = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Camera ID.
         /// OriginName: cam_idx, Units: , IsExtended: false
         /// </summary>
-        public byte CamIdx { get; set; }
+        public static readonly Field CamIdxField = new Field.Builder()
+            .Name(nameof(CamIdx))
+            .Title("cam_idx")
+            .Description("Camera ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _CamIdx;
+        public byte CamIdx { get => _CamIdx; set { _CamIdx = value; } }
         /// <summary>
         /// Feedback flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public CameraFeedbackFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Feedback flags.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public CameraFeedbackFlags _Flags;
+        public CameraFeedbackFlags Flags { get => _Flags; set => _Flags = value; } 
         /// <summary>
         /// Completed image captures.
         /// OriginName: completed_captures, Units: , IsExtended: true
         /// </summary>
-        public ushort CompletedCaptures { get; set; }
+        public static readonly Field CompletedCapturesField = new Field.Builder()
+            .Name(nameof(CompletedCaptures))
+            .Title("completed_captures")
+            .Description("Completed image captures.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _CompletedCaptures;
+        public ushort CompletedCaptures { get => _CompletedCaptures; set { _CompletedCaptures = value; } }
     }
     /// <summary>
     /// 2nd Battery status
@@ -8392,52 +7486,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Battery2Payload Payload { get; } = new();
 
         public override string Name => "BATTERY2";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "voltage",
-            "Voltage.",
-            string.Empty, 
-            @"mV", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "current_battery",
-            "Battery current, -1: autopilot does not measure the current.",
-            string.Empty, 
-            @"cA", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "BATTERY2:"
-        + "uint16_t voltage;"
-        + "int16_t current_battery;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Voltage);
-            writer.Write(StaticFields[1], Payload.CurrentBattery);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Voltage = reader.ReadUShort(StaticFields[0]);
-            Payload.CurrentBattery = reader.ReadShort(StaticFields[1]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -8473,21 +7521,44 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteShort(ref buffer,CurrentBattery);
             /* PayloadByteSize = 4 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,VoltageField, ref _Voltage);    
+            Int16Type.Accept(visitor,CurrentBatteryField, ref _CurrentBattery);
 
+        }
 
         /// <summary>
         /// Voltage.
         /// OriginName: voltage, Units: mV, IsExtended: false
         /// </summary>
-        public ushort Voltage { get; set; }
+        public static readonly Field VoltageField = new Field.Builder()
+            .Name(nameof(Voltage))
+            .Title("voltage")
+            .Description("Voltage.")
+            .FormatString(string.Empty)
+            .Units(@"mV")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Voltage;
+        public ushort Voltage { get => _Voltage; set { _Voltage = value; } }
         /// <summary>
         /// Battery current, -1: autopilot does not measure the current.
         /// OriginName: current_battery, Units: cA, IsExtended: false
         /// </summary>
-        public short CurrentBattery { get; set; }
+        public static readonly Field CurrentBatteryField = new Field.Builder()
+            .Name(nameof(CurrentBattery))
+            .Title("current_battery")
+            .Description("Battery current, -1: autopilot does not measure the current.")
+            .FormatString(string.Empty)
+            .Units(@"cA")
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _CurrentBattery;
+        public short CurrentBattery { get => _CurrentBattery; set { _CurrentBattery = value; } }
     }
     /// <summary>
     /// Status of third AHRS filter if available. This is for ANU research group (Ali and Sean).
@@ -8509,156 +7580,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Ahrs3Payload Payload { get; } = new();
 
         public override string Name => "AHRS3";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "roll",
-            "Roll angle.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "pitch",
-            "Pitch angle.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "yaw",
-            "Yaw angle.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "altitude",
-            "Altitude (MSL).",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "lat",
-            "Latitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(5,
-            "lng",
-            "Longitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(6,
-            "v1",
-            "Test variable1.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(7,
-            "v2",
-            "Test variable2.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(8,
-            "v3",
-            "Test variable3.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(9,
-            "v4",
-            "Test variable4.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AHRS3:"
-        + "float roll;"
-        + "float pitch;"
-        + "float yaw;"
-        + "float altitude;"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        + "float v1;"
-        + "float v2;"
-        + "float v3;"
-        + "float v4;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Roll);
-            writer.Write(StaticFields[1], Payload.Pitch);
-            writer.Write(StaticFields[2], Payload.Yaw);
-            writer.Write(StaticFields[3], Payload.Altitude);
-            writer.Write(StaticFields[4], Payload.Lat);
-            writer.Write(StaticFields[5], Payload.Lng);
-            writer.Write(StaticFields[6], Payload.V1);
-            writer.Write(StaticFields[7], Payload.V2);
-            writer.Write(StaticFields[8], Payload.V3);
-            writer.Write(StaticFields[9], Payload.V4);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Roll = reader.ReadFloat(StaticFields[0]);
-            Payload.Pitch = reader.ReadFloat(StaticFields[1]);
-            Payload.Yaw = reader.ReadFloat(StaticFields[2]);
-            Payload.Altitude = reader.ReadFloat(StaticFields[3]);
-            Payload.Lat = reader.ReadInt(StaticFields[4]);
-            Payload.Lng = reader.ReadInt(StaticFields[5]);
-            Payload.V1 = reader.ReadFloat(StaticFields[6]);
-            Payload.V2 = reader.ReadFloat(StaticFields[7]);
-            Payload.V3 = reader.ReadFloat(StaticFields[8]);
-            Payload.V4 = reader.ReadFloat(StaticFields[9]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -8718,61 +7639,172 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,V4);
             /* PayloadByteSize = 40 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,RollField, ref _Roll);    
+            FloatType.Accept(visitor,PitchField, ref _Pitch);    
+            FloatType.Accept(visitor,YawField, ref _Yaw);    
+            FloatType.Accept(visitor,AltitudeField, ref _Altitude);    
+            Int32Type.Accept(visitor,LatField, ref _Lat);    
+            Int32Type.Accept(visitor,LngField, ref _Lng);    
+            FloatType.Accept(visitor,V1Field, ref _V1);    
+            FloatType.Accept(visitor,V2Field, ref _V2);    
+            FloatType.Accept(visitor,V3Field, ref _V3);    
+            FloatType.Accept(visitor,V4Field, ref _V4);    
 
+        }
 
         /// <summary>
         /// Roll angle.
         /// OriginName: roll, Units: rad, IsExtended: false
         /// </summary>
-        public float Roll { get; set; }
+        public static readonly Field RollField = new Field.Builder()
+            .Name(nameof(Roll))
+            .Title("roll")
+            .Description("Roll angle.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Roll;
+        public float Roll { get => _Roll; set { _Roll = value; } }
         /// <summary>
         /// Pitch angle.
         /// OriginName: pitch, Units: rad, IsExtended: false
         /// </summary>
-        public float Pitch { get; set; }
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Pitch angle.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Pitch;
+        public float Pitch { get => _Pitch; set { _Pitch = value; } }
         /// <summary>
         /// Yaw angle.
         /// OriginName: yaw, Units: rad, IsExtended: false
         /// </summary>
-        public float Yaw { get; set; }
+        public static readonly Field YawField = new Field.Builder()
+            .Name(nameof(Yaw))
+            .Title("yaw")
+            .Description("Yaw angle.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Yaw;
+        public float Yaw { get => _Yaw; set { _Yaw = value; } }
         /// <summary>
         /// Altitude (MSL).
         /// OriginName: altitude, Units: m, IsExtended: false
         /// </summary>
-        public float Altitude { get; set; }
+        public static readonly Field AltitudeField = new Field.Builder()
+            .Name(nameof(Altitude))
+            .Title("altitude")
+            .Description("Altitude (MSL).")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Altitude;
+        public float Altitude { get => _Altitude; set { _Altitude = value; } }
         /// <summary>
         /// Latitude.
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lat;
+        public int Lat { get => _Lat; set { _Lat = value; } }
         /// <summary>
         /// Longitude.
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lng;
+        public int Lng { get => _Lng; set { _Lng = value; } }
         /// <summary>
         /// Test variable1.
         /// OriginName: v1, Units: , IsExtended: false
         /// </summary>
-        public float V1 { get; set; }
+        public static readonly Field V1Field = new Field.Builder()
+            .Name(nameof(V1))
+            .Title("v1")
+            .Description("Test variable1.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _V1;
+        public float V1 { get => _V1; set { _V1 = value; } }
         /// <summary>
         /// Test variable2.
         /// OriginName: v2, Units: , IsExtended: false
         /// </summary>
-        public float V2 { get; set; }
+        public static readonly Field V2Field = new Field.Builder()
+            .Name(nameof(V2))
+            .Title("v2")
+            .Description("Test variable2.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _V2;
+        public float V2 { get => _V2; set { _V2 = value; } }
         /// <summary>
         /// Test variable3.
         /// OriginName: v3, Units: , IsExtended: false
         /// </summary>
-        public float V3 { get; set; }
+        public static readonly Field V3Field = new Field.Builder()
+            .Name(nameof(V3))
+            .Title("v3")
+            .Description("Test variable3.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _V3;
+        public float V3 { get => _V3; set { _V3 = value; } }
         /// <summary>
         /// Test variable4.
         /// OriginName: v4, Units: , IsExtended: false
         /// </summary>
-        public float V4 { get; set; }
+        public static readonly Field V4Field = new Field.Builder()
+            .Name(nameof(V4))
+            .Title("v4")
+            .Description("Test variable4.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _V4;
+        public float V4 { get => _V4; set { _V4 = value; } }
     }
     /// <summary>
     /// Request the autopilot version from the system/component.
@@ -8794,52 +7826,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AutopilotVersionRequestPayload Payload { get; } = new();
 
         public override string Name => "AUTOPILOT_VERSION_REQUEST";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AUTOPILOT_VERSION_REQUEST:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TargetSystem);
-            writer.Write(StaticFields[1], Payload.TargetComponent);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -8875,21 +7861,44 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 2 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
     }
     /// <summary>
     /// Send a block of log data to remote location.
@@ -8911,78 +7920,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RemoteLogDataBlockPayload Payload { get; } = new();
 
         public override string Name => "REMOTE_LOG_DATA_BLOCK";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "seqno",
-            "LoggerFactory data block sequence number.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "data",
-            "LoggerFactory data block.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            200, 
-            false),
-        ];
-        public const string FormatMessage = "REMOTE_LOG_DATA_BLOCK:"
-        + "uint32_t seqno;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t[200] data;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], (ulong)Payload.Seqno);
-            writer.Write(StaticFields[1], Payload.TargetSystem);
-            writer.Write(StaticFields[2], Payload.TargetComponent);
-            writer.Write(StaticFields[3], Payload.Data);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Seqno = (MavRemoteLogDataBlockCommands)reader.ReadUInt(StaticFields[0]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            reader.ReadByteArray(StaticFields[3], Payload.Data);
-        
-            
-        }
     }
 
     /// <summary>
@@ -9015,7 +7952,7 @@ namespace Asv.Mavlink.Ardupilotmega
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/206 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -9034,32 +7971,79 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 206 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            var tmpSeqno = (uint)Seqno;
+            UInt32Type.Accept(visitor,SeqnoField, ref tmpSeqno);
+            Seqno = (MavRemoteLogDataBlockCommands)tmpSeqno;
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            ArrayType.Accept(visitor,DataField, 200,
+                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
 
+        }
 
         /// <summary>
         /// LoggerFactory data block sequence number.
         /// OriginName: seqno, Units: , IsExtended: false
         /// </summary>
-        public MavRemoteLogDataBlockCommands Seqno { get; set; }
+        public static readonly Field SeqnoField = new Field.Builder()
+            .Name(nameof(Seqno))
+            .Title("seqno")
+            .Description("LoggerFactory data block sequence number.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        public MavRemoteLogDataBlockCommands _Seqno;
+        public MavRemoteLogDataBlockCommands Seqno { get => _Seqno; set => _Seqno = value; } 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// LoggerFactory data block.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("LoggerFactory data block.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,200))
+
+            .Build();
         public const int DataMaxItemsCount = 200;
-        public byte[] Data { get; set; } = new byte[200];
+        public byte[] Data { get; } = new byte[200];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 200;
     }
@@ -9083,78 +8067,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RemoteLogBlockStatusPayload Payload { get; } = new();
 
         public override string Name => "REMOTE_LOG_BLOCK_STATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "seqno",
-            "LoggerFactory data block sequence number.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "status",
-            "LoggerFactory data block status.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "REMOTE_LOG_BLOCK_STATUS:"
-        + "uint32_t seqno;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t status;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Seqno);
-            writer.Write(StaticFields[1], Payload.TargetSystem);
-            writer.Write(StaticFields[2], Payload.TargetComponent);
-            writer.Write(StaticFields[3], (ulong)Payload.Status);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Seqno = reader.ReadUInt(StaticFields[0]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.Status = (MavRemoteLogDataBlockStatuses)reader.ReadByte(StaticFields[3]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -9196,31 +8108,78 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Status);
             /* PayloadByteSize = 7 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,SeqnoField, ref _Seqno);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            var tmpStatus = (byte)Status;
+            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
+            Status = (MavRemoteLogDataBlockStatuses)tmpStatus;
 
+        }
 
         /// <summary>
         /// LoggerFactory data block sequence number.
         /// OriginName: seqno, Units: , IsExtended: false
         /// </summary>
-        public uint Seqno { get; set; }
+        public static readonly Field SeqnoField = new Field.Builder()
+            .Name(nameof(Seqno))
+            .Title("seqno")
+            .Description("LoggerFactory data block sequence number.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _Seqno;
+        public uint Seqno { get => _Seqno; set { _Seqno = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// LoggerFactory data block status.
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
-        public MavRemoteLogDataBlockStatuses Status { get; set; }
+        public static readonly Field StatusField = new Field.Builder()
+            .Name(nameof(Status))
+            .Title("status")
+            .Description("LoggerFactory data block status.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavRemoteLogDataBlockStatuses _Status;
+        public MavRemoteLogDataBlockStatuses Status { get => _Status; set => _Status = value; } 
     }
     /// <summary>
     /// Control vehicle LEDs.
@@ -9242,104 +8201,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override LedControlPayload Payload { get; } = new();
 
         public override string Name => "LED_CONTROL";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "instance",
-            "Instance (LED instance to control or 255 for all LEDs).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "pattern",
-            "Pattern (see LED_PATTERN_ENUM).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "custom_len",
-            "Custom Byte Length.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "custom_bytes",
-            "Custom Bytes.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            24, 
-            false),
-        ];
-        public const string FormatMessage = "LED_CONTROL:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t instance;"
-        + "uint8_t pattern;"
-        + "uint8_t custom_len;"
-        + "uint8_t[24] custom_bytes;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TargetSystem);
-            writer.Write(StaticFields[1], Payload.TargetComponent);
-            writer.Write(StaticFields[2], Payload.Instance);
-            writer.Write(StaticFields[3], Payload.Pattern);
-            writer.Write(StaticFields[4], Payload.CustomLen);
-            writer.Write(StaticFields[5], Payload.CustomBytes);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.Instance = reader.ReadByte(StaticFields[2]);
-            Payload.Pattern = reader.ReadByte(StaticFields[3]);
-            Payload.CustomLen = reader.ReadByte(StaticFields[4]);
-            reader.ReadByteArray(StaticFields[5], Payload.CustomBytes);
-        
-            
-        }
     }
 
     /// <summary>
@@ -9376,7 +8237,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Pattern = (byte)BinSerialize.ReadByte(ref buffer);
             CustomLen = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/24 - Math.Max(0,((/*PayloadByteSize*/29 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            CustomBytes = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 CustomBytes[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -9397,42 +8258,109 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 29 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,InstanceField, ref _Instance);    
+            UInt8Type.Accept(visitor,PatternField, ref _Pattern);    
+            UInt8Type.Accept(visitor,CustomLenField, ref _CustomLen);    
+            ArrayType.Accept(visitor,CustomBytesField, 24,
+                (index,v) => UInt8Type.Accept(v, CustomBytesField, ref CustomBytes[index]));    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Instance (LED instance to control or 255 for all LEDs).
         /// OriginName: instance, Units: , IsExtended: false
         /// </summary>
-        public byte Instance { get; set; }
+        public static readonly Field InstanceField = new Field.Builder()
+            .Name(nameof(Instance))
+            .Title("instance")
+            .Description("Instance (LED instance to control or 255 for all LEDs).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Instance;
+        public byte Instance { get => _Instance; set { _Instance = value; } }
         /// <summary>
         /// Pattern (see LED_PATTERN_ENUM).
         /// OriginName: pattern, Units: , IsExtended: false
         /// </summary>
-        public byte Pattern { get; set; }
+        public static readonly Field PatternField = new Field.Builder()
+            .Name(nameof(Pattern))
+            .Title("pattern")
+            .Description("Pattern (see LED_PATTERN_ENUM).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Pattern;
+        public byte Pattern { get => _Pattern; set { _Pattern = value; } }
         /// <summary>
         /// Custom Byte Length.
         /// OriginName: custom_len, Units: , IsExtended: false
         /// </summary>
-        public byte CustomLen { get; set; }
+        public static readonly Field CustomLenField = new Field.Builder()
+            .Name(nameof(CustomLen))
+            .Title("custom_len")
+            .Description("Custom Byte Length.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _CustomLen;
+        public byte CustomLen { get => _CustomLen; set { _CustomLen = value; } }
         /// <summary>
         /// Custom Bytes.
         /// OriginName: custom_bytes, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CustomBytesField = new Field.Builder()
+            .Name(nameof(CustomBytes))
+            .Title("custom_bytes")
+            .Description("Custom Bytes.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,24))
+
+            .Build();
         public const int CustomBytesMaxItemsCount = 24;
-        public byte[] CustomBytes { get; set; } = new byte[24];
+        public byte[] CustomBytes { get; } = new byte[24];
         [Obsolete("This method is deprecated. Use GetCustomBytesMaxItemsCount instead.")]
         public byte GetCustomBytesMaxItemsCount() => 24;
     }
@@ -9456,143 +8384,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MagCalProgressPayload Payload { get; } = new();
 
         public override string Name => "MAG_CAL_PROGRESS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "direction_x",
-            "Body frame direction vector for display.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "direction_y",
-            "Body frame direction vector for display.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "direction_z",
-            "Body frame direction vector for display.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "compass_id",
-            "Compass being calibrated.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "cal_mask",
-            "Bitmask of compasses being calibrated.",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "cal_status",
-            "Calibration Status.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(6,
-            "attempt",
-            "Attempt number.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "completion_pct",
-            "Completion percentage.",
-            string.Empty, 
-            @"%", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "completion_mask",
-            "Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            10, 
-            false),
-        ];
-        public const string FormatMessage = "MAG_CAL_PROGRESS:"
-        + "float direction_x;"
-        + "float direction_y;"
-        + "float direction_z;"
-        + "uint8_t compass_id;"
-        + "uint8_t cal_mask;"
-        + "uint8_t cal_status;"
-        + "uint8_t attempt;"
-        + "uint8_t completion_pct;"
-        + "uint8_t[10] completion_mask;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.DirectionX);
-            writer.Write(StaticFields[1], Payload.DirectionY);
-            writer.Write(StaticFields[2], Payload.DirectionZ);
-            writer.Write(StaticFields[3], Payload.CompassId);
-            writer.Write(StaticFields[4], Payload.CalMask);
-            writer.Write(StaticFields[5], (ulong)Payload.CalStatus);
-            writer.Write(StaticFields[6], Payload.Attempt);
-            writer.Write(StaticFields[7], Payload.CompletionPct);
-            writer.Write(StaticFields[8], Payload.CompletionMask);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.DirectionX = reader.ReadFloat(StaticFields[0]);
-            Payload.DirectionY = reader.ReadFloat(StaticFields[1]);
-            Payload.DirectionZ = reader.ReadFloat(StaticFields[2]);
-            Payload.CompassId = reader.ReadByte(StaticFields[3]);
-            Payload.CalMask = reader.ReadByte(StaticFields[4]);
-            Payload.CalStatus = (MagCalStatus)reader.ReadByte(StaticFields[5]);
-            Payload.Attempt = reader.ReadByte(StaticFields[6]);
-            Payload.CompletionPct = reader.ReadByte(StaticFields[7]);
-            reader.ReadByteArray(StaticFields[8], Payload.CompletionMask);
-        
-            
-        }
     }
 
     /// <summary>
@@ -9635,7 +8426,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Attempt = (byte)BinSerialize.ReadByte(ref buffer);
             CompletionPct = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/27 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            CompletionMask = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 CompletionMask[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -9659,57 +8450,159 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 27 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DirectionXField, ref _DirectionX);    
+            FloatType.Accept(visitor,DirectionYField, ref _DirectionY);    
+            FloatType.Accept(visitor,DirectionZField, ref _DirectionZ);    
+            UInt8Type.Accept(visitor,CompassIdField, ref _CompassId);    
+            UInt8Type.Accept(visitor,CalMaskField, ref _CalMask);    
+            var tmpCalStatus = (byte)CalStatus;
+            UInt8Type.Accept(visitor,CalStatusField, ref tmpCalStatus);
+            CalStatus = (MagCalStatus)tmpCalStatus;
+            UInt8Type.Accept(visitor,AttemptField, ref _Attempt);    
+            UInt8Type.Accept(visitor,CompletionPctField, ref _CompletionPct);    
+            ArrayType.Accept(visitor,CompletionMaskField, 10,
+                (index,v) => UInt8Type.Accept(v, CompletionMaskField, ref CompletionMask[index]));    
 
+        }
 
         /// <summary>
         /// Body frame direction vector for display.
         /// OriginName: direction_x, Units: , IsExtended: false
         /// </summary>
-        public float DirectionX { get; set; }
+        public static readonly Field DirectionXField = new Field.Builder()
+            .Name(nameof(DirectionX))
+            .Title("direction_x")
+            .Description("Body frame direction vector for display.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DirectionX;
+        public float DirectionX { get => _DirectionX; set { _DirectionX = value; } }
         /// <summary>
         /// Body frame direction vector for display.
         /// OriginName: direction_y, Units: , IsExtended: false
         /// </summary>
-        public float DirectionY { get; set; }
+        public static readonly Field DirectionYField = new Field.Builder()
+            .Name(nameof(DirectionY))
+            .Title("direction_y")
+            .Description("Body frame direction vector for display.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DirectionY;
+        public float DirectionY { get => _DirectionY; set { _DirectionY = value; } }
         /// <summary>
         /// Body frame direction vector for display.
         /// OriginName: direction_z, Units: , IsExtended: false
         /// </summary>
-        public float DirectionZ { get; set; }
+        public static readonly Field DirectionZField = new Field.Builder()
+            .Name(nameof(DirectionZ))
+            .Title("direction_z")
+            .Description("Body frame direction vector for display.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DirectionZ;
+        public float DirectionZ { get => _DirectionZ; set { _DirectionZ = value; } }
         /// <summary>
         /// Compass being calibrated.
         /// OriginName: compass_id, Units: , IsExtended: false
         /// </summary>
-        public byte CompassId { get; set; }
+        public static readonly Field CompassIdField = new Field.Builder()
+            .Name(nameof(CompassId))
+            .Title("compass_id")
+            .Description("Compass being calibrated.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _CompassId;
+        public byte CompassId { get => _CompassId; set { _CompassId = value; } }
         /// <summary>
         /// Bitmask of compasses being calibrated.
         /// OriginName: cal_mask, Units: , IsExtended: false
         /// </summary>
-        public byte CalMask { get; set; }
+        public static readonly Field CalMaskField = new Field.Builder()
+            .Name(nameof(CalMask))
+            .Title("bitmask")
+            .Description("Bitmask of compasses being calibrated.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _CalMask;
+        public byte CalMask { get => _CalMask; set { _CalMask = value; } }
         /// <summary>
         /// Calibration Status.
         /// OriginName: cal_status, Units: , IsExtended: false
         /// </summary>
-        public MagCalStatus CalStatus { get; set; }
+        public static readonly Field CalStatusField = new Field.Builder()
+            .Name(nameof(CalStatus))
+            .Title("cal_status")
+            .Description("Calibration Status.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MagCalStatus _CalStatus;
+        public MagCalStatus CalStatus { get => _CalStatus; set => _CalStatus = value; } 
         /// <summary>
         /// Attempt number.
         /// OriginName: attempt, Units: , IsExtended: false
         /// </summary>
-        public byte Attempt { get; set; }
+        public static readonly Field AttemptField = new Field.Builder()
+            .Name(nameof(Attempt))
+            .Title("attempt")
+            .Description("Attempt number.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Attempt;
+        public byte Attempt { get => _Attempt; set { _Attempt = value; } }
         /// <summary>
         /// Completion percentage.
         /// OriginName: completion_pct, Units: %, IsExtended: false
         /// </summary>
-        public byte CompletionPct { get; set; }
+        public static readonly Field CompletionPctField = new Field.Builder()
+            .Name(nameof(CompletionPct))
+            .Title("completion_pct")
+            .Description("Completion percentage.")
+            .FormatString(string.Empty)
+            .Units(@"%")
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _CompletionPct;
+        public byte CompletionPct { get => _CompletionPct; set { _CompletionPct = value; } }
         /// <summary>
         /// Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).
         /// OriginName: completion_mask, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CompletionMaskField = new Field.Builder()
+            .Name(nameof(CompletionMask))
+            .Title("completion_mask")
+            .Description("Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,10))
+
+            .Build();
         public const int CompletionMaskMaxItemsCount = 10;
-        public byte[] CompletionMask { get; set; } = new byte[10];
+        public byte[] CompletionMask { get; } = new byte[10];
         [Obsolete("This method is deprecated. Use GetCompletionMaskMaxItemsCount instead.")]
         public byte GetCompletionMaskMaxItemsCount() => 10;
     }
@@ -9733,117 +8626,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EkfStatusReportPayload Payload { get; } = new();
 
         public override string Name => "EKF_STATUS_REPORT";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "velocity_variance",
-            "Velocity variance.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "pos_horiz_variance",
-            "Horizontal Position variance.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "pos_vert_variance",
-            "Vertical Position variance.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "compass_variance",
-            "Compass variance.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "terrain_alt_variance",
-            "Terrain Altitude variance.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "flags",
-            "Flags.",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(6,
-            "airspeed_variance",
-            "Airspeed variance.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            true),
-        ];
-        public const string FormatMessage = "EKF_STATUS_REPORT:"
-        + "float velocity_variance;"
-        + "float pos_horiz_variance;"
-        + "float pos_vert_variance;"
-        + "float compass_variance;"
-        + "float terrain_alt_variance;"
-        + "uint16_t flags;"
-        + "float airspeed_variance;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.VelocityVariance);
-            writer.Write(StaticFields[1], Payload.PosHorizVariance);
-            writer.Write(StaticFields[2], Payload.PosVertVariance);
-            writer.Write(StaticFields[3], Payload.CompassVariance);
-            writer.Write(StaticFields[4], Payload.TerrainAltVariance);
-            writer.Write(StaticFields[5], (ulong)Payload.Flags);
-            writer.Write(StaticFields[6], Payload.AirspeedVariance);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.VelocityVariance = reader.ReadFloat(StaticFields[0]);
-            Payload.PosHorizVariance = reader.ReadFloat(StaticFields[1]);
-            Payload.PosVertVariance = reader.ReadFloat(StaticFields[2]);
-            Payload.CompassVariance = reader.ReadFloat(StaticFields[3]);
-            Payload.TerrainAltVariance = reader.ReadFloat(StaticFields[4]);
-            Payload.Flags = (EkfStatusFlags)reader.ReadUShort(StaticFields[5]);
-            Payload.AirspeedVariance = reader.ReadFloat(StaticFields[6]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -9896,46 +8678,126 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,AirspeedVariance);
             /* PayloadByteSize = 26 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,VelocityVarianceField, ref _VelocityVariance);    
+            FloatType.Accept(visitor,PosHorizVarianceField, ref _PosHorizVariance);    
+            FloatType.Accept(visitor,PosVertVarianceField, ref _PosVertVariance);    
+            FloatType.Accept(visitor,CompassVarianceField, ref _CompassVariance);    
+            FloatType.Accept(visitor,TerrainAltVarianceField, ref _TerrainAltVariance);    
+            var tmpFlags = (ushort)Flags;
+            UInt16Type.Accept(visitor,FlagsField, ref tmpFlags);
+            Flags = (EkfStatusFlags)tmpFlags;
+            FloatType.Accept(visitor,AirspeedVarianceField, ref _AirspeedVariance);    
 
+        }
 
         /// <summary>
         /// Velocity variance.
         /// OriginName: velocity_variance, Units: , IsExtended: false
         /// </summary>
-        public float VelocityVariance { get; set; }
+        public static readonly Field VelocityVarianceField = new Field.Builder()
+            .Name(nameof(VelocityVariance))
+            .Title("velocity_variance")
+            .Description("Velocity variance.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _VelocityVariance;
+        public float VelocityVariance { get => _VelocityVariance; set { _VelocityVariance = value; } }
         /// <summary>
         /// Horizontal Position variance.
         /// OriginName: pos_horiz_variance, Units: , IsExtended: false
         /// </summary>
-        public float PosHorizVariance { get; set; }
+        public static readonly Field PosHorizVarianceField = new Field.Builder()
+            .Name(nameof(PosHorizVariance))
+            .Title("pos_horiz_variance")
+            .Description("Horizontal Position variance.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _PosHorizVariance;
+        public float PosHorizVariance { get => _PosHorizVariance; set { _PosHorizVariance = value; } }
         /// <summary>
         /// Vertical Position variance.
         /// OriginName: pos_vert_variance, Units: , IsExtended: false
         /// </summary>
-        public float PosVertVariance { get; set; }
+        public static readonly Field PosVertVarianceField = new Field.Builder()
+            .Name(nameof(PosVertVariance))
+            .Title("pos_vert_variance")
+            .Description("Vertical Position variance.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _PosVertVariance;
+        public float PosVertVariance { get => _PosVertVariance; set { _PosVertVariance = value; } }
         /// <summary>
         /// Compass variance.
         /// OriginName: compass_variance, Units: , IsExtended: false
         /// </summary>
-        public float CompassVariance { get; set; }
+        public static readonly Field CompassVarianceField = new Field.Builder()
+            .Name(nameof(CompassVariance))
+            .Title("compass_variance")
+            .Description("Compass variance.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _CompassVariance;
+        public float CompassVariance { get => _CompassVariance; set { _CompassVariance = value; } }
         /// <summary>
         /// Terrain Altitude variance.
         /// OriginName: terrain_alt_variance, Units: , IsExtended: false
         /// </summary>
-        public float TerrainAltVariance { get; set; }
+        public static readonly Field TerrainAltVarianceField = new Field.Builder()
+            .Name(nameof(TerrainAltVariance))
+            .Title("terrain_alt_variance")
+            .Description("Terrain Altitude variance.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _TerrainAltVariance;
+        public float TerrainAltVariance { get => _TerrainAltVariance; set { _TerrainAltVariance = value; } }
         /// <summary>
         /// Flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public EkfStatusFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("bitmask")
+            .Description("Flags.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        public EkfStatusFlags _Flags;
+        public EkfStatusFlags Flags { get => _Flags; set => _Flags = value; } 
         /// <summary>
         /// Airspeed variance.
         /// OriginName: airspeed_variance, Units: , IsExtended: true
         /// </summary>
-        public float AirspeedVariance { get; set; }
+        public static readonly Field AirspeedVarianceField = new Field.Builder()
+            .Name(nameof(AirspeedVariance))
+            .Title("airspeed_variance")
+            .Description("Airspeed variance.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _AirspeedVariance;
+        public float AirspeedVariance { get => _AirspeedVariance; set { _AirspeedVariance = value; } }
     }
     /// <summary>
     /// PID tuning information.
@@ -9957,143 +8819,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override PidTuningPayload Payload { get; } = new();
 
         public override string Name => "PID_TUNING";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "desired",
-            "Desired rate.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "achieved",
-            "Achieved rate.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "FF",
-            "FF component.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "P",
-            "P component.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "I",
-            "I component.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "D",
-            "D component.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "axis",
-            "Axis.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "SRate",
-            "Slew rate.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            true),
-            new(8,
-            "PDmod",
-            "P/D oscillation modifier.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            true),
-        ];
-        public const string FormatMessage = "PID_TUNING:"
-        + "float desired;"
-        + "float achieved;"
-        + "float FF;"
-        + "float P;"
-        + "float I;"
-        + "float D;"
-        + "uint8_t axis;"
-        + "float SRate;"
-        + "float PDmod;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Desired);
-            writer.Write(StaticFields[1], Payload.Achieved);
-            writer.Write(StaticFields[2], Payload.Ff);
-            writer.Write(StaticFields[3], Payload.P);
-            writer.Write(StaticFields[4], Payload.I);
-            writer.Write(StaticFields[5], Payload.D);
-            writer.Write(StaticFields[6], (ulong)Payload.Axis);
-            writer.Write(StaticFields[7], Payload.Srate);
-            writer.Write(StaticFields[8], Payload.Pdmod);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Desired = reader.ReadFloat(StaticFields[0]);
-            Payload.Achieved = reader.ReadFloat(StaticFields[1]);
-            Payload.Ff = reader.ReadFloat(StaticFields[2]);
-            Payload.P = reader.ReadFloat(StaticFields[3]);
-            Payload.I = reader.ReadFloat(StaticFields[4]);
-            Payload.D = reader.ReadFloat(StaticFields[5]);
-            Payload.Axis = (PidTuningAxis)reader.ReadByte(StaticFields[6]);
-            Payload.Srate = reader.ReadFloat(StaticFields[7]);
-            Payload.Pdmod = reader.ReadFloat(StaticFields[8]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -10154,56 +8879,158 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,Pdmod);
             /* PayloadByteSize = 33 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DesiredField, ref _Desired);    
+            FloatType.Accept(visitor,AchievedField, ref _Achieved);    
+            FloatType.Accept(visitor,FfField, ref _Ff);    
+            FloatType.Accept(visitor,PField, ref _P);    
+            FloatType.Accept(visitor,IField, ref _I);    
+            FloatType.Accept(visitor,DField, ref _D);    
+            var tmpAxis = (byte)Axis;
+            UInt8Type.Accept(visitor,AxisField, ref tmpAxis);
+            Axis = (PidTuningAxis)tmpAxis;
+            FloatType.Accept(visitor,SrateField, ref _Srate);    
+            FloatType.Accept(visitor,PdmodField, ref _Pdmod);    
 
+        }
 
         /// <summary>
         /// Desired rate.
         /// OriginName: desired, Units: , IsExtended: false
         /// </summary>
-        public float Desired { get; set; }
+        public static readonly Field DesiredField = new Field.Builder()
+            .Name(nameof(Desired))
+            .Title("desired")
+            .Description("Desired rate.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Desired;
+        public float Desired { get => _Desired; set { _Desired = value; } }
         /// <summary>
         /// Achieved rate.
         /// OriginName: achieved, Units: , IsExtended: false
         /// </summary>
-        public float Achieved { get; set; }
+        public static readonly Field AchievedField = new Field.Builder()
+            .Name(nameof(Achieved))
+            .Title("achieved")
+            .Description("Achieved rate.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Achieved;
+        public float Achieved { get => _Achieved; set { _Achieved = value; } }
         /// <summary>
         /// FF component.
         /// OriginName: FF, Units: , IsExtended: false
         /// </summary>
-        public float Ff { get; set; }
+        public static readonly Field FfField = new Field.Builder()
+            .Name(nameof(Ff))
+            .Title("FF")
+            .Description("FF component.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Ff;
+        public float Ff { get => _Ff; set { _Ff = value; } }
         /// <summary>
         /// P component.
         /// OriginName: P, Units: , IsExtended: false
         /// </summary>
-        public float P { get; set; }
+        public static readonly Field PField = new Field.Builder()
+            .Name(nameof(P))
+            .Title("P")
+            .Description("P component.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _P;
+        public float P { get => _P; set { _P = value; } }
         /// <summary>
         /// I component.
         /// OriginName: I, Units: , IsExtended: false
         /// </summary>
-        public float I { get; set; }
+        public static readonly Field IField = new Field.Builder()
+            .Name(nameof(I))
+            .Title("I")
+            .Description("I component.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _I;
+        public float I { get => _I; set { _I = value; } }
         /// <summary>
         /// D component.
         /// OriginName: D, Units: , IsExtended: false
         /// </summary>
-        public float D { get; set; }
+        public static readonly Field DField = new Field.Builder()
+            .Name(nameof(D))
+            .Title("D")
+            .Description("D component.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _D;
+        public float D { get => _D; set { _D = value; } }
         /// <summary>
         /// Axis.
         /// OriginName: axis, Units: , IsExtended: false
         /// </summary>
-        public PidTuningAxis Axis { get; set; }
+        public static readonly Field AxisField = new Field.Builder()
+            .Name(nameof(Axis))
+            .Title("axis")
+            .Description("Axis.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public PidTuningAxis _Axis;
+        public PidTuningAxis Axis { get => _Axis; set => _Axis = value; } 
         /// <summary>
         /// Slew rate.
         /// OriginName: SRate, Units: , IsExtended: true
         /// </summary>
-        public float Srate { get; set; }
+        public static readonly Field SrateField = new Field.Builder()
+            .Name(nameof(Srate))
+            .Title("SRate")
+            .Description("Slew rate.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Srate;
+        public float Srate { get => _Srate; set { _Srate = value; } }
         /// <summary>
         /// P/D oscillation modifier.
         /// OriginName: PDmod, Units: , IsExtended: true
         /// </summary>
-        public float Pdmod { get; set; }
+        public static readonly Field PdmodField = new Field.Builder()
+            .Name(nameof(Pdmod))
+            .Title("PDmod")
+            .Description("P/D oscillation modifier.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Pdmod;
+        public float Pdmod { get => _Pdmod; set { _Pdmod = value; } }
     }
     /// <summary>
     /// Deepstall path planning.
@@ -10225,156 +9052,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeepstallPayload Payload { get; } = new();
 
         public override string Name => "DEEPSTALL";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "landing_lat",
-            "Landing latitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(1,
-            "landing_lon",
-            "Landing longitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(2,
-            "path_lat",
-            "Final heading start point, latitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(3,
-            "path_lon",
-            "Final heading start point, longitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(4,
-            "arc_entry_lat",
-            "Arc entry point, latitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(5,
-            "arc_entry_lon",
-            "Arc entry point, longitude.",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(6,
-            "altitude",
-            "Altitude.",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(7,
-            "expected_travel_distance",
-            "Distance the aircraft expects to travel during the deepstall.",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(8,
-            "cross_track_error",
-            "Deepstall cross track error (only valid when in DEEPSTALL_STAGE_LAND).",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(9,
-            "stage",
-            "Deepstall stage.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "DEEPSTALL:"
-        + "int32_t landing_lat;"
-        + "int32_t landing_lon;"
-        + "int32_t path_lat;"
-        + "int32_t path_lon;"
-        + "int32_t arc_entry_lat;"
-        + "int32_t arc_entry_lon;"
-        + "float altitude;"
-        + "float expected_travel_distance;"
-        + "float cross_track_error;"
-        + "uint8_t stage;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.LandingLat);
-            writer.Write(StaticFields[1], Payload.LandingLon);
-            writer.Write(StaticFields[2], Payload.PathLat);
-            writer.Write(StaticFields[3], Payload.PathLon);
-            writer.Write(StaticFields[4], Payload.ArcEntryLat);
-            writer.Write(StaticFields[5], Payload.ArcEntryLon);
-            writer.Write(StaticFields[6], Payload.Altitude);
-            writer.Write(StaticFields[7], Payload.ExpectedTravelDistance);
-            writer.Write(StaticFields[8], Payload.CrossTrackError);
-            writer.Write(StaticFields[9], (ulong)Payload.Stage);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.LandingLat = reader.ReadInt(StaticFields[0]);
-            Payload.LandingLon = reader.ReadInt(StaticFields[1]);
-            Payload.PathLat = reader.ReadInt(StaticFields[2]);
-            Payload.PathLon = reader.ReadInt(StaticFields[3]);
-            Payload.ArcEntryLat = reader.ReadInt(StaticFields[4]);
-            Payload.ArcEntryLon = reader.ReadInt(StaticFields[5]);
-            Payload.Altitude = reader.ReadFloat(StaticFields[6]);
-            Payload.ExpectedTravelDistance = reader.ReadFloat(StaticFields[7]);
-            Payload.CrossTrackError = reader.ReadFloat(StaticFields[8]);
-            Payload.Stage = (DeepstallStage)reader.ReadByte(StaticFields[9]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -10434,61 +9111,174 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Stage);
             /* PayloadByteSize = 37 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            Int32Type.Accept(visitor,LandingLatField, ref _LandingLat);    
+            Int32Type.Accept(visitor,LandingLonField, ref _LandingLon);    
+            Int32Type.Accept(visitor,PathLatField, ref _PathLat);    
+            Int32Type.Accept(visitor,PathLonField, ref _PathLon);    
+            Int32Type.Accept(visitor,ArcEntryLatField, ref _ArcEntryLat);    
+            Int32Type.Accept(visitor,ArcEntryLonField, ref _ArcEntryLon);    
+            FloatType.Accept(visitor,AltitudeField, ref _Altitude);    
+            FloatType.Accept(visitor,ExpectedTravelDistanceField, ref _ExpectedTravelDistance);    
+            FloatType.Accept(visitor,CrossTrackErrorField, ref _CrossTrackError);    
+            var tmpStage = (byte)Stage;
+            UInt8Type.Accept(visitor,StageField, ref tmpStage);
+            Stage = (DeepstallStage)tmpStage;
 
+        }
 
         /// <summary>
         /// Landing latitude.
         /// OriginName: landing_lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int LandingLat { get; set; }
+        public static readonly Field LandingLatField = new Field.Builder()
+            .Name(nameof(LandingLat))
+            .Title("landing_lat")
+            .Description("Landing latitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _LandingLat;
+        public int LandingLat { get => _LandingLat; set { _LandingLat = value; } }
         /// <summary>
         /// Landing longitude.
         /// OriginName: landing_lon, Units: degE7, IsExtended: false
         /// </summary>
-        public int LandingLon { get; set; }
+        public static readonly Field LandingLonField = new Field.Builder()
+            .Name(nameof(LandingLon))
+            .Title("landing_lon")
+            .Description("Landing longitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _LandingLon;
+        public int LandingLon { get => _LandingLon; set { _LandingLon = value; } }
         /// <summary>
         /// Final heading start point, latitude.
         /// OriginName: path_lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int PathLat { get; set; }
+        public static readonly Field PathLatField = new Field.Builder()
+            .Name(nameof(PathLat))
+            .Title("path_lat")
+            .Description("Final heading start point, latitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _PathLat;
+        public int PathLat { get => _PathLat; set { _PathLat = value; } }
         /// <summary>
         /// Final heading start point, longitude.
         /// OriginName: path_lon, Units: degE7, IsExtended: false
         /// </summary>
-        public int PathLon { get; set; }
+        public static readonly Field PathLonField = new Field.Builder()
+            .Name(nameof(PathLon))
+            .Title("path_lon")
+            .Description("Final heading start point, longitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _PathLon;
+        public int PathLon { get => _PathLon; set { _PathLon = value; } }
         /// <summary>
         /// Arc entry point, latitude.
         /// OriginName: arc_entry_lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int ArcEntryLat { get; set; }
+        public static readonly Field ArcEntryLatField = new Field.Builder()
+            .Name(nameof(ArcEntryLat))
+            .Title("arc_entry_lat")
+            .Description("Arc entry point, latitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _ArcEntryLat;
+        public int ArcEntryLat { get => _ArcEntryLat; set { _ArcEntryLat = value; } }
         /// <summary>
         /// Arc entry point, longitude.
         /// OriginName: arc_entry_lon, Units: degE7, IsExtended: false
         /// </summary>
-        public int ArcEntryLon { get; set; }
+        public static readonly Field ArcEntryLonField = new Field.Builder()
+            .Name(nameof(ArcEntryLon))
+            .Title("arc_entry_lon")
+            .Description("Arc entry point, longitude.")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _ArcEntryLon;
+        public int ArcEntryLon { get => _ArcEntryLon; set { _ArcEntryLon = value; } }
         /// <summary>
         /// Altitude.
         /// OriginName: altitude, Units: m, IsExtended: false
         /// </summary>
-        public float Altitude { get; set; }
+        public static readonly Field AltitudeField = new Field.Builder()
+            .Name(nameof(Altitude))
+            .Title("altitude")
+            .Description("Altitude.")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Altitude;
+        public float Altitude { get => _Altitude; set { _Altitude = value; } }
         /// <summary>
         /// Distance the aircraft expects to travel during the deepstall.
         /// OriginName: expected_travel_distance, Units: m, IsExtended: false
         /// </summary>
-        public float ExpectedTravelDistance { get; set; }
+        public static readonly Field ExpectedTravelDistanceField = new Field.Builder()
+            .Name(nameof(ExpectedTravelDistance))
+            .Title("expected_travel_distance")
+            .Description("Distance the aircraft expects to travel during the deepstall.")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _ExpectedTravelDistance;
+        public float ExpectedTravelDistance { get => _ExpectedTravelDistance; set { _ExpectedTravelDistance = value; } }
         /// <summary>
         /// Deepstall cross track error (only valid when in DEEPSTALL_STAGE_LAND).
         /// OriginName: cross_track_error, Units: m, IsExtended: false
         /// </summary>
-        public float CrossTrackError { get; set; }
+        public static readonly Field CrossTrackErrorField = new Field.Builder()
+            .Name(nameof(CrossTrackError))
+            .Title("cross_track_error")
+            .Description("Deepstall cross track error (only valid when in DEEPSTALL_STAGE_LAND).")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _CrossTrackError;
+        public float CrossTrackError { get => _CrossTrackError; set { _CrossTrackError = value; } }
         /// <summary>
         /// Deepstall stage.
         /// OriginName: stage, Units: , IsExtended: false
         /// </summary>
-        public DeepstallStage Stage { get; set; }
+        public static readonly Field StageField = new Field.Builder()
+            .Name(nameof(Stage))
+            .Title("stage")
+            .Description("Deepstall stage.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public DeepstallStage _Stage;
+        public DeepstallStage Stage { get => _Stage; set => _Stage = value; } 
     }
     /// <summary>
     /// 3 axis gimbal measurements.
@@ -10510,182 +9300,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GimbalReportPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_REPORT";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "delta_time",
-            "Time since last update.",
-            string.Empty, 
-            @"s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "delta_angle_x",
-            "Delta angle X.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "delta_angle_y",
-            "Delta angle Y.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "delta_angle_z",
-            "Delta angle X.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "delta_velocity_x",
-            "Delta velocity X.",
-            string.Empty, 
-            @"m/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "delta_velocity_y",
-            "Delta velocity Y.",
-            string.Empty, 
-            @"m/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "delta_velocity_z",
-            "Delta velocity Z.",
-            string.Empty, 
-            @"m/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(7,
-            "joint_roll",
-            "Joint ROLL.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(8,
-            "joint_el",
-            "Joint EL.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(9,
-            "joint_az",
-            "Joint AZ.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(10,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(11,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "GIMBAL_REPORT:"
-        + "float delta_time;"
-        + "float delta_angle_x;"
-        + "float delta_angle_y;"
-        + "float delta_angle_z;"
-        + "float delta_velocity_x;"
-        + "float delta_velocity_y;"
-        + "float delta_velocity_z;"
-        + "float joint_roll;"
-        + "float joint_el;"
-        + "float joint_az;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.DeltaTime);
-            writer.Write(StaticFields[1], Payload.DeltaAngleX);
-            writer.Write(StaticFields[2], Payload.DeltaAngleY);
-            writer.Write(StaticFields[3], Payload.DeltaAngleZ);
-            writer.Write(StaticFields[4], Payload.DeltaVelocityX);
-            writer.Write(StaticFields[5], Payload.DeltaVelocityY);
-            writer.Write(StaticFields[6], Payload.DeltaVelocityZ);
-            writer.Write(StaticFields[7], Payload.JointRoll);
-            writer.Write(StaticFields[8], Payload.JointEl);
-            writer.Write(StaticFields[9], Payload.JointAz);
-            writer.Write(StaticFields[10], Payload.TargetSystem);
-            writer.Write(StaticFields[11], Payload.TargetComponent);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.DeltaTime = reader.ReadFloat(StaticFields[0]);
-            Payload.DeltaAngleX = reader.ReadFloat(StaticFields[1]);
-            Payload.DeltaAngleY = reader.ReadFloat(StaticFields[2]);
-            Payload.DeltaAngleZ = reader.ReadFloat(StaticFields[3]);
-            Payload.DeltaVelocityX = reader.ReadFloat(StaticFields[4]);
-            Payload.DeltaVelocityY = reader.ReadFloat(StaticFields[5]);
-            Payload.DeltaVelocityZ = reader.ReadFloat(StaticFields[6]);
-            Payload.JointRoll = reader.ReadFloat(StaticFields[7]);
-            Payload.JointEl = reader.ReadFloat(StaticFields[8]);
-            Payload.JointAz = reader.ReadFloat(StaticFields[9]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[10]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[11]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -10751,71 +9365,204 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 42 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DeltaTimeField, ref _DeltaTime);    
+            FloatType.Accept(visitor,DeltaAngleXField, ref _DeltaAngleX);    
+            FloatType.Accept(visitor,DeltaAngleYField, ref _DeltaAngleY);    
+            FloatType.Accept(visitor,DeltaAngleZField, ref _DeltaAngleZ);    
+            FloatType.Accept(visitor,DeltaVelocityXField, ref _DeltaVelocityX);    
+            FloatType.Accept(visitor,DeltaVelocityYField, ref _DeltaVelocityY);    
+            FloatType.Accept(visitor,DeltaVelocityZField, ref _DeltaVelocityZ);    
+            FloatType.Accept(visitor,JointRollField, ref _JointRoll);    
+            FloatType.Accept(visitor,JointElField, ref _JointEl);    
+            FloatType.Accept(visitor,JointAzField, ref _JointAz);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
 
+        }
 
         /// <summary>
         /// Time since last update.
         /// OriginName: delta_time, Units: s, IsExtended: false
         /// </summary>
-        public float DeltaTime { get; set; }
+        public static readonly Field DeltaTimeField = new Field.Builder()
+            .Name(nameof(DeltaTime))
+            .Title("delta_time")
+            .Description("Time since last update.")
+            .FormatString(string.Empty)
+            .Units(@"s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DeltaTime;
+        public float DeltaTime { get => _DeltaTime; set { _DeltaTime = value; } }
         /// <summary>
         /// Delta angle X.
         /// OriginName: delta_angle_x, Units: rad, IsExtended: false
         /// </summary>
-        public float DeltaAngleX { get; set; }
+        public static readonly Field DeltaAngleXField = new Field.Builder()
+            .Name(nameof(DeltaAngleX))
+            .Title("delta_angle_x")
+            .Description("Delta angle X.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DeltaAngleX;
+        public float DeltaAngleX { get => _DeltaAngleX; set { _DeltaAngleX = value; } }
         /// <summary>
         /// Delta angle Y.
         /// OriginName: delta_angle_y, Units: rad, IsExtended: false
         /// </summary>
-        public float DeltaAngleY { get; set; }
+        public static readonly Field DeltaAngleYField = new Field.Builder()
+            .Name(nameof(DeltaAngleY))
+            .Title("delta_angle_y")
+            .Description("Delta angle Y.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DeltaAngleY;
+        public float DeltaAngleY { get => _DeltaAngleY; set { _DeltaAngleY = value; } }
         /// <summary>
         /// Delta angle X.
         /// OriginName: delta_angle_z, Units: rad, IsExtended: false
         /// </summary>
-        public float DeltaAngleZ { get; set; }
+        public static readonly Field DeltaAngleZField = new Field.Builder()
+            .Name(nameof(DeltaAngleZ))
+            .Title("delta_angle_z")
+            .Description("Delta angle X.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DeltaAngleZ;
+        public float DeltaAngleZ { get => _DeltaAngleZ; set { _DeltaAngleZ = value; } }
         /// <summary>
         /// Delta velocity X.
         /// OriginName: delta_velocity_x, Units: m/s, IsExtended: false
         /// </summary>
-        public float DeltaVelocityX { get; set; }
+        public static readonly Field DeltaVelocityXField = new Field.Builder()
+            .Name(nameof(DeltaVelocityX))
+            .Title("delta_velocity_x")
+            .Description("Delta velocity X.")
+            .FormatString(string.Empty)
+            .Units(@"m/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DeltaVelocityX;
+        public float DeltaVelocityX { get => _DeltaVelocityX; set { _DeltaVelocityX = value; } }
         /// <summary>
         /// Delta velocity Y.
         /// OriginName: delta_velocity_y, Units: m/s, IsExtended: false
         /// </summary>
-        public float DeltaVelocityY { get; set; }
+        public static readonly Field DeltaVelocityYField = new Field.Builder()
+            .Name(nameof(DeltaVelocityY))
+            .Title("delta_velocity_y")
+            .Description("Delta velocity Y.")
+            .FormatString(string.Empty)
+            .Units(@"m/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DeltaVelocityY;
+        public float DeltaVelocityY { get => _DeltaVelocityY; set { _DeltaVelocityY = value; } }
         /// <summary>
         /// Delta velocity Z.
         /// OriginName: delta_velocity_z, Units: m/s, IsExtended: false
         /// </summary>
-        public float DeltaVelocityZ { get; set; }
+        public static readonly Field DeltaVelocityZField = new Field.Builder()
+            .Name(nameof(DeltaVelocityZ))
+            .Title("delta_velocity_z")
+            .Description("Delta velocity Z.")
+            .FormatString(string.Empty)
+            .Units(@"m/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DeltaVelocityZ;
+        public float DeltaVelocityZ { get => _DeltaVelocityZ; set { _DeltaVelocityZ = value; } }
         /// <summary>
         /// Joint ROLL.
         /// OriginName: joint_roll, Units: rad, IsExtended: false
         /// </summary>
-        public float JointRoll { get; set; }
+        public static readonly Field JointRollField = new Field.Builder()
+            .Name(nameof(JointRoll))
+            .Title("joint_roll")
+            .Description("Joint ROLL.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _JointRoll;
+        public float JointRoll { get => _JointRoll; set { _JointRoll = value; } }
         /// <summary>
         /// Joint EL.
         /// OriginName: joint_el, Units: rad, IsExtended: false
         /// </summary>
-        public float JointEl { get; set; }
+        public static readonly Field JointElField = new Field.Builder()
+            .Name(nameof(JointEl))
+            .Title("joint_el")
+            .Description("Joint EL.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _JointEl;
+        public float JointEl { get => _JointEl; set { _JointEl = value; } }
         /// <summary>
         /// Joint AZ.
         /// OriginName: joint_az, Units: rad, IsExtended: false
         /// </summary>
-        public float JointAz { get; set; }
+        public static readonly Field JointAzField = new Field.Builder()
+            .Name(nameof(JointAz))
+            .Title("joint_az")
+            .Description("Joint AZ.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _JointAz;
+        public float JointAz { get => _JointAz; set { _JointAz = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
     }
     /// <summary>
     /// Control message for rate gimbal.
@@ -10837,91 +9584,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GimbalControlPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_CONTROL";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "demanded_rate_x",
-            "Demanded angular rate X.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "demanded_rate_y",
-            "Demanded angular rate Y.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "demanded_rate_z",
-            "Demanded angular rate Z.",
-            string.Empty, 
-            @"rad/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "GIMBAL_CONTROL:"
-        + "float demanded_rate_x;"
-        + "float demanded_rate_y;"
-        + "float demanded_rate_z;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.DemandedRateX);
-            writer.Write(StaticFields[1], Payload.DemandedRateY);
-            writer.Write(StaticFields[2], Payload.DemandedRateZ);
-            writer.Write(StaticFields[3], Payload.TargetSystem);
-            writer.Write(StaticFields[4], Payload.TargetComponent);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.DemandedRateX = reader.ReadFloat(StaticFields[0]);
-            Payload.DemandedRateY = reader.ReadFloat(StaticFields[1]);
-            Payload.DemandedRateZ = reader.ReadFloat(StaticFields[2]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -10966,36 +9628,92 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 14 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DemandedRateXField, ref _DemandedRateX);    
+            FloatType.Accept(visitor,DemandedRateYField, ref _DemandedRateY);    
+            FloatType.Accept(visitor,DemandedRateZField, ref _DemandedRateZ);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
 
+        }
 
         /// <summary>
         /// Demanded angular rate X.
         /// OriginName: demanded_rate_x, Units: rad/s, IsExtended: false
         /// </summary>
-        public float DemandedRateX { get; set; }
+        public static readonly Field DemandedRateXField = new Field.Builder()
+            .Name(nameof(DemandedRateX))
+            .Title("demanded_rate_x")
+            .Description("Demanded angular rate X.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DemandedRateX;
+        public float DemandedRateX { get => _DemandedRateX; set { _DemandedRateX = value; } }
         /// <summary>
         /// Demanded angular rate Y.
         /// OriginName: demanded_rate_y, Units: rad/s, IsExtended: false
         /// </summary>
-        public float DemandedRateY { get; set; }
+        public static readonly Field DemandedRateYField = new Field.Builder()
+            .Name(nameof(DemandedRateY))
+            .Title("demanded_rate_y")
+            .Description("Demanded angular rate Y.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DemandedRateY;
+        public float DemandedRateY { get => _DemandedRateY; set { _DemandedRateY = value; } }
         /// <summary>
         /// Demanded angular rate Z.
         /// OriginName: demanded_rate_z, Units: rad/s, IsExtended: false
         /// </summary>
-        public float DemandedRateZ { get; set; }
+        public static readonly Field DemandedRateZField = new Field.Builder()
+            .Name(nameof(DemandedRateZ))
+            .Title("demanded_rate_z")
+            .Description("Demanded angular rate Z.")
+            .FormatString(string.Empty)
+            .Units(@"rad/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _DemandedRateZ;
+        public float DemandedRateZ { get => _DemandedRateZ; set { _DemandedRateZ = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
     }
     /// <summary>
     /// 100 Hz gimbal torque command telemetry.
@@ -11017,91 +9735,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GimbalTorqueCmdReportPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_TORQUE_CMD_REPORT";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "rl_torque_cmd",
-            "Roll Torque Command.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(1,
-            "el_torque_cmd",
-            "Elevation Torque Command.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(2,
-            "az_torque_cmd",
-            "Azimuth Torque Command.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(3,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "GIMBAL_TORQUE_CMD_REPORT:"
-        + "int16_t rl_torque_cmd;"
-        + "int16_t el_torque_cmd;"
-        + "int16_t az_torque_cmd;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.RlTorqueCmd);
-            writer.Write(StaticFields[1], Payload.ElTorqueCmd);
-            writer.Write(StaticFields[2], Payload.AzTorqueCmd);
-            writer.Write(StaticFields[3], Payload.TargetSystem);
-            writer.Write(StaticFields[4], Payload.TargetComponent);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.RlTorqueCmd = reader.ReadShort(StaticFields[0]);
-            Payload.ElTorqueCmd = reader.ReadShort(StaticFields[1]);
-            Payload.AzTorqueCmd = reader.ReadShort(StaticFields[2]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[3]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[4]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -11146,36 +9779,92 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            Int16Type.Accept(visitor,RlTorqueCmdField, ref _RlTorqueCmd);
+            Int16Type.Accept(visitor,ElTorqueCmdField, ref _ElTorqueCmd);
+            Int16Type.Accept(visitor,AzTorqueCmdField, ref _AzTorqueCmd);
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
 
+        }
 
         /// <summary>
         /// Roll Torque Command.
         /// OriginName: rl_torque_cmd, Units: , IsExtended: false
         /// </summary>
-        public short RlTorqueCmd { get; set; }
+        public static readonly Field RlTorqueCmdField = new Field.Builder()
+            .Name(nameof(RlTorqueCmd))
+            .Title("rl_torque_cmd")
+            .Description("Roll Torque Command.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _RlTorqueCmd;
+        public short RlTorqueCmd { get => _RlTorqueCmd; set { _RlTorqueCmd = value; } }
         /// <summary>
         /// Elevation Torque Command.
         /// OriginName: el_torque_cmd, Units: , IsExtended: false
         /// </summary>
-        public short ElTorqueCmd { get; set; }
+        public static readonly Field ElTorqueCmdField = new Field.Builder()
+            .Name(nameof(ElTorqueCmd))
+            .Title("el_torque_cmd")
+            .Description("Elevation Torque Command.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _ElTorqueCmd;
+        public short ElTorqueCmd { get => _ElTorqueCmd; set { _ElTorqueCmd = value; } }
         /// <summary>
         /// Azimuth Torque Command.
         /// OriginName: az_torque_cmd, Units: , IsExtended: false
         /// </summary>
-        public short AzTorqueCmd { get; set; }
+        public static readonly Field AzTorqueCmdField = new Field.Builder()
+            .Name(nameof(AzTorqueCmd))
+            .Title("az_torque_cmd")
+            .Description("Azimuth Torque Command.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _AzTorqueCmd;
+        public short AzTorqueCmd { get => _AzTorqueCmd; set { _AzTorqueCmd = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
     }
     /// <summary>
     /// Heartbeat from a HeroBus attached GoPro.
@@ -11197,65 +9886,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproHeartbeatPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_HEARTBEAT";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "status",
-            "Status.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "capture_mode",
-            "Current capture mode.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "flags",
-            "Additional status bits.",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "GOPRO_HEARTBEAT:"
-        + "uint8_t status;"
-        + "uint8_t capture_mode;"
-        + "uint8_t flags;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], (ulong)Payload.Status);
-            writer.Write(StaticFields[1], (ulong)Payload.CaptureMode);
-            writer.Write(StaticFields[2], (ulong)Payload.Flags);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Status = (GoproHeartbeatStatus)reader.ReadByte(StaticFields[0]);
-            Payload.CaptureMode = (GoproCaptureMode)reader.ReadByte(StaticFields[1]);
-            Payload.Flags = (GoproHeartbeatFlags)reader.ReadByte(StaticFields[2]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -11294,26 +9924,66 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Flags);
             /* PayloadByteSize = 3 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            var tmpStatus = (byte)Status;
+            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
+            Status = (GoproHeartbeatStatus)tmpStatus;
+            var tmpCaptureMode = (byte)CaptureMode;
+            UInt8Type.Accept(visitor,CaptureModeField, ref tmpCaptureMode);
+            CaptureMode = (GoproCaptureMode)tmpCaptureMode;
+            var tmpFlags = (byte)Flags;
+            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
+            Flags = (GoproHeartbeatFlags)tmpFlags;
 
+        }
 
         /// <summary>
         /// Status.
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
-        public GoproHeartbeatStatus Status { get; set; }
+        public static readonly Field StatusField = new Field.Builder()
+            .Name(nameof(Status))
+            .Title("status")
+            .Description("Status.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public GoproHeartbeatStatus _Status;
+        public GoproHeartbeatStatus Status { get => _Status; set => _Status = value; } 
         /// <summary>
         /// Current capture mode.
         /// OriginName: capture_mode, Units: , IsExtended: false
         /// </summary>
-        public GoproCaptureMode CaptureMode { get; set; }
+        public static readonly Field CaptureModeField = new Field.Builder()
+            .Name(nameof(CaptureMode))
+            .Title("capture_mode")
+            .Description("Current capture mode.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public GoproCaptureMode _CaptureMode;
+        public GoproCaptureMode CaptureMode { get => _CaptureMode; set => _CaptureMode = value; } 
         /// <summary>
         /// Additional status bits.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public GoproHeartbeatFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("bitmask")
+            .Description("Additional status bits.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public GoproHeartbeatFlags _Flags;
+        public GoproHeartbeatFlags Flags { get => _Flags; set => _Flags = value; } 
     }
     /// <summary>
     /// Request a GOPRO_COMMAND response from the GoPro.
@@ -11335,65 +10005,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproGetRequestPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_GET_REQUEST";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "cmd_id",
-            "Command ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "GOPRO_GET_REQUEST:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t cmd_id;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TargetSystem);
-            writer.Write(StaticFields[1], Payload.TargetComponent);
-            writer.Write(StaticFields[2], (ulong)Payload.CmdId);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.CmdId = (GoproCommand)reader.ReadByte(StaticFields[2]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -11432,26 +10043,62 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)CmdId);
             /* PayloadByteSize = 3 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            var tmpCmdId = (byte)CmdId;
+            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
+            CmdId = (GoproCommand)tmpCmdId;
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Command ID.
         /// OriginName: cmd_id, Units: , IsExtended: false
         /// </summary>
-        public GoproCommand CmdId { get; set; }
+        public static readonly Field CmdIdField = new Field.Builder()
+            .Name(nameof(CmdId))
+            .Title("cmd_id")
+            .Description("Command ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public GoproCommand _CmdId;
+        public GoproCommand CmdId { get => _CmdId; set => _CmdId = value; } 
     }
     /// <summary>
     /// Response from a GOPRO_COMMAND get request.
@@ -11473,65 +10120,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproGetResponsePayload Payload { get; } = new();
 
         public override string Name => "GOPRO_GET_RESPONSE";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "cmd_id",
-            "Command ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "status",
-            "Status.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "value",
-            "Value.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            4, 
-            false),
-        ];
-        public const string FormatMessage = "GOPRO_GET_RESPONSE:"
-        + "uint8_t cmd_id;"
-        + "uint8_t status;"
-        + "uint8_t[4] value;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], (ulong)Payload.CmdId);
-            writer.Write(StaticFields[1], (ulong)Payload.Status);
-            writer.Write(StaticFields[2], Payload.Value);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.CmdId = (GoproCommand)reader.ReadByte(StaticFields[0]);
-            Payload.Status = (GoproRequestStatus)reader.ReadByte(StaticFields[1]);
-            reader.ReadByteArray(StaticFields[2], Payload.Value);
-        
-            
-        }
     }
 
     /// <summary>
@@ -11562,7 +10150,7 @@ namespace Asv.Mavlink.Ardupilotmega
             CmdId = (GoproCommand)BinSerialize.ReadByte(ref buffer);
             Status = (GoproRequestStatus)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/6 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Value = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Value[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -11580,27 +10168,65 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 6 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            var tmpCmdId = (byte)CmdId;
+            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
+            CmdId = (GoproCommand)tmpCmdId;
+            var tmpStatus = (byte)Status;
+            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
+            Status = (GoproRequestStatus)tmpStatus;
+            ArrayType.Accept(visitor,ValueField, 4,
+                (index,v) => UInt8Type.Accept(v, ValueField, ref Value[index]));    
 
+        }
 
         /// <summary>
         /// Command ID.
         /// OriginName: cmd_id, Units: , IsExtended: false
         /// </summary>
-        public GoproCommand CmdId { get; set; }
+        public static readonly Field CmdIdField = new Field.Builder()
+            .Name(nameof(CmdId))
+            .Title("cmd_id")
+            .Description("Command ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public GoproCommand _CmdId;
+        public GoproCommand CmdId { get => _CmdId; set => _CmdId = value; } 
         /// <summary>
         /// Status.
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
-        public GoproRequestStatus Status { get; set; }
+        public static readonly Field StatusField = new Field.Builder()
+            .Name(nameof(Status))
+            .Title("status")
+            .Description("Status.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public GoproRequestStatus _Status;
+        public GoproRequestStatus Status { get => _Status; set => _Status = value; } 
         /// <summary>
         /// Value.
         /// OriginName: value, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ValueField = new Field.Builder()
+            .Name(nameof(Value))
+            .Title("value")
+            .Description("Value.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,4))
+
+            .Build();
         public const int ValueMaxItemsCount = 4;
-        public byte[] Value { get; set; } = new byte[4];
+        public byte[] Value { get; } = new byte[4];
         [Obsolete("This method is deprecated. Use GetValueMaxItemsCount instead.")]
         public byte GetValueMaxItemsCount() => 4;
     }
@@ -11624,78 +10250,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproSetRequestPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_SET_REQUEST";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "cmd_id",
-            "Command ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "value",
-            "Value.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            4, 
-            false),
-        ];
-        public const string FormatMessage = "GOPRO_SET_REQUEST:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t cmd_id;"
-        + "uint8_t[4] value;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TargetSystem);
-            writer.Write(StaticFields[1], Payload.TargetComponent);
-            writer.Write(StaticFields[2], (ulong)Payload.CmdId);
-            writer.Write(StaticFields[3], Payload.Value);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TargetSystem = reader.ReadByte(StaticFields[0]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[1]);
-            Payload.CmdId = (GoproCommand)reader.ReadByte(StaticFields[2]);
-            reader.ReadByteArray(StaticFields[3], Payload.Value);
-        
-            
-        }
     }
 
     /// <summary>
@@ -11728,7 +10282,7 @@ namespace Asv.Mavlink.Ardupilotmega
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             CmdId = (GoproCommand)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/7 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Value = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Value[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -11747,32 +10301,79 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 7 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            var tmpCmdId = (byte)CmdId;
+            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
+            CmdId = (GoproCommand)tmpCmdId;
+            ArrayType.Accept(visitor,ValueField, 4,
+                (index,v) => UInt8Type.Accept(v, ValueField, ref Value[index]));    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// Command ID.
         /// OriginName: cmd_id, Units: , IsExtended: false
         /// </summary>
-        public GoproCommand CmdId { get; set; }
+        public static readonly Field CmdIdField = new Field.Builder()
+            .Name(nameof(CmdId))
+            .Title("cmd_id")
+            .Description("Command ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public GoproCommand _CmdId;
+        public GoproCommand CmdId { get => _CmdId; set => _CmdId = value; } 
         /// <summary>
         /// Value.
         /// OriginName: value, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ValueField = new Field.Builder()
+            .Name(nameof(Value))
+            .Title("value")
+            .Description("Value.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,4))
+
+            .Build();
         public const int ValueMaxItemsCount = 4;
-        public byte[] Value { get; set; } = new byte[4];
+        public byte[] Value { get; } = new byte[4];
         [Obsolete("This method is deprecated. Use GetValueMaxItemsCount instead.")]
         public byte GetValueMaxItemsCount() => 4;
     }
@@ -11796,52 +10397,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproSetResponsePayload Payload { get; } = new();
 
         public override string Name => "GOPRO_SET_RESPONSE";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "cmd_id",
-            "Command ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(1,
-            "status",
-            "Status.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "GOPRO_SET_RESPONSE:"
-        + "uint8_t cmd_id;"
-        + "uint8_t status;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], (ulong)Payload.CmdId);
-            writer.Write(StaticFields[1], (ulong)Payload.Status);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.CmdId = (GoproCommand)reader.ReadByte(StaticFields[0]);
-            Payload.Status = (GoproRequestStatus)reader.ReadByte(StaticFields[1]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -11877,21 +10432,48 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Status);
             /* PayloadByteSize = 2 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            var tmpCmdId = (byte)CmdId;
+            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
+            CmdId = (GoproCommand)tmpCmdId;
+            var tmpStatus = (byte)Status;
+            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
+            Status = (GoproRequestStatus)tmpStatus;
 
+        }
 
         /// <summary>
         /// Command ID.
         /// OriginName: cmd_id, Units: , IsExtended: false
         /// </summary>
-        public GoproCommand CmdId { get; set; }
+        public static readonly Field CmdIdField = new Field.Builder()
+            .Name(nameof(CmdId))
+            .Title("cmd_id")
+            .Description("Command ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public GoproCommand _CmdId;
+        public GoproCommand CmdId { get => _CmdId; set => _CmdId = value; } 
         /// <summary>
         /// Status.
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
-        public GoproRequestStatus Status { get; set; }
+        public static readonly Field StatusField = new Field.Builder()
+            .Name(nameof(Status))
+            .Title("status")
+            .Description("Status.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public GoproRequestStatus _Status;
+        public GoproRequestStatus Status { get => _Status; set => _Status = value; } 
     }
     /// <summary>
     /// RPM sensor output.
@@ -11913,52 +10495,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RpmPayload Payload { get; } = new();
 
         public override string Name => "RPM";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "rpm1",
-            "RPM Sensor1.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "rpm2",
-            "RPM Sensor2.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "RPM:"
-        + "float rpm1;"
-        + "float rpm2;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Rpm1);
-            writer.Write(StaticFields[1], Payload.Rpm2);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Rpm1 = reader.ReadFloat(StaticFields[0]);
-            Payload.Rpm2 = reader.ReadFloat(StaticFields[1]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -11994,21 +10530,44 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,Rpm2);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,Rpm1Field, ref _Rpm1);    
+            FloatType.Accept(visitor,Rpm2Field, ref _Rpm2);    
 
+        }
 
         /// <summary>
         /// RPM Sensor1.
         /// OriginName: rpm1, Units: , IsExtended: false
         /// </summary>
-        public float Rpm1 { get; set; }
+        public static readonly Field Rpm1Field = new Field.Builder()
+            .Name(nameof(Rpm1))
+            .Title("rpm1")
+            .Description("RPM Sensor1.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Rpm1;
+        public float Rpm1 { get => _Rpm1; set { _Rpm1 = value; } }
         /// <summary>
         /// RPM Sensor2.
         /// OriginName: rpm2, Units: , IsExtended: false
         /// </summary>
-        public float Rpm2 { get; set; }
+        public static readonly Field Rpm2Field = new Field.Builder()
+            .Name(nameof(Rpm2))
+            .Title("rpm2")
+            .Description("RPM Sensor2.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Rpm2;
+        public float Rpm2 { get => _Rpm2; set { _Rpm2 = value; } }
     }
     /// <summary>
     /// Read registers for a device.
@@ -12030,156 +10589,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpReadPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_READ";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "request_id",
-            "Request ID - copied to reply.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "bustype",
-            "The bus type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "bus",
-            "Bus number.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "address",
-            "Bus address.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(6,
-            "busname",
-            "Name of device on bus (for SPI).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Char, 
-            40, 
-            false),
-            new(7,
-            "regstart",
-            "First register to read.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "count",
-            "Count of registers to read.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(9,
-            "bank",
-            "Bank number.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            true),
-        ];
-        public const string FormatMessage = "DEVICE_OP_READ:"
-        + "uint32_t request_id;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t bustype;"
-        + "uint8_t bus;"
-        + "uint8_t address;"
-        + "char[40] busname;"
-        + "uint8_t regstart;"
-        + "uint8_t count;"
-        + "uint8_t bank;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.TargetSystem);
-            writer.Write(StaticFields[2], Payload.TargetComponent);
-            writer.Write(StaticFields[3], (ulong)Payload.Bustype);
-            writer.Write(StaticFields[4], Payload.Bus);
-            writer.Write(StaticFields[5], Payload.Address);
-            writer.Write(StaticFields[6], Payload.Busname);
-            writer.Write(StaticFields[7], Payload.Regstart);
-            writer.Write(StaticFields[8], Payload.Count);
-            writer.Write(StaticFields[9], Payload.Bank);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.Bustype = (DeviceOpBustype)reader.ReadByte(StaticFields[3]);
-            Payload.Bus = reader.ReadByte(StaticFields[4]);
-            Payload.Address = reader.ReadByte(StaticFields[5]);
-            reader.ReadCharArray(StaticFields[6], Payload.Busname);
-            Payload.Regstart = reader.ReadByte(StaticFields[7]);
-            Payload.Count = reader.ReadByte(StaticFields[8]);
-            Payload.Bank = reader.ReadByte(StaticFields[9]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -12221,7 +10630,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Bus = (byte)BinSerialize.ReadByte(ref buffer);
             Address = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/40 - Math.Max(0,((/*PayloadByteSize*/52 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
-            Busname = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -12230,7 +10639,7 @@ namespace Asv.Mavlink.Ardupilotmega
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Busname.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             Regstart = (byte)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
@@ -12263,64 +10672,181 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Bank);
             /* PayloadByteSize = 52 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, ref _RequestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            var tmpBustype = (byte)Bustype;
+            UInt8Type.Accept(visitor,BustypeField, ref tmpBustype);
+            Bustype = (DeviceOpBustype)tmpBustype;
+            UInt8Type.Accept(visitor,BusField, ref _Bus);    
+            UInt8Type.Accept(visitor,AddressField, ref _Address);    
+            ArrayType.Accept(visitor,BusnameField, 40, (index,v) =>
+            {
+                var tmp = (byte)Busname[index];
+                UInt8Type.Accept(v,BusnameField, ref tmp);
+                Busname[index] = (char)tmp;
+            });
+            UInt8Type.Accept(visitor,RegstartField, ref _Regstart);    
+            UInt8Type.Accept(visitor,CountField, ref _Count);    
+            UInt8Type.Accept(visitor,BankField, ref _Bank);    
 
+        }
 
         /// <summary>
         /// Request ID - copied to reply.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied to reply.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _RequestId;
+        public uint RequestId { get => _RequestId; set { _RequestId = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// The bus type.
         /// OriginName: bustype, Units: , IsExtended: false
         /// </summary>
-        public DeviceOpBustype Bustype { get; set; }
+        public static readonly Field BustypeField = new Field.Builder()
+            .Name(nameof(Bustype))
+            .Title("bustype")
+            .Description("The bus type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public DeviceOpBustype _Bustype;
+        public DeviceOpBustype Bustype { get => _Bustype; set => _Bustype = value; } 
         /// <summary>
         /// Bus number.
         /// OriginName: bus, Units: , IsExtended: false
         /// </summary>
-        public byte Bus { get; set; }
+        public static readonly Field BusField = new Field.Builder()
+            .Name(nameof(Bus))
+            .Title("bus")
+            .Description("Bus number.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Bus;
+        public byte Bus { get => _Bus; set { _Bus = value; } }
         /// <summary>
         /// Bus address.
         /// OriginName: address, Units: , IsExtended: false
         /// </summary>
-        public byte Address { get; set; }
+        public static readonly Field AddressField = new Field.Builder()
+            .Name(nameof(Address))
+            .Title("address")
+            .Description("Bus address.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Address;
+        public byte Address { get => _Address; set { _Address = value; } }
         /// <summary>
         /// Name of device on bus (for SPI).
         /// OriginName: busname, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field BusnameField = new Field.Builder()
+            .Name(nameof(Busname))
+            .Title("busname")
+            .Description("Name of device on bus (for SPI).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,40))
+
+            .Build();
         public const int BusnameMaxItemsCount = 40;
-        public char[] Busname { get; set; } = new char[40];
+        public char[] Busname { get; } = new char[40];
         [Obsolete("This method is deprecated. Use GetBusnameMaxItemsCount instead.")]
         public byte GetBusnameMaxItemsCount() => 40;
         /// <summary>
         /// First register to read.
         /// OriginName: regstart, Units: , IsExtended: false
         /// </summary>
-        public byte Regstart { get; set; }
+        public static readonly Field RegstartField = new Field.Builder()
+            .Name(nameof(Regstart))
+            .Title("regstart")
+            .Description("First register to read.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Regstart;
+        public byte Regstart { get => _Regstart; set { _Regstart = value; } }
         /// <summary>
         /// Count of registers to read.
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Count of registers to read.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Count;
+        public byte Count { get => _Count; set { _Count = value; } }
         /// <summary>
         /// Bank number.
         /// OriginName: bank, Units: , IsExtended: true
         /// </summary>
-        public byte Bank { get; set; }
+        public static readonly Field BankField = new Field.Builder()
+            .Name(nameof(Bank))
+            .Title("bank")
+            .Description("Bank number.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Bank;
+        public byte Bank { get => _Bank; set { _Bank = value; } }
     }
     /// <summary>
     /// Read registers reply.
@@ -12342,104 +10868,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpReadReplyPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_READ_REPLY";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "request_id",
-            "Request ID - copied from request.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "result",
-            "0 for success, anything else is failure code.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "regstart",
-            "Starting register.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "count",
-            "Count of bytes read.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "data",
-            "Reply data.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            128, 
-            false),
-            new(5,
-            "bank",
-            "Bank number.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            true),
-        ];
-        public const string FormatMessage = "DEVICE_OP_READ_REPLY:"
-        + "uint32_t request_id;"
-        + "uint8_t result;"
-        + "uint8_t regstart;"
-        + "uint8_t count;"
-        + "uint8_t[128] data;"
-        + "uint8_t bank;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.Result);
-            writer.Write(StaticFields[2], Payload.Regstart);
-            writer.Write(StaticFields[3], Payload.Count);
-            writer.Write(StaticFields[4], Payload.Data);
-            writer.Write(StaticFields[5], Payload.Bank);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
-            Payload.Result = reader.ReadByte(StaticFields[1]);
-            Payload.Regstart = reader.ReadByte(StaticFields[2]);
-            Payload.Count = reader.ReadByte(StaticFields[3]);
-            reader.ReadByteArray(StaticFields[4], Payload.Data);
-            Payload.Bank = reader.ReadByte(StaticFields[5]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -12475,7 +10903,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Regstart = (byte)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/136 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -12499,44 +10927,111 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Bank);
             /* PayloadByteSize = 136 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, ref _RequestId);    
+            UInt8Type.Accept(visitor,ResultField, ref _Result);    
+            UInt8Type.Accept(visitor,RegstartField, ref _Regstart);    
+            UInt8Type.Accept(visitor,CountField, ref _Count);    
+            ArrayType.Accept(visitor,DataField, 128,
+                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
+            UInt8Type.Accept(visitor,BankField, ref _Bank);    
 
+        }
 
         /// <summary>
         /// Request ID - copied from request.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied from request.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _RequestId;
+        public uint RequestId { get => _RequestId; set { _RequestId = value; } }
         /// <summary>
         /// 0 for success, anything else is failure code.
         /// OriginName: result, Units: , IsExtended: false
         /// </summary>
-        public byte Result { get; set; }
+        public static readonly Field ResultField = new Field.Builder()
+            .Name(nameof(Result))
+            .Title("result")
+            .Description("0 for success, anything else is failure code.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Result;
+        public byte Result { get => _Result; set { _Result = value; } }
         /// <summary>
         /// Starting register.
         /// OriginName: regstart, Units: , IsExtended: false
         /// </summary>
-        public byte Regstart { get; set; }
+        public static readonly Field RegstartField = new Field.Builder()
+            .Name(nameof(Regstart))
+            .Title("regstart")
+            .Description("Starting register.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Regstart;
+        public byte Regstart { get => _Regstart; set { _Regstart = value; } }
         /// <summary>
         /// Count of bytes read.
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Count of bytes read.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Count;
+        public byte Count { get => _Count; set { _Count = value; } }
         /// <summary>
         /// Reply data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Reply data.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,128))
+
+            .Build();
         public const int DataMaxItemsCount = 128;
-        public byte[] Data { get; set; } = new byte[128];
+        public byte[] Data { get; } = new byte[128];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 128;
         /// <summary>
         /// Bank number.
         /// OriginName: bank, Units: , IsExtended: true
         /// </summary>
-        public byte Bank { get; set; }
+        public static readonly Field BankField = new Field.Builder()
+            .Name(nameof(Bank))
+            .Title("bank")
+            .Description("Bank number.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Bank;
+        public byte Bank { get => _Bank; set { _Bank = value; } }
     }
     /// <summary>
     /// Write registers for a device.
@@ -12558,169 +11053,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpWritePayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_WRITE";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "request_id",
-            "Request ID - copied to reply.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "bustype",
-            "The bus type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "bus",
-            "Bus number.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "address",
-            "Bus address.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(6,
-            "busname",
-            "Name of device on bus (for SPI).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Char, 
-            40, 
-            false),
-            new(7,
-            "regstart",
-            "First register to write.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "count",
-            "Count of registers to write.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(9,
-            "data",
-            "Write data.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            128, 
-            false),
-            new(10,
-            "bank",
-            "Bank number.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            true),
-        ];
-        public const string FormatMessage = "DEVICE_OP_WRITE:"
-        + "uint32_t request_id;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t bustype;"
-        + "uint8_t bus;"
-        + "uint8_t address;"
-        + "char[40] busname;"
-        + "uint8_t regstart;"
-        + "uint8_t count;"
-        + "uint8_t[128] data;"
-        + "uint8_t bank;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.TargetSystem);
-            writer.Write(StaticFields[2], Payload.TargetComponent);
-            writer.Write(StaticFields[3], (ulong)Payload.Bustype);
-            writer.Write(StaticFields[4], Payload.Bus);
-            writer.Write(StaticFields[5], Payload.Address);
-            writer.Write(StaticFields[6], Payload.Busname);
-            writer.Write(StaticFields[7], Payload.Regstart);
-            writer.Write(StaticFields[8], Payload.Count);
-            writer.Write(StaticFields[9], Payload.Data);
-            writer.Write(StaticFields[10], Payload.Bank);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.Bustype = (DeviceOpBustype)reader.ReadByte(StaticFields[3]);
-            Payload.Bus = reader.ReadByte(StaticFields[4]);
-            Payload.Address = reader.ReadByte(StaticFields[5]);
-            reader.ReadCharArray(StaticFields[6], Payload.Busname);
-            Payload.Regstart = reader.ReadByte(StaticFields[7]);
-            Payload.Count = reader.ReadByte(StaticFields[8]);
-            reader.ReadByteArray(StaticFields[9], Payload.Data);
-            Payload.Bank = reader.ReadByte(StaticFields[10]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -12771,12 +11103,12 @@ namespace Asv.Mavlink.Ardupilotmega
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Busname.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             Regstart = (byte)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/180 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -12814,70 +11146,198 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Bank);
             /* PayloadByteSize = 180 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, ref _RequestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            var tmpBustype = (byte)Bustype;
+            UInt8Type.Accept(visitor,BustypeField, ref tmpBustype);
+            Bustype = (DeviceOpBustype)tmpBustype;
+            UInt8Type.Accept(visitor,BusField, ref _Bus);    
+            UInt8Type.Accept(visitor,AddressField, ref _Address);    
+            ArrayType.Accept(visitor,BusnameField, 40, (index,v) =>
+            {
+                var tmp = (byte)Busname[index];
+                UInt8Type.Accept(v,BusnameField, ref tmp);
+                Busname[index] = (char)tmp;
+            });
+            UInt8Type.Accept(visitor,RegstartField, ref _Regstart);    
+            UInt8Type.Accept(visitor,CountField, ref _Count);    
+            ArrayType.Accept(visitor,DataField, 128,
+                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
+            UInt8Type.Accept(visitor,BankField, ref _Bank);    
 
+        }
 
         /// <summary>
         /// Request ID - copied to reply.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied to reply.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _RequestId;
+        public uint RequestId { get => _RequestId; set { _RequestId = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// The bus type.
         /// OriginName: bustype, Units: , IsExtended: false
         /// </summary>
-        public DeviceOpBustype Bustype { get; set; }
+        public static readonly Field BustypeField = new Field.Builder()
+            .Name(nameof(Bustype))
+            .Title("bustype")
+            .Description("The bus type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public DeviceOpBustype _Bustype;
+        public DeviceOpBustype Bustype { get => _Bustype; set => _Bustype = value; } 
         /// <summary>
         /// Bus number.
         /// OriginName: bus, Units: , IsExtended: false
         /// </summary>
-        public byte Bus { get; set; }
+        public static readonly Field BusField = new Field.Builder()
+            .Name(nameof(Bus))
+            .Title("bus")
+            .Description("Bus number.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Bus;
+        public byte Bus { get => _Bus; set { _Bus = value; } }
         /// <summary>
         /// Bus address.
         /// OriginName: address, Units: , IsExtended: false
         /// </summary>
-        public byte Address { get; set; }
+        public static readonly Field AddressField = new Field.Builder()
+            .Name(nameof(Address))
+            .Title("address")
+            .Description("Bus address.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Address;
+        public byte Address { get => _Address; set { _Address = value; } }
         /// <summary>
         /// Name of device on bus (for SPI).
         /// OriginName: busname, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field BusnameField = new Field.Builder()
+            .Name(nameof(Busname))
+            .Title("busname")
+            .Description("Name of device on bus (for SPI).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,40))
+
+            .Build();
         public const int BusnameMaxItemsCount = 40;
         public char[] Busname { get; } = new char[40];
         /// <summary>
         /// First register to write.
         /// OriginName: regstart, Units: , IsExtended: false
         /// </summary>
-        public byte Regstart { get; set; }
+        public static readonly Field RegstartField = new Field.Builder()
+            .Name(nameof(Regstart))
+            .Title("regstart")
+            .Description("First register to write.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Regstart;
+        public byte Regstart { get => _Regstart; set { _Regstart = value; } }
         /// <summary>
         /// Count of registers to write.
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Count of registers to write.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Count;
+        public byte Count { get => _Count; set { _Count = value; } }
         /// <summary>
         /// Write data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Write data.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,128))
+
+            .Build();
         public const int DataMaxItemsCount = 128;
-        public byte[] Data { get; set; } = new byte[128];
+        public byte[] Data { get; } = new byte[128];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 128;
         /// <summary>
         /// Bank number.
         /// OriginName: bank, Units: , IsExtended: true
         /// </summary>
-        public byte Bank { get; set; }
+        public static readonly Field BankField = new Field.Builder()
+            .Name(nameof(Bank))
+            .Title("bank")
+            .Description("Bank number.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Bank;
+        public byte Bank { get => _Bank; set { _Bank = value; } }
     }
     /// <summary>
     /// Write registers reply.
@@ -12899,52 +11359,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpWriteReplyPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_WRITE_REPLY";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "request_id",
-            "Request ID - copied from request.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "result",
-            "0 for success, anything else is failure code.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "DEVICE_OP_WRITE_REPLY:"
-        + "uint32_t request_id;"
-        + "uint8_t result;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.Result);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
-            Payload.Result = reader.ReadByte(StaticFields[1]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -12980,21 +11394,44 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Result);
             /* PayloadByteSize = 5 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, ref _RequestId);    
+            UInt8Type.Accept(visitor,ResultField, ref _Result);    
 
+        }
 
         /// <summary>
         /// Request ID - copied from request.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied from request.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _RequestId;
+        public uint RequestId { get => _RequestId; set { _RequestId = value; } }
         /// <summary>
         /// 0 for success, anything else is failure code.
         /// OriginName: result, Units: , IsExtended: false
         /// </summary>
-        public byte Result { get; set; }
+        public static readonly Field ResultField = new Field.Builder()
+            .Name(nameof(Result))
+            .Title("result")
+            .Description("0 for success, anything else is failure code.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Result;
+        public byte Result { get => _Result; set { _Result = value; } }
     }
     /// <summary>
     /// Adaptive Controller tuning information.
@@ -13016,195 +11453,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AdapTuningPayload Payload { get; } = new();
 
         public override string Name => "ADAP_TUNING";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "desired",
-            "Desired rate.",
-            string.Empty, 
-            @"deg/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(1,
-            "achieved",
-            "Achieved rate.",
-            string.Empty, 
-            @"deg/s", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "error",
-            "Error between model and vehicle.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "theta",
-            "Theta estimated state predictor.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "omega",
-            "Omega estimated state predictor.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "sigma",
-            "Sigma estimated state predictor.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "theta_dot",
-            "Theta derivative.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(7,
-            "omega_dot",
-            "Omega derivative.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(8,
-            "sigma_dot",
-            "Sigma derivative.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(9,
-            "f",
-            "Projection operator value.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(10,
-            "f_dot",
-            "Projection operator derivative.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(11,
-            "u",
-            "u adaptive controlled output command.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(12,
-            "axis",
-            "Axis.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "ADAP_TUNING:"
-        + "float desired;"
-        + "float achieved;"
-        + "float error;"
-        + "float theta;"
-        + "float omega;"
-        + "float sigma;"
-        + "float theta_dot;"
-        + "float omega_dot;"
-        + "float sigma_dot;"
-        + "float f;"
-        + "float f_dot;"
-        + "float u;"
-        + "uint8_t axis;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Desired);
-            writer.Write(StaticFields[1], Payload.Achieved);
-            writer.Write(StaticFields[2], Payload.Error);
-            writer.Write(StaticFields[3], Payload.Theta);
-            writer.Write(StaticFields[4], Payload.Omega);
-            writer.Write(StaticFields[5], Payload.Sigma);
-            writer.Write(StaticFields[6], Payload.ThetaDot);
-            writer.Write(StaticFields[7], Payload.OmegaDot);
-            writer.Write(StaticFields[8], Payload.SigmaDot);
-            writer.Write(StaticFields[9], Payload.F);
-            writer.Write(StaticFields[10], Payload.FDot);
-            writer.Write(StaticFields[11], Payload.U);
-            writer.Write(StaticFields[12], (ulong)Payload.Axis);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Desired = reader.ReadFloat(StaticFields[0]);
-            Payload.Achieved = reader.ReadFloat(StaticFields[1]);
-            Payload.Error = reader.ReadFloat(StaticFields[2]);
-            Payload.Theta = reader.ReadFloat(StaticFields[3]);
-            Payload.Omega = reader.ReadFloat(StaticFields[4]);
-            Payload.Sigma = reader.ReadFloat(StaticFields[5]);
-            Payload.ThetaDot = reader.ReadFloat(StaticFields[6]);
-            Payload.OmegaDot = reader.ReadFloat(StaticFields[7]);
-            Payload.SigmaDot = reader.ReadFloat(StaticFields[8]);
-            Payload.F = reader.ReadFloat(StaticFields[9]);
-            Payload.FDot = reader.ReadFloat(StaticFields[10]);
-            Payload.U = reader.ReadFloat(StaticFields[11]);
-            Payload.Axis = (PidTuningAxis)reader.ReadByte(StaticFields[12]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -13273,76 +11521,222 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Axis);
             /* PayloadByteSize = 49 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DesiredField, ref _Desired);    
+            FloatType.Accept(visitor,AchievedField, ref _Achieved);    
+            FloatType.Accept(visitor,ErrorField, ref _Error);    
+            FloatType.Accept(visitor,ThetaField, ref _Theta);    
+            FloatType.Accept(visitor,OmegaField, ref _Omega);    
+            FloatType.Accept(visitor,SigmaField, ref _Sigma);    
+            FloatType.Accept(visitor,ThetaDotField, ref _ThetaDot);    
+            FloatType.Accept(visitor,OmegaDotField, ref _OmegaDot);    
+            FloatType.Accept(visitor,SigmaDotField, ref _SigmaDot);    
+            FloatType.Accept(visitor,FField, ref _F);    
+            FloatType.Accept(visitor,FDotField, ref _FDot);    
+            FloatType.Accept(visitor,UField, ref _U);    
+            var tmpAxis = (byte)Axis;
+            UInt8Type.Accept(visitor,AxisField, ref tmpAxis);
+            Axis = (PidTuningAxis)tmpAxis;
 
+        }
 
         /// <summary>
         /// Desired rate.
         /// OriginName: desired, Units: deg/s, IsExtended: false
         /// </summary>
-        public float Desired { get; set; }
+        public static readonly Field DesiredField = new Field.Builder()
+            .Name(nameof(Desired))
+            .Title("desired")
+            .Description("Desired rate.")
+            .FormatString(string.Empty)
+            .Units(@"deg/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Desired;
+        public float Desired { get => _Desired; set { _Desired = value; } }
         /// <summary>
         /// Achieved rate.
         /// OriginName: achieved, Units: deg/s, IsExtended: false
         /// </summary>
-        public float Achieved { get; set; }
+        public static readonly Field AchievedField = new Field.Builder()
+            .Name(nameof(Achieved))
+            .Title("achieved")
+            .Description("Achieved rate.")
+            .FormatString(string.Empty)
+            .Units(@"deg/s")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Achieved;
+        public float Achieved { get => _Achieved; set { _Achieved = value; } }
         /// <summary>
         /// Error between model and vehicle.
         /// OriginName: error, Units: , IsExtended: false
         /// </summary>
-        public float Error { get; set; }
+        public static readonly Field ErrorField = new Field.Builder()
+            .Name(nameof(Error))
+            .Title("error")
+            .Description("Error between model and vehicle.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Error;
+        public float Error { get => _Error; set { _Error = value; } }
         /// <summary>
         /// Theta estimated state predictor.
         /// OriginName: theta, Units: , IsExtended: false
         /// </summary>
-        public float Theta { get; set; }
+        public static readonly Field ThetaField = new Field.Builder()
+            .Name(nameof(Theta))
+            .Title("theta")
+            .Description("Theta estimated state predictor.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Theta;
+        public float Theta { get => _Theta; set { _Theta = value; } }
         /// <summary>
         /// Omega estimated state predictor.
         /// OriginName: omega, Units: , IsExtended: false
         /// </summary>
-        public float Omega { get; set; }
+        public static readonly Field OmegaField = new Field.Builder()
+            .Name(nameof(Omega))
+            .Title("omega")
+            .Description("Omega estimated state predictor.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Omega;
+        public float Omega { get => _Omega; set { _Omega = value; } }
         /// <summary>
         /// Sigma estimated state predictor.
         /// OriginName: sigma, Units: , IsExtended: false
         /// </summary>
-        public float Sigma { get; set; }
+        public static readonly Field SigmaField = new Field.Builder()
+            .Name(nameof(Sigma))
+            .Title("sigma")
+            .Description("Sigma estimated state predictor.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Sigma;
+        public float Sigma { get => _Sigma; set { _Sigma = value; } }
         /// <summary>
         /// Theta derivative.
         /// OriginName: theta_dot, Units: , IsExtended: false
         /// </summary>
-        public float ThetaDot { get; set; }
+        public static readonly Field ThetaDotField = new Field.Builder()
+            .Name(nameof(ThetaDot))
+            .Title("theta_dot")
+            .Description("Theta derivative.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _ThetaDot;
+        public float ThetaDot { get => _ThetaDot; set { _ThetaDot = value; } }
         /// <summary>
         /// Omega derivative.
         /// OriginName: omega_dot, Units: , IsExtended: false
         /// </summary>
-        public float OmegaDot { get; set; }
+        public static readonly Field OmegaDotField = new Field.Builder()
+            .Name(nameof(OmegaDot))
+            .Title("omega_dot")
+            .Description("Omega derivative.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _OmegaDot;
+        public float OmegaDot { get => _OmegaDot; set { _OmegaDot = value; } }
         /// <summary>
         /// Sigma derivative.
         /// OriginName: sigma_dot, Units: , IsExtended: false
         /// </summary>
-        public float SigmaDot { get; set; }
+        public static readonly Field SigmaDotField = new Field.Builder()
+            .Name(nameof(SigmaDot))
+            .Title("sigma_dot")
+            .Description("Sigma derivative.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _SigmaDot;
+        public float SigmaDot { get => _SigmaDot; set { _SigmaDot = value; } }
         /// <summary>
         /// Projection operator value.
         /// OriginName: f, Units: , IsExtended: false
         /// </summary>
-        public float F { get; set; }
+        public static readonly Field FField = new Field.Builder()
+            .Name(nameof(F))
+            .Title("f")
+            .Description("Projection operator value.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _F;
+        public float F { get => _F; set { _F = value; } }
         /// <summary>
         /// Projection operator derivative.
         /// OriginName: f_dot, Units: , IsExtended: false
         /// </summary>
-        public float FDot { get; set; }
+        public static readonly Field FDotField = new Field.Builder()
+            .Name(nameof(FDot))
+            .Title("f_dot")
+            .Description("Projection operator derivative.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _FDot;
+        public float FDot { get => _FDot; set { _FDot = value; } }
         /// <summary>
         /// u adaptive controlled output command.
         /// OriginName: u, Units: , IsExtended: false
         /// </summary>
-        public float U { get; set; }
+        public static readonly Field UField = new Field.Builder()
+            .Name(nameof(U))
+            .Title("u")
+            .Description("u adaptive controlled output command.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _U;
+        public float U { get => _U; set { _U = value; } }
         /// <summary>
         /// Axis.
         /// OriginName: axis, Units: , IsExtended: false
         /// </summary>
-        public PidTuningAxis Axis { get; set; }
+        public static readonly Field AxisField = new Field.Builder()
+            .Name(nameof(Axis))
+            .Title("axis")
+            .Description("Axis.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public PidTuningAxis _Axis;
+        public PidTuningAxis Axis { get => _Axis; set => _Axis = value; } 
     }
     /// <summary>
     /// Camera vision based attitude and position deltas.
@@ -13364,91 +11758,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override VisionPositionDeltaPayload Payload { get; } = new();
 
         public override string Name => "VISION_POSITION_DELTA";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "time_usec",
-            "Timestamp (synced to UNIX time or since system boot).",
-            string.Empty, 
-            @"us", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-            false),
-            new(1,
-            "time_delta_usec",
-            "Time since the last reported camera frame.",
-            string.Empty, 
-            @"us", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-            false),
-            new(2,
-            "angle_delta",
-            "Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            3, 
-            false),
-            new(3,
-            "position_delta",
-            "Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            3, 
-            false),
-            new(4,
-            "confidence",
-            "Normalised confidence value from 0 to 100.",
-            string.Empty, 
-            @"%", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "VISION_POSITION_DELTA:"
-        + "uint64_t time_usec;"
-        + "uint64_t time_delta_usec;"
-        + "float[3] angle_delta;"
-        + "float[3] position_delta;"
-        + "float confidence;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TimeUsec);
-            writer.Write(StaticFields[1], Payload.TimeDeltaUsec);
-            writer.Write(StaticFields[2], Payload.AngleDelta);
-            writer.Write(StaticFields[3], Payload.PositionDelta);
-            writer.Write(StaticFields[4], Payload.Confidence);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TimeUsec = reader.ReadULong(StaticFields[0]);
-            Payload.TimeDeltaUsec = reader.ReadULong(StaticFields[1]);
-            reader.ReadFloatArray(StaticFields[2], Payload.AngleDelta);
-            reader.ReadFloatArray(StaticFields[3], Payload.PositionDelta);
-            Payload.Confidence = reader.ReadFloat(StaticFields[4]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -13481,7 +11790,7 @@ namespace Asv.Mavlink.Ardupilotmega
             TimeUsec = BinSerialize.ReadULong(ref buffer);
             TimeDeltaUsec = BinSerialize.ReadULong(ref buffer);
             arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            AngleDelta = new float[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 AngleDelta[i] = BinSerialize.ReadFloat(ref buffer);
@@ -13510,40 +11819,96 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,Confidence);
             /* PayloadByteSize = 44 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUsecField, ref _TimeUsec);    
+            UInt64Type.Accept(visitor,TimeDeltaUsecField, ref _TimeDeltaUsec);    
+            ArrayType.Accept(visitor,AngleDeltaField, 3,
+                (index,v) => FloatType.Accept(v, AngleDeltaField, ref AngleDelta[index]));
+            ArrayType.Accept(visitor,PositionDeltaField, 3,
+                (index,v) => FloatType.Accept(v, PositionDeltaField, ref PositionDelta[index]));
+            FloatType.Accept(visitor,ConfidenceField, ref _Confidence);    
 
+        }
 
         /// <summary>
         /// Timestamp (synced to UNIX time or since system boot).
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUsec { get; set; }
+        public static readonly Field TimeUsecField = new Field.Builder()
+            .Name(nameof(TimeUsec))
+            .Title("time_usec")
+            .Description("Timestamp (synced to UNIX time or since system boot).")
+            .FormatString(string.Empty)
+            .Units(@"us")
+            .DataType(UInt64Type.Default)
+
+            .Build();
+        private ulong _TimeUsec;
+        public ulong TimeUsec { get => _TimeUsec; set { _TimeUsec = value; } }
         /// <summary>
         /// Time since the last reported camera frame.
         /// OriginName: time_delta_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeDeltaUsec { get; set; }
+        public static readonly Field TimeDeltaUsecField = new Field.Builder()
+            .Name(nameof(TimeDeltaUsec))
+            .Title("time_delta_usec")
+            .Description("Time since the last reported camera frame.")
+            .FormatString(string.Empty)
+            .Units(@"us")
+            .DataType(UInt64Type.Default)
+
+            .Build();
+        private ulong _TimeDeltaUsec;
+        public ulong TimeDeltaUsec { get => _TimeDeltaUsec; set { _TimeDeltaUsec = value; } }
         /// <summary>
         /// Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.
         /// OriginName: angle_delta, Units: rad, IsExtended: false
         /// </summary>
+        public static readonly Field AngleDeltaField = new Field.Builder()
+            .Name(nameof(AngleDelta))
+            .Title("angle_delta")
+            .Description("Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(new ArrayType(FloatType.Default,3))        
+
+            .Build();
         public const int AngleDeltaMaxItemsCount = 3;
-        public float[] AngleDelta { get; set; } = new float[3];
+        public float[] AngleDelta { get; } = new float[3];
         [Obsolete("This method is deprecated. Use GetAngleDeltaMaxItemsCount instead.")]
         public byte GetAngleDeltaMaxItemsCount() => 3;
         /// <summary>
         /// Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.
         /// OriginName: position_delta, Units: m, IsExtended: false
         /// </summary>
+        public static readonly Field PositionDeltaField = new Field.Builder()
+            .Name(nameof(PositionDelta))
+            .Title("position_delta")
+            .Description("Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(new ArrayType(FloatType.Default,3))        
+
+            .Build();
         public const int PositionDeltaMaxItemsCount = 3;
         public float[] PositionDelta { get; } = new float[3];
         /// <summary>
         /// Normalised confidence value from 0 to 100.
         /// OriginName: confidence, Units: %, IsExtended: false
         /// </summary>
-        public float Confidence { get; set; }
+        public static readonly Field ConfidenceField = new Field.Builder()
+            .Name(nameof(Confidence))
+            .Title("confidence")
+            .Description("Normalised confidence value from 0 to 100.")
+            .FormatString(string.Empty)
+            .Units(@"%")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Confidence;
+        public float Confidence { get => _Confidence; set { _Confidence = value; } }
     }
     /// <summary>
     /// Angle of Attack and Side Slip Angle.
@@ -13565,65 +11930,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AoaSsaPayload Payload { get; } = new();
 
         public override string Name => "AOA_SSA";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "time_usec",
-            "Timestamp (since boot or Unix epoch).",
-            string.Empty, 
-            @"us", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-            false),
-            new(1,
-            "AOA",
-            "Angle of Attack.",
-            string.Empty, 
-            @"deg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "SSA",
-            "Side Slip Angle.",
-            string.Empty, 
-            @"deg", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "AOA_SSA:"
-        + "uint64_t time_usec;"
-        + "float AOA;"
-        + "float SSA;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TimeUsec);
-            writer.Write(StaticFields[1], Payload.Aoa);
-            writer.Write(StaticFields[2], Payload.Ssa);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TimeUsec = reader.ReadULong(StaticFields[0]);
-            Payload.Aoa = reader.ReadFloat(StaticFields[1]);
-            Payload.Ssa = reader.ReadFloat(StaticFields[2]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -13662,26 +11968,60 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteFloat(ref buffer,Ssa);
             /* PayloadByteSize = 16 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUsecField, ref _TimeUsec);    
+            FloatType.Accept(visitor,AoaField, ref _Aoa);    
+            FloatType.Accept(visitor,SsaField, ref _Ssa);    
 
+        }
 
         /// <summary>
         /// Timestamp (since boot or Unix epoch).
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUsec { get; set; }
+        public static readonly Field TimeUsecField = new Field.Builder()
+            .Name(nameof(TimeUsec))
+            .Title("time_usec")
+            .Description("Timestamp (since boot or Unix epoch).")
+            .FormatString(string.Empty)
+            .Units(@"us")
+            .DataType(UInt64Type.Default)
+
+            .Build();
+        private ulong _TimeUsec;
+        public ulong TimeUsec { get => _TimeUsec; set { _TimeUsec = value; } }
         /// <summary>
         /// Angle of Attack.
         /// OriginName: AOA, Units: deg, IsExtended: false
         /// </summary>
-        public float Aoa { get; set; }
+        public static readonly Field AoaField = new Field.Builder()
+            .Name(nameof(Aoa))
+            .Title("AOA")
+            .Description("Angle of Attack.")
+            .FormatString(string.Empty)
+            .Units(@"deg")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Aoa;
+        public float Aoa { get => _Aoa; set { _Aoa = value; } }
         /// <summary>
         /// Side Slip Angle.
         /// OriginName: SSA, Units: deg, IsExtended: false
         /// </summary>
-        public float Ssa { get; set; }
+        public static readonly Field SsaField = new Field.Builder()
+            .Name(nameof(Ssa))
+            .Title("SSA")
+            .Description("Side Slip Angle.")
+            .FormatString(string.Empty)
+            .Units(@"deg")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Ssa;
+        public float Ssa { get => _Ssa; set { _Ssa = value; } }
     }
     /// <summary>
     /// ESC Telemetry Data for ESCs 1 to 4, matching data sent by BLHeli ESCs.
@@ -13703,104 +12043,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EscTelemetry1To4Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_1_TO_4";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "voltage",
-            "Voltage.",
-            string.Empty, 
-            @"cV", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(1,
-            "current",
-            "Current.",
-            string.Empty, 
-            @"cA", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(2,
-            "totalcurrent",
-            "Total current.",
-            string.Empty, 
-            @"mAh", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(3,
-            "rpm",
-            "RPM (eRPM).",
-            string.Empty, 
-            @"rpm", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(4,
-            "count",
-            "count of telemetry packets received (wraps at 65535).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(5,
-            "temperature",
-            "Temperature.",
-            string.Empty, 
-            @"degC", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            4, 
-            false),
-        ];
-        public const string FormatMessage = "ESC_TELEMETRY_1_TO_4:"
-        + "uint16_t[4] voltage;"
-        + "uint16_t[4] current;"
-        + "uint16_t[4] totalcurrent;"
-        + "uint16_t[4] rpm;"
-        + "uint16_t[4] count;"
-        + "uint8_t[4] temperature;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Voltage);
-            writer.Write(StaticFields[1], Payload.Current);
-            writer.Write(StaticFields[2], Payload.Totalcurrent);
-            writer.Write(StaticFields[3], Payload.Rpm);
-            writer.Write(StaticFields[4], Payload.Count);
-            writer.Write(StaticFields[5], Payload.Temperature);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            reader.ReadUShortArray(StaticFields[0], Payload.Voltage);
-            reader.ReadUShortArray(StaticFields[1], Payload.Current);
-            reader.ReadUShortArray(StaticFields[2], Payload.Totalcurrent);
-            reader.ReadUShortArray(StaticFields[3], Payload.Rpm);
-            reader.ReadUShortArray(StaticFields[4], Payload.Count);
-            reader.ReadByteArray(StaticFields[5], Payload.Temperature);
-        
-            
-        }
     }
 
     /// <summary>
@@ -13832,7 +12074,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
-            Voltage = new ushort[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Voltage[i] = BinSerialize.ReadUShort(ref buffer);
@@ -13893,47 +12135,114 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 44 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,VoltageField, 4,
+                (index,v) => UInt16Type.Accept(v, VoltageField, ref Voltage[index]));    
+            ArrayType.Accept(visitor,CurrentField, 4,
+                (index,v) => UInt16Type.Accept(v, CurrentField, ref Current[index]));    
+            ArrayType.Accept(visitor,TotalcurrentField, 4,
+                (index,v) => UInt16Type.Accept(v, TotalcurrentField, ref Totalcurrent[index]));    
+            ArrayType.Accept(visitor,RpmField, 4,
+                (index,v) => UInt16Type.Accept(v, RpmField, ref Rpm[index]));    
+            ArrayType.Accept(visitor,CountField, 4,
+                (index,v) => UInt16Type.Accept(v, CountField, ref Count[index]));    
+            ArrayType.Accept(visitor,TemperatureField, 4,
+                (index,v) => UInt8Type.Accept(v, TemperatureField, ref Temperature[index]));    
 
+        }
 
         /// <summary>
         /// Voltage.
         /// OriginName: voltage, Units: cV, IsExtended: false
         /// </summary>
+        public static readonly Field VoltageField = new Field.Builder()
+            .Name(nameof(Voltage))
+            .Title("voltage")
+            .Description("Voltage.")
+            .FormatString(string.Empty)
+            .Units(@"cV")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int VoltageMaxItemsCount = 4;
-        public ushort[] Voltage { get; set; } = new ushort[4];
+        public ushort[] Voltage { get; } = new ushort[4];
         [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
         public byte GetVoltageMaxItemsCount() => 4;
         /// <summary>
         /// Current.
         /// OriginName: current, Units: cA, IsExtended: false
         /// </summary>
+        public static readonly Field CurrentField = new Field.Builder()
+            .Name(nameof(Current))
+            .Title("current")
+            .Description("Current.")
+            .FormatString(string.Empty)
+            .Units(@"cA")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
         /// Total current.
         /// OriginName: totalcurrent, Units: mAh, IsExtended: false
         /// </summary>
+        public static readonly Field TotalcurrentField = new Field.Builder()
+            .Name(nameof(Totalcurrent))
+            .Title("totalcurrent")
+            .Description("Total current.")
+            .FormatString(string.Empty)
+            .Units(@"mAh")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
         /// RPM (eRPM).
         /// OriginName: rpm, Units: rpm, IsExtended: false
         /// </summary>
+        public static readonly Field RpmField = new Field.Builder()
+            .Name(nameof(Rpm))
+            .Title("rpm")
+            .Description("RPM (eRPM).")
+            .FormatString(string.Empty)
+            .Units(@"rpm")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
         /// count of telemetry packets received (wraps at 65535).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("count of telemetry packets received (wraps at 65535).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
         /// Temperature.
         /// OriginName: temperature, Units: degC, IsExtended: false
         /// </summary>
+        public static readonly Field TemperatureField = new Field.Builder()
+            .Name(nameof(Temperature))
+            .Title("temperature")
+            .Description("Temperature.")
+            .FormatString(string.Empty)
+            .Units(@"degC")
+            .DataType(new ArrayType(UInt8Type.Default,4))
+
+            .Build();
         public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
@@ -13957,104 +12266,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EscTelemetry5To8Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_5_TO_8";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "voltage",
-            "Voltage.",
-            string.Empty, 
-            @"cV", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(1,
-            "current",
-            "Current.",
-            string.Empty, 
-            @"cA", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(2,
-            "totalcurrent",
-            "Total current.",
-            string.Empty, 
-            @"mAh", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(3,
-            "rpm",
-            "RPM (eRPM).",
-            string.Empty, 
-            @"rpm", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(4,
-            "count",
-            "count of telemetry packets received (wraps at 65535).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(5,
-            "temperature",
-            "Temperature.",
-            string.Empty, 
-            @"degC", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            4, 
-            false),
-        ];
-        public const string FormatMessage = "ESC_TELEMETRY_5_TO_8:"
-        + "uint16_t[4] voltage;"
-        + "uint16_t[4] current;"
-        + "uint16_t[4] totalcurrent;"
-        + "uint16_t[4] rpm;"
-        + "uint16_t[4] count;"
-        + "uint8_t[4] temperature;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Voltage);
-            writer.Write(StaticFields[1], Payload.Current);
-            writer.Write(StaticFields[2], Payload.Totalcurrent);
-            writer.Write(StaticFields[3], Payload.Rpm);
-            writer.Write(StaticFields[4], Payload.Count);
-            writer.Write(StaticFields[5], Payload.Temperature);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            reader.ReadUShortArray(StaticFields[0], Payload.Voltage);
-            reader.ReadUShortArray(StaticFields[1], Payload.Current);
-            reader.ReadUShortArray(StaticFields[2], Payload.Totalcurrent);
-            reader.ReadUShortArray(StaticFields[3], Payload.Rpm);
-            reader.ReadUShortArray(StaticFields[4], Payload.Count);
-            reader.ReadByteArray(StaticFields[5], Payload.Temperature);
-        
-            
-        }
     }
 
     /// <summary>
@@ -14086,7 +12297,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
-            Voltage = new ushort[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Voltage[i] = BinSerialize.ReadUShort(ref buffer);
@@ -14147,47 +12358,114 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 44 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,VoltageField, 4,
+                (index,v) => UInt16Type.Accept(v, VoltageField, ref Voltage[index]));    
+            ArrayType.Accept(visitor,CurrentField, 4,
+                (index,v) => UInt16Type.Accept(v, CurrentField, ref Current[index]));    
+            ArrayType.Accept(visitor,TotalcurrentField, 4,
+                (index,v) => UInt16Type.Accept(v, TotalcurrentField, ref Totalcurrent[index]));    
+            ArrayType.Accept(visitor,RpmField, 4,
+                (index,v) => UInt16Type.Accept(v, RpmField, ref Rpm[index]));    
+            ArrayType.Accept(visitor,CountField, 4,
+                (index,v) => UInt16Type.Accept(v, CountField, ref Count[index]));    
+            ArrayType.Accept(visitor,TemperatureField, 4,
+                (index,v) => UInt8Type.Accept(v, TemperatureField, ref Temperature[index]));    
 
+        }
 
         /// <summary>
         /// Voltage.
         /// OriginName: voltage, Units: cV, IsExtended: false
         /// </summary>
+        public static readonly Field VoltageField = new Field.Builder()
+            .Name(nameof(Voltage))
+            .Title("voltage")
+            .Description("Voltage.")
+            .FormatString(string.Empty)
+            .Units(@"cV")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int VoltageMaxItemsCount = 4;
-        public ushort[] Voltage { get; set; } = new ushort[4];
+        public ushort[] Voltage { get; } = new ushort[4];
         [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
         public byte GetVoltageMaxItemsCount() => 4;
         /// <summary>
         /// Current.
         /// OriginName: current, Units: cA, IsExtended: false
         /// </summary>
+        public static readonly Field CurrentField = new Field.Builder()
+            .Name(nameof(Current))
+            .Title("current")
+            .Description("Current.")
+            .FormatString(string.Empty)
+            .Units(@"cA")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
         /// Total current.
         /// OriginName: totalcurrent, Units: mAh, IsExtended: false
         /// </summary>
+        public static readonly Field TotalcurrentField = new Field.Builder()
+            .Name(nameof(Totalcurrent))
+            .Title("totalcurrent")
+            .Description("Total current.")
+            .FormatString(string.Empty)
+            .Units(@"mAh")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
         /// RPM (eRPM).
         /// OriginName: rpm, Units: rpm, IsExtended: false
         /// </summary>
+        public static readonly Field RpmField = new Field.Builder()
+            .Name(nameof(Rpm))
+            .Title("rpm")
+            .Description("RPM (eRPM).")
+            .FormatString(string.Empty)
+            .Units(@"rpm")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
         /// count of telemetry packets received (wraps at 65535).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("count of telemetry packets received (wraps at 65535).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
         /// Temperature.
         /// OriginName: temperature, Units: degC, IsExtended: false
         /// </summary>
+        public static readonly Field TemperatureField = new Field.Builder()
+            .Name(nameof(Temperature))
+            .Title("temperature")
+            .Description("Temperature.")
+            .FormatString(string.Empty)
+            .Units(@"degC")
+            .DataType(new ArrayType(UInt8Type.Default,4))
+
+            .Build();
         public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
@@ -14211,104 +12489,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EscTelemetry9To12Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_9_TO_12";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "voltage",
-            "Voltage.",
-            string.Empty, 
-            @"cV", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(1,
-            "current",
-            "Current.",
-            string.Empty, 
-            @"cA", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(2,
-            "totalcurrent",
-            "Total current.",
-            string.Empty, 
-            @"mAh", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(3,
-            "rpm",
-            "RPM (eRPM).",
-            string.Empty, 
-            @"rpm", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(4,
-            "count",
-            "count of telemetry packets received (wraps at 65535).",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-            false),
-            new(5,
-            "temperature",
-            "Temperature.",
-            string.Empty, 
-            @"degC", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            4, 
-            false),
-        ];
-        public const string FormatMessage = "ESC_TELEMETRY_9_TO_12:"
-        + "uint16_t[4] voltage;"
-        + "uint16_t[4] current;"
-        + "uint16_t[4] totalcurrent;"
-        + "uint16_t[4] rpm;"
-        + "uint16_t[4] count;"
-        + "uint8_t[4] temperature;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Voltage);
-            writer.Write(StaticFields[1], Payload.Current);
-            writer.Write(StaticFields[2], Payload.Totalcurrent);
-            writer.Write(StaticFields[3], Payload.Rpm);
-            writer.Write(StaticFields[4], Payload.Count);
-            writer.Write(StaticFields[5], Payload.Temperature);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            reader.ReadUShortArray(StaticFields[0], Payload.Voltage);
-            reader.ReadUShortArray(StaticFields[1], Payload.Current);
-            reader.ReadUShortArray(StaticFields[2], Payload.Totalcurrent);
-            reader.ReadUShortArray(StaticFields[3], Payload.Rpm);
-            reader.ReadUShortArray(StaticFields[4], Payload.Count);
-            reader.ReadByteArray(StaticFields[5], Payload.Temperature);
-        
-            
-        }
     }
 
     /// <summary>
@@ -14340,7 +12520,7 @@ namespace Asv.Mavlink.Ardupilotmega
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
-            Voltage = new ushort[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Voltage[i] = BinSerialize.ReadUShort(ref buffer);
@@ -14401,47 +12581,114 @@ namespace Asv.Mavlink.Ardupilotmega
             }
             /* PayloadByteSize = 44 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,VoltageField, 4,
+                (index,v) => UInt16Type.Accept(v, VoltageField, ref Voltage[index]));    
+            ArrayType.Accept(visitor,CurrentField, 4,
+                (index,v) => UInt16Type.Accept(v, CurrentField, ref Current[index]));    
+            ArrayType.Accept(visitor,TotalcurrentField, 4,
+                (index,v) => UInt16Type.Accept(v, TotalcurrentField, ref Totalcurrent[index]));    
+            ArrayType.Accept(visitor,RpmField, 4,
+                (index,v) => UInt16Type.Accept(v, RpmField, ref Rpm[index]));    
+            ArrayType.Accept(visitor,CountField, 4,
+                (index,v) => UInt16Type.Accept(v, CountField, ref Count[index]));    
+            ArrayType.Accept(visitor,TemperatureField, 4,
+                (index,v) => UInt8Type.Accept(v, TemperatureField, ref Temperature[index]));    
 
+        }
 
         /// <summary>
         /// Voltage.
         /// OriginName: voltage, Units: cV, IsExtended: false
         /// </summary>
+        public static readonly Field VoltageField = new Field.Builder()
+            .Name(nameof(Voltage))
+            .Title("voltage")
+            .Description("Voltage.")
+            .FormatString(string.Empty)
+            .Units(@"cV")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int VoltageMaxItemsCount = 4;
-        public ushort[] Voltage { get; set; } = new ushort[4];
+        public ushort[] Voltage { get; } = new ushort[4];
         [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
         public byte GetVoltageMaxItemsCount() => 4;
         /// <summary>
         /// Current.
         /// OriginName: current, Units: cA, IsExtended: false
         /// </summary>
+        public static readonly Field CurrentField = new Field.Builder()
+            .Name(nameof(Current))
+            .Title("current")
+            .Description("Current.")
+            .FormatString(string.Empty)
+            .Units(@"cA")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
         /// Total current.
         /// OriginName: totalcurrent, Units: mAh, IsExtended: false
         /// </summary>
+        public static readonly Field TotalcurrentField = new Field.Builder()
+            .Name(nameof(Totalcurrent))
+            .Title("totalcurrent")
+            .Description("Total current.")
+            .FormatString(string.Empty)
+            .Units(@"mAh")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
         /// RPM (eRPM).
         /// OriginName: rpm, Units: rpm, IsExtended: false
         /// </summary>
+        public static readonly Field RpmField = new Field.Builder()
+            .Name(nameof(Rpm))
+            .Title("rpm")
+            .Description("RPM (eRPM).")
+            .FormatString(string.Empty)
+            .Units(@"rpm")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
         /// count of telemetry packets received (wraps at 65535).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("count of telemetry packets received (wraps at 65535).")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt16Type.Default,4))
+
+            .Build();
         public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
         /// Temperature.
         /// OriginName: temperature, Units: degC, IsExtended: false
         /// </summary>
+        public static readonly Field TemperatureField = new Field.Builder()
+            .Name(nameof(Temperature))
+            .Title("temperature")
+            .Description("Temperature.")
+            .FormatString(string.Empty)
+            .Units(@"degC")
+            .DataType(new ArrayType(UInt8Type.Default,4))
+
+            .Build();
         public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
@@ -14465,156 +12712,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamConfigPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_CONFIG";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "request_id",
-            "Request ID - copied to reply.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "min_value",
-            "OSD parameter minimum value.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "max_value",
-            "OSD parameter maximum value.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "increment",
-            "OSD parameter increment.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(6,
-            "osd_screen",
-            "OSD parameter screen index.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(7,
-            "osd_index",
-            "OSD parameter display index.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "param_id",
-            "Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Char, 
-            16, 
-            false),
-            new(9,
-            "config_type",
-            "Config type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "OSD_PARAM_CONFIG:"
-        + "uint32_t request_id;"
-        + "float min_value;"
-        + "float max_value;"
-        + "float increment;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t osd_screen;"
-        + "uint8_t osd_index;"
-        + "char[16] param_id;"
-        + "uint8_t config_type;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.MinValue);
-            writer.Write(StaticFields[2], Payload.MaxValue);
-            writer.Write(StaticFields[3], Payload.Increment);
-            writer.Write(StaticFields[4], Payload.TargetSystem);
-            writer.Write(StaticFields[5], Payload.TargetComponent);
-            writer.Write(StaticFields[6], Payload.OsdScreen);
-            writer.Write(StaticFields[7], Payload.OsdIndex);
-            writer.Write(StaticFields[8], Payload.ParamId);
-            writer.Write(StaticFields[9], (ulong)Payload.ConfigType);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
-            Payload.MinValue = reader.ReadFloat(StaticFields[1]);
-            Payload.MaxValue = reader.ReadFloat(StaticFields[2]);
-            Payload.Increment = reader.ReadFloat(StaticFields[3]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[4]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[5]);
-            Payload.OsdScreen = reader.ReadByte(StaticFields[6]);
-            Payload.OsdIndex = reader.ReadByte(StaticFields[7]);
-            reader.ReadCharArray(StaticFields[8], Payload.ParamId);
-            Payload.ConfigType = (OsdParamConfigType)reader.ReadByte(StaticFields[9]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -14658,7 +12755,7 @@ namespace Asv.Mavlink.Ardupilotmega
             OsdScreen = (byte)BinSerialize.ReadByte(ref buffer);
             OsdIndex = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            ParamId = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -14667,7 +12764,7 @@ namespace Asv.Mavlink.Ardupilotmega
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, ParamId.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             ConfigType = (OsdParamConfigType)BinSerialize.ReadByte(ref buffer);
 
@@ -14696,64 +12793,181 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)ConfigType);
             /* PayloadByteSize = 37 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, ref _RequestId);    
+            FloatType.Accept(visitor,MinValueField, ref _MinValue);    
+            FloatType.Accept(visitor,MaxValueField, ref _MaxValue);    
+            FloatType.Accept(visitor,IncrementField, ref _Increment);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,OsdScreenField, ref _OsdScreen);    
+            UInt8Type.Accept(visitor,OsdIndexField, ref _OsdIndex);    
+            ArrayType.Accept(visitor,ParamIdField, 16, (index,v) =>
+            {
+                var tmp = (byte)ParamId[index];
+                UInt8Type.Accept(v,ParamIdField, ref tmp);
+                ParamId[index] = (char)tmp;
+            });
+            var tmpConfigType = (byte)ConfigType;
+            UInt8Type.Accept(visitor,ConfigTypeField, ref tmpConfigType);
+            ConfigType = (OsdParamConfigType)tmpConfigType;
 
+        }
 
         /// <summary>
         /// Request ID - copied to reply.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied to reply.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _RequestId;
+        public uint RequestId { get => _RequestId; set { _RequestId = value; } }
         /// <summary>
         /// OSD parameter minimum value.
         /// OriginName: min_value, Units: , IsExtended: false
         /// </summary>
-        public float MinValue { get; set; }
+        public static readonly Field MinValueField = new Field.Builder()
+            .Name(nameof(MinValue))
+            .Title("min_value")
+            .Description("OSD parameter minimum value.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _MinValue;
+        public float MinValue { get => _MinValue; set { _MinValue = value; } }
         /// <summary>
         /// OSD parameter maximum value.
         /// OriginName: max_value, Units: , IsExtended: false
         /// </summary>
-        public float MaxValue { get; set; }
+        public static readonly Field MaxValueField = new Field.Builder()
+            .Name(nameof(MaxValue))
+            .Title("max_value")
+            .Description("OSD parameter maximum value.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _MaxValue;
+        public float MaxValue { get => _MaxValue; set { _MaxValue = value; } }
         /// <summary>
         /// OSD parameter increment.
         /// OriginName: increment, Units: , IsExtended: false
         /// </summary>
-        public float Increment { get; set; }
+        public static readonly Field IncrementField = new Field.Builder()
+            .Name(nameof(Increment))
+            .Title("increment")
+            .Description("OSD parameter increment.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Increment;
+        public float Increment { get => _Increment; set { _Increment = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// OSD parameter screen index.
         /// OriginName: osd_screen, Units: , IsExtended: false
         /// </summary>
-        public byte OsdScreen { get; set; }
+        public static readonly Field OsdScreenField = new Field.Builder()
+            .Name(nameof(OsdScreen))
+            .Title("osd_screen")
+            .Description("OSD parameter screen index.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _OsdScreen;
+        public byte OsdScreen { get => _OsdScreen; set { _OsdScreen = value; } }
         /// <summary>
         /// OSD parameter display index.
         /// OriginName: osd_index, Units: , IsExtended: false
         /// </summary>
-        public byte OsdIndex { get; set; }
+        public static readonly Field OsdIndexField = new Field.Builder()
+            .Name(nameof(OsdIndex))
+            .Title("osd_index")
+            .Description("OSD parameter display index.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _OsdIndex;
+        public byte OsdIndex { get => _OsdIndex; set { _OsdIndex = value; } }
         /// <summary>
         /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ParamIdField = new Field.Builder()
+            .Name(nameof(ParamId))
+            .Title("param_id")
+            .Description("Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,16))
+
+            .Build();
         public const int ParamIdMaxItemsCount = 16;
-        public char[] ParamId { get; set; } = new char[16];
+        public char[] ParamId { get; } = new char[16];
         [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
         public byte GetParamIdMaxItemsCount() => 16;
         /// <summary>
         /// Config type.
         /// OriginName: config_type, Units: , IsExtended: false
         /// </summary>
-        public OsdParamConfigType ConfigType { get; set; }
+        public static readonly Field ConfigTypeField = new Field.Builder()
+            .Name(nameof(ConfigType))
+            .Title("config_type")
+            .Description("Config type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public OsdParamConfigType _ConfigType;
+        public OsdParamConfigType ConfigType { get => _ConfigType; set => _ConfigType = value; } 
     }
     /// <summary>
     /// Configure OSD parameter reply.
@@ -14775,52 +12989,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamConfigReplyPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_CONFIG_REPLY";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "request_id",
-            "Request ID - copied from request.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "result",
-            "Config error type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "OSD_PARAM_CONFIG_REPLY:"
-        + "uint32_t request_id;"
-        + "uint8_t result;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], (ulong)Payload.Result);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
-            Payload.Result = (OsdParamConfigError)reader.ReadByte(StaticFields[1]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -14856,21 +13024,46 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Result);
             /* PayloadByteSize = 5 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, ref _RequestId);    
+            var tmpResult = (byte)Result;
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
+            Result = (OsdParamConfigError)tmpResult;
 
+        }
 
         /// <summary>
         /// Request ID - copied from request.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied from request.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _RequestId;
+        public uint RequestId { get => _RequestId; set { _RequestId = value; } }
         /// <summary>
         /// Config error type.
         /// OriginName: result, Units: , IsExtended: false
         /// </summary>
-        public OsdParamConfigError Result { get; set; }
+        public static readonly Field ResultField = new Field.Builder()
+            .Name(nameof(Result))
+            .Title("result")
+            .Description("Config error type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public OsdParamConfigError _Result;
+        public OsdParamConfigError Result { get => _Result; set => _Result = value; } 
     }
     /// <summary>
     /// Read a configured an OSD parameter slot.
@@ -14892,91 +13085,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamShowConfigPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_SHOW_CONFIG";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "request_id",
-            "Request ID - copied to reply.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "target_system",
-            "System ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "target_component",
-            "Component ID.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "osd_screen",
-            "OSD parameter screen index.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "osd_index",
-            "OSD parameter display index.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "OSD_PARAM_SHOW_CONFIG:"
-        + "uint32_t request_id;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t osd_screen;"
-        + "uint8_t osd_index;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.TargetSystem);
-            writer.Write(StaticFields[2], Payload.TargetComponent);
-            writer.Write(StaticFields[3], Payload.OsdScreen);
-            writer.Write(StaticFields[4], Payload.OsdIndex);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
-            Payload.TargetSystem = reader.ReadByte(StaticFields[1]);
-            Payload.TargetComponent = reader.ReadByte(StaticFields[2]);
-            Payload.OsdScreen = reader.ReadByte(StaticFields[3]);
-            Payload.OsdIndex = reader.ReadByte(StaticFields[4]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -15021,36 +13129,92 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)OsdIndex);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, ref _RequestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,OsdScreenField, ref _OsdScreen);    
+            UInt8Type.Accept(visitor,OsdIndexField, ref _OsdIndex);    
 
+        }
 
         /// <summary>
         /// Request ID - copied to reply.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied to reply.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _RequestId;
+        public uint RequestId { get => _RequestId; set { _RequestId = value; } }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetSystem;
+        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _TargetComponent;
+        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
         /// <summary>
         /// OSD parameter screen index.
         /// OriginName: osd_screen, Units: , IsExtended: false
         /// </summary>
-        public byte OsdScreen { get; set; }
+        public static readonly Field OsdScreenField = new Field.Builder()
+            .Name(nameof(OsdScreen))
+            .Title("osd_screen")
+            .Description("OSD parameter screen index.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _OsdScreen;
+        public byte OsdScreen { get => _OsdScreen; set { _OsdScreen = value; } }
         /// <summary>
         /// OSD parameter display index.
         /// OriginName: osd_index, Units: , IsExtended: false
         /// </summary>
-        public byte OsdIndex { get; set; }
+        public static readonly Field OsdIndexField = new Field.Builder()
+            .Name(nameof(OsdIndex))
+            .Title("osd_index")
+            .Description("OSD parameter display index.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _OsdIndex;
+        public byte OsdIndex { get => _OsdIndex; set { _OsdIndex = value; } }
     }
     /// <summary>
     /// Read configured OSD parameter reply.
@@ -15072,117 +13236,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamShowConfigReplyPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_SHOW_CONFIG_REPLY";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "request_id",
-            "Request ID - copied from request.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "min_value",
-            "OSD parameter minimum value.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "max_value",
-            "OSD parameter maximum value.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "increment",
-            "OSD parameter increment.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "result",
-            "Config error type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "param_id",
-            "Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Char, 
-            16, 
-            false),
-            new(6,
-            "config_type",
-            "Config type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "OSD_PARAM_SHOW_CONFIG_REPLY:"
-        + "uint32_t request_id;"
-        + "float min_value;"
-        + "float max_value;"
-        + "float increment;"
-        + "uint8_t result;"
-        + "char[16] param_id;"
-        + "uint8_t config_type;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.MinValue);
-            writer.Write(StaticFields[2], Payload.MaxValue);
-            writer.Write(StaticFields[3], Payload.Increment);
-            writer.Write(StaticFields[4], (ulong)Payload.Result);
-            writer.Write(StaticFields[5], Payload.ParamId);
-            writer.Write(StaticFields[6], (ulong)Payload.ConfigType);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.RequestId = reader.ReadUInt(StaticFields[0]);
-            Payload.MinValue = reader.ReadFloat(StaticFields[1]);
-            Payload.MaxValue = reader.ReadFloat(StaticFields[2]);
-            Payload.Increment = reader.ReadFloat(StaticFields[3]);
-            Payload.Result = (OsdParamConfigError)reader.ReadByte(StaticFields[4]);
-            reader.ReadCharArray(StaticFields[5], Payload.ParamId);
-            Payload.ConfigType = (OsdParamConfigType)reader.ReadByte(StaticFields[6]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -15220,7 +13273,7 @@ namespace Asv.Mavlink.Ardupilotmega
             Increment = BinSerialize.ReadFloat(ref buffer);
             Result = (OsdParamConfigError)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            ParamId = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -15229,7 +13282,7 @@ namespace Asv.Mavlink.Ardupilotmega
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, ParamId.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             ConfigType = (OsdParamConfigType)BinSerialize.ReadByte(ref buffer);
 
@@ -15255,49 +13308,135 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)ConfigType);
             /* PayloadByteSize = 34 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, ref _RequestId);    
+            FloatType.Accept(visitor,MinValueField, ref _MinValue);    
+            FloatType.Accept(visitor,MaxValueField, ref _MaxValue);    
+            FloatType.Accept(visitor,IncrementField, ref _Increment);    
+            var tmpResult = (byte)Result;
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
+            Result = (OsdParamConfigError)tmpResult;
+            ArrayType.Accept(visitor,ParamIdField, 16, (index,v) =>
+            {
+                var tmp = (byte)ParamId[index];
+                UInt8Type.Accept(v,ParamIdField, ref tmp);
+                ParamId[index] = (char)tmp;
+            });
+            var tmpConfigType = (byte)ConfigType;
+            UInt8Type.Accept(visitor,ConfigTypeField, ref tmpConfigType);
+            ConfigType = (OsdParamConfigType)tmpConfigType;
 
+        }
 
         /// <summary>
         /// Request ID - copied from request.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied from request.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _RequestId;
+        public uint RequestId { get => _RequestId; set { _RequestId = value; } }
         /// <summary>
         /// OSD parameter minimum value.
         /// OriginName: min_value, Units: , IsExtended: false
         /// </summary>
-        public float MinValue { get; set; }
+        public static readonly Field MinValueField = new Field.Builder()
+            .Name(nameof(MinValue))
+            .Title("min_value")
+            .Description("OSD parameter minimum value.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _MinValue;
+        public float MinValue { get => _MinValue; set { _MinValue = value; } }
         /// <summary>
         /// OSD parameter maximum value.
         /// OriginName: max_value, Units: , IsExtended: false
         /// </summary>
-        public float MaxValue { get; set; }
+        public static readonly Field MaxValueField = new Field.Builder()
+            .Name(nameof(MaxValue))
+            .Title("max_value")
+            .Description("OSD parameter maximum value.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _MaxValue;
+        public float MaxValue { get => _MaxValue; set { _MaxValue = value; } }
         /// <summary>
         /// OSD parameter increment.
         /// OriginName: increment, Units: , IsExtended: false
         /// </summary>
-        public float Increment { get; set; }
+        public static readonly Field IncrementField = new Field.Builder()
+            .Name(nameof(Increment))
+            .Title("increment")
+            .Description("OSD parameter increment.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Increment;
+        public float Increment { get => _Increment; set { _Increment = value; } }
         /// <summary>
         /// Config error type.
         /// OriginName: result, Units: , IsExtended: false
         /// </summary>
-        public OsdParamConfigError Result { get; set; }
+        public static readonly Field ResultField = new Field.Builder()
+            .Name(nameof(Result))
+            .Title("result")
+            .Description("Config error type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public OsdParamConfigError _Result;
+        public OsdParamConfigError Result { get => _Result; set => _Result = value; } 
         /// <summary>
         /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ParamIdField = new Field.Builder()
+            .Name(nameof(ParamId))
+            .Title("param_id")
+            .Description("Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,16))
+
+            .Build();
         public const int ParamIdMaxItemsCount = 16;
-        public char[] ParamId { get; set; } = new char[16];
+        public char[] ParamId { get; } = new char[16];
         [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
         public byte GetParamIdMaxItemsCount() => 16;
         /// <summary>
         /// Config type.
         /// OriginName: config_type, Units: , IsExtended: false
         /// </summary>
-        public OsdParamConfigType ConfigType { get; set; }
+        public static readonly Field ConfigTypeField = new Field.Builder()
+            .Name(nameof(ConfigType))
+            .Title("config_type")
+            .Description("Config type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public OsdParamConfigType _ConfigType;
+        public OsdParamConfigType ConfigType { get => _ConfigType; set => _ConfigType = value; } 
     }
     /// <summary>
     /// Obstacle located as a 3D vector.
@@ -15319,143 +13458,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override ObstacleDistance3dPayload Payload { get; } = new();
 
         public override string Name => "OBSTACLE_DISTANCE_3D";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "time_boot_ms",
-            "Timestamp (time since system boot).",
-            string.Empty, 
-            @"ms", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "x",
-            " X position of the obstacle.",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(2,
-            "y",
-            " Y position of the obstacle.",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(3,
-            "z",
-            " Z position of the obstacle.",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "min_distance",
-            "Minimum distance the sensor can measure.",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "max_distance",
-            "Maximum distance the sensor can measure.",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "obstacle_id",
-            " Unique ID given to each obstacle so that its movement can be tracked. Use UINT16_MAX if object ID is unknown or cannot be determined.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(7,
-            "sensor_type",
-            "Class id of the distance sensor type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(8,
-            "frame",
-            "Coordinate frame of reference.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "OBSTACLE_DISTANCE_3D:"
-        + "uint32_t time_boot_ms;"
-        + "float x;"
-        + "float y;"
-        + "float z;"
-        + "float min_distance;"
-        + "float max_distance;"
-        + "uint16_t obstacle_id;"
-        + "uint8_t sensor_type;"
-        + "uint8_t frame;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TimeBootMs);
-            writer.Write(StaticFields[1], Payload.X);
-            writer.Write(StaticFields[2], Payload.Y);
-            writer.Write(StaticFields[3], Payload.Z);
-            writer.Write(StaticFields[4], Payload.MinDistance);
-            writer.Write(StaticFields[5], Payload.MaxDistance);
-            writer.Write(StaticFields[6], Payload.ObstacleId);
-            writer.Write(StaticFields[7], (ulong)Payload.SensorType);
-            writer.Write(StaticFields[8], (ulong)Payload.Frame);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
-            Payload.X = reader.ReadFloat(StaticFields[1]);
-            Payload.Y = reader.ReadFloat(StaticFields[2]);
-            Payload.Z = reader.ReadFloat(StaticFields[3]);
-            Payload.MinDistance = reader.ReadFloat(StaticFields[4]);
-            Payload.MaxDistance = reader.ReadFloat(StaticFields[5]);
-            Payload.ObstacleId = reader.ReadUShort(StaticFields[6]);
-            Payload.SensorType = (MavDistanceSensor)reader.ReadByte(StaticFields[7]);
-            Payload.Frame = (MavFrame)reader.ReadByte(StaticFields[8]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -15512,56 +13514,160 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Frame);
             /* PayloadByteSize = 28 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _TimeBootMs);    
+            FloatType.Accept(visitor,XField, ref _X);    
+            FloatType.Accept(visitor,YField, ref _Y);    
+            FloatType.Accept(visitor,ZField, ref _Z);    
+            FloatType.Accept(visitor,MinDistanceField, ref _MinDistance);    
+            FloatType.Accept(visitor,MaxDistanceField, ref _MaxDistance);    
+            UInt16Type.Accept(visitor,ObstacleIdField, ref _ObstacleId);    
+            var tmpSensorType = (byte)SensorType;
+            UInt8Type.Accept(visitor,SensorTypeField, ref tmpSensorType);
+            SensorType = (MavDistanceSensor)tmpSensorType;
+            var tmpFrame = (byte)Frame;
+            UInt8Type.Accept(visitor,FrameField, ref tmpFrame);
+            Frame = (MavFrame)tmpFrame;
 
+        }
 
         /// <summary>
         /// Timestamp (time since system boot).
         /// OriginName: time_boot_ms, Units: ms, IsExtended: false
         /// </summary>
-        public uint TimeBootMs { get; set; }
+        public static readonly Field TimeBootMsField = new Field.Builder()
+            .Name(nameof(TimeBootMs))
+            .Title("time_boot_ms")
+            .Description("Timestamp (time since system boot).")
+            .FormatString(string.Empty)
+            .Units(@"ms")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _TimeBootMs;
+        public uint TimeBootMs { get => _TimeBootMs; set { _TimeBootMs = value; } }
         /// <summary>
         ///  X position of the obstacle.
         /// OriginName: x, Units: m, IsExtended: false
         /// </summary>
-        public float X { get; set; }
+        public static readonly Field XField = new Field.Builder()
+            .Name(nameof(X))
+            .Title("x")
+            .Description(" X position of the obstacle.")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _X;
+        public float X { get => _X; set { _X = value; } }
         /// <summary>
         ///  Y position of the obstacle.
         /// OriginName: y, Units: m, IsExtended: false
         /// </summary>
-        public float Y { get; set; }
+        public static readonly Field YField = new Field.Builder()
+            .Name(nameof(Y))
+            .Title("y")
+            .Description(" Y position of the obstacle.")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Y;
+        public float Y { get => _Y; set { _Y = value; } }
         /// <summary>
         ///  Z position of the obstacle.
         /// OriginName: z, Units: m, IsExtended: false
         /// </summary>
-        public float Z { get; set; }
+        public static readonly Field ZField = new Field.Builder()
+            .Name(nameof(Z))
+            .Title("z")
+            .Description(" Z position of the obstacle.")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Z;
+        public float Z { get => _Z; set { _Z = value; } }
         /// <summary>
         /// Minimum distance the sensor can measure.
         /// OriginName: min_distance, Units: m, IsExtended: false
         /// </summary>
-        public float MinDistance { get; set; }
+        public static readonly Field MinDistanceField = new Field.Builder()
+            .Name(nameof(MinDistance))
+            .Title("min_distance")
+            .Description("Minimum distance the sensor can measure.")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _MinDistance;
+        public float MinDistance { get => _MinDistance; set { _MinDistance = value; } }
         /// <summary>
         /// Maximum distance the sensor can measure.
         /// OriginName: max_distance, Units: m, IsExtended: false
         /// </summary>
-        public float MaxDistance { get; set; }
+        public static readonly Field MaxDistanceField = new Field.Builder()
+            .Name(nameof(MaxDistance))
+            .Title("max_distance")
+            .Description("Maximum distance the sensor can measure.")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _MaxDistance;
+        public float MaxDistance { get => _MaxDistance; set { _MaxDistance = value; } }
         /// <summary>
         ///  Unique ID given to each obstacle so that its movement can be tracked. Use UINT16_MAX if object ID is unknown or cannot be determined.
         /// OriginName: obstacle_id, Units: , IsExtended: false
         /// </summary>
-        public ushort ObstacleId { get; set; }
+        public static readonly Field ObstacleIdField = new Field.Builder()
+            .Name(nameof(ObstacleId))
+            .Title("obstacle_id")
+            .Description(" Unique ID given to each obstacle so that its movement can be tracked. Use UINT16_MAX if object ID is unknown or cannot be determined.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _ObstacleId;
+        public ushort ObstacleId { get => _ObstacleId; set { _ObstacleId = value; } }
         /// <summary>
         /// Class id of the distance sensor type.
         /// OriginName: sensor_type, Units: , IsExtended: false
         /// </summary>
-        public MavDistanceSensor SensorType { get; set; }
+        public static readonly Field SensorTypeField = new Field.Builder()
+            .Name(nameof(SensorType))
+            .Title("sensor_type")
+            .Description("Class id of the distance sensor type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavDistanceSensor _SensorType;
+        public MavDistanceSensor SensorType { get => _SensorType; set => _SensorType = value; } 
         /// <summary>
         /// Coordinate frame of reference.
         /// OriginName: frame, Units: , IsExtended: false
         /// </summary>
-        public MavFrame Frame { get; set; }
+        public static readonly Field FrameField = new Field.Builder()
+            .Name(nameof(Frame))
+            .Title("frame")
+            .Description("Coordinate frame of reference.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavFrame _Frame;
+        public MavFrame Frame { get => _Frame; set => _Frame = value; } 
     }
     /// <summary>
     /// Water depth
@@ -15583,169 +13689,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override WaterDepthPayload Payload { get; } = new();
 
         public override string Name => "WATER_DEPTH";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "time_boot_ms",
-            "Timestamp (time since system boot)",
-            string.Empty, 
-            @"ms", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "lat",
-            "Latitude",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(2,
-            "lng",
-            "Longitude",
-            string.Empty, 
-            @"degE7", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-            false),
-            new(3,
-            "alt",
-            "Altitude (MSL) of vehicle",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(4,
-            "roll",
-            "Roll angle",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(5,
-            "pitch",
-            "Pitch angle",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(6,
-            "yaw",
-            "Yaw angle",
-            string.Empty, 
-            @"rad", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(7,
-            "distance",
-            "Distance (uncorrected)",
-            string.Empty, 
-            @"m", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(8,
-            "temperature",
-            "Water temperature",
-            string.Empty, 
-            @"degC", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-            false),
-            new(9,
-            "id",
-            "Onboard ID of the sensor",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(10,
-            "healthy",
-            "Sensor data healthy (0=unhealthy, 1=healthy)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "WATER_DEPTH:"
-        + "uint32_t time_boot_ms;"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        + "float alt;"
-        + "float roll;"
-        + "float pitch;"
-        + "float yaw;"
-        + "float distance;"
-        + "float temperature;"
-        + "uint8_t id;"
-        + "uint8_t healthy;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.TimeBootMs);
-            writer.Write(StaticFields[1], Payload.Lat);
-            writer.Write(StaticFields[2], Payload.Lng);
-            writer.Write(StaticFields[3], Payload.Alt);
-            writer.Write(StaticFields[4], Payload.Roll);
-            writer.Write(StaticFields[5], Payload.Pitch);
-            writer.Write(StaticFields[6], Payload.Yaw);
-            writer.Write(StaticFields[7], Payload.Distance);
-            writer.Write(StaticFields[8], Payload.Temperature);
-            writer.Write(StaticFields[9], Payload.Id);
-            writer.Write(StaticFields[10], Payload.Healthy);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.TimeBootMs = reader.ReadUInt(StaticFields[0]);
-            Payload.Lat = reader.ReadInt(StaticFields[1]);
-            Payload.Lng = reader.ReadInt(StaticFields[2]);
-            Payload.Alt = reader.ReadFloat(StaticFields[3]);
-            Payload.Roll = reader.ReadFloat(StaticFields[4]);
-            Payload.Pitch = reader.ReadFloat(StaticFields[5]);
-            Payload.Yaw = reader.ReadFloat(StaticFields[6]);
-            Payload.Distance = reader.ReadFloat(StaticFields[7]);
-            Payload.Temperature = reader.ReadFloat(StaticFields[8]);
-            Payload.Id = reader.ReadByte(StaticFields[9]);
-            Payload.Healthy = reader.ReadByte(StaticFields[10]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -15808,66 +13751,188 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Healthy);
             /* PayloadByteSize = 38 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _TimeBootMs);    
+            Int32Type.Accept(visitor,LatField, ref _Lat);    
+            Int32Type.Accept(visitor,LngField, ref _Lng);    
+            FloatType.Accept(visitor,AltField, ref _Alt);    
+            FloatType.Accept(visitor,RollField, ref _Roll);    
+            FloatType.Accept(visitor,PitchField, ref _Pitch);    
+            FloatType.Accept(visitor,YawField, ref _Yaw);    
+            FloatType.Accept(visitor,DistanceField, ref _Distance);    
+            FloatType.Accept(visitor,TemperatureField, ref _Temperature);    
+            UInt8Type.Accept(visitor,IdField, ref _Id);    
+            UInt8Type.Accept(visitor,HealthyField, ref _Healthy);    
 
+        }
 
         /// <summary>
         /// Timestamp (time since system boot)
         /// OriginName: time_boot_ms, Units: ms, IsExtended: false
         /// </summary>
-        public uint TimeBootMs { get; set; }
+        public static readonly Field TimeBootMsField = new Field.Builder()
+            .Name(nameof(TimeBootMs))
+            .Title("time_boot_ms")
+            .Description("Timestamp (time since system boot)")
+            .FormatString(string.Empty)
+            .Units(@"ms")
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _TimeBootMs;
+        public uint TimeBootMs { get => _TimeBootMs; set { _TimeBootMs = value; } }
         /// <summary>
         /// Latitude
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lat;
+        public int Lat { get => _Lat; set { _Lat = value; } }
         /// <summary>
         /// Longitude
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude")
+            .FormatString(string.Empty)
+            .Units(@"degE7")
+            .DataType(Int32Type.Default)
+
+            .Build();
+        private int _Lng;
+        public int Lng { get => _Lng; set { _Lng = value; } }
         /// <summary>
         /// Altitude (MSL) of vehicle
         /// OriginName: alt, Units: m, IsExtended: false
         /// </summary>
-        public float Alt { get; set; }
+        public static readonly Field AltField = new Field.Builder()
+            .Name(nameof(Alt))
+            .Title("alt")
+            .Description("Altitude (MSL) of vehicle")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Alt;
+        public float Alt { get => _Alt; set { _Alt = value; } }
         /// <summary>
         /// Roll angle
         /// OriginName: roll, Units: rad, IsExtended: false
         /// </summary>
-        public float Roll { get; set; }
+        public static readonly Field RollField = new Field.Builder()
+            .Name(nameof(Roll))
+            .Title("roll")
+            .Description("Roll angle")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Roll;
+        public float Roll { get => _Roll; set { _Roll = value; } }
         /// <summary>
         /// Pitch angle
         /// OriginName: pitch, Units: rad, IsExtended: false
         /// </summary>
-        public float Pitch { get; set; }
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Pitch angle")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Pitch;
+        public float Pitch { get => _Pitch; set { _Pitch = value; } }
         /// <summary>
         /// Yaw angle
         /// OriginName: yaw, Units: rad, IsExtended: false
         /// </summary>
-        public float Yaw { get; set; }
+        public static readonly Field YawField = new Field.Builder()
+            .Name(nameof(Yaw))
+            .Title("yaw")
+            .Description("Yaw angle")
+            .FormatString(string.Empty)
+            .Units(@"rad")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Yaw;
+        public float Yaw { get => _Yaw; set { _Yaw = value; } }
         /// <summary>
         /// Distance (uncorrected)
         /// OriginName: distance, Units: m, IsExtended: false
         /// </summary>
-        public float Distance { get; set; }
+        public static readonly Field DistanceField = new Field.Builder()
+            .Name(nameof(Distance))
+            .Title("distance")
+            .Description("Distance (uncorrected)")
+            .FormatString(string.Empty)
+            .Units(@"m")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Distance;
+        public float Distance { get => _Distance; set { _Distance = value; } }
         /// <summary>
         /// Water temperature
         /// OriginName: temperature, Units: degC, IsExtended: false
         /// </summary>
-        public float Temperature { get; set; }
+        public static readonly Field TemperatureField = new Field.Builder()
+            .Name(nameof(Temperature))
+            .Title("temperature")
+            .Description("Water temperature")
+            .FormatString(string.Empty)
+            .Units(@"degC")
+            .DataType(FloatType.Default)
+
+            .Build();
+        private float _Temperature;
+        public float Temperature { get => _Temperature; set { _Temperature = value; } }
         /// <summary>
         /// Onboard ID of the sensor
         /// OriginName: id, Units: , IsExtended: false
         /// </summary>
-        public byte Id { get; set; }
+        public static readonly Field IdField = new Field.Builder()
+            .Name(nameof(Id))
+            .Title("id")
+            .Description("Onboard ID of the sensor")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Id;
+        public byte Id { get => _Id; set { _Id = value; } }
         /// <summary>
         /// Sensor data healthy (0=unhealthy, 1=healthy)
         /// OriginName: healthy, Units: , IsExtended: false
         /// </summary>
-        public byte Healthy { get; set; }
+        public static readonly Field HealthyField = new Field.Builder()
+            .Name(nameof(Healthy))
+            .Title("healthy")
+            .Description("Sensor data healthy (0=unhealthy, 1=healthy)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Healthy;
+        public byte Healthy { get => _Healthy; set { _Healthy = value; } }
     }
     /// <summary>
     /// The MCU status, giving MCU temperature and voltage. The min and max voltages are to allow for detecting power supply instability.
@@ -15889,91 +13954,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override McuStatusPayload Payload { get; } = new();
 
         public override string Name => "MCU_STATUS";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "MCU_temperature",
-            "MCU Internal temperature",
-            string.Empty, 
-            @"cdegC", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-            false),
-            new(1,
-            "MCU_voltage",
-            "MCU voltage",
-            string.Empty, 
-            @"mV", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(2,
-            "MCU_voltage_min",
-            "MCU voltage minimum",
-            string.Empty, 
-            @"mV", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(3,
-            "MCU_voltage_max",
-            "MCU voltage maximum",
-            string.Empty, 
-            @"mV", 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(4,
-            "id",
-            "MCU instance",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "MCU_STATUS:"
-        + "int16_t MCU_temperature;"
-        + "uint16_t MCU_voltage;"
-        + "uint16_t MCU_voltage_min;"
-        + "uint16_t MCU_voltage_max;"
-        + "uint8_t id;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.McuTemperature);
-            writer.Write(StaticFields[1], Payload.McuVoltage);
-            writer.Write(StaticFields[2], Payload.McuVoltageMin);
-            writer.Write(StaticFields[3], Payload.McuVoltageMax);
-            writer.Write(StaticFields[4], Payload.Id);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.McuTemperature = reader.ReadShort(StaticFields[0]);
-            Payload.McuVoltage = reader.ReadUShort(StaticFields[1]);
-            Payload.McuVoltageMin = reader.ReadUShort(StaticFields[2]);
-            Payload.McuVoltageMax = reader.ReadUShort(StaticFields[3]);
-            Payload.Id = reader.ReadByte(StaticFields[4]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -16018,37 +13998,98 @@ namespace Asv.Mavlink.Ardupilotmega
             BinSerialize.WriteByte(ref buffer,(byte)Id);
             /* PayloadByteSize = 9 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            Int16Type.Accept(visitor,McuTemperatureField, ref _McuTemperature);
+            UInt16Type.Accept(visitor,McuVoltageField, ref _McuVoltage);    
+            UInt16Type.Accept(visitor,McuVoltageMinField, ref _McuVoltageMin);    
+            UInt16Type.Accept(visitor,McuVoltageMaxField, ref _McuVoltageMax);    
+            UInt8Type.Accept(visitor,IdField, ref _Id);    
 
+        }
 
         /// <summary>
         /// MCU Internal temperature
         /// OriginName: MCU_temperature, Units: cdegC, IsExtended: false
         /// </summary>
-        public short McuTemperature { get; set; }
+        public static readonly Field McuTemperatureField = new Field.Builder()
+            .Name(nameof(McuTemperature))
+            .Title("MCU_temperature")
+            .Description("MCU Internal temperature")
+            .FormatString(string.Empty)
+            .Units(@"cdegC")
+            .DataType(Int16Type.Default)
+
+            .Build();
+        private short _McuTemperature;
+        public short McuTemperature { get => _McuTemperature; set { _McuTemperature = value; } }
         /// <summary>
         /// MCU voltage
         /// OriginName: MCU_voltage, Units: mV, IsExtended: false
         /// </summary>
-        public ushort McuVoltage { get; set; }
+        public static readonly Field McuVoltageField = new Field.Builder()
+            .Name(nameof(McuVoltage))
+            .Title("MCU_voltage")
+            .Description("MCU voltage")
+            .FormatString(string.Empty)
+            .Units(@"mV")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _McuVoltage;
+        public ushort McuVoltage { get => _McuVoltage; set { _McuVoltage = value; } }
         /// <summary>
         /// MCU voltage minimum
         /// OriginName: MCU_voltage_min, Units: mV, IsExtended: false
         /// </summary>
-        public ushort McuVoltageMin { get; set; }
+        public static readonly Field McuVoltageMinField = new Field.Builder()
+            .Name(nameof(McuVoltageMin))
+            .Title("MCU_voltage_min")
+            .Description("MCU voltage minimum")
+            .FormatString(string.Empty)
+            .Units(@"mV")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _McuVoltageMin;
+        public ushort McuVoltageMin { get => _McuVoltageMin; set { _McuVoltageMin = value; } }
         /// <summary>
         /// MCU voltage maximum
         /// OriginName: MCU_voltage_max, Units: mV, IsExtended: false
         /// </summary>
-        public ushort McuVoltageMax { get; set; }
+        public static readonly Field McuVoltageMaxField = new Field.Builder()
+            .Name(nameof(McuVoltageMax))
+            .Title("MCU_voltage_max")
+            .Description("MCU voltage maximum")
+            .FormatString(string.Empty)
+            .Units(@"mV")
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _McuVoltageMax;
+        public ushort McuVoltageMax { get => _McuVoltageMax; set { _McuVoltageMax = value; } }
         /// <summary>
         /// MCU instance
         /// OriginName: id, Units: , IsExtended: false
         /// </summary>
-        public byte Id { get; set; }
+        public static readonly Field IdField = new Field.Builder()
+            .Name(nameof(Id))
+            .Title("id")
+            .Description("MCU instance")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _Id;
+        public byte Id { get => _Id; set { _Id = value; } }
     }
+
+
+
+
+        
 
 
 #endregion

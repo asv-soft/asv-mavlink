@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
 
 using System;
 using System.Text;
@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
 using Asv.IO;
 
 namespace Asv.Mavlink.Minimal
@@ -1244,104 +1245,6 @@ namespace Asv.Mavlink.Minimal
         public override HeartbeatPayload Payload { get; } = new();
 
         public override string Name => "HEARTBEAT";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "custom_mode",
-            "A bitfield for use for autopilot-specific flags",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-            false),
-            new(1,
-            "type",
-            "Vehicle or component type. For a flight controller component the vehicle type (quadrotor, helicopter, etc.). For other components the component type (e.g. camera, gimbal, etc.). This should be used in preference to component id for identifying the component type.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(2,
-            "autopilot",
-            "Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(3,
-            "base_mode",
-            "System mode bitmap.",
-            string.Empty, 
-            string.Empty, 
-            "bitmask", 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(4,
-            "system_status",
-            "System status flag.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-            new(5,
-            "mavlink_version",
-            "MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-            false),
-        ];
-        public const string FormatMessage = "HEARTBEAT:"
-        + "uint32_t custom_mode;"
-        + "uint8_t type;"
-        + "uint8_t autopilot;"
-        + "uint8_t base_mode;"
-        + "uint8_t system_status;"
-        + "uint8_t mavlink_version;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.CustomMode);
-            writer.Write(StaticFields[1], (ulong)Payload.Type);
-            writer.Write(StaticFields[2], (ulong)Payload.Autopilot);
-            writer.Write(StaticFields[3], (ulong)Payload.BaseMode);
-            writer.Write(StaticFields[4], (ulong)Payload.SystemStatus);
-            writer.Write(StaticFields[5], Payload.MavlinkVersion);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.CustomMode = reader.ReadUInt(StaticFields[0]);
-            Payload.Type = (MavType)reader.ReadByte(StaticFields[1]);
-            Payload.Autopilot = (MavAutopilot)reader.ReadByte(StaticFields[2]);
-            Payload.BaseMode = (MavModeFlag)reader.ReadByte(StaticFields[3]);
-            Payload.SystemStatus = (MavState)reader.ReadByte(StaticFields[4]);
-            Payload.MavlinkVersion = reader.ReadByte(StaticFields[5]);
-        
-            
-        }
     }
 
     /// <summary>
@@ -1389,41 +1292,116 @@ namespace Asv.Mavlink.Minimal
             BinSerialize.WriteByte(ref buffer,(byte)MavlinkVersion);
             /* PayloadByteSize = 9 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,CustomModeField, ref _CustomMode);    
+            var tmpType = (byte)Type;
+            UInt8Type.Accept(visitor,TypeField, ref tmpType);
+            Type = (MavType)tmpType;
+            var tmpAutopilot = (byte)Autopilot;
+            UInt8Type.Accept(visitor,AutopilotField, ref tmpAutopilot);
+            Autopilot = (MavAutopilot)tmpAutopilot;
+            var tmpBaseMode = (byte)BaseMode;
+            UInt8Type.Accept(visitor,BaseModeField, ref tmpBaseMode);
+            BaseMode = (MavModeFlag)tmpBaseMode;
+            var tmpSystemStatus = (byte)SystemStatus;
+            UInt8Type.Accept(visitor,SystemStatusField, ref tmpSystemStatus);
+            SystemStatus = (MavState)tmpSystemStatus;
+            UInt8Type.Accept(visitor,MavlinkVersionField, ref _MavlinkVersion);    
 
+        }
 
         /// <summary>
         /// A bitfield for use for autopilot-specific flags
         /// OriginName: custom_mode, Units: , IsExtended: false
         /// </summary>
-        public uint CustomMode { get; set; }
+        public static readonly Field CustomModeField = new Field.Builder()
+            .Name(nameof(CustomMode))
+            .Title("custom_mode")
+            .Description("A bitfield for use for autopilot-specific flags")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt32Type.Default)
+
+            .Build();
+        private uint _CustomMode;
+        public uint CustomMode { get => _CustomMode; set { _CustomMode = value; } }
         /// <summary>
         /// Vehicle or component type. For a flight controller component the vehicle type (quadrotor, helicopter, etc.). For other components the component type (e.g. camera, gimbal, etc.). This should be used in preference to component id for identifying the component type.
         /// OriginName: type, Units: , IsExtended: false
         /// </summary>
-        public MavType Type { get; set; }
+        public static readonly Field TypeField = new Field.Builder()
+            .Name(nameof(Type))
+            .Title("type")
+            .Description("Vehicle or component type. For a flight controller component the vehicle type (quadrotor, helicopter, etc.). For other components the component type (e.g. camera, gimbal, etc.). This should be used in preference to component id for identifying the component type.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavType _Type;
+        public MavType Type { get => _Type; set => _Type = value; } 
         /// <summary>
         /// Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers.
         /// OriginName: autopilot, Units: , IsExtended: false
         /// </summary>
-        public MavAutopilot Autopilot { get; set; }
+        public static readonly Field AutopilotField = new Field.Builder()
+            .Name(nameof(Autopilot))
+            .Title("autopilot")
+            .Description("Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavAutopilot _Autopilot;
+        public MavAutopilot Autopilot { get => _Autopilot; set => _Autopilot = value; } 
         /// <summary>
         /// System mode bitmap.
         /// OriginName: base_mode, Units: , IsExtended: false
         /// </summary>
-        public MavModeFlag BaseMode { get; set; }
+        public static readonly Field BaseModeField = new Field.Builder()
+            .Name(nameof(BaseMode))
+            .Title("bitmask")
+            .Description("System mode bitmap.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavModeFlag _BaseMode;
+        public MavModeFlag BaseMode { get => _BaseMode; set => _BaseMode = value; } 
         /// <summary>
         /// System status flag.
         /// OriginName: system_status, Units: , IsExtended: false
         /// </summary>
-        public MavState SystemStatus { get; set; }
+        public static readonly Field SystemStatusField = new Field.Builder()
+            .Name(nameof(SystemStatus))
+            .Title("system_status")
+            .Description("System status flag.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        public MavState _SystemStatus;
+        public MavState SystemStatus { get => _SystemStatus; set => _SystemStatus = value; } 
         /// <summary>
         /// MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version
         /// OriginName: mavlink_version, Units: , IsExtended: false
         /// </summary>
-        public byte MavlinkVersion { get; set; }
+        public static readonly Field MavlinkVersionField = new Field.Builder()
+            .Name(nameof(MavlinkVersion))
+            .Title("mavlink_version")
+            .Description("MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt8Type.Default)
+
+            .Build();
+        private byte _MavlinkVersion;
+        public byte MavlinkVersion { get => _MavlinkVersion; set { _MavlinkVersion = value; } }
     }
     /// <summary>
     /// Version and capability of protocol version. This message can be requested with MAV_CMD_REQUEST_MESSAGE and is used as part of the handshaking to establish which MAVLink version should be used on the network. Every node should respond to a request for PROTOCOL_VERSION to enable the handshaking. Library implementers should consider adding this into the default decoding state machine to allow the protocol core to respond directly.
@@ -1445,91 +1423,6 @@ namespace Asv.Mavlink.Minimal
         public override ProtocolVersionPayload Payload { get; } = new();
 
         public override string Name => "PROTOCOL_VERSION";
-        
-        public override ImmutableArray<MavlinkFieldInfo> Fields => StaticFields;
-                
-        public static readonly ImmutableArray<MavlinkFieldInfo> StaticFields =
-        [
-            new(0,
-            "version",
-            "Currently active MAVLink version number * 100: v1.0 is 100, v2.0 is 200, etc.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(1,
-            "min_version",
-            "Minimum MAVLink version supported",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(2,
-            "max_version",
-            "Maximum MAVLink version supported (set to the same value as version by default)",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-            false),
-            new(3,
-            "spec_version_hash",
-            "The first 8 bytes (not characters printed in hex!) of the git hash.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            8, 
-            false),
-            new(4,
-            "library_version_hash",
-            "The first 8 bytes (not characters printed in hex!) of the git hash.",
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            string.Empty, 
-            MessageFieldType.Uint8, 
-            8, 
-            false),
-        ];
-        public const string FormatMessage = "PROTOCOL_VERSION:"
-        + "uint16_t version;"
-        + "uint16_t min_version;"
-        + "uint16_t max_version;"
-        + "uint8_t[8] spec_version_hash;"
-        + "uint8_t[8] library_version_hash;"
-        ;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string GetFormatMessage() => FormatMessage;
-        
-        public override void ReadFields(IMavlinkFieldWriter writer)
-        {
-            writer.Write(StaticFields[0], Payload.Version);
-            writer.Write(StaticFields[1], Payload.MinVersion);
-            writer.Write(StaticFields[2], Payload.MaxVersion);
-            writer.Write(StaticFields[3], Payload.SpecVersionHash);
-            writer.Write(StaticFields[4], Payload.LibraryVersionHash);
-        }
-        
-        public override void WriteFields(IMavlinkFieldReader reader)
-        {
-            Payload.Version = reader.ReadUShort(StaticFields[0]);
-            Payload.MinVersion = reader.ReadUShort(StaticFields[1]);
-            Payload.MaxVersion = reader.ReadUShort(StaticFields[2]);
-            reader.ReadByteArray(StaticFields[3], Payload.SpecVersionHash);
-            reader.ReadByteArray(StaticFields[4], Payload.LibraryVersionHash);
-        
-            
-        }
     }
 
     /// <summary>
@@ -1563,7 +1456,7 @@ namespace Asv.Mavlink.Minimal
             MinVersion = BinSerialize.ReadUShort(ref buffer);
             MaxVersion = BinSerialize.ReadUShort(ref buffer);
             arraySize = /*ArrayLength*/8 - Math.Max(0,((/*PayloadByteSize*/22 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            SpecVersionHash = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 SpecVersionHash[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -1591,41 +1484,102 @@ namespace Asv.Mavlink.Minimal
             }
             /* PayloadByteSize = 22 */;
         }
-        
-        
 
+        public void Visit(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,VersionField, ref _Version);    
+            UInt16Type.Accept(visitor,MinVersionField, ref _MinVersion);    
+            UInt16Type.Accept(visitor,MaxVersionField, ref _MaxVersion);    
+            ArrayType.Accept(visitor,SpecVersionHashField, 8,
+                (index,v) => UInt8Type.Accept(v, SpecVersionHashField, ref SpecVersionHash[index]));    
+            ArrayType.Accept(visitor,LibraryVersionHashField, 8,
+                (index,v) => UInt8Type.Accept(v, LibraryVersionHashField, ref LibraryVersionHash[index]));    
 
+        }
 
         /// <summary>
         /// Currently active MAVLink version number * 100: v1.0 is 100, v2.0 is 200, etc.
         /// OriginName: version, Units: , IsExtended: false
         /// </summary>
-        public ushort Version { get; set; }
+        public static readonly Field VersionField = new Field.Builder()
+            .Name(nameof(Version))
+            .Title("version")
+            .Description("Currently active MAVLink version number * 100: v1.0 is 100, v2.0 is 200, etc.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _Version;
+        public ushort Version { get => _Version; set { _Version = value; } }
         /// <summary>
         /// Minimum MAVLink version supported
         /// OriginName: min_version, Units: , IsExtended: false
         /// </summary>
-        public ushort MinVersion { get; set; }
+        public static readonly Field MinVersionField = new Field.Builder()
+            .Name(nameof(MinVersion))
+            .Title("min_version")
+            .Description("Minimum MAVLink version supported")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _MinVersion;
+        public ushort MinVersion { get => _MinVersion; set { _MinVersion = value; } }
         /// <summary>
         /// Maximum MAVLink version supported (set to the same value as version by default)
         /// OriginName: max_version, Units: , IsExtended: false
         /// </summary>
-        public ushort MaxVersion { get; set; }
+        public static readonly Field MaxVersionField = new Field.Builder()
+            .Name(nameof(MaxVersion))
+            .Title("max_version")
+            .Description("Maximum MAVLink version supported (set to the same value as version by default)")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(UInt16Type.Default)
+
+            .Build();
+        private ushort _MaxVersion;
+        public ushort MaxVersion { get => _MaxVersion; set { _MaxVersion = value; } }
         /// <summary>
         /// The first 8 bytes (not characters printed in hex!) of the git hash.
         /// OriginName: spec_version_hash, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field SpecVersionHashField = new Field.Builder()
+            .Name(nameof(SpecVersionHash))
+            .Title("spec_version_hash")
+            .Description("The first 8 bytes (not characters printed in hex!) of the git hash.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,8))
+
+            .Build();
         public const int SpecVersionHashMaxItemsCount = 8;
-        public byte[] SpecVersionHash { get; set; } = new byte[8];
+        public byte[] SpecVersionHash { get; } = new byte[8];
         [Obsolete("This method is deprecated. Use GetSpecVersionHashMaxItemsCount instead.")]
         public byte GetSpecVersionHashMaxItemsCount() => 8;
         /// <summary>
         /// The first 8 bytes (not characters printed in hex!) of the git hash.
         /// OriginName: library_version_hash, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field LibraryVersionHashField = new Field.Builder()
+            .Name(nameof(LibraryVersionHash))
+            .Title("library_version_hash")
+            .Description("The first 8 bytes (not characters printed in hex!) of the git hash.")
+            .FormatString(string.Empty)
+            .Units(string.Empty)
+            .DataType(new ArrayType(UInt8Type.Default,8))
+
+            .Build();
         public const int LibraryVersionHashMaxItemsCount = 8;
         public byte[] LibraryVersionHash { get; } = new byte[8];
     }
+
+
+
+
+        
 
 
 #endregion

@@ -137,17 +137,6 @@ public class ListDataFileTests
         });
     }
 
-    [Fact]
-    public static void Meatdata_EditMetadataInfowithNullRecordName_Fail()
-    {
-        using var strm = new MemoryStream();
-
-        using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, FileFormat1, false, _fileSystem);
-
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        Assert.Throws<NullReferenceException>(() => { file.EditMetadata(_ => { _.Info.RecordName = null; }); });
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-    }
 
     [Fact]
     public void Data_AsvSdrRecordDataLlzSerialization_Success()
@@ -208,7 +197,6 @@ public class ListDataFileTests
             TotalFreq90 = 0,
             TotalFreq150 = 0,
             MeasureTime = 0,
-            RecordGuid = new byte[16],
             GnssFixType = GpsFixType.GpsFixTypeNoGps,
             GnssSatellitesVisible = 0
         };
@@ -284,7 +272,7 @@ public class ListDataFileTests
             TotalFreq90 = 0,
             TotalFreq150 = 0,
             MeasureTime = 0,
-            RecordGuid = new byte[16],
+            
             GnssFixType = GpsFixType.GpsFixTypeNoGps,
             GnssSatellitesVisible = 0
         };
@@ -314,7 +302,7 @@ public class ListDataFileTests
 
         var payload = new AsvSdrRecordDataRequestPayload()
         {
-            RecordGuid = new byte[16],
+            
             Count = 2,
             Skip = 1,
             TargetComponent = 1,
@@ -346,7 +334,7 @@ public class ListDataFileTests
 
         var payload = new AsvSdrRecordDataResponsePayload()
         {
-            RecordGuid = new byte[16],
+            
             DataType = AsvSdrCustomMode.AsvSdrCustomModeIdle,
             ItemsCount = 15,
             Result = AsvSdrRequestAck.AsvSdrRequestAckOk,
@@ -377,7 +365,7 @@ public class ListDataFileTests
         Assert.False(file.Read(0, payloadRead));
         var payload = new AsvSdrRecordDataVorPayload()
         {
-            RecordGuid = new byte[16],
+            
             Alt = 500,
             Am30 = (float)15.0,
             Am9960 = (float)80.0,
@@ -422,7 +410,7 @@ public class ListDataFileTests
         using var strm = new MemoryStream();
         var payload = new AsvSdrRecordDataVorPayload()
         {
-            RecordGuid = new byte[16],
+            
             Alt = 500,
             Am30 = (float)15.0,
             Am9960 = (float)80.0,
@@ -470,7 +458,7 @@ public class ListDataFileTests
         using var strm = new MemoryStream();
         var payload = new AsvSdrRecordDataVorPayload()
         {
-            RecordGuid = new byte[16],
+            
             Alt = 500,
             Am30 = (float)15.0,
             Am9960 = (float)80.0,
@@ -518,7 +506,7 @@ public class ListDataFileTests
             {
                 _.Tags.Add(new AsvSdrRecordTagPayload()
                 {
-                    RecordGuid = [1, 0, 0],
+                    
                     TagType = AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64
                 });
             });
