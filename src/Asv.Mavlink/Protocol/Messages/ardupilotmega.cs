@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
 
 using System;
 using System.Text;
@@ -3752,7 +3752,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             writer.Write(StaticFields[0], Payload.TargetSystem);
             writer.Write(StaticFields[1], Payload.TargetComponent);
-            writer.Write(StaticFields[2], Payload.MountMode);
+            writer.Write(StaticFields[2], (ulong)Payload.MountMode);
             writer.Write(StaticFields[3], Payload.StabRoll);
             writer.Write(StaticFields[4], Payload.StabPitch);
             writer.Write(StaticFields[5], Payload.StabYaw);
@@ -4157,7 +4157,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[2], Payload.PointingC);
             writer.Write(StaticFields[3], Payload.TargetSystem);
             writer.Write(StaticFields[4], Payload.TargetComponent);
-            writer.Write(StaticFields[5], Payload.MountMode);
+            writer.Write(StaticFields[5], (ulong)Payload.MountMode);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -5599,10 +5599,10 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[2], Payload.LastRecovery);
             writer.Write(StaticFields[3], Payload.LastClear);
             writer.Write(StaticFields[4], Payload.BreachCount);
-            writer.Write(StaticFields[5], Payload.LimitsState);
-            writer.Write(StaticFields[6], Payload.ModsEnabled);
-            writer.Write(StaticFields[7], Payload.ModsRequired);
-            writer.Write(StaticFields[8], Payload.ModsTriggered);
+            writer.Write(StaticFields[5], (ulong)Payload.LimitsState);
+            writer.Write(StaticFields[6], (ulong)Payload.ModsEnabled);
+            writer.Write(StaticFields[7], (ulong)Payload.ModsRequired);
+            writer.Write(StaticFields[8], (ulong)Payload.ModsTriggered);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -7064,7 +7064,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[6], Payload.TargetComponent);
             writer.Write(StaticFields[7], Payload.Idx);
             writer.Write(StaticFields[8], Payload.Count);
-            writer.Write(StaticFields[9], Payload.Flags);
+            writer.Write(StaticFields[9], (ulong)Payload.Flags);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -7877,7 +7877,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[5], Payload.ImgIdx);
             writer.Write(StaticFields[6], Payload.TargetSystem);
             writer.Write(StaticFields[7], Payload.CamIdx);
-            writer.Write(StaticFields[8], Payload.EventId);
+            writer.Write(StaticFields[8], (ulong)Payload.EventId);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -8200,7 +8200,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[9], Payload.ImgIdx);
             writer.Write(StaticFields[10], Payload.TargetSystem);
             writer.Write(StaticFields[11], Payload.CamIdx);
-            writer.Write(StaticFields[12], Payload.Flags);
+            writer.Write(StaticFields[12], (ulong)Payload.Flags);
             writer.Write(StaticFields[13], Payload.CompletedCaptures);
         }
         
@@ -8968,7 +8968,7 @@ namespace Asv.Mavlink.Ardupilotmega
         
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
-            writer.Write(StaticFields[0], Payload.Seqno);
+            writer.Write(StaticFields[0], (ulong)Payload.Seqno);
             writer.Write(StaticFields[1], Payload.TargetSystem);
             writer.Write(StaticFields[2], Payload.TargetComponent);
             writer.Write(StaticFields[3], Payload.Data);
@@ -9143,7 +9143,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[0], Payload.Seqno);
             writer.Write(StaticFields[1], Payload.TargetSystem);
             writer.Write(StaticFields[2], Payload.TargetComponent);
-            writer.Write(StaticFields[3], Payload.Status);
+            writer.Write(StaticFields[3], (ulong)Payload.Status);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -9573,7 +9573,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[2], Payload.DirectionZ);
             writer.Write(StaticFields[3], Payload.CompassId);
             writer.Write(StaticFields[4], Payload.CalMask);
-            writer.Write(StaticFields[5], Payload.CalStatus);
+            writer.Write(StaticFields[5], (ulong)Payload.CalStatus);
             writer.Write(StaticFields[6], Payload.Attempt);
             writer.Write(StaticFields[7], Payload.CompletionPct);
             writer.Write(StaticFields[8], Payload.CompletionMask);
@@ -9828,7 +9828,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[2], Payload.PosVertVariance);
             writer.Write(StaticFields[3], Payload.CompassVariance);
             writer.Write(StaticFields[4], Payload.TerrainAltVariance);
-            writer.Write(StaticFields[5], Payload.Flags);
+            writer.Write(StaticFields[5], (ulong)Payload.Flags);
             writer.Write(StaticFields[6], Payload.AirspeedVariance);
         }
         
@@ -10075,7 +10075,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[3], Payload.P);
             writer.Write(StaticFields[4], Payload.I);
             writer.Write(StaticFields[5], Payload.D);
-            writer.Write(StaticFields[6], Payload.Axis);
+            writer.Write(StaticFields[6], (ulong)Payload.Axis);
             writer.Write(StaticFields[7], Payload.Srate);
             writer.Write(StaticFields[8], Payload.Pdmod);
         }
@@ -10357,7 +10357,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[6], Payload.Altitude);
             writer.Write(StaticFields[7], Payload.ExpectedTravelDistance);
             writer.Write(StaticFields[8], Payload.CrossTrackError);
-            writer.Write(StaticFields[9], Payload.Stage);
+            writer.Write(StaticFields[9], (ulong)Payload.Stage);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -11243,9 +11243,9 @@ namespace Asv.Mavlink.Ardupilotmega
         
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
-            writer.Write(StaticFields[0], Payload.Status);
-            writer.Write(StaticFields[1], Payload.CaptureMode);
-            writer.Write(StaticFields[2], Payload.Flags);
+            writer.Write(StaticFields[0], (ulong)Payload.Status);
+            writer.Write(StaticFields[1], (ulong)Payload.CaptureMode);
+            writer.Write(StaticFields[2], (ulong)Payload.Flags);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -11383,7 +11383,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             writer.Write(StaticFields[0], Payload.TargetSystem);
             writer.Write(StaticFields[1], Payload.TargetComponent);
-            writer.Write(StaticFields[2], Payload.CmdId);
+            writer.Write(StaticFields[2], (ulong)Payload.CmdId);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -11519,8 +11519,8 @@ namespace Asv.Mavlink.Ardupilotmega
         
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
-            writer.Write(StaticFields[0], Payload.CmdId);
-            writer.Write(StaticFields[1], Payload.Status);
+            writer.Write(StaticFields[0], (ulong)Payload.CmdId);
+            writer.Write(StaticFields[1], (ulong)Payload.Status);
             writer.Write(StaticFields[2], Payload.Value);
         }
         
@@ -11683,7 +11683,7 @@ namespace Asv.Mavlink.Ardupilotmega
         {
             writer.Write(StaticFields[0], Payload.TargetSystem);
             writer.Write(StaticFields[1], Payload.TargetComponent);
-            writer.Write(StaticFields[2], Payload.CmdId);
+            writer.Write(StaticFields[2], (ulong)Payload.CmdId);
             writer.Write(StaticFields[3], Payload.Value);
         }
         
@@ -11831,8 +11831,8 @@ namespace Asv.Mavlink.Ardupilotmega
         
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
-            writer.Write(StaticFields[0], Payload.CmdId);
-            writer.Write(StaticFields[1], Payload.Status);
+            writer.Write(StaticFields[0], (ulong)Payload.CmdId);
+            writer.Write(StaticFields[1], (ulong)Payload.Status);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -12156,7 +12156,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[0], Payload.RequestId);
             writer.Write(StaticFields[1], Payload.TargetSystem);
             writer.Write(StaticFields[2], Payload.TargetComponent);
-            writer.Write(StaticFields[3], Payload.Bustype);
+            writer.Write(StaticFields[3], (ulong)Payload.Bustype);
             writer.Write(StaticFields[4], Payload.Bus);
             writer.Write(StaticFields[5], Payload.Address);
             writer.Write(StaticFields[6], Payload.Busname);
@@ -12695,7 +12695,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[0], Payload.RequestId);
             writer.Write(StaticFields[1], Payload.TargetSystem);
             writer.Write(StaticFields[2], Payload.TargetComponent);
-            writer.Write(StaticFields[3], Payload.Bustype);
+            writer.Write(StaticFields[3], (ulong)Payload.Bustype);
             writer.Write(StaticFields[4], Payload.Bus);
             writer.Write(StaticFields[5], Payload.Address);
             writer.Write(StaticFields[6], Payload.Busname);
@@ -13184,7 +13184,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[9], Payload.F);
             writer.Write(StaticFields[10], Payload.FDot);
             writer.Write(StaticFields[11], Payload.U);
-            writer.Write(StaticFields[12], Payload.Axis);
+            writer.Write(StaticFields[12], (ulong)Payload.Axis);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -14597,7 +14597,7 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[6], Payload.OsdScreen);
             writer.Write(StaticFields[7], Payload.OsdIndex);
             writer.Write(StaticFields[8], Payload.ParamId);
-            writer.Write(StaticFields[9], Payload.ConfigType);
+            writer.Write(StaticFields[9], (ulong)Payload.ConfigType);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -14811,7 +14811,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.Result);
+            writer.Write(StaticFields[1], (ulong)Payload.Result);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -15166,9 +15166,9 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[1], Payload.MinValue);
             writer.Write(StaticFields[2], Payload.MaxValue);
             writer.Write(StaticFields[3], Payload.Increment);
-            writer.Write(StaticFields[4], Payload.Result);
+            writer.Write(StaticFields[4], (ulong)Payload.Result);
             writer.Write(StaticFields[5], Payload.ParamId);
-            writer.Write(StaticFields[6], Payload.ConfigType);
+            writer.Write(StaticFields[6], (ulong)Payload.ConfigType);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -15438,8 +15438,8 @@ namespace Asv.Mavlink.Ardupilotmega
             writer.Write(StaticFields[4], Payload.MinDistance);
             writer.Write(StaticFields[5], Payload.MaxDistance);
             writer.Write(StaticFields[6], Payload.ObstacleId);
-            writer.Write(StaticFields[7], Payload.SensorType);
-            writer.Write(StaticFields[8], Payload.Frame);
+            writer.Write(StaticFields[7], (ulong)Payload.SensorType);
+            writer.Write(StaticFields[8], (ulong)Payload.Frame);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)

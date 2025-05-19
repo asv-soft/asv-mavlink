@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
 
 using System;
 using System.Text;
@@ -144,7 +144,7 @@ namespace Asv.Mavlink.Icarous
         
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
-            writer.Write(StaticFields[0], Payload.Status);
+            writer.Write(StaticFields[0], (ulong)Payload.Status);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -416,11 +416,11 @@ namespace Asv.Mavlink.Icarous
             writer.Write(StaticFields[8], Payload.Min5);
             writer.Write(StaticFields[9], Payload.Max5);
             writer.Write(StaticFields[10], Payload.Numbands);
-            writer.Write(StaticFields[11], Payload.Type1);
-            writer.Write(StaticFields[12], Payload.Type2);
-            writer.Write(StaticFields[13], Payload.Type3);
-            writer.Write(StaticFields[14], Payload.Type4);
-            writer.Write(StaticFields[15], Payload.Type5);
+            writer.Write(StaticFields[11], (ulong)Payload.Type1);
+            writer.Write(StaticFields[12], (ulong)Payload.Type2);
+            writer.Write(StaticFields[13], (ulong)Payload.Type3);
+            writer.Write(StaticFields[14], (ulong)Payload.Type4);
+            writer.Write(StaticFields[15], (ulong)Payload.Type5);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)

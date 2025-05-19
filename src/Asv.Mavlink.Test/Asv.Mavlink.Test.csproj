@@ -33,9 +33,7 @@
     <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Microservices\Mode\Server\" />
-  </ItemGroup>
+ 
 
   
 

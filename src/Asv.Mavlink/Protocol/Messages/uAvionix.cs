@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
 
 using System;
 using System.Text;
@@ -447,11 +447,11 @@ namespace Asv.Mavlink.Uavionix
             writer.Write(StaticFields[0], Payload.Icao);
             writer.Write(StaticFields[1], Payload.Stallspeed);
             writer.Write(StaticFields[2], Payload.Callsign);
-            writer.Write(StaticFields[3], Payload.Emittertype);
-            writer.Write(StaticFields[4], Payload.Aircraftsize);
-            writer.Write(StaticFields[5], Payload.Gpsoffsetlat);
-            writer.Write(StaticFields[6], Payload.Gpsoffsetlon);
-            writer.Write(StaticFields[7], Payload.Rfselect);
+            writer.Write(StaticFields[3], (ulong)Payload.Emittertype);
+            writer.Write(StaticFields[4], (ulong)Payload.Aircraftsize);
+            writer.Write(StaticFields[5], (ulong)Payload.Gpsoffsetlat);
+            writer.Write(StaticFields[6], (ulong)Payload.Gpsoffsetlon);
+            writer.Write(StaticFields[7], (ulong)Payload.Rfselect);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -811,11 +811,11 @@ namespace Asv.Mavlink.Uavionix
             writer.Write(StaticFields[8], Payload.Velvert);
             writer.Write(StaticFields[9], Payload.Velns);
             writer.Write(StaticFields[10], Payload.Velew);
-            writer.Write(StaticFields[11], Payload.State);
+            writer.Write(StaticFields[11], (ulong)Payload.State);
             writer.Write(StaticFields[12], Payload.Squawk);
-            writer.Write(StaticFields[13], Payload.Gpsfix);
+            writer.Write(StaticFields[13], (ulong)Payload.Gpsfix);
             writer.Write(StaticFields[14], Payload.Numsats);
-            writer.Write(StaticFields[15], Payload.Emergencystatus);
+            writer.Write(StaticFields[15], (ulong)Payload.Emergencystatus);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -1046,7 +1046,7 @@ namespace Asv.Mavlink.Uavionix
         
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
-            writer.Write(StaticFields[0], Payload.Rfhealth);
+            writer.Write(StaticFields[0], (ulong)Payload.Rfhealth);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)

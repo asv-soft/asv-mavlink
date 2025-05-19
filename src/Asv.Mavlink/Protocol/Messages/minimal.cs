@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
 
 using System;
 using System.Text;
@@ -1324,10 +1324,10 @@ namespace Asv.Mavlink.Minimal
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.CustomMode);
-            writer.Write(StaticFields[1], Payload.Type);
-            writer.Write(StaticFields[2], Payload.Autopilot);
-            writer.Write(StaticFields[3], Payload.BaseMode);
-            writer.Write(StaticFields[4], Payload.SystemStatus);
+            writer.Write(StaticFields[1], (ulong)Payload.Type);
+            writer.Write(StaticFields[2], (ulong)Payload.Autopilot);
+            writer.Write(StaticFields[3], (ulong)Payload.BaseMode);
+            writer.Write(StaticFields[4], (ulong)Payload.SystemStatus);
             writer.Write(StaticFields[5], Payload.MavlinkVersion);
         }
         

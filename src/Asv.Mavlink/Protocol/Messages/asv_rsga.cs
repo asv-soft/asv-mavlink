@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
 
 using System;
 using System.Text;
@@ -872,7 +872,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.Result);
+            writer.Write(StaticFields[1], (ulong)Payload.Result);
             writer.Write(StaticFields[2], Payload.SupportedModes);
         }
         
@@ -1210,7 +1210,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.DataIndex);
             writer.Write(StaticFields[3], Payload.Lat);
             writer.Write(StaticFields[4], Payload.LatErr);
@@ -1225,10 +1225,10 @@ namespace Asv.Mavlink.AsvRsga
             writer.Write(StaticFields[13], Payload.Sog);
             writer.Write(StaticFields[14], Payload.CogTrue);
             writer.Write(StaticFields[15], Payload.CogMag);
-            writer.Write(StaticFields[16], Payload.ReceiverType);
-            writer.Write(StaticFields[17], Payload.GnssFlags);
+            writer.Write(StaticFields[16], (ulong)Payload.ReceiverType);
+            writer.Write(StaticFields[17], (ulong)Payload.GnssFlags);
             writer.Write(StaticFields[18], Payload.SatCnt);
-            writer.Write(StaticFields[19], Payload.FixType);
+            writer.Write(StaticFields[19], (ulong)Payload.FixType);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -1518,7 +1518,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -1656,7 +1656,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -1794,7 +1794,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -1932,7 +1932,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -2070,7 +2070,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -2208,7 +2208,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -2346,7 +2346,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -2484,7 +2484,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -2622,7 +2622,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -2980,7 +2980,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.TxFreq);
             writer.Write(StaticFields[3], Payload.RxFreq);
             writer.Write(StaticFields[4], Payload.Index);
@@ -3343,7 +3343,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -3481,7 +3481,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -3619,7 +3619,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -3757,7 +3757,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -3895,7 +3895,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         
@@ -4220,7 +4220,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.TxFreq);
             writer.Write(StaticFields[3], Payload.RxFreq);
             writer.Write(StaticFields[4], Payload.Index);
@@ -4231,8 +4231,8 @@ namespace Asv.Mavlink.AsvRsga
             writer.Write(StaticFields[9], Payload.RxSignalOverflow);
             writer.Write(StaticFields[10], Payload.RxGain);
             writer.Write(StaticFields[11], Payload.IcaoAddress);
-            writer.Write(StaticFields[12], Payload.UfCounterFlag);
-            writer.Write(StaticFields[13], Payload.DfCounterPresent);
+            writer.Write(StaticFields[12], (ulong)Payload.UfCounterFlag);
+            writer.Write(StaticFields[13], (ulong)Payload.DfCounterPresent);
             writer.Write(StaticFields[14], Payload.RxFreqOffset);
             writer.Write(StaticFields[15], Payload.RefId);
             writer.Write(StaticFields[16], Payload.Squawk);
@@ -4569,7 +4569,7 @@ namespace Asv.Mavlink.AsvRsga
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.TimeUnixUsec);
-            writer.Write(StaticFields[1], Payload.Flags);
+            writer.Write(StaticFields[1], (ulong)Payload.Flags);
             writer.Write(StaticFields[2], Payload.Index);
         }
         

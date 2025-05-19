@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
 
 using System;
 using System.Text;
@@ -585,15 +585,15 @@ namespace Asv.Mavlink.AsvSdr
         
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
-            writer.Write(StaticFields[0], Payload.SupportedModes);
+            writer.Write(StaticFields[0], (ulong)Payload.SupportedModes);
             writer.Write(StaticFields[1], Payload.Size);
             writer.Write(StaticFields[2], Payload.RecordCount);
             writer.Write(StaticFields[3], Payload.CurrentMissionIndex);
             writer.Write(StaticFields[4], Payload.CurrentRecordGuid);
-            writer.Write(StaticFields[5], Payload.CurrentRecordMode);
+            writer.Write(StaticFields[5], (ulong)Payload.CurrentRecordMode);
             writer.Write(StaticFields[6], Payload.CurrentRecordName);
-            writer.Write(StaticFields[7], Payload.MissionState);
-            writer.Write(StaticFields[8], Payload.CalibState);
+            writer.Write(StaticFields[7], (ulong)Payload.MissionState);
+            writer.Write(StaticFields[8], (ulong)Payload.CalibState);
             writer.Write(StaticFields[9], Payload.CalibTableCount);
             writer.Write(StaticFields[10], Payload.RefPower);
             writer.Write(StaticFields[11], Payload.SignalOverflow);
@@ -1036,7 +1036,7 @@ namespace Asv.Mavlink.AsvSdr
         {
             writer.Write(StaticFields[0], Payload.RequestId);
             writer.Write(StaticFields[1], Payload.ItemsCount);
-            writer.Write(StaticFields[2], Payload.Result);
+            writer.Write(StaticFields[2], (ulong)Payload.Result);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -1240,7 +1240,7 @@ namespace Asv.Mavlink.AsvSdr
         {
             writer.Write(StaticFields[0], Payload.Frequency);
             writer.Write(StaticFields[1], Payload.CreatedUnixUs);
-            writer.Write(StaticFields[2], Payload.DataType);
+            writer.Write(StaticFields[2], (ulong)Payload.DataType);
             writer.Write(StaticFields[3], Payload.DurationSec);
             writer.Write(StaticFields[4], Payload.DataCount);
             writer.Write(StaticFields[5], Payload.Size);
@@ -1642,7 +1642,7 @@ namespace Asv.Mavlink.AsvSdr
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.Result);
+            writer.Write(StaticFields[1], (ulong)Payload.Result);
             writer.Write(StaticFields[2], Payload.RecordGuid);
         }
         
@@ -2008,7 +2008,7 @@ namespace Asv.Mavlink.AsvSdr
         {
             writer.Write(StaticFields[0], Payload.RequestId);
             writer.Write(StaticFields[1], Payload.ItemsCount);
-            writer.Write(StaticFields[2], Payload.Result);
+            writer.Write(StaticFields[2], (ulong)Payload.Result);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -2169,7 +2169,7 @@ namespace Asv.Mavlink.AsvSdr
             writer.Write(StaticFields[0], Payload.RecordGuid);
             writer.Write(StaticFields[1], Payload.TagGuid);
             writer.Write(StaticFields[2], Payload.TagName);
-            writer.Write(StaticFields[3], Payload.TagType);
+            writer.Write(StaticFields[3], (ulong)Payload.TagType);
             writer.Write(StaticFields[4], Payload.TagValue);
         }
         
@@ -2586,7 +2586,7 @@ namespace Asv.Mavlink.AsvSdr
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.Result);
+            writer.Write(StaticFields[1], (ulong)Payload.Result);
             writer.Write(StaticFields[2], Payload.RecordGuid);
             writer.Write(StaticFields[3], Payload.TagGuid);
         }
@@ -2990,10 +2990,10 @@ namespace Asv.Mavlink.AsvSdr
         
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
-            writer.Write(StaticFields[0], Payload.DataType);
+            writer.Write(StaticFields[0], (ulong)Payload.DataType);
             writer.Write(StaticFields[1], Payload.ItemsCount);
             writer.Write(StaticFields[2], Payload.RequestId);
-            writer.Write(StaticFields[3], Payload.Result);
+            writer.Write(StaticFields[3], (ulong)Payload.Result);
             writer.Write(StaticFields[4], Payload.RecordGuid);
         }
         
@@ -3151,7 +3151,7 @@ namespace Asv.Mavlink.AsvSdr
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.RequestId);
-            writer.Write(StaticFields[1], Payload.Result);
+            writer.Write(StaticFields[1], (ulong)Payload.Result);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -4497,7 +4497,7 @@ namespace Asv.Mavlink.AsvSdr
             writer.Write(StaticFields[3], Payload.Start);
             writer.Write(StaticFields[4], Payload.Total);
             writer.Write(StaticFields[5], Payload.SignalName);
-            writer.Write(StaticFields[6], Payload.Format);
+            writer.Write(StaticFields[6], (ulong)Payload.Format);
             writer.Write(StaticFields[7], Payload.Count);
             writer.Write(StaticFields[8], Payload.Data);
         }
@@ -5310,7 +5310,7 @@ namespace Asv.Mavlink.AsvSdr
             writer.Write(StaticFields[46], Payload.CodeIdFreq1020);
             writer.Write(StaticFields[47], Payload.MeasureTime);
             writer.Write(StaticFields[48], Payload.RecordGuid);
-            writer.Write(StaticFields[49], Payload.GnssFixType);
+            writer.Write(StaticFields[49], (ulong)Payload.GnssFixType);
             writer.Write(StaticFields[50], Payload.GnssSatellitesVisible);
             writer.Write(StaticFields[51], Payload.CodeId);
         }
@@ -6475,7 +6475,7 @@ namespace Asv.Mavlink.AsvSdr
             writer.Write(StaticFields[44], Payload.TotalFreq150);
             writer.Write(StaticFields[45], Payload.MeasureTime);
             writer.Write(StaticFields[46], Payload.RecordGuid);
-            writer.Write(StaticFields[47], Payload.GnssFixType);
+            writer.Write(StaticFields[47], (ulong)Payload.GnssFixType);
             writer.Write(StaticFields[48], Payload.GnssSatellitesVisible);
         }
         
@@ -7483,7 +7483,7 @@ namespace Asv.Mavlink.AsvSdr
             writer.Write(StaticFields[34], Payload.CodeIdFreq1020);
             writer.Write(StaticFields[35], Payload.MeasureTime);
             writer.Write(StaticFields[36], Payload.RecordGuid);
-            writer.Write(StaticFields[37], Payload.GnssFixType);
+            writer.Write(StaticFields[37], (ulong)Payload.GnssFixType);
             writer.Write(StaticFields[38], Payload.GnssSatellitesVisible);
             writer.Write(StaticFields[39], Payload.CodeId);
         }

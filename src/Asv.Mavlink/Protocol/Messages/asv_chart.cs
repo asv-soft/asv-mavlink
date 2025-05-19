@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
 
 using System;
 using System.Text;
@@ -435,7 +435,7 @@ namespace Asv.Mavlink.AsvChart
             writer.Write(StaticFields[0], Payload.RequestId);
             writer.Write(StaticFields[1], Payload.ItemsCount);
             writer.Write(StaticFields[2], Payload.ChatListHash);
-            writer.Write(StaticFields[3], Payload.Result);
+            writer.Write(StaticFields[3], (ulong)Payload.Result);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -835,15 +835,15 @@ namespace Asv.Mavlink.AsvChart
             writer.Write(StaticFields[3], Payload.AxesYMax);
             writer.Write(StaticFields[4], Payload.ChartId);
             writer.Write(StaticFields[5], Payload.ChartInfoHash);
-            writer.Write(StaticFields[6], Payload.AxesXUnit);
+            writer.Write(StaticFields[6], (ulong)Payload.AxesXUnit);
             writer.Write(StaticFields[7], Payload.AxesXCount);
-            writer.Write(StaticFields[8], Payload.AxesYUnit);
+            writer.Write(StaticFields[8], (ulong)Payload.AxesYUnit);
             writer.Write(StaticFields[9], Payload.AxesYCount);
             writer.Write(StaticFields[10], Payload.ChartName);
-            writer.Write(StaticFields[11], Payload.ChartType);
+            writer.Write(StaticFields[11], (ulong)Payload.ChartType);
             writer.Write(StaticFields[12], Payload.AxesXName);
             writer.Write(StaticFields[13], Payload.AxesYName);
-            writer.Write(StaticFields[14], Payload.Format);
+            writer.Write(StaticFields[14], (ulong)Payload.Format);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -1190,7 +1190,7 @@ namespace Asv.Mavlink.AsvChart
             writer.Write(StaticFields[2], Payload.ChatInfoHash);
             writer.Write(StaticFields[3], Payload.TargetSystem);
             writer.Write(StaticFields[4], Payload.TargetComponent);
-            writer.Write(StaticFields[5], Payload.DataTrigger);
+            writer.Write(StaticFields[5], (ulong)Payload.DataTrigger);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -1378,8 +1378,8 @@ namespace Asv.Mavlink.AsvChart
             writer.Write(StaticFields[0], Payload.DataRate);
             writer.Write(StaticFields[1], Payload.ChatId);
             writer.Write(StaticFields[2], Payload.ChatInfoHash);
-            writer.Write(StaticFields[3], Payload.Result);
-            writer.Write(StaticFields[4], Payload.DataTrigger);
+            writer.Write(StaticFields[3], (ulong)Payload.Result);
+            writer.Write(StaticFields[4], (ulong)Payload.DataTrigger);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)

@@ -20,13 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
 
 using System;
 using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
+using System.Linq;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.IO;
@@ -258,8 +259,8 @@ namespace Asv.Mavlink.AsvRadio
             writer.Write(StaticFields[1], Payload.TxLevel);
             writer.Write(StaticFields[2], Payload.RxLevel);
             writer.Write(StaticFields[3], Payload.RxEstimatedLevel);
-            writer.Write(StaticFields[4], Payload.RfMode);
-            writer.Write(StaticFields[5], Payload.Modulation);
+            writer.Write(StaticFields[4], (ulong)Payload.RfMode);
+            writer.Write(StaticFields[5], (ulong)Payload.Modulation);
         }
         
         public override void WriteFields(IMavlinkFieldReader reader)
@@ -946,7 +947,7 @@ namespace Asv.Mavlink.AsvRadio
         {
             writer.Write(StaticFields[0], Payload.All);
             writer.Write(StaticFields[1], Payload.Skip);
-            writer.Write(StaticFields[2], Payload.Codecs);
+            writer.Write(StaticFields[2], Payload.Codecs.Select(x=>(ulong)x).ToArray());
             writer.Write(StaticFields[3], Payload.Count);
         }
         

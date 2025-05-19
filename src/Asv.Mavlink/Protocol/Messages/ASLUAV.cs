@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.15+a2f1de3777820636a46d83925144e965a9eb2291 25-05-11.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+8bb2f8865168bf54d58a112cb63c6bf098479247 25-05-12.
 
 using System;
 using System.Text;
@@ -352,10 +352,10 @@ namespace Asv.Mavlink.Asluav
             writer.Write(StaticFields[6], Payload.X);
             writer.Write(StaticFields[7], Payload.Y);
             writer.Write(StaticFields[8], Payload.Z);
-            writer.Write(StaticFields[9], Payload.Command);
+            writer.Write(StaticFields[9], (ulong)Payload.Command);
             writer.Write(StaticFields[10], Payload.TargetSystem);
             writer.Write(StaticFields[11], Payload.TargetComponent);
-            writer.Write(StaticFields[12], Payload.Frame);
+            writer.Write(StaticFields[12], (ulong)Payload.Frame);
             writer.Write(StaticFields[13], Payload.Current);
             writer.Write(StaticFields[14], Payload.Autocontinue);
         }
@@ -720,7 +720,7 @@ namespace Asv.Mavlink.Asluav
             writer.Write(StaticFields[6], Payload.Param5);
             writer.Write(StaticFields[7], Payload.Param6);
             writer.Write(StaticFields[8], Payload.Param7);
-            writer.Write(StaticFields[9], Payload.Command);
+            writer.Write(StaticFields[9], (ulong)Payload.Command);
             writer.Write(StaticFields[10], Payload.TargetSystem);
             writer.Write(StaticFields[11], Payload.TargetComponent);
             writer.Write(StaticFields[12], Payload.Confirmation);
@@ -4742,8 +4742,8 @@ namespace Asv.Mavlink.Asluav
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
             writer.Write(StaticFields[0], Payload.Timestamp);
-            writer.Write(StaticFields[1], Payload.GsmModemType);
-            writer.Write(StaticFields[2], Payload.GsmLinkType);
+            writer.Write(StaticFields[1], (ulong)Payload.GsmModemType);
+            writer.Write(StaticFields[2], (ulong)Payload.GsmLinkType);
             writer.Write(StaticFields[3], Payload.Rssi);
             writer.Write(StaticFields[4], Payload.RsrpRscp);
             writer.Write(StaticFields[5], Payload.SinrEcio);

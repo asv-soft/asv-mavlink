@@ -133,7 +133,15 @@ namespace Asv.Mavlink.{{ Namespace }}
         public override void ReadFields(IMavlinkFieldWriter writer)
         {
 {%- for field in msg.Fields -%}
+    {%- if field.IsEnum -%}
+        {%- if field.IsArray -%}
+            writer.Write(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }}.Select(x=>(ulong)x).ToArray());
+        {%- else -%}
+            writer.Write(StaticFields[{{ forloop.index0 }}], (ulong)Payload.{{ field.CamelCaseName }});
+        {%- endif -%}
+    {%- else -%}
             writer.Write(StaticFields[{{ forloop.index0 }}], Payload.{{ field.CamelCaseName }});
+    {%- endif -%}
 {%- endfor -%}
         }
         
