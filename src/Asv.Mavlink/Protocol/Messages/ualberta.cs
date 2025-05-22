@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Ualberta
@@ -43,6 +45,7 @@ namespace Asv.Mavlink.Ualberta
             src.Add(RadioCalibrationPacket.MessageId, ()=>new RadioCalibrationPacket());
             src.Add(UalbertaSysStatusPacket.MessageId, ()=>new UalbertaSysStatusPacket());
         }
+ 
     }
 
 #region Enums
@@ -51,7 +54,7 @@ namespace Asv.Mavlink.Ualberta
     /// Available autopilot modes for ualberta uav
     ///  UALBERTA_AUTOPILOT_MODE
     /// </summary>
-    public enum UalbertaAutopilotMode:uint
+    public enum UalbertaAutopilotMode : ulong
     {
         /// <summary>
         /// Raw input pulse widts sent to output
@@ -76,12 +79,30 @@ namespace Asv.Mavlink.Ualberta
         /// </summary>
         ModeAutoPidPos = 5,
     }
-
+    public static class UalbertaAutopilotModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"MODE_MANUAL_DIRECT");
+            yield return new EnumValue<T>(converter(2),"MODE_MANUAL_SCALED");
+            yield return new EnumValue<T>(converter(3),"MODE_AUTO_PID_ATT");
+            yield return new EnumValue<T>(converter(4),"MODE_AUTO_PID_VEL");
+            yield return new EnumValue<T>(converter(5),"MODE_AUTO_PID_POS");
+        }
+    }
     /// <summary>
     /// Navigation filter mode
     ///  UALBERTA_NAV_MODE
     /// </summary>
-    public enum UalbertaNavMode:uint
+    public enum UalbertaNavMode : ulong
     {
         /// <summary>
         /// NAV_AHRS_INIT
@@ -103,12 +124,28 @@ namespace Asv.Mavlink.Ualberta
         /// </summary>
         NavInsGps = 4,
     }
-
+    public static class UalbertaNavModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"NAV_AHRS_INIT");
+            yield return new EnumValue<T>(converter(2),"NAV_AHRS");
+            yield return new EnumValue<T>(converter(3),"NAV_INS_GPS_INIT");
+            yield return new EnumValue<T>(converter(4),"NAV_INS_GPS");
+        }
+    }
     /// <summary>
     /// Mode currently commanded by pilot
     ///  UALBERTA_PILOT_MODE
     /// </summary>
-    public enum UalbertaPilotMode:uint
+    public enum UalbertaPilotMode : ulong
     {
         /// <summary>
         /// PILOT_MANUAL
@@ -124,7 +161,21 @@ namespace Asv.Mavlink.Ualberta
         /// </summary>
         PilotRoto = 3,
     }
-
+    public static class UalbertaPilotModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"PILOT_MANUAL");
+            yield return new EnumValue<T>(converter(2),"PILOT_AUTO");
+            yield return new EnumValue<T>(converter(3),"PILOT_ROTO");
+        }
+    }
 
 #endregion
 
@@ -203,13 +254,13 @@ namespace Asv.Mavlink.Ualberta
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,UsecField, ref _usec);    
-            FloatType.Accept(visitor,Accel0Field, ref _accel0);    
-            FloatType.Accept(visitor,Accel1Field, ref _accel1);    
-            FloatType.Accept(visitor,Accel2Field, ref _accel2);    
-            FloatType.Accept(visitor,Gyro0Field, ref _gyro0);    
-            FloatType.Accept(visitor,Gyro1Field, ref _gyro1);    
-            FloatType.Accept(visitor,Gyro2Field, ref _gyro2);    
+            UInt64Type.Accept(visitor,UsecField, UsecField.DataType, ref _usec);    
+            FloatType.Accept(visitor,Accel0Field, Accel0Field.DataType, ref _accel0);    
+            FloatType.Accept(visitor,Accel1Field, Accel1Field.DataType, ref _accel1);    
+            FloatType.Accept(visitor,Accel2Field, Accel2Field.DataType, ref _accel2);    
+            FloatType.Accept(visitor,Gyro0Field, Gyro0Field.DataType, ref _gyro0);    
+            FloatType.Accept(visitor,Gyro1Field, Gyro1Field.DataType, ref _gyro1);    
+            FloatType.Accept(visitor,Gyro2Field, Gyro2Field.DataType, ref _gyro2);    
 
         }
 
@@ -221,11 +272,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Usec))
             .Title("usec")
             .Description("Timestamp (microseconds)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
 
-            .Build();
+            .DataType(UInt64Type.Default)
+        .Build();
         private ulong _usec;
         public ulong Usec { get => _usec; set => _usec = value; }
         /// <summary>
@@ -236,11 +285,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Accel0))
             .Title("accel_0")
             .Description("b_f[0]")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _accel0;
         public float Accel0 { get => _accel0; set => _accel0 = value; }
         /// <summary>
@@ -251,11 +298,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Accel1))
             .Title("accel_1")
             .Description("b_f[1]")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _accel1;
         public float Accel1 { get => _accel1; set => _accel1 = value; }
         /// <summary>
@@ -266,11 +311,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Accel2))
             .Title("accel_2")
             .Description("b_f[2]")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _accel2;
         public float Accel2 { get => _accel2; set => _accel2 = value; }
         /// <summary>
@@ -281,11 +324,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Gyro0))
             .Title("gyro_0")
             .Description("b_f[0]")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _gyro0;
         public float Gyro0 { get => _gyro0; set => _gyro0 = value; }
         /// <summary>
@@ -296,11 +337,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Gyro1))
             .Title("gyro_1")
             .Description("b_f[1]")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _gyro1;
         public float Gyro1 { get => _gyro1; set => _gyro1 = value; }
         /// <summary>
@@ -311,11 +350,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Gyro2))
             .Title("gyro_2")
             .Description("b_f[2]")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _gyro2;
         public float Gyro2 { get => _gyro2; set => _gyro2 = value; }
     }
@@ -434,18 +471,18 @@ namespace Asv.Mavlink.Ualberta
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,AileronField, 3,
-                (index,v) => UInt16Type.Accept(v, AileronField, ref Aileron[index]));    
-            ArrayType.Accept(visitor,ElevatorField, 3,
-                (index,v) => UInt16Type.Accept(v, ElevatorField, ref Elevator[index]));    
-            ArrayType.Accept(visitor,RudderField, 3,
-                (index,v) => UInt16Type.Accept(v, RudderField, ref Rudder[index]));    
-            ArrayType.Accept(visitor,GyroField, 2,
-                (index,v) => UInt16Type.Accept(v, GyroField, ref Gyro[index]));    
-            ArrayType.Accept(visitor,PitchField, 5,
-                (index,v) => UInt16Type.Accept(v, PitchField, ref Pitch[index]));    
-            ArrayType.Accept(visitor,ThrottleField, 5,
-                (index,v) => UInt16Type.Accept(v, ThrottleField, ref Throttle[index]));    
+            ArrayType.Accept(visitor,AileronField, AileronField.DataType, 3,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Aileron[index]));    
+            ArrayType.Accept(visitor,ElevatorField, ElevatorField.DataType, 3,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Elevator[index]));    
+            ArrayType.Accept(visitor,RudderField, RudderField.DataType, 3,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rudder[index]));    
+            ArrayType.Accept(visitor,GyroField, GyroField.DataType, 2,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Gyro[index]));    
+            ArrayType.Accept(visitor,PitchField, PitchField.DataType, 5,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Pitch[index]));    
+            ArrayType.Accept(visitor,ThrottleField, ThrottleField.DataType, 5,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Throttle[index]));    
 
         }
 
@@ -457,11 +494,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Aileron))
             .Title("aileron")
             .Description("Aileron setpoints: left, center, right")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,3))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,3))
+        .Build();
         public const int AileronMaxItemsCount = 3;
         public ushort[] Aileron { get; } = new ushort[3];
         /// <summary>
@@ -472,11 +507,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Elevator))
             .Title("elevator")
             .Description("Elevator setpoints: nose down, center, nose up")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,3))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,3))
+        .Build();
         public const int ElevatorMaxItemsCount = 3;
         public ushort[] Elevator { get; } = new ushort[3];
         /// <summary>
@@ -487,11 +520,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Rudder))
             .Title("rudder")
             .Description("Rudder setpoints: nose left, center, nose right")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,3))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,3))
+        .Build();
         public const int RudderMaxItemsCount = 3;
         public ushort[] Rudder { get; } = new ushort[3];
         /// <summary>
@@ -502,11 +533,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Gyro))
             .Title("gyro")
             .Description("Tail gyro mode/gain setpoints: heading hold, rate mode")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,2))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,2))
+        .Build();
         public const int GyroMaxItemsCount = 2;
         public ushort[] Gyro { get; } = new ushort[2];
         /// <summary>
@@ -517,11 +546,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Pitch))
             .Title("pitch")
             .Description("Pitch curve setpoints (every 25%)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,5))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,5))
+        .Build();
         public const int PitchMaxItemsCount = 5;
         public ushort[] Pitch { get; } = new ushort[5];
         [Obsolete("This method is deprecated. Use GetPitchMaxItemsCount instead.")]
@@ -534,11 +561,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Throttle))
             .Title("throttle")
             .Description("Throttle curve setpoints (every 25%)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,5))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,5))
+        .Build();
         public const int ThrottleMaxItemsCount = 5;
         public ushort[] Throttle { get; } = new ushort[5];
     }
@@ -603,9 +628,9 @@ namespace Asv.Mavlink.Ualberta
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,ModeField, ref _mode);    
-            UInt8Type.Accept(visitor,NavModeField, ref _navMode);    
-            UInt8Type.Accept(visitor,PilotField, ref _pilot);    
+            UInt8Type.Accept(visitor,ModeField, ModeField.DataType, ref _mode);    
+            UInt8Type.Accept(visitor,NavModeField, NavModeField.DataType, ref _navMode);    
+            UInt8Type.Accept(visitor,PilotField, PilotField.DataType, ref _pilot);    
 
         }
 
@@ -617,11 +642,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Mode))
             .Title("mode")
             .Description("System mode, see UALBERTA_AUTOPILOT_MODE ENUM")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _mode;
         public byte Mode { get => _mode; set => _mode = value; }
         /// <summary>
@@ -632,11 +655,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(NavMode))
             .Title("nav_mode")
             .Description("Navigation mode, see UALBERTA_NAV_MODE ENUM")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _navMode;
         public byte NavMode { get => _navMode; set => _navMode = value; }
         /// <summary>
@@ -647,11 +668,9 @@ namespace Asv.Mavlink.Ualberta
             .Name(nameof(Pilot))
             .Title("pilot")
             .Description("Pilot mode, see UALBERTA_PILOT_MODE")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _pilot;
         public byte Pilot { get => _pilot; set => _pilot = value; }
     }

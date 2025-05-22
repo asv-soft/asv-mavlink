@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Uavionix
@@ -43,6 +45,7 @@ namespace Asv.Mavlink.Uavionix
             src.Add(UavionixAdsbOutDynamicPacket.MessageId, ()=>new UavionixAdsbOutDynamicPacket());
             src.Add(UavionixAdsbTransceiverHealthReportPacket.MessageId, ()=>new UavionixAdsbTransceiverHealthReportPacket());
         }
+ 
     }
 
 #region Enums
@@ -51,7 +54,7 @@ namespace Asv.Mavlink.Uavionix
     /// State flags for ADS-B transponder dynamic report
     ///  UAVIONIX_ADSB_OUT_DYNAMIC_STATE
     /// </summary>
-    public enum UavionixAdsbOutDynamicState:uint
+    public enum UavionixAdsbOutDynamicState : ulong
     {
         /// <summary>
         /// UAVIONIX_ADSB_OUT_DYNAMIC_STATE_INTENT_CHANGE
@@ -74,12 +77,30 @@ namespace Asv.Mavlink.Uavionix
         /// </summary>
         UavionixAdsbOutDynamicStateIdent = 16,
     }
-
+    public static class UavionixAdsbOutDynamicStateHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"UAVIONIX_ADSB_OUT_DYNAMIC_STATE_INTENT_CHANGE");
+            yield return new EnumValue<T>(converter(2),"UAVIONIX_ADSB_OUT_DYNAMIC_STATE_AUTOPILOT_ENABLED");
+            yield return new EnumValue<T>(converter(4),"UAVIONIX_ADSB_OUT_DYNAMIC_STATE_NICBARO_CROSSCHECKED");
+            yield return new EnumValue<T>(converter(8),"UAVIONIX_ADSB_OUT_DYNAMIC_STATE_ON_GROUND");
+            yield return new EnumValue<T>(converter(16),"UAVIONIX_ADSB_OUT_DYNAMIC_STATE_IDENT");
+        }
+    }
     /// <summary>
     /// Transceiver RF control flags for ADS-B transponder dynamic reports
     ///  UAVIONIX_ADSB_OUT_RF_SELECT
     /// </summary>
-    public enum UavionixAdsbOutRfSelect:uint
+    public enum UavionixAdsbOutRfSelect : ulong
     {
         /// <summary>
         /// UAVIONIX_ADSB_OUT_RF_SELECT_STANDBY
@@ -94,12 +115,26 @@ namespace Asv.Mavlink.Uavionix
         /// </summary>
         UavionixAdsbOutRfSelectTxEnabled = 2,
     }
-
+    public static class UavionixAdsbOutRfSelectHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"UAVIONIX_ADSB_OUT_RF_SELECT_STANDBY");
+            yield return new EnumValue<T>(converter(1),"UAVIONIX_ADSB_OUT_RF_SELECT_RX_ENABLED");
+            yield return new EnumValue<T>(converter(2),"UAVIONIX_ADSB_OUT_RF_SELECT_TX_ENABLED");
+        }
+    }
     /// <summary>
     /// Status for ADS-B transponder dynamic input
     ///  UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX
     /// </summary>
-    public enum UavionixAdsbOutDynamicGpsFix:uint
+    public enum UavionixAdsbOutDynamicGpsFix : ulong
     {
         /// <summary>
         /// UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX_NONE_0
@@ -126,12 +161,32 @@ namespace Asv.Mavlink.Uavionix
         /// </summary>
         UavionixAdsbOutDynamicGpsFixRtk = 5,
     }
-
+    public static class UavionixAdsbOutDynamicGpsFixHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX_NONE_0");
+            yield return new EnumValue<T>(converter(1),"UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX_NONE_1");
+            yield return new EnumValue<T>(converter(2),"UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX_2D");
+            yield return new EnumValue<T>(converter(3),"UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX_3D");
+            yield return new EnumValue<T>(converter(4),"UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX_DGPS");
+            yield return new EnumValue<T>(converter(5),"UAVIONIX_ADSB_OUT_DYNAMIC_GPS_FIX_RTK");
+        }
+    }
     /// <summary>
     /// Status flags for ADS-B transponder dynamic output
     ///  UAVIONIX_ADSB_RF_HEALTH
     /// </summary>
-    public enum UavionixAdsbRfHealth:uint
+    public enum UavionixAdsbRfHealth : ulong
     {
         /// <summary>
         /// UAVIONIX_ADSB_RF_HEALTH_INITIALIZING
@@ -150,12 +205,28 @@ namespace Asv.Mavlink.Uavionix
         /// </summary>
         UavionixAdsbRfHealthFailRx = 16,
     }
-
+    public static class UavionixAdsbRfHealthHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(16);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"UAVIONIX_ADSB_RF_HEALTH_INITIALIZING");
+            yield return new EnumValue<T>(converter(1),"UAVIONIX_ADSB_RF_HEALTH_OK");
+            yield return new EnumValue<T>(converter(2),"UAVIONIX_ADSB_RF_HEALTH_FAIL_TX");
+            yield return new EnumValue<T>(converter(16),"UAVIONIX_ADSB_RF_HEALTH_FAIL_RX");
+        }
+    }
     /// <summary>
     /// Definitions for aircraft size
     ///  UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE
     /// </summary>
-    public enum UavionixAdsbOutCfgAircraftSize:uint
+    public enum UavionixAdsbOutCfgAircraftSize : ulong
     {
         /// <summary>
         /// UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_NO_DATA
@@ -222,12 +293,52 @@ namespace Asv.Mavlink.Uavionix
         /// </summary>
         UavionixAdsbOutCfgAircraftSizeL85W90m = 15,
     }
-
+    public static class UavionixAdsbOutCfgAircraftSizeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_NO_DATA");
+            yield return new EnumValue<T>(converter(1),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L15M_W23M");
+            yield return new EnumValue<T>(converter(2),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L25M_W28P5M");
+            yield return new EnumValue<T>(converter(3),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L25_34M");
+            yield return new EnumValue<T>(converter(4),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L35_33M");
+            yield return new EnumValue<T>(converter(5),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L35_38M");
+            yield return new EnumValue<T>(converter(6),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L45_39P5M");
+            yield return new EnumValue<T>(converter(7),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L45_45M");
+            yield return new EnumValue<T>(converter(8),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L55_45M");
+            yield return new EnumValue<T>(converter(9),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L55_52M");
+            yield return new EnumValue<T>(converter(10),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L65_59P5M");
+            yield return new EnumValue<T>(converter(11),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L65_67M");
+            yield return new EnumValue<T>(converter(12),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L75_W72P5M");
+            yield return new EnumValue<T>(converter(13),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L75_W80M");
+            yield return new EnumValue<T>(converter(14),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L85_W80M");
+            yield return new EnumValue<T>(converter(15),"UAVIONIX_ADSB_OUT_CFG_AIRCRAFT_SIZE_L85_W90M");
+        }
+    }
     /// <summary>
     /// GPS lataral offset encoding
     ///  UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT
     /// </summary>
-    public enum UavionixAdsbOutCfgGpsOffsetLat:uint
+    public enum UavionixAdsbOutCfgGpsOffsetLat : ulong
     {
         /// <summary>
         /// UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT_NO_DATA
@@ -262,12 +373,36 @@ namespace Asv.Mavlink.Uavionix
         /// </summary>
         UavionixAdsbOutCfgGpsOffsetLatRight6m = 7,
     }
-
+    public static class UavionixAdsbOutCfgGpsOffsetLatHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT_NO_DATA");
+            yield return new EnumValue<T>(converter(1),"UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT_LEFT_2M");
+            yield return new EnumValue<T>(converter(2),"UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT_LEFT_4M");
+            yield return new EnumValue<T>(converter(3),"UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT_LEFT_6M");
+            yield return new EnumValue<T>(converter(4),"UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT_RIGHT_0M");
+            yield return new EnumValue<T>(converter(5),"UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT_RIGHT_2M");
+            yield return new EnumValue<T>(converter(6),"UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT_RIGHT_4M");
+            yield return new EnumValue<T>(converter(7),"UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LAT_RIGHT_6M");
+        }
+    }
     /// <summary>
     /// GPS longitudinal offset encoding
     ///  UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LON
     /// </summary>
-    public enum UavionixAdsbOutCfgGpsOffsetLon:uint
+    public enum UavionixAdsbOutCfgGpsOffsetLon : ulong
     {
         /// <summary>
         /// UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LON_NO_DATA
@@ -278,12 +413,24 @@ namespace Asv.Mavlink.Uavionix
         /// </summary>
         UavionixAdsbOutCfgGpsOffsetLonAppliedBySensor = 1,
     }
-
+    public static class UavionixAdsbOutCfgGpsOffsetLonHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LON_NO_DATA");
+            yield return new EnumValue<T>(converter(1),"UAVIONIX_ADSB_OUT_CFG_GPS_OFFSET_LON_APPLIED_BY_SENSOR");
+        }
+    }
     /// <summary>
     /// Emergency status encoding
     ///  UAVIONIX_ADSB_EMERGENCY_STATUS
     /// </summary>
-    public enum UavionixAdsbEmergencyStatus:uint
+    public enum UavionixAdsbEmergencyStatus : ulong
     {
         /// <summary>
         /// UAVIONIX_ADSB_OUT_NO_EMERGENCY
@@ -318,7 +465,31 @@ namespace Asv.Mavlink.Uavionix
         /// </summary>
         UavionixAdsbOutReserved = 7,
     }
-
+    public static class UavionixAdsbEmergencyStatusHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"UAVIONIX_ADSB_OUT_NO_EMERGENCY");
+            yield return new EnumValue<T>(converter(1),"UAVIONIX_ADSB_OUT_GENERAL_EMERGENCY");
+            yield return new EnumValue<T>(converter(2),"UAVIONIX_ADSB_OUT_LIFEGUARD_EMERGENCY");
+            yield return new EnumValue<T>(converter(3),"UAVIONIX_ADSB_OUT_MINIMUM_FUEL_EMERGENCY");
+            yield return new EnumValue<T>(converter(4),"UAVIONIX_ADSB_OUT_NO_COMM_EMERGENCY");
+            yield return new EnumValue<T>(converter(5),"UAVIONIX_ADSB_OUT_UNLAWFUL_INTERFERANCE_EMERGENCY");
+            yield return new EnumValue<T>(converter(6),"UAVIONIX_ADSB_OUT_DOWNED_AIRCRAFT_EMERGENCY");
+            yield return new EnumValue<T>(converter(7),"UAVIONIX_ADSB_OUT_RESERVED");
+        }
+    }
 
 #endregion
 
@@ -422,28 +593,24 @@ namespace Asv.Mavlink.Uavionix
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,IcaoField, ref _icao);    
-            UInt16Type.Accept(visitor,StallspeedField, ref _stallspeed);    
-            ArrayType.Accept(visitor,CallsignField, 9, (index,v) =>
-            {
-                var tmp = (byte)Callsign[index];
-                UInt8Type.Accept(v,CallsignField, ref tmp);
-                Callsign[index] = (char)tmp;
-            });
+            UInt32Type.Accept(visitor,IcaoField, IcaoField.DataType, ref _icao);    
+            UInt16Type.Accept(visitor,StallspeedField, StallspeedField.DataType, ref _stallspeed);    
+            ArrayType.Accept(visitor,CallsignField, CallsignField.DataType, 9, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Callsign[index]));
             var tmpEmittertype = (byte)Emittertype;
-            UInt8Type.Accept(visitor,EmittertypeField, ref tmpEmittertype);
+            UInt8Type.Accept(visitor,EmittertypeField, EmittertypeField.DataType, ref tmpEmittertype);
             Emittertype = (AdsbEmitterType)tmpEmittertype;
             var tmpAircraftsize = (byte)Aircraftsize;
-            UInt8Type.Accept(visitor,AircraftsizeField, ref tmpAircraftsize);
+            UInt8Type.Accept(visitor,AircraftsizeField, AircraftsizeField.DataType, ref tmpAircraftsize);
             Aircraftsize = (UavionixAdsbOutCfgAircraftSize)tmpAircraftsize;
             var tmpGpsoffsetlat = (byte)Gpsoffsetlat;
-            UInt8Type.Accept(visitor,GpsoffsetlatField, ref tmpGpsoffsetlat);
+            UInt8Type.Accept(visitor,GpsoffsetlatField, GpsoffsetlatField.DataType, ref tmpGpsoffsetlat);
             Gpsoffsetlat = (UavionixAdsbOutCfgGpsOffsetLat)tmpGpsoffsetlat;
             var tmpGpsoffsetlon = (byte)Gpsoffsetlon;
-            UInt8Type.Accept(visitor,GpsoffsetlonField, ref tmpGpsoffsetlon);
+            UInt8Type.Accept(visitor,GpsoffsetlonField, GpsoffsetlonField.DataType, ref tmpGpsoffsetlon);
             Gpsoffsetlon = (UavionixAdsbOutCfgGpsOffsetLon)tmpGpsoffsetlon;
             var tmpRfselect = (byte)Rfselect;
-            UInt8Type.Accept(visitor,RfselectField, ref tmpRfselect);
+            UInt8Type.Accept(visitor,RfselectField, RfselectField.DataType, ref tmpRfselect);
             Rfselect = (UavionixAdsbOutRfSelect)tmpRfselect;
 
         }
@@ -456,11 +623,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Icao))
             .Title("ICAO")
             .Description("Vehicle address (24 bit)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _icao;
         public uint Icao { get => _icao; set => _icao = value; }
         /// <summary>
@@ -471,11 +636,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Stallspeed))
             .Title("stallSpeed")
             .Description("Aircraft stall speed in cm/s")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _stallspeed;
         public ushort Stallspeed { get => _stallspeed; set => _stallspeed = value; }
         /// <summary>
@@ -486,11 +649,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Callsign))
             .Title("callsign")
             .Description("Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, \" \" only)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,9))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,9))
+        .Build();
         public const int CallsignMaxItemsCount = 9;
         public char[] Callsign { get; } = new char[9];
         [Obsolete("This method is deprecated. Use GetCallsignMaxItemsCount instead.")]
@@ -503,12 +664,10 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Emittertype))
             .Title("emitterType")
             .Description("Transmitting vehicle type. See ADSB_EMITTER_TYPE enum")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AdsbEmitterTypeHelper.GetValues(x=>(byte)x).Min(),AdsbEmitterTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AdsbEmitterTypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AdsbEmitterType _emittertype;
+        private AdsbEmitterType _emittertype;
         public AdsbEmitterType Emittertype { get => _emittertype; set => _emittertype = value; } 
         /// <summary>
         /// Aircraft length and width encoding (table 2-35 of DO-282B)
@@ -518,12 +677,10 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Aircraftsize))
             .Title("aircraftSize")
             .Description("Aircraft length and width encoding (table 2-35 of DO-282B)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(UavionixAdsbOutCfgAircraftSizeHelper.GetValues(x=>(byte)x).Min(),UavionixAdsbOutCfgAircraftSizeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(UavionixAdsbOutCfgAircraftSizeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public UavionixAdsbOutCfgAircraftSize _aircraftsize;
+        private UavionixAdsbOutCfgAircraftSize _aircraftsize;
         public UavionixAdsbOutCfgAircraftSize Aircraftsize { get => _aircraftsize; set => _aircraftsize = value; } 
         /// <summary>
         /// GPS antenna lateral offset (table 2-36 of DO-282B)
@@ -533,12 +690,10 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Gpsoffsetlat))
             .Title("gpsOffsetLat")
             .Description("GPS antenna lateral offset (table 2-36 of DO-282B)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(UavionixAdsbOutCfgGpsOffsetLatHelper.GetValues(x=>(byte)x).Min(),UavionixAdsbOutCfgGpsOffsetLatHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(UavionixAdsbOutCfgGpsOffsetLatHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public UavionixAdsbOutCfgGpsOffsetLat _gpsoffsetlat;
+        private UavionixAdsbOutCfgGpsOffsetLat _gpsoffsetlat;
         public UavionixAdsbOutCfgGpsOffsetLat Gpsoffsetlat { get => _gpsoffsetlat; set => _gpsoffsetlat = value; } 
         /// <summary>
         /// GPS antenna longitudinal offset from nose [if non-zero, take position (in meters) divide by 2 and add one] (table 2-37 DO-282B)
@@ -548,12 +703,10 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Gpsoffsetlon))
             .Title("gpsOffsetLon")
             .Description("GPS antenna longitudinal offset from nose [if non-zero, take position (in meters) divide by 2 and add one] (table 2-37 DO-282B)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(UavionixAdsbOutCfgGpsOffsetLonHelper.GetValues(x=>(byte)x).Min(),UavionixAdsbOutCfgGpsOffsetLonHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(UavionixAdsbOutCfgGpsOffsetLonHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public UavionixAdsbOutCfgGpsOffsetLon _gpsoffsetlon;
+        private UavionixAdsbOutCfgGpsOffsetLon _gpsoffsetlon;
         public UavionixAdsbOutCfgGpsOffsetLon Gpsoffsetlon { get => _gpsoffsetlon; set => _gpsoffsetlon = value; } 
         /// <summary>
         /// ADS-B transponder receiver and transmit enable flags
@@ -563,12 +716,10 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Rfselect))
             .Title("bitmask")
             .Description("ADS-B transponder receiver and transmit enable flags")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(UavionixAdsbOutRfSelectHelper.GetValues(x=>(byte)x).Min(),UavionixAdsbOutRfSelectHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(UavionixAdsbOutRfSelectHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public UavionixAdsbOutRfSelect _rfselect;
+        private UavionixAdsbOutRfSelect _rfselect;
         public UavionixAdsbOutRfSelect Rfselect { get => _rfselect; set => _rfselect = value; } 
     }
     /// <summary>
@@ -671,27 +822,27 @@ namespace Asv.Mavlink.Uavionix
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,UtctimeField, ref _utctime);    
-            Int32Type.Accept(visitor,GpslatField, ref _gpslat);    
-            Int32Type.Accept(visitor,GpslonField, ref _gpslon);    
-            Int32Type.Accept(visitor,GpsaltField, ref _gpsalt);    
-            Int32Type.Accept(visitor,BaroaltmslField, ref _baroaltmsl);    
-            UInt32Type.Accept(visitor,AccuracyhorField, ref _accuracyhor);    
-            UInt16Type.Accept(visitor,AccuracyvertField, ref _accuracyvert);    
-            UInt16Type.Accept(visitor,AccuracyvelField, ref _accuracyvel);    
-            Int16Type.Accept(visitor,VelvertField, ref _velvert);
-            Int16Type.Accept(visitor,VelnsField, ref _velns);
-            Int16Type.Accept(visitor,VelewField, ref _velew);
+            UInt32Type.Accept(visitor,UtctimeField, UtctimeField.DataType, ref _utctime);    
+            Int32Type.Accept(visitor,GpslatField, GpslatField.DataType, ref _gpslat);    
+            Int32Type.Accept(visitor,GpslonField, GpslonField.DataType, ref _gpslon);    
+            Int32Type.Accept(visitor,GpsaltField, GpsaltField.DataType, ref _gpsalt);    
+            Int32Type.Accept(visitor,BaroaltmslField, BaroaltmslField.DataType, ref _baroaltmsl);    
+            UInt32Type.Accept(visitor,AccuracyhorField, AccuracyhorField.DataType, ref _accuracyhor);    
+            UInt16Type.Accept(visitor,AccuracyvertField, AccuracyvertField.DataType, ref _accuracyvert);    
+            UInt16Type.Accept(visitor,AccuracyvelField, AccuracyvelField.DataType, ref _accuracyvel);    
+            Int16Type.Accept(visitor,VelvertField, VelvertField.DataType, ref _velvert);
+            Int16Type.Accept(visitor,VelnsField, VelnsField.DataType, ref _velns);
+            Int16Type.Accept(visitor,VelewField, VelewField.DataType, ref _velew);
             var tmpState = (ushort)State;
-            UInt16Type.Accept(visitor,StateField, ref tmpState);
+            UInt16Type.Accept(visitor,StateField, StateField.DataType, ref tmpState);
             State = (UavionixAdsbOutDynamicState)tmpState;
-            UInt16Type.Accept(visitor,SquawkField, ref _squawk);    
+            UInt16Type.Accept(visitor,SquawkField, SquawkField.DataType, ref _squawk);    
             var tmpGpsfix = (byte)Gpsfix;
-            UInt8Type.Accept(visitor,GpsfixField, ref tmpGpsfix);
+            UInt8Type.Accept(visitor,GpsfixField, GpsfixField.DataType, ref tmpGpsfix);
             Gpsfix = (UavionixAdsbOutDynamicGpsFix)tmpGpsfix;
-            UInt8Type.Accept(visitor,NumsatsField, ref _numsats);    
+            UInt8Type.Accept(visitor,NumsatsField, NumsatsField.DataType, ref _numsats);    
             var tmpEmergencystatus = (byte)Emergencystatus;
-            UInt8Type.Accept(visitor,EmergencystatusField, ref tmpEmergencystatus);
+            UInt8Type.Accept(visitor,EmergencystatusField, EmergencystatusField.DataType, ref tmpEmergencystatus);
             Emergencystatus = (UavionixAdsbEmergencyStatus)tmpEmergencystatus;
 
         }
@@ -704,11 +855,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Utctime))
             .Title("utcTime")
             .Description("UTC time in seconds since GPS epoch (Jan 6, 1980). If unknown set to UINT32_MAX")
-            .FormatString(string.Empty)
-            .Units(@"s")
+.Units(@"s")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _utctime;
         public uint Utctime { get => _utctime; set => _utctime = value; }
         /// <summary>
@@ -719,11 +868,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Gpslat))
             .Title("gpsLat")
             .Description("Latitude WGS84 (deg * 1E7). If unknown set to INT32_MAX")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gpslat;
         public int Gpslat { get => _gpslat; set => _gpslat = value; }
         /// <summary>
@@ -734,11 +881,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Gpslon))
             .Title("gpsLon")
             .Description("Longitude WGS84 (deg * 1E7). If unknown set to INT32_MAX")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gpslon;
         public int Gpslon { get => _gpslon; set => _gpslon = value; }
         /// <summary>
@@ -749,11 +894,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Gpsalt))
             .Title("gpsAlt")
             .Description("Altitude (WGS84). UP +ve. If unknown set to INT32_MAX")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gpsalt;
         public int Gpsalt { get => _gpsalt; set => _gpsalt = value; }
         /// <summary>
@@ -764,11 +907,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Baroaltmsl))
             .Title("baroAltMSL")
             .Description("Barometric pressure altitude (MSL) relative to a standard atmosphere of 1013.2 mBar and NOT bar corrected altitude (m * 1E-3). (up +ve). If unknown set to INT32_MAX")
-            .FormatString(string.Empty)
-            .Units(@"mbar")
+.Units(@"mbar")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _baroaltmsl;
         public int Baroaltmsl { get => _baroaltmsl; set => _baroaltmsl = value; }
         /// <summary>
@@ -779,11 +920,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Accuracyhor))
             .Title("accuracyHor")
             .Description("Horizontal accuracy in mm (m * 1E-3). If unknown set to UINT32_MAX")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _accuracyhor;
         public uint Accuracyhor { get => _accuracyhor; set => _accuracyhor = value; }
         /// <summary>
@@ -794,11 +933,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Accuracyvert))
             .Title("accuracyVert")
             .Description("Vertical accuracy in cm. If unknown set to UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(@"cm")
+.Units(@"cm")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _accuracyvert;
         public ushort Accuracyvert { get => _accuracyvert; set => _accuracyvert = value; }
         /// <summary>
@@ -809,11 +946,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Accuracyvel))
             .Title("accuracyVel")
             .Description("Velocity accuracy in mm/s (m * 1E-3). If unknown set to UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(@"mm/s")
+.Units(@"mm/s")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _accuracyvel;
         public ushort Accuracyvel { get => _accuracyvel; set => _accuracyvel = value; }
         /// <summary>
@@ -824,11 +959,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Velvert))
             .Title("velVert")
             .Description("GPS vertical speed in cm/s. If unknown set to INT16_MAX")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _velvert;
         public short Velvert { get => _velvert; set => _velvert = value; }
         /// <summary>
@@ -839,11 +972,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Velns))
             .Title("velNS")
             .Description("North-South velocity over ground in cm/s North +ve. If unknown set to INT16_MAX")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _velns;
         public short Velns { get => _velns; set => _velns = value; }
         /// <summary>
@@ -854,11 +985,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Velew))
             .Title("VelEW")
             .Description("East-West velocity over ground in cm/s East +ve. If unknown set to INT16_MAX")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _velew;
         public short Velew { get => _velew; set => _velew = value; }
         /// <summary>
@@ -869,12 +998,10 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(State))
             .Title("bitmask")
             .Description("ADS-B transponder dynamic input state flags")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
-
+            .DataType(new UInt16Type(UavionixAdsbOutDynamicStateHelper.GetValues(x=>(ushort)x).Min(),UavionixAdsbOutDynamicStateHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(UavionixAdsbOutDynamicStateHelper.GetEnumValues(x=>(ushort)x))
             .Build();
-        public UavionixAdsbOutDynamicState _state;
+        private UavionixAdsbOutDynamicState _state;
         public UavionixAdsbOutDynamicState State { get => _state; set => _state = value; } 
         /// <summary>
         /// Mode A code (typically 1200 [0x04B0] for VFR)
@@ -884,11 +1011,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Squawk))
             .Title("squawk")
             .Description("Mode A code (typically 1200 [0x04B0] for VFR)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _squawk;
         public ushort Squawk { get => _squawk; set => _squawk = value; }
         /// <summary>
@@ -899,12 +1024,10 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Gpsfix))
             .Title("gpsFix")
             .Description("0-1: no fix, 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(UavionixAdsbOutDynamicGpsFixHelper.GetValues(x=>(byte)x).Min(),UavionixAdsbOutDynamicGpsFixHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(UavionixAdsbOutDynamicGpsFixHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public UavionixAdsbOutDynamicGpsFix _gpsfix;
+        private UavionixAdsbOutDynamicGpsFix _gpsfix;
         public UavionixAdsbOutDynamicGpsFix Gpsfix { get => _gpsfix; set => _gpsfix = value; } 
         /// <summary>
         /// Number of satellites visible. If unknown set to UINT8_MAX
@@ -914,11 +1037,9 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Numsats))
             .Title("numSats")
             .Description("Number of satellites visible. If unknown set to UINT8_MAX")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _numsats;
         public byte Numsats { get => _numsats; set => _numsats = value; }
         /// <summary>
@@ -929,12 +1050,10 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Emergencystatus))
             .Title("emergencyStatus")
             .Description("Emergency status")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(UavionixAdsbEmergencyStatusHelper.GetValues(x=>(byte)x).Min(),UavionixAdsbEmergencyStatusHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(UavionixAdsbEmergencyStatusHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public UavionixAdsbEmergencyStatus _emergencystatus;
+        private UavionixAdsbEmergencyStatus _emergencystatus;
         public UavionixAdsbEmergencyStatus Emergencystatus { get => _emergencystatus; set => _emergencystatus = value; } 
     }
     /// <summary>
@@ -993,7 +1112,7 @@ namespace Asv.Mavlink.Uavionix
         public void Accept(IVisitor visitor)
         {
             var tmpRfhealth = (byte)Rfhealth;
-            UInt8Type.Accept(visitor,RfhealthField, ref tmpRfhealth);
+            UInt8Type.Accept(visitor,RfhealthField, RfhealthField.DataType, ref tmpRfhealth);
             Rfhealth = (UavionixAdsbRfHealth)tmpRfhealth;
 
         }
@@ -1006,12 +1125,10 @@ namespace Asv.Mavlink.Uavionix
             .Name(nameof(Rfhealth))
             .Title("bitmask")
             .Description("ADS-B transponder messages")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(UavionixAdsbRfHealthHelper.GetValues(x=>(byte)x).Min(),UavionixAdsbRfHealthHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(UavionixAdsbRfHealthHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public UavionixAdsbRfHealth _rfhealth;
+        private UavionixAdsbRfHealth _rfhealth;
         public UavionixAdsbRfHealth Rfhealth { get => _rfhealth; set => _rfhealth = value; } 
     }
 

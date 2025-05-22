@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.PythonArrayTest
@@ -48,6 +50,7 @@ namespace Asv.Mavlink.PythonArrayTest
             src.Add(ArrayTest7Packet.MessageId, ()=>new ArrayTest7Packet());
             src.Add(ArrayTest8Packet.MessageId, ()=>new ArrayTest8Packet());
         }
+ 
     }
 
 #region Enums
@@ -155,15 +158,15 @@ namespace Asv.Mavlink.PythonArrayTest
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,ArU32Field, 4,
-                (index,v) => UInt32Type.Accept(v, ArU32Field, ref ArU32[index]));    
-            ArrayType.Accept(visitor,ArU16Field, 4,
-                (index,v) => UInt16Type.Accept(v, ArU16Field, ref ArU16[index]));    
-            UInt8Type.Accept(visitor,V1Field, ref _v1);    
-            ArrayType.Accept(visitor,ArI8Field, 4, 
-                (index,v) => Int8Type.Accept(v, ArI8Field, ref ArI8[index]));
-            ArrayType.Accept(visitor,ArU8Field, 4,
-                (index,v) => UInt8Type.Accept(v, ArU8Field, ref ArU8[index]));    
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 4,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
+            ArrayType.Accept(visitor,ArU16Field, ArU16Field.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref ArU16[index]));    
+            UInt8Type.Accept(visitor,V1Field, V1Field.DataType, ref _v1);    
+            ArrayType.Accept(visitor,ArI8Field, ArI8Field.DataType, 4, 
+                (index, v, f, t) => Int8Type.Accept(v, f, t, ref ArI8[index]));
+            ArrayType.Accept(visitor,ArU8Field, ArU8Field.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref ArU8[index]));    
 
         }
 
@@ -175,11 +178,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU32))
             .Title("ar_u32")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt32Type.Default,4))        
 
-            .Build();
+            .DataType(new ArrayType(UInt32Type.Default,4))        
+        .Build();
         public const int ArU32MaxItemsCount = 4;
         public uint[] ArU32 { get; } = new uint[4];
         [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
@@ -192,11 +193,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU16))
             .Title("ar_u16")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,4))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int ArU16MaxItemsCount = 4;
         public ushort[] ArU16 { get; } = new ushort[4];
         /// <summary>
@@ -207,11 +206,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(V1))
             .Title("v1")
             .Description("Stub field")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _v1;
         public byte V1 { get => _v1; set => _v1 = value; }
         /// <summary>
@@ -222,11 +219,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArI8))
             .Title("ar_i8")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int8Type.Default,4))
 
-            .Build();
+            .DataType(new ArrayType(Int8Type.Default,4))
+        .Build();
         public const int ArI8MaxItemsCount = 4;
         public sbyte[] ArI8 { get; } = new sbyte[4];
         /// <summary>
@@ -237,11 +232,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU8))
             .Title("ar_u8")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,4))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,4))
+        .Build();
         public const int ArU8MaxItemsCount = 4;
         public byte[] ArU8 { get; } = new byte[4];
     }
@@ -310,8 +303,8 @@ namespace Asv.Mavlink.PythonArrayTest
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,ArU32Field, 4,
-                (index,v) => UInt32Type.Accept(v, ArU32Field, ref ArU32[index]));    
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 4,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
 
         }
 
@@ -323,11 +316,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU32))
             .Title("ar_u32")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt32Type.Default,4))        
 
-            .Build();
+            .DataType(new ArrayType(UInt32Type.Default,4))        
+        .Build();
         public const int ArU32MaxItemsCount = 4;
         public uint[] ArU32 { get; } = new uint[4];
         [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
@@ -401,9 +392,9 @@ namespace Asv.Mavlink.PythonArrayTest
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,ArU32Field, 4,
-                (index,v) => UInt32Type.Accept(v, ArU32Field, ref ArU32[index]));    
-            UInt8Type.Accept(visitor,VField, ref _v);    
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 4,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
+            UInt8Type.Accept(visitor,VField, VField.DataType, ref _v);    
 
         }
 
@@ -415,11 +406,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU32))
             .Title("ar_u32")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt32Type.Default,4))        
 
-            .Build();
+            .DataType(new ArrayType(UInt32Type.Default,4))        
+        .Build();
         public const int ArU32MaxItemsCount = 4;
         public uint[] ArU32 { get; } = new uint[4];
         [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
@@ -432,11 +421,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(V))
             .Title("v")
             .Description("Stub field")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _v;
         public byte V { get => _v; set => _v = value; }
     }
@@ -508,9 +495,9 @@ namespace Asv.Mavlink.PythonArrayTest
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,ArU32Field, 4,
-                (index,v) => UInt32Type.Accept(v, ArU32Field, ref ArU32[index]));    
-            UInt8Type.Accept(visitor,VField, ref _v);    
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 4,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
+            UInt8Type.Accept(visitor,VField, VField.DataType, ref _v);    
 
         }
 
@@ -522,11 +509,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU32))
             .Title("ar_u32")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt32Type.Default,4))        
 
-            .Build();
+            .DataType(new ArrayType(UInt32Type.Default,4))        
+        .Build();
         public const int ArU32MaxItemsCount = 4;
         public uint[] ArU32 { get; } = new uint[4];
         [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
@@ -539,11 +524,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(V))
             .Title("v")
             .Description("Stub field")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _v;
         public byte V { get => _v; set => _v = value; }
     }
@@ -646,18 +629,10 @@ namespace Asv.Mavlink.PythonArrayTest
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,C1Field, 5, (index,v) =>
-            {
-                var tmp = (byte)C1[index];
-                UInt8Type.Accept(v,C1Field, ref tmp);
-                C1[index] = (char)tmp;
-            });
-            ArrayType.Accept(visitor,C2Field, 5, (index,v) =>
-            {
-                var tmp = (byte)C2[index];
-                UInt8Type.Accept(v,C2Field, ref tmp);
-                C2[index] = (char)tmp;
-            });
+            ArrayType.Accept(visitor,C1Field, C1Field.DataType, 5, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref C1[index]));
+            ArrayType.Accept(visitor,C2Field, C2Field.DataType, 5, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref C2[index]));
 
         }
 
@@ -669,11 +644,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(C1))
             .Title("c1")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,5))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,5))
+        .Build();
         public const int C1MaxItemsCount = 5;
         public char[] C1 { get; } = new char[5];
         [Obsolete("This method is deprecated. Use GetC1MaxItemsCount instead.")]
@@ -686,11 +659,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(C2))
             .Title("c2")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,5))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,5))
+        .Build();
         public const int C2MaxItemsCount = 5;
         public char[] C2 { get; } = new char[5];
     }
@@ -860,31 +831,27 @@ namespace Asv.Mavlink.PythonArrayTest
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,ArDField, 2,
-                (index,v) => DoubleType.Accept(v, ArDField, ref ArD[index]));    
-            UInt32Type.Accept(visitor,V3Field, ref _v3);    
-            ArrayType.Accept(visitor,ArU32Field, 2,
-                (index,v) => UInt32Type.Accept(v, ArU32Field, ref ArU32[index]));    
-            ArrayType.Accept(visitor,ArI32Field, 2,
-                (index,v) => Int32Type.Accept(v, ArI32Field, ref ArI32[index]));
-            ArrayType.Accept(visitor,ArFField, 2,
-                (index,v) => FloatType.Accept(v, ArFField, ref ArF[index]));
-            UInt16Type.Accept(visitor,V2Field, ref _v2);    
-            ArrayType.Accept(visitor,ArU16Field, 2,
-                (index,v) => UInt16Type.Accept(v, ArU16Field, ref ArU16[index]));    
-            ArrayType.Accept(visitor,ArI16Field, 2,
-                (index,v) => Int16Type.Accept(v, ArI16Field, ref ArI16[index]));    
-            UInt8Type.Accept(visitor,V1Field, ref _v1);    
-            ArrayType.Accept(visitor,ArU8Field, 2,
-                (index,v) => UInt8Type.Accept(v, ArU8Field, ref ArU8[index]));    
-            ArrayType.Accept(visitor,ArI8Field, 2, 
-                (index,v) => Int8Type.Accept(v, ArI8Field, ref ArI8[index]));
-            ArrayType.Accept(visitor,ArCField, 32, (index,v) =>
-            {
-                var tmp = (byte)ArC[index];
-                UInt8Type.Accept(v,ArCField, ref tmp);
-                ArC[index] = (char)tmp;
-            });
+            ArrayType.Accept(visitor,ArDField, ArDField.DataType, 2,
+                (index, v, f, t) => DoubleType.Accept(v, f, t, ref ArD[index]));    
+            UInt32Type.Accept(visitor,V3Field, V3Field.DataType, ref _v3);    
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 2,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
+            ArrayType.Accept(visitor,ArI32Field, ArI32Field.DataType, 2,
+                (index, v, f, t) => Int32Type.Accept(v, f, t, ref ArI32[index]));
+            ArrayType.Accept(visitor,ArFField, ArFField.DataType, 2,
+                (index, v, f, t) => FloatType.Accept(v, f, t, ref ArF[index]));
+            UInt16Type.Accept(visitor,V2Field, V2Field.DataType, ref _v2);    
+            ArrayType.Accept(visitor,ArU16Field, ArU16Field.DataType, 2,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref ArU16[index]));    
+            ArrayType.Accept(visitor,ArI16Field, ArI16Field.DataType, 2,
+                (index, v, f, t) => Int16Type.Accept(v, f, t, ref ArI16[index]));    
+            UInt8Type.Accept(visitor,V1Field, V1Field.DataType, ref _v1);    
+            ArrayType.Accept(visitor,ArU8Field, ArU8Field.DataType, 2,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref ArU8[index]));    
+            ArrayType.Accept(visitor,ArI8Field, ArI8Field.DataType, 2, 
+                (index, v, f, t) => Int8Type.Accept(v, f, t, ref ArI8[index]));
+            ArrayType.Accept(visitor,ArCField, ArCField.DataType, 32, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref ArC[index]));
 
         }
 
@@ -896,11 +863,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArD))
             .Title("ar_d")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(DoubleType.Default,2))        
 
-            .Build();
+            .DataType(new ArrayType(DoubleType.Default,2))        
+        .Build();
         public const int ArDMaxItemsCount = 2;
         public double[] ArD { get; } = new double[2];
         /// <summary>
@@ -911,11 +876,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(V3))
             .Title("v3")
             .Description("Stub field")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _v3;
         public uint V3 { get => _v3; set => _v3 = value; }
         /// <summary>
@@ -926,11 +889,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU32))
             .Title("ar_u32")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt32Type.Default,2))        
 
-            .Build();
+            .DataType(new ArrayType(UInt32Type.Default,2))        
+        .Build();
         public const int ArU32MaxItemsCount = 2;
         public uint[] ArU32 { get; } = new uint[2];
         /// <summary>
@@ -941,11 +902,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArI32))
             .Title("ar_i32")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int32Type.Default,2))        
 
-            .Build();
+            .DataType(new ArrayType(Int32Type.Default,2))        
+        .Build();
         public const int ArI32MaxItemsCount = 2;
         public int[] ArI32 { get; } = new int[2];
         /// <summary>
@@ -956,11 +915,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArF))
             .Title("ar_f")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(FloatType.Default,2))        
 
-            .Build();
+            .DataType(new ArrayType(FloatType.Default,2))        
+        .Build();
         public const int ArFMaxItemsCount = 2;
         public float[] ArF { get; } = new float[2];
         /// <summary>
@@ -971,11 +928,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(V2))
             .Title("v2")
             .Description("Stub field")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _v2;
         public ushort V2 { get => _v2; set => _v2 = value; }
         /// <summary>
@@ -986,11 +941,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU16))
             .Title("ar_u16")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,2))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,2))
+        .Build();
         public const int ArU16MaxItemsCount = 2;
         public ushort[] ArU16 { get; } = new ushort[2];
         /// <summary>
@@ -1001,11 +954,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArI16))
             .Title("ar_i16")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int16Type.Default,2))
 
-            .Build();
+            .DataType(new ArrayType(Int16Type.Default,2))
+        .Build();
         public const int ArI16MaxItemsCount = 2;
         public short[] ArI16 { get; } = new short[2];
         /// <summary>
@@ -1016,11 +967,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(V1))
             .Title("v1")
             .Description("Stub field")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _v1;
         public byte V1 { get => _v1; set => _v1 = value; }
         /// <summary>
@@ -1031,11 +980,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU8))
             .Title("ar_u8")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,2))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,2))
+        .Build();
         public const int ArU8MaxItemsCount = 2;
         public byte[] ArU8 { get; } = new byte[2];
         /// <summary>
@@ -1046,11 +993,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArI8))
             .Title("ar_i8")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int8Type.Default,2))
 
-            .Build();
+            .DataType(new ArrayType(Int8Type.Default,2))
+        .Build();
         public const int ArI8MaxItemsCount = 2;
         public sbyte[] ArI8 { get; } = new sbyte[2];
         /// <summary>
@@ -1061,11 +1006,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArC))
             .Title("ar_c")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,32))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,32))
+        .Build();
         public const int ArCMaxItemsCount = 32;
         public char[] ArC { get; } = new char[32];
         [Obsolete("This method is deprecated. Use GetArCMaxItemsCount instead.")]
@@ -1228,28 +1171,24 @@ namespace Asv.Mavlink.PythonArrayTest
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,ArDField, 2,
-                (index,v) => DoubleType.Accept(v, ArDField, ref ArD[index]));    
-            ArrayType.Accept(visitor,ArFField, 2,
-                (index,v) => FloatType.Accept(v, ArFField, ref ArF[index]));
-            ArrayType.Accept(visitor,ArU32Field, 2,
-                (index,v) => UInt32Type.Accept(v, ArU32Field, ref ArU32[index]));    
-            ArrayType.Accept(visitor,ArI32Field, 2,
-                (index,v) => Int32Type.Accept(v, ArI32Field, ref ArI32[index]));
-            ArrayType.Accept(visitor,ArU16Field, 2,
-                (index,v) => UInt16Type.Accept(v, ArU16Field, ref ArU16[index]));    
-            ArrayType.Accept(visitor,ArI16Field, 2,
-                (index,v) => Int16Type.Accept(v, ArI16Field, ref ArI16[index]));    
-            ArrayType.Accept(visitor,ArU8Field, 2,
-                (index,v) => UInt8Type.Accept(v, ArU8Field, ref ArU8[index]));    
-            ArrayType.Accept(visitor,ArI8Field, 2, 
-                (index,v) => Int8Type.Accept(v, ArI8Field, ref ArI8[index]));
-            ArrayType.Accept(visitor,ArCField, 32, (index,v) =>
-            {
-                var tmp = (byte)ArC[index];
-                UInt8Type.Accept(v,ArCField, ref tmp);
-                ArC[index] = (char)tmp;
-            });
+            ArrayType.Accept(visitor,ArDField, ArDField.DataType, 2,
+                (index, v, f, t) => DoubleType.Accept(v, f, t, ref ArD[index]));    
+            ArrayType.Accept(visitor,ArFField, ArFField.DataType, 2,
+                (index, v, f, t) => FloatType.Accept(v, f, t, ref ArF[index]));
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 2,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
+            ArrayType.Accept(visitor,ArI32Field, ArI32Field.DataType, 2,
+                (index, v, f, t) => Int32Type.Accept(v, f, t, ref ArI32[index]));
+            ArrayType.Accept(visitor,ArU16Field, ArU16Field.DataType, 2,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref ArU16[index]));    
+            ArrayType.Accept(visitor,ArI16Field, ArI16Field.DataType, 2,
+                (index, v, f, t) => Int16Type.Accept(v, f, t, ref ArI16[index]));    
+            ArrayType.Accept(visitor,ArU8Field, ArU8Field.DataType, 2,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref ArU8[index]));    
+            ArrayType.Accept(visitor,ArI8Field, ArI8Field.DataType, 2, 
+                (index, v, f, t) => Int8Type.Accept(v, f, t, ref ArI8[index]));
+            ArrayType.Accept(visitor,ArCField, ArCField.DataType, 32, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref ArC[index]));
 
         }
 
@@ -1261,11 +1200,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArD))
             .Title("ar_d")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(DoubleType.Default,2))        
 
-            .Build();
+            .DataType(new ArrayType(DoubleType.Default,2))        
+        .Build();
         public const int ArDMaxItemsCount = 2;
         public double[] ArD { get; } = new double[2];
         /// <summary>
@@ -1276,11 +1213,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArF))
             .Title("ar_f")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(FloatType.Default,2))        
 
-            .Build();
+            .DataType(new ArrayType(FloatType.Default,2))        
+        .Build();
         public const int ArFMaxItemsCount = 2;
         public float[] ArF { get; } = new float[2];
         /// <summary>
@@ -1291,11 +1226,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU32))
             .Title("ar_u32")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt32Type.Default,2))        
 
-            .Build();
+            .DataType(new ArrayType(UInt32Type.Default,2))        
+        .Build();
         public const int ArU32MaxItemsCount = 2;
         public uint[] ArU32 { get; } = new uint[2];
         /// <summary>
@@ -1306,11 +1239,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArI32))
             .Title("ar_i32")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int32Type.Default,2))        
 
-            .Build();
+            .DataType(new ArrayType(Int32Type.Default,2))        
+        .Build();
         public const int ArI32MaxItemsCount = 2;
         public int[] ArI32 { get; } = new int[2];
         /// <summary>
@@ -1321,11 +1252,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU16))
             .Title("ar_u16")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,2))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,2))
+        .Build();
         public const int ArU16MaxItemsCount = 2;
         public ushort[] ArU16 { get; } = new ushort[2];
         /// <summary>
@@ -1336,11 +1265,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArI16))
             .Title("ar_i16")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int16Type.Default,2))
 
-            .Build();
+            .DataType(new ArrayType(Int16Type.Default,2))
+        .Build();
         public const int ArI16MaxItemsCount = 2;
         public short[] ArI16 { get; } = new short[2];
         /// <summary>
@@ -1351,11 +1278,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU8))
             .Title("ar_u8")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,2))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,2))
+        .Build();
         public const int ArU8MaxItemsCount = 2;
         public byte[] ArU8 { get; } = new byte[2];
         /// <summary>
@@ -1366,11 +1291,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArI8))
             .Title("ar_i8")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int8Type.Default,2))
 
-            .Build();
+            .DataType(new ArrayType(Int8Type.Default,2))
+        .Build();
         public const int ArI8MaxItemsCount = 2;
         public sbyte[] ArI8 { get; } = new sbyte[2];
         /// <summary>
@@ -1381,11 +1304,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArC))
             .Title("ar_c")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,32))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,32))
+        .Build();
         public const int ArCMaxItemsCount = 32;
         public char[] ArC { get; } = new char[32];
         [Obsolete("This method is deprecated. Use GetArCMaxItemsCount instead.")]
@@ -1469,11 +1390,11 @@ namespace Asv.Mavlink.PythonArrayTest
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,ArDField, 2,
-                (index,v) => DoubleType.Accept(v, ArDField, ref ArD[index]));    
-            UInt32Type.Accept(visitor,V3Field, ref _v3);    
-            ArrayType.Accept(visitor,ArU16Field, 2,
-                (index,v) => UInt16Type.Accept(v, ArU16Field, ref ArU16[index]));    
+            ArrayType.Accept(visitor,ArDField, ArDField.DataType, 2,
+                (index, v, f, t) => DoubleType.Accept(v, f, t, ref ArD[index]));    
+            UInt32Type.Accept(visitor,V3Field, V3Field.DataType, ref _v3);    
+            ArrayType.Accept(visitor,ArU16Field, ArU16Field.DataType, 2,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref ArU16[index]));    
 
         }
 
@@ -1485,11 +1406,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArD))
             .Title("ar_d")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(DoubleType.Default,2))        
 
-            .Build();
+            .DataType(new ArrayType(DoubleType.Default,2))        
+        .Build();
         public const int ArDMaxItemsCount = 2;
         public double[] ArD { get; } = new double[2];
         [Obsolete("This method is deprecated. Use GetArDMaxItemsCount instead.")]
@@ -1502,11 +1421,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(V3))
             .Title("v3")
             .Description("Stub field")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _v3;
         public uint V3 { get => _v3; set => _v3 = value; }
         /// <summary>
@@ -1517,11 +1434,9 @@ namespace Asv.Mavlink.PythonArrayTest
             .Name(nameof(ArU16))
             .Title("ar_u16")
             .Description("Value array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,2))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,2))
+        .Build();
         public const int ArU16MaxItemsCount = 2;
         public ushort[] ArU16 { get; } = new ushort[2];
     }

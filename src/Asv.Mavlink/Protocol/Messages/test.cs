@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Test
@@ -41,6 +43,7 @@ namespace Asv.Mavlink.Test
         {
             src.Add(TestTypesPacket.MessageId, ()=>new TestTypesPacket());
         }
+ 
     }
 
 #region Enums
@@ -262,45 +265,39 @@ namespace Asv.Mavlink.Test
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,U64Field, ref _u64);    
-            Int64Type.Accept(visitor,S64Field, ref _s64);    
-            DoubleType.Accept(visitor,DField, ref _d);
-            ArrayType.Accept(visitor,U64ArrayField, 3,
-                (index,v) => UInt64Type.Accept(v, U64ArrayField, ref U64Array[index]));    
-            ArrayType.Accept(visitor,S64ArrayField, 3,
-                (index,v) => Int64Type.Accept(v, S64ArrayField, ref S64Array[index]));    
-            ArrayType.Accept(visitor,DArrayField, 3,
-                (index,v) => DoubleType.Accept(v, DArrayField, ref DArray[index]));    
-            UInt32Type.Accept(visitor,U32Field, ref _u32);    
-            Int32Type.Accept(visitor,S32Field, ref _s32);    
-            FloatType.Accept(visitor,FField, ref _f);    
-            ArrayType.Accept(visitor,U32ArrayField, 3,
-                (index,v) => UInt32Type.Accept(v, U32ArrayField, ref U32Array[index]));    
-            ArrayType.Accept(visitor,S32ArrayField, 3,
-                (index,v) => Int32Type.Accept(v, S32ArrayField, ref S32Array[index]));
-            ArrayType.Accept(visitor,FArrayField, 3,
-                (index,v) => FloatType.Accept(v, FArrayField, ref FArray[index]));
-            UInt16Type.Accept(visitor,U16Field, ref _u16);    
-            Int16Type.Accept(visitor,S16Field, ref _s16);
-            ArrayType.Accept(visitor,U16ArrayField, 3,
-                (index,v) => UInt16Type.Accept(v, U16ArrayField, ref U16Array[index]));    
-            ArrayType.Accept(visitor,S16ArrayField, 3,
-                (index,v) => Int16Type.Accept(v, S16ArrayField, ref S16Array[index]));    
-            var tmp = (byte)C;
-            UInt8Type.Accept(visitor,CField, ref tmp);
-            C = (char)tmp;   
-            ArrayType.Accept(visitor,SField, 10, (index,v) =>
-            {
-                var tmp = (byte)S[index];
-                UInt8Type.Accept(v,SField, ref tmp);
-                S[index] = (char)tmp;
-            });
-            UInt8Type.Accept(visitor,U8Field, ref _u8);    
-            Int8Type.Accept(visitor,S8Field, ref _s8);                
-            ArrayType.Accept(visitor,U8ArrayField, 3,
-                (index,v) => UInt8Type.Accept(v, U8ArrayField, ref U8Array[index]));    
-            ArrayType.Accept(visitor,S8ArrayField, 3, 
-                (index,v) => Int8Type.Accept(v, S8ArrayField, ref S8Array[index]));
+            UInt64Type.Accept(visitor,U64Field, U64Field.DataType, ref _u64);    
+            Int64Type.Accept(visitor,S64Field, S64Field.DataType, ref _s64);    
+            DoubleType.Accept(visitor,DField, DField.DataType, ref _d);
+            ArrayType.Accept(visitor,U64ArrayField, U64ArrayField.DataType, 3,
+                (index, v, f, t) => UInt64Type.Accept(v, f, t, ref U64Array[index]));    
+            ArrayType.Accept(visitor,S64ArrayField, S64ArrayField.DataType, 3,
+                (index, v, f, t) => Int64Type.Accept(v, f, t, ref S64Array[index]));    
+            ArrayType.Accept(visitor,DArrayField, DArrayField.DataType, 3,
+                (index, v, f, t) => DoubleType.Accept(v, f, t, ref DArray[index]));    
+            UInt32Type.Accept(visitor,U32Field, U32Field.DataType, ref _u32);    
+            Int32Type.Accept(visitor,S32Field, S32Field.DataType, ref _s32);    
+            FloatType.Accept(visitor,FField, FField.DataType, ref _f);    
+            ArrayType.Accept(visitor,U32ArrayField, U32ArrayField.DataType, 3,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref U32Array[index]));    
+            ArrayType.Accept(visitor,S32ArrayField, S32ArrayField.DataType, 3,
+                (index, v, f, t) => Int32Type.Accept(v, f, t, ref S32Array[index]));
+            ArrayType.Accept(visitor,FArrayField, FArrayField.DataType, 3,
+                (index, v, f, t) => FloatType.Accept(v, f, t, ref FArray[index]));
+            UInt16Type.Accept(visitor,U16Field, U16Field.DataType, ref _u16);    
+            Int16Type.Accept(visitor,S16Field, S16Field.DataType, ref _s16);
+            ArrayType.Accept(visitor,U16ArrayField, U16ArrayField.DataType, 3,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref U16Array[index]));    
+            ArrayType.Accept(visitor,S16ArrayField, S16ArrayField.DataType, 3,
+                (index, v, f, t) => Int16Type.Accept(v, f, t, ref S16Array[index]));    
+            CharType.Accept(visitor,CField, CField.DataType, ref _c);
+            ArrayType.Accept(visitor,SField, SField.DataType, 10, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref S[index]));
+            UInt8Type.Accept(visitor,U8Field, U8Field.DataType, ref _u8);    
+            Int8Type.Accept(visitor,S8Field, S8Field.DataType, ref _s8);                
+            ArrayType.Accept(visitor,U8ArrayField, U8ArrayField.DataType, 3,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref U8Array[index]));    
+            ArrayType.Accept(visitor,S8ArrayField, S8ArrayField.DataType, 3, 
+                (index, v, f, t) => Int8Type.Accept(v, f, t, ref S8Array[index]));
 
         }
 
@@ -312,11 +309,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(U64))
             .Title("u64")
             .Description("uint64_t")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
 
-            .Build();
+            .DataType(UInt64Type.Default)
+        .Build();
         private ulong _u64;
         public ulong U64 { get => _u64; set => _u64 = value; }
         /// <summary>
@@ -327,11 +322,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(S64))
             .Title("s64")
             .Description("int64_t")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int64Type.Default)
 
-            .Build();
+            .DataType(Int64Type.Default)
+        .Build();
         private long _s64;
         public long S64 { get => _s64; set => _s64 = value; }
         /// <summary>
@@ -342,11 +335,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(D))
             .Title("d")
             .Description("double")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(DoubleType.Default)
 
-            .Build();
+            .DataType(DoubleType.Default)
+        .Build();
         private double _d;
         public double D { get => _d; set => _d = value; }
         /// <summary>
@@ -357,11 +348,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(U64Array))
             .Title("u64_array")
             .Description("uint64_t_array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt64Type.Default,3))            
 
-            .Build();
+            .DataType(new ArrayType(UInt64Type.Default,3))            
+        .Build();
         public const int U64ArrayMaxItemsCount = 3;
         public ulong[] U64Array { get; } = new ulong[3];
         [Obsolete("This method is deprecated. Use GetU64ArrayMaxItemsCount instead.")]
@@ -374,11 +363,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(S64Array))
             .Title("s64_array")
             .Description("int64_t_array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int64Type.Default,3))        
 
-            .Build();
+            .DataType(new ArrayType(Int64Type.Default,3))        
+        .Build();
         public const int S64ArrayMaxItemsCount = 3;
         public long[] S64Array { get; } = new long[3];
         /// <summary>
@@ -389,11 +376,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(DArray))
             .Title("d_array")
             .Description("double_array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(DoubleType.Default,3))        
 
-            .Build();
+            .DataType(new ArrayType(DoubleType.Default,3))        
+        .Build();
         public const int DArrayMaxItemsCount = 3;
         public double[] DArray { get; } = new double[3];
         /// <summary>
@@ -404,11 +389,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(U32))
             .Title("u32")
             .Description("uint32_t")
-            .FormatString("0x%08x")
-            .Units(string.Empty)
+.FormatString("0x%08x")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _u32;
         public uint U32 { get => _u32; set => _u32 = value; }
         /// <summary>
@@ -419,11 +402,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(S32))
             .Title("s32")
             .Description("int32_t")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int32Type.Default)
 
-            .Build();
+            .DataType(Int32Type.Default)
+        .Build();
         private int _s32;
         public int S32 { get => _s32; set => _s32 = value; }
         /// <summary>
@@ -434,11 +415,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(F))
             .Title("f")
             .Description("float")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _f;
         public float F { get => _f; set => _f = value; }
         /// <summary>
@@ -449,11 +428,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(U32Array))
             .Title("u32_array")
             .Description("uint32_t_array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt32Type.Default,3))        
 
-            .Build();
+            .DataType(new ArrayType(UInt32Type.Default,3))        
+        .Build();
         public const int U32ArrayMaxItemsCount = 3;
         public uint[] U32Array { get; } = new uint[3];
         /// <summary>
@@ -464,11 +441,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(S32Array))
             .Title("s32_array")
             .Description("int32_t_array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int32Type.Default,3))        
 
-            .Build();
+            .DataType(new ArrayType(Int32Type.Default,3))        
+        .Build();
         public const int S32ArrayMaxItemsCount = 3;
         public int[] S32Array { get; } = new int[3];
         /// <summary>
@@ -479,11 +454,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(FArray))
             .Title("f_array")
             .Description("float_array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(FloatType.Default,3))        
 
-            .Build();
+            .DataType(new ArrayType(FloatType.Default,3))        
+        .Build();
         public const int FArrayMaxItemsCount = 3;
         public float[] FArray { get; } = new float[3];
         /// <summary>
@@ -494,11 +467,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(U16))
             .Title("u16")
             .Description("uint16_t")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _u16;
         public ushort U16 { get => _u16; set => _u16 = value; }
         /// <summary>
@@ -509,11 +480,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(S16))
             .Title("s16")
             .Description("int16_t")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int16Type.Default)
 
-            .Build();
+            .DataType(Int16Type.Default)
+        .Build();
         private short _s16;
         public short S16 { get => _s16; set => _s16 = value; }
         /// <summary>
@@ -524,11 +493,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(U16Array))
             .Title("u16_array")
             .Description("uint16_t_array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,3))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,3))
+        .Build();
         public const int U16ArrayMaxItemsCount = 3;
         public ushort[] U16Array { get; } = new ushort[3];
         /// <summary>
@@ -539,11 +506,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(S16Array))
             .Title("s16_array")
             .Description("int16_t_array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int16Type.Default,3))
 
-            .Build();
+            .DataType(new ArrayType(Int16Type.Default,3))
+        .Build();
         public const int S16ArrayMaxItemsCount = 3;
         public short[] S16Array { get; } = new short[3];
         /// <summary>
@@ -554,11 +519,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(C))
             .Title("c")
             .Description("char")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(CharType.Ascii)
+        .Build();
         private char _c;
         public char C { get => _c; set => _c = value; }
         /// <summary>
@@ -569,11 +532,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(S))
             .Title("s")
             .Description("string")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,10))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,10))
+        .Build();
         public const int SMaxItemsCount = 10;
         public char[] S { get; } = new char[10];
         /// <summary>
@@ -584,11 +545,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(U8))
             .Title("u8")
             .Description("uint8_t")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _u8;
         public byte U8 { get => _u8; set => _u8 = value; }
         /// <summary>
@@ -599,11 +558,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(S8))
             .Title("s8")
             .Description("int8_t")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int8Type.Default)
 
-            .Build();
+            .DataType(Int8Type.Default)
+        .Build();
         private sbyte _s8;
         public sbyte S8 { get => _s8; set => _s8 = value; }
         /// <summary>
@@ -614,11 +571,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(U8Array))
             .Title("u8_array")
             .Description("uint8_t_array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,3))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,3))
+        .Build();
         public const int U8ArrayMaxItemsCount = 3;
         public byte[] U8Array { get; } = new byte[3];
         /// <summary>
@@ -629,11 +584,9 @@ namespace Asv.Mavlink.Test
             .Name(nameof(S8Array))
             .Title("s8_array")
             .Description("int8_t_array")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int8Type.Default,3))
 
-            .Build();
+            .DataType(new ArrayType(Int8Type.Default,3))
+        .Build();
         public const int S8ArrayMaxItemsCount = 3;
         public sbyte[] S8Array { get; } = new sbyte[3];
     }

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Ardupilotmega
@@ -105,6 +107,7 @@ namespace Asv.Mavlink.Ardupilotmega
             src.Add(WaterDepthPacket.MessageId, ()=>new WaterDepthPacket());
             src.Add(McuStatusPacket.MessageId, ()=>new McuStatusPacket());
         }
+ 
     }
 
 #region Enums
@@ -112,7 +115,7 @@ namespace Asv.Mavlink.Ardupilotmega
     /// <summary>
     ///  ACCELCAL_VEHICLE_POS
     /// </summary>
-    public enum AccelcalVehiclePos:uint
+    public enum AccelcalVehiclePos : ulong
     {
         /// <summary>
         /// ACCELCAL_VEHICLE_POS_LEVEL
@@ -147,11 +150,35 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         AccelcalVehiclePosFailed = 16777216,
     }
-
+    public static class AccelcalVehiclePosHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(16777215);
+            yield return converter(16777216);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ACCELCAL_VEHICLE_POS_LEVEL");
+            yield return new EnumValue<T>(converter(2),"ACCELCAL_VEHICLE_POS_LEFT");
+            yield return new EnumValue<T>(converter(3),"ACCELCAL_VEHICLE_POS_RIGHT");
+            yield return new EnumValue<T>(converter(4),"ACCELCAL_VEHICLE_POS_NOSEDOWN");
+            yield return new EnumValue<T>(converter(5),"ACCELCAL_VEHICLE_POS_NOSEUP");
+            yield return new EnumValue<T>(converter(6),"ACCELCAL_VEHICLE_POS_BACK");
+            yield return new EnumValue<T>(converter(16777215),"ACCELCAL_VEHICLE_POS_SUCCESS");
+            yield return new EnumValue<T>(converter(16777216),"ACCELCAL_VEHICLE_POS_FAILED");
+        }
+    }
     /// <summary>
     ///  HEADING_TYPE
     /// </summary>
-    public enum HeadingType:uint
+    public enum HeadingType : ulong
     {
         /// <summary>
         /// HEADING_TYPE_COURSE_OVER_GROUND
@@ -162,11 +189,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         HeadingTypeHeading = 1,
     }
-
+    public static class HeadingTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"HEADING_TYPE_COURSE_OVER_GROUND");
+            yield return new EnumValue<T>(converter(1),"HEADING_TYPE_HEADING");
+        }
+    }
     /// <summary>
     ///  MAV_CMD
     /// </summary>
-    public enum MavCmd:uint
+    public enum MavCmd : ulong
     {
         /// <summary>
         /// Set the distance to be repeated on mission resume
@@ -543,11 +582,83 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         MavCmdExternalPositionEstimate = 43003,
     }
-
+    public static class MavCmdHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(215);
+            yield return converter(216);
+            yield return converter(217);
+            yield return converter(218);
+            yield return converter(83);
+            yield return converter(42000);
+            yield return converter(42001);
+            yield return converter(42002);
+            yield return converter(42003);
+            yield return converter(42004);
+            yield return converter(42005);
+            yield return converter(42007);
+            yield return converter(42424);
+            yield return converter(42425);
+            yield return converter(42426);
+            yield return converter(42429);
+            yield return converter(42428);
+            yield return converter(42427);
+            yield return converter(42501);
+            yield return converter(42502);
+            yield return converter(42503);
+            yield return converter(42505);
+            yield return converter(42650);
+            yield return converter(42651);
+            yield return converter(42700);
+            yield return converter(42701);
+            yield return converter(42702);
+            yield return converter(42703);
+            yield return converter(43000);
+            yield return converter(43001);
+            yield return converter(43002);
+            yield return converter(43003);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(215),"MAV_CMD_DO_SET_RESUME_REPEAT_DIST");
+            yield return new EnumValue<T>(converter(216),"MAV_CMD_DO_SPRAYER");
+            yield return new EnumValue<T>(converter(217),"MAV_CMD_DO_SEND_SCRIPT_MESSAGE");
+            yield return new EnumValue<T>(converter(218),"MAV_CMD_DO_AUX_FUNCTION");
+            yield return new EnumValue<T>(converter(83),"MAV_CMD_NAV_ALTITUDE_WAIT");
+            yield return new EnumValue<T>(converter(42000),"MAV_CMD_POWER_OFF_INITIATED");
+            yield return new EnumValue<T>(converter(42001),"MAV_CMD_SOLO_BTN_FLY_CLICK");
+            yield return new EnumValue<T>(converter(42002),"MAV_CMD_SOLO_BTN_FLY_HOLD");
+            yield return new EnumValue<T>(converter(42003),"MAV_CMD_SOLO_BTN_PAUSE_CLICK");
+            yield return new EnumValue<T>(converter(42004),"MAV_CMD_FIXED_MAG_CAL");
+            yield return new EnumValue<T>(converter(42005),"MAV_CMD_FIXED_MAG_CAL_FIELD");
+            yield return new EnumValue<T>(converter(42007),"MAV_CMD_SET_EKF_SOURCE_SET");
+            yield return new EnumValue<T>(converter(42424),"MAV_CMD_DO_START_MAG_CAL");
+            yield return new EnumValue<T>(converter(42425),"MAV_CMD_DO_ACCEPT_MAG_CAL");
+            yield return new EnumValue<T>(converter(42426),"MAV_CMD_DO_CANCEL_MAG_CAL");
+            yield return new EnumValue<T>(converter(42429),"MAV_CMD_ACCELCAL_VEHICLE_POS");
+            yield return new EnumValue<T>(converter(42428),"MAV_CMD_DO_SEND_BANNER");
+            yield return new EnumValue<T>(converter(42427),"MAV_CMD_SET_FACTORY_TEST_MODE");
+            yield return new EnumValue<T>(converter(42501),"MAV_CMD_GIMBAL_RESET");
+            yield return new EnumValue<T>(converter(42502),"MAV_CMD_GIMBAL_AXIS_CALIBRATION_STATUS");
+            yield return new EnumValue<T>(converter(42503),"MAV_CMD_GIMBAL_REQUEST_AXIS_CALIBRATION");
+            yield return new EnumValue<T>(converter(42505),"MAV_CMD_GIMBAL_FULL_RESET");
+            yield return new EnumValue<T>(converter(42650),"MAV_CMD_FLASH_BOOTLOADER");
+            yield return new EnumValue<T>(converter(42651),"MAV_CMD_BATTERY_RESET");
+            yield return new EnumValue<T>(converter(42700),"MAV_CMD_DEBUG_TRAP");
+            yield return new EnumValue<T>(converter(42701),"MAV_CMD_SCRIPTING");
+            yield return new EnumValue<T>(converter(42702),"MAV_CMD_NAV_SCRIPT_TIME");
+            yield return new EnumValue<T>(converter(42703),"MAV_CMD_NAV_ATTITUDE_TIME");
+            yield return new EnumValue<T>(converter(43000),"MAV_CMD_GUIDED_CHANGE_SPEED");
+            yield return new EnumValue<T>(converter(43001),"MAV_CMD_GUIDED_CHANGE_ALTITUDE");
+            yield return new EnumValue<T>(converter(43002),"MAV_CMD_GUIDED_CHANGE_HEADING");
+            yield return new EnumValue<T>(converter(43003),"MAV_CMD_EXTERNAL_POSITION_ESTIMATE");
+        }
+    }
     /// <summary>
     ///  SCRIPTING_CMD
     /// </summary>
-    public enum ScriptingCmd:uint
+    public enum ScriptingCmd : ulong
     {
         /// <summary>
         /// Start a REPL session.
@@ -570,11 +681,27 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         ScriptingCmdStopAndRestart = 3,
     }
-
+    public static class ScriptingCmdHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"SCRIPTING_CMD_REPL_START");
+            yield return new EnumValue<T>(converter(1),"SCRIPTING_CMD_REPL_STOP");
+            yield return new EnumValue<T>(converter(2),"SCRIPTING_CMD_STOP");
+            yield return new EnumValue<T>(converter(3),"SCRIPTING_CMD_STOP_AND_RESTART");
+        }
+    }
     /// <summary>
     ///  LIMITS_STATE
     /// </summary>
-    public enum LimitsState:uint
+    public enum LimitsState : ulong
     {
         /// <summary>
         /// Pre-initialization.
@@ -607,11 +734,31 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         LimitsRecovered = 5,
     }
-
+    public static class LimitsStateHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"LIMITS_INIT");
+            yield return new EnumValue<T>(converter(1),"LIMITS_DISABLED");
+            yield return new EnumValue<T>(converter(2),"LIMITS_ENABLED");
+            yield return new EnumValue<T>(converter(3),"LIMITS_TRIGGERED");
+            yield return new EnumValue<T>(converter(4),"LIMITS_RECOVERING");
+            yield return new EnumValue<T>(converter(5),"LIMITS_RECOVERED");
+        }
+    }
     /// <summary>
     ///  LIMIT_MODULE
     /// </summary>
-    public enum LimitModule:uint
+    public enum LimitModule : ulong
     {
         /// <summary>
         /// Pre-initialization.
@@ -629,12 +776,26 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         LimitAltitude = 4,
     }
-
+    public static class LimitModuleHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"LIMIT_GPSLOCK");
+            yield return new EnumValue<T>(converter(2),"LIMIT_GEOFENCE");
+            yield return new EnumValue<T>(converter(4),"LIMIT_ALTITUDE");
+        }
+    }
     /// <summary>
     /// Flags in RALLY_POINT message.
     ///  RALLY_FLAGS
     /// </summary>
-    public enum RallyFlags:uint
+    public enum RallyFlags : ulong
     {
         /// <summary>
         /// Flag set when requiring favorable winds for landing.
@@ -647,11 +808,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         LandImmediately = 2,
     }
-
+    public static class RallyFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"FAVORABLE_WIND");
+            yield return new EnumValue<T>(converter(2),"LAND_IMMEDIATELY");
+        }
+    }
     /// <summary>
     ///  CAMERA_STATUS_TYPES
     /// </summary>
-    public enum CameraStatusTypes:uint
+    public enum CameraStatusTypes : ulong
     {
         /// <summary>
         /// Camera heartbeat, announce camera component ID at 1Hz.
@@ -689,11 +862,33 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         CameraStatusTypeLowstorev = 6,
     }
-
+    public static class CameraStatusTypesHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"CAMERA_STATUS_TYPE_HEARTBEAT");
+            yield return new EnumValue<T>(converter(1),"CAMERA_STATUS_TYPE_TRIGGER");
+            yield return new EnumValue<T>(converter(2),"CAMERA_STATUS_TYPE_DISCONNECT");
+            yield return new EnumValue<T>(converter(3),"CAMERA_STATUS_TYPE_ERROR");
+            yield return new EnumValue<T>(converter(4),"CAMERA_STATUS_TYPE_LOWBATT");
+            yield return new EnumValue<T>(converter(5),"CAMERA_STATUS_TYPE_LOWSTORE");
+            yield return new EnumValue<T>(converter(6),"CAMERA_STATUS_TYPE_LOWSTOREV");
+        }
+    }
     /// <summary>
     ///  CAMERA_FEEDBACK_FLAGS
     /// </summary>
-    public enum CameraFeedbackFlags:uint
+    public enum CameraFeedbackFlags : ulong
     {
         /// <summary>
         /// Shooting photos, not video.
@@ -721,11 +916,29 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         CameraFeedbackOpenloop = 4,
     }
-
+    public static class CameraFeedbackFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"CAMERA_FEEDBACK_PHOTO");
+            yield return new EnumValue<T>(converter(1),"CAMERA_FEEDBACK_VIDEO");
+            yield return new EnumValue<T>(converter(2),"CAMERA_FEEDBACK_BADEXPOSURE");
+            yield return new EnumValue<T>(converter(3),"CAMERA_FEEDBACK_CLOSEDLOOP");
+            yield return new EnumValue<T>(converter(4),"CAMERA_FEEDBACK_OPENLOOP");
+        }
+    }
     /// <summary>
     ///  MAV_MODE_GIMBAL
     /// </summary>
-    public enum MavModeGimbal:uint
+    public enum MavModeGimbal : ulong
     {
         /// <summary>
         /// Gimbal is powered on but has not started initializing yet.
@@ -763,11 +976,33 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         MavModeGimbalRateCmdTimeout = 6,
     }
-
+    public static class MavModeGimbalHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_MODE_GIMBAL_UNINITIALIZED");
+            yield return new EnumValue<T>(converter(1),"MAV_MODE_GIMBAL_CALIBRATING_PITCH");
+            yield return new EnumValue<T>(converter(2),"MAV_MODE_GIMBAL_CALIBRATING_ROLL");
+            yield return new EnumValue<T>(converter(3),"MAV_MODE_GIMBAL_CALIBRATING_YAW");
+            yield return new EnumValue<T>(converter(4),"MAV_MODE_GIMBAL_INITIALIZED");
+            yield return new EnumValue<T>(converter(5),"MAV_MODE_GIMBAL_ACTIVE");
+            yield return new EnumValue<T>(converter(6),"MAV_MODE_GIMBAL_RATE_CMD_TIMEOUT");
+        }
+    }
     /// <summary>
     ///  GIMBAL_AXIS
     /// </summary>
-    public enum GimbalAxis:uint
+    public enum GimbalAxis : ulong
     {
         /// <summary>
         /// Gimbal yaw axis.
@@ -785,11 +1020,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GimbalAxisRoll = 2,
     }
-
+    public static class GimbalAxisHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GIMBAL_AXIS_YAW");
+            yield return new EnumValue<T>(converter(1),"GIMBAL_AXIS_PITCH");
+            yield return new EnumValue<T>(converter(2),"GIMBAL_AXIS_ROLL");
+        }
+    }
     /// <summary>
     ///  GIMBAL_AXIS_CALIBRATION_STATUS
     /// </summary>
-    public enum GimbalAxisCalibrationStatus:uint
+    public enum GimbalAxisCalibrationStatus : ulong
     {
         /// <summary>
         /// Axis calibration is in progress.
@@ -807,11 +1056,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GimbalAxisCalibrationStatusFailed = 2,
     }
-
+    public static class GimbalAxisCalibrationStatusHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GIMBAL_AXIS_CALIBRATION_STATUS_IN_PROGRESS");
+            yield return new EnumValue<T>(converter(1),"GIMBAL_AXIS_CALIBRATION_STATUS_SUCCEEDED");
+            yield return new EnumValue<T>(converter(2),"GIMBAL_AXIS_CALIBRATION_STATUS_FAILED");
+        }
+    }
     /// <summary>
     ///  GIMBAL_AXIS_CALIBRATION_REQUIRED
     /// </summary>
-    public enum GimbalAxisCalibrationRequired:uint
+    public enum GimbalAxisCalibrationRequired : ulong
     {
         /// <summary>
         /// Whether or not this axis requires calibration is unknown at this time.
@@ -829,11 +1092,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GimbalAxisCalibrationRequiredFalse = 2,
     }
-
+    public static class GimbalAxisCalibrationRequiredHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GIMBAL_AXIS_CALIBRATION_REQUIRED_UNKNOWN");
+            yield return new EnumValue<T>(converter(1),"GIMBAL_AXIS_CALIBRATION_REQUIRED_TRUE");
+            yield return new EnumValue<T>(converter(2),"GIMBAL_AXIS_CALIBRATION_REQUIRED_FALSE");
+        }
+    }
     /// <summary>
     ///  GOPRO_HEARTBEAT_STATUS
     /// </summary>
-    public enum GoproHeartbeatStatus:uint
+    public enum GoproHeartbeatStatus : ulong
     {
         /// <summary>
         /// No GoPro connected.
@@ -856,11 +1133,27 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproHeartbeatStatusError = 3,
     }
-
+    public static class GoproHeartbeatStatusHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_HEARTBEAT_STATUS_DISCONNECTED");
+            yield return new EnumValue<T>(converter(1),"GOPRO_HEARTBEAT_STATUS_INCOMPATIBLE");
+            yield return new EnumValue<T>(converter(2),"GOPRO_HEARTBEAT_STATUS_CONNECTED");
+            yield return new EnumValue<T>(converter(3),"GOPRO_HEARTBEAT_STATUS_ERROR");
+        }
+    }
     /// <summary>
     ///  GOPRO_HEARTBEAT_FLAGS
     /// </summary>
-    public enum GoproHeartbeatFlags:uint
+    public enum GoproHeartbeatFlags : ulong
     {
         /// <summary>
         /// GoPro is currently recording.
@@ -868,11 +1161,21 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproFlagRecording = 1,
     }
-
+    public static class GoproHeartbeatFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"GOPRO_FLAG_RECORDING");
+        }
+    }
     /// <summary>
     ///  GOPRO_REQUEST_STATUS
     /// </summary>
-    public enum GoproRequestStatus:uint
+    public enum GoproRequestStatus : ulong
     {
         /// <summary>
         /// The write message with ID indicated succeeded.
@@ -885,11 +1188,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproRequestFailed = 1,
     }
-
+    public static class GoproRequestStatusHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_REQUEST_SUCCESS");
+            yield return new EnumValue<T>(converter(1),"GOPRO_REQUEST_FAILED");
+        }
+    }
     /// <summary>
     ///  GOPRO_COMMAND
     /// </summary>
-    public enum GoproCommand:uint
+    public enum GoproCommand : ulong
     {
         /// <summary>
         /// (Get/Set).
@@ -977,11 +1292,53 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproCommandCharging = 16,
     }
-
+    public static class GoproCommandHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+            yield return converter(16);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_COMMAND_POWER");
+            yield return new EnumValue<T>(converter(1),"GOPRO_COMMAND_CAPTURE_MODE");
+            yield return new EnumValue<T>(converter(2),"GOPRO_COMMAND_SHUTTER");
+            yield return new EnumValue<T>(converter(3),"GOPRO_COMMAND_BATTERY");
+            yield return new EnumValue<T>(converter(4),"GOPRO_COMMAND_MODEL");
+            yield return new EnumValue<T>(converter(5),"GOPRO_COMMAND_VIDEO_SETTINGS");
+            yield return new EnumValue<T>(converter(6),"GOPRO_COMMAND_LOW_LIGHT");
+            yield return new EnumValue<T>(converter(7),"GOPRO_COMMAND_PHOTO_RESOLUTION");
+            yield return new EnumValue<T>(converter(8),"GOPRO_COMMAND_PHOTO_BURST_RATE");
+            yield return new EnumValue<T>(converter(9),"GOPRO_COMMAND_PROTUNE");
+            yield return new EnumValue<T>(converter(10),"GOPRO_COMMAND_PROTUNE_WHITE_BALANCE");
+            yield return new EnumValue<T>(converter(11),"GOPRO_COMMAND_PROTUNE_COLOUR");
+            yield return new EnumValue<T>(converter(12),"GOPRO_COMMAND_PROTUNE_GAIN");
+            yield return new EnumValue<T>(converter(13),"GOPRO_COMMAND_PROTUNE_SHARPNESS");
+            yield return new EnumValue<T>(converter(14),"GOPRO_COMMAND_PROTUNE_EXPOSURE");
+            yield return new EnumValue<T>(converter(15),"GOPRO_COMMAND_TIME");
+            yield return new EnumValue<T>(converter(16),"GOPRO_COMMAND_CHARGING");
+        }
+    }
     /// <summary>
     ///  GOPRO_CAPTURE_MODE
     /// </summary>
-    public enum GoproCaptureMode:uint
+    public enum GoproCaptureMode : ulong
     {
         /// <summary>
         /// Video mode.
@@ -1024,11 +1381,35 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproCaptureModeUnknown = 255,
     }
-
+    public static class GoproCaptureModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(255);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_CAPTURE_MODE_VIDEO");
+            yield return new EnumValue<T>(converter(1),"GOPRO_CAPTURE_MODE_PHOTO");
+            yield return new EnumValue<T>(converter(2),"GOPRO_CAPTURE_MODE_BURST");
+            yield return new EnumValue<T>(converter(3),"GOPRO_CAPTURE_MODE_TIME_LAPSE");
+            yield return new EnumValue<T>(converter(4),"GOPRO_CAPTURE_MODE_MULTI_SHOT");
+            yield return new EnumValue<T>(converter(5),"GOPRO_CAPTURE_MODE_PLAYBACK");
+            yield return new EnumValue<T>(converter(6),"GOPRO_CAPTURE_MODE_SETUP");
+            yield return new EnumValue<T>(converter(255),"GOPRO_CAPTURE_MODE_UNKNOWN");
+        }
+    }
     /// <summary>
     ///  GOPRO_RESOLUTION
     /// </summary>
-    public enum GoproResolution:uint
+    public enum GoproResolution : ulong
     {
         /// <summary>
         /// 848 x 480 (480p).
@@ -1101,11 +1482,47 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproResolution4kSuperview = 13,
     }
-
+    public static class GoproResolutionHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_RESOLUTION_480p");
+            yield return new EnumValue<T>(converter(1),"GOPRO_RESOLUTION_720p");
+            yield return new EnumValue<T>(converter(2),"GOPRO_RESOLUTION_960p");
+            yield return new EnumValue<T>(converter(3),"GOPRO_RESOLUTION_1080p");
+            yield return new EnumValue<T>(converter(4),"GOPRO_RESOLUTION_1440p");
+            yield return new EnumValue<T>(converter(5),"GOPRO_RESOLUTION_2_7k_17_9");
+            yield return new EnumValue<T>(converter(6),"GOPRO_RESOLUTION_2_7k_16_9");
+            yield return new EnumValue<T>(converter(7),"GOPRO_RESOLUTION_2_7k_4_3");
+            yield return new EnumValue<T>(converter(8),"GOPRO_RESOLUTION_4k_16_9");
+            yield return new EnumValue<T>(converter(9),"GOPRO_RESOLUTION_4k_17_9");
+            yield return new EnumValue<T>(converter(10),"GOPRO_RESOLUTION_720p_SUPERVIEW");
+            yield return new EnumValue<T>(converter(11),"GOPRO_RESOLUTION_1080p_SUPERVIEW");
+            yield return new EnumValue<T>(converter(12),"GOPRO_RESOLUTION_2_7k_SUPERVIEW");
+            yield return new EnumValue<T>(converter(13),"GOPRO_RESOLUTION_4k_SUPERVIEW");
+        }
+    }
     /// <summary>
     ///  GOPRO_FRAME_RATE
     /// </summary>
-    public enum GoproFrameRate:uint
+    public enum GoproFrameRate : ulong
     {
         /// <summary>
         /// 12 FPS.
@@ -1178,11 +1595,47 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproFrameRate125 = 13,
     }
-
+    public static class GoproFrameRateHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_FRAME_RATE_12");
+            yield return new EnumValue<T>(converter(1),"GOPRO_FRAME_RATE_15");
+            yield return new EnumValue<T>(converter(2),"GOPRO_FRAME_RATE_24");
+            yield return new EnumValue<T>(converter(3),"GOPRO_FRAME_RATE_25");
+            yield return new EnumValue<T>(converter(4),"GOPRO_FRAME_RATE_30");
+            yield return new EnumValue<T>(converter(5),"GOPRO_FRAME_RATE_48");
+            yield return new EnumValue<T>(converter(6),"GOPRO_FRAME_RATE_50");
+            yield return new EnumValue<T>(converter(7),"GOPRO_FRAME_RATE_60");
+            yield return new EnumValue<T>(converter(8),"GOPRO_FRAME_RATE_80");
+            yield return new EnumValue<T>(converter(9),"GOPRO_FRAME_RATE_90");
+            yield return new EnumValue<T>(converter(10),"GOPRO_FRAME_RATE_100");
+            yield return new EnumValue<T>(converter(11),"GOPRO_FRAME_RATE_120");
+            yield return new EnumValue<T>(converter(12),"GOPRO_FRAME_RATE_240");
+            yield return new EnumValue<T>(converter(13),"GOPRO_FRAME_RATE_12_5");
+        }
+    }
     /// <summary>
     ///  GOPRO_FIELD_OF_VIEW
     /// </summary>
-    public enum GoproFieldOfView:uint
+    public enum GoproFieldOfView : ulong
     {
         /// <summary>
         /// 0x00: Wide.
@@ -1200,11 +1653,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproFieldOfViewNarrow = 2,
     }
-
+    public static class GoproFieldOfViewHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_FIELD_OF_VIEW_WIDE");
+            yield return new EnumValue<T>(converter(1),"GOPRO_FIELD_OF_VIEW_MEDIUM");
+            yield return new EnumValue<T>(converter(2),"GOPRO_FIELD_OF_VIEW_NARROW");
+        }
+    }
     /// <summary>
     ///  GOPRO_VIDEO_SETTINGS_FLAGS
     /// </summary>
-    public enum GoproVideoSettingsFlags:uint
+    public enum GoproVideoSettingsFlags : ulong
     {
         /// <summary>
         /// 0=NTSC, 1=PAL.
@@ -1212,11 +1679,21 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproVideoSettingsTvMode = 1,
     }
-
+    public static class GoproVideoSettingsFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"GOPRO_VIDEO_SETTINGS_TV_MODE");
+        }
+    }
     /// <summary>
     ///  GOPRO_PHOTO_RESOLUTION
     /// </summary>
-    public enum GoproPhotoResolution:uint
+    public enum GoproPhotoResolution : ulong
     {
         /// <summary>
         /// 5MP Medium.
@@ -1244,11 +1721,29 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproPhotoResolution12mpWide = 4,
     }
-
+    public static class GoproPhotoResolutionHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PHOTO_RESOLUTION_5MP_MEDIUM");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PHOTO_RESOLUTION_7MP_MEDIUM");
+            yield return new EnumValue<T>(converter(2),"GOPRO_PHOTO_RESOLUTION_7MP_WIDE");
+            yield return new EnumValue<T>(converter(3),"GOPRO_PHOTO_RESOLUTION_10MP_WIDE");
+            yield return new EnumValue<T>(converter(4),"GOPRO_PHOTO_RESOLUTION_12MP_WIDE");
+        }
+    }
     /// <summary>
     ///  GOPRO_PROTUNE_WHITE_BALANCE
     /// </summary>
-    public enum GoproProtuneWhiteBalance:uint
+    public enum GoproProtuneWhiteBalance : ulong
     {
         /// <summary>
         /// Auto.
@@ -1276,11 +1771,29 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproProtuneWhiteBalanceRaw = 4,
     }
-
+    public static class GoproProtuneWhiteBalanceHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PROTUNE_WHITE_BALANCE_AUTO");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PROTUNE_WHITE_BALANCE_3000K");
+            yield return new EnumValue<T>(converter(2),"GOPRO_PROTUNE_WHITE_BALANCE_5500K");
+            yield return new EnumValue<T>(converter(3),"GOPRO_PROTUNE_WHITE_BALANCE_6500K");
+            yield return new EnumValue<T>(converter(4),"GOPRO_PROTUNE_WHITE_BALANCE_RAW");
+        }
+    }
     /// <summary>
     ///  GOPRO_PROTUNE_COLOUR
     /// </summary>
-    public enum GoproProtuneColour:uint
+    public enum GoproProtuneColour : ulong
     {
         /// <summary>
         /// Auto.
@@ -1293,11 +1806,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproProtuneColourNeutral = 1,
     }
-
+    public static class GoproProtuneColourHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PROTUNE_COLOUR_STANDARD");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PROTUNE_COLOUR_NEUTRAL");
+        }
+    }
     /// <summary>
     ///  GOPRO_PROTUNE_GAIN
     /// </summary>
-    public enum GoproProtuneGain:uint
+    public enum GoproProtuneGain : ulong
     {
         /// <summary>
         /// ISO 400.
@@ -1325,11 +1850,29 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproProtuneGain6400 = 4,
     }
-
+    public static class GoproProtuneGainHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PROTUNE_GAIN_400");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PROTUNE_GAIN_800");
+            yield return new EnumValue<T>(converter(2),"GOPRO_PROTUNE_GAIN_1600");
+            yield return new EnumValue<T>(converter(3),"GOPRO_PROTUNE_GAIN_3200");
+            yield return new EnumValue<T>(converter(4),"GOPRO_PROTUNE_GAIN_6400");
+        }
+    }
     /// <summary>
     ///  GOPRO_PROTUNE_SHARPNESS
     /// </summary>
-    public enum GoproProtuneSharpness:uint
+    public enum GoproProtuneSharpness : ulong
     {
         /// <summary>
         /// Low Sharpness.
@@ -1347,11 +1890,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproProtuneSharpnessHigh = 2,
     }
-
+    public static class GoproProtuneSharpnessHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PROTUNE_SHARPNESS_LOW");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PROTUNE_SHARPNESS_MEDIUM");
+            yield return new EnumValue<T>(converter(2),"GOPRO_PROTUNE_SHARPNESS_HIGH");
+        }
+    }
     /// <summary>
     ///  GOPRO_PROTUNE_EXPOSURE
     /// </summary>
-    public enum GoproProtuneExposure:uint
+    public enum GoproProtuneExposure : ulong
     {
         /// <summary>
         /// -5.0 EV (Hero 3+ Only).
@@ -1459,11 +2016,61 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproProtuneExposurePos50 = 20,
     }
-
+    public static class GoproProtuneExposureHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+            yield return converter(16);
+            yield return converter(17);
+            yield return converter(18);
+            yield return converter(19);
+            yield return converter(20);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PROTUNE_EXPOSURE_NEG_5_0");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PROTUNE_EXPOSURE_NEG_4_5");
+            yield return new EnumValue<T>(converter(2),"GOPRO_PROTUNE_EXPOSURE_NEG_4_0");
+            yield return new EnumValue<T>(converter(3),"GOPRO_PROTUNE_EXPOSURE_NEG_3_5");
+            yield return new EnumValue<T>(converter(4),"GOPRO_PROTUNE_EXPOSURE_NEG_3_0");
+            yield return new EnumValue<T>(converter(5),"GOPRO_PROTUNE_EXPOSURE_NEG_2_5");
+            yield return new EnumValue<T>(converter(6),"GOPRO_PROTUNE_EXPOSURE_NEG_2_0");
+            yield return new EnumValue<T>(converter(7),"GOPRO_PROTUNE_EXPOSURE_NEG_1_5");
+            yield return new EnumValue<T>(converter(8),"GOPRO_PROTUNE_EXPOSURE_NEG_1_0");
+            yield return new EnumValue<T>(converter(9),"GOPRO_PROTUNE_EXPOSURE_NEG_0_5");
+            yield return new EnumValue<T>(converter(10),"GOPRO_PROTUNE_EXPOSURE_ZERO");
+            yield return new EnumValue<T>(converter(11),"GOPRO_PROTUNE_EXPOSURE_POS_0_5");
+            yield return new EnumValue<T>(converter(12),"GOPRO_PROTUNE_EXPOSURE_POS_1_0");
+            yield return new EnumValue<T>(converter(13),"GOPRO_PROTUNE_EXPOSURE_POS_1_5");
+            yield return new EnumValue<T>(converter(14),"GOPRO_PROTUNE_EXPOSURE_POS_2_0");
+            yield return new EnumValue<T>(converter(15),"GOPRO_PROTUNE_EXPOSURE_POS_2_5");
+            yield return new EnumValue<T>(converter(16),"GOPRO_PROTUNE_EXPOSURE_POS_3_0");
+            yield return new EnumValue<T>(converter(17),"GOPRO_PROTUNE_EXPOSURE_POS_3_5");
+            yield return new EnumValue<T>(converter(18),"GOPRO_PROTUNE_EXPOSURE_POS_4_0");
+            yield return new EnumValue<T>(converter(19),"GOPRO_PROTUNE_EXPOSURE_POS_4_5");
+            yield return new EnumValue<T>(converter(20),"GOPRO_PROTUNE_EXPOSURE_POS_5_0");
+        }
+    }
     /// <summary>
     ///  GOPRO_CHARGING
     /// </summary>
-    public enum GoproCharging:uint
+    public enum GoproCharging : ulong
     {
         /// <summary>
         /// Charging disabled.
@@ -1476,11 +2083,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproChargingEnabled = 1,
     }
-
+    public static class GoproChargingHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_CHARGING_DISABLED");
+            yield return new EnumValue<T>(converter(1),"GOPRO_CHARGING_ENABLED");
+        }
+    }
     /// <summary>
     ///  GOPRO_MODEL
     /// </summary>
-    public enum GoproModel:uint
+    public enum GoproModel : ulong
     {
         /// <summary>
         /// Unknown gopro model.
@@ -1508,11 +2127,29 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproModelHero4Black = 4,
     }
-
+    public static class GoproModelHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_MODEL_UNKNOWN");
+            yield return new EnumValue<T>(converter(1),"GOPRO_MODEL_HERO_3_PLUS_SILVER");
+            yield return new EnumValue<T>(converter(2),"GOPRO_MODEL_HERO_3_PLUS_BLACK");
+            yield return new EnumValue<T>(converter(3),"GOPRO_MODEL_HERO_4_SILVER");
+            yield return new EnumValue<T>(converter(4),"GOPRO_MODEL_HERO_4_BLACK");
+        }
+    }
     /// <summary>
     ///  GOPRO_BURST_RATE
     /// </summary>
-    public enum GoproBurstRate:uint
+    public enum GoproBurstRate : ulong
     {
         /// <summary>
         /// 3 Shots / 1 Second.
@@ -1560,11 +2197,37 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproBurstRate30In6Second = 8,
     }
-
+    public static class GoproBurstRateHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_BURST_RATE_3_IN_1_SECOND");
+            yield return new EnumValue<T>(converter(1),"GOPRO_BURST_RATE_5_IN_1_SECOND");
+            yield return new EnumValue<T>(converter(2),"GOPRO_BURST_RATE_10_IN_1_SECOND");
+            yield return new EnumValue<T>(converter(3),"GOPRO_BURST_RATE_10_IN_2_SECOND");
+            yield return new EnumValue<T>(converter(4),"GOPRO_BURST_RATE_10_IN_3_SECOND");
+            yield return new EnumValue<T>(converter(5),"GOPRO_BURST_RATE_30_IN_1_SECOND");
+            yield return new EnumValue<T>(converter(6),"GOPRO_BURST_RATE_30_IN_2_SECOND");
+            yield return new EnumValue<T>(converter(7),"GOPRO_BURST_RATE_30_IN_3_SECOND");
+            yield return new EnumValue<T>(converter(8),"GOPRO_BURST_RATE_30_IN_6_SECOND");
+        }
+    }
     /// <summary>
     ///  MAV_CMD_DO_AUX_FUNCTION_SWITCH_LEVEL
     /// </summary>
-    public enum MavCmdDoAuxFunctionSwitchLevel:uint
+    public enum MavCmdDoAuxFunctionSwitchLevel : ulong
     {
         /// <summary>
         /// Switch Low.
@@ -1582,11 +2245,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         MavCmdDoAuxFunctionSwitchLevelHigh = 2,
     }
-
+    public static class MavCmdDoAuxFunctionSwitchLevelHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_CMD_DO_AUX_FUNCTION_SWITCH_LEVEL_LOW");
+            yield return new EnumValue<T>(converter(1),"MAV_CMD_DO_AUX_FUNCTION_SWITCH_LEVEL_MIDDLE");
+            yield return new EnumValue<T>(converter(2),"MAV_CMD_DO_AUX_FUNCTION_SWITCH_LEVEL_HIGH");
+        }
+    }
     /// <summary>
     ///  LED_CONTROL_PATTERN
     /// </summary>
-    public enum LedControlPattern:uint
+    public enum LedControlPattern : ulong
     {
         /// <summary>
         /// LED patterns off (return control to regular vehicle control).
@@ -1604,12 +2281,26 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         LedControlPatternCustom = 255,
     }
-
+    public static class LedControlPatternHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(255);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"LED_CONTROL_PATTERN_OFF");
+            yield return new EnumValue<T>(converter(1),"LED_CONTROL_PATTERN_FIRMWAREUPDATE");
+            yield return new EnumValue<T>(converter(255),"LED_CONTROL_PATTERN_CUSTOM");
+        }
+    }
     /// <summary>
     /// Flags in EKF_STATUS message.
     ///  EKF_STATUS_FLAGS
     /// </summary>
-    public enum EkfStatusFlags:uint
+    public enum EkfStatusFlags : ulong
     {
         /// <summary>
         /// Set if EKF's attitude estimate is good.
@@ -1667,11 +2358,41 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         EkfUninitialized = 1024,
     }
-
+    public static class EkfStatusFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+            yield return converter(256);
+            yield return converter(512);
+            yield return converter(1024);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"EKF_ATTITUDE");
+            yield return new EnumValue<T>(converter(2),"EKF_VELOCITY_HORIZ");
+            yield return new EnumValue<T>(converter(4),"EKF_VELOCITY_VERT");
+            yield return new EnumValue<T>(converter(8),"EKF_POS_HORIZ_REL");
+            yield return new EnumValue<T>(converter(16),"EKF_POS_HORIZ_ABS");
+            yield return new EnumValue<T>(converter(32),"EKF_POS_VERT_ABS");
+            yield return new EnumValue<T>(converter(64),"EKF_POS_VERT_AGL");
+            yield return new EnumValue<T>(converter(128),"EKF_CONST_POS_MODE");
+            yield return new EnumValue<T>(converter(256),"EKF_PRED_POS_HORIZ_REL");
+            yield return new EnumValue<T>(converter(512),"EKF_PRED_POS_HORIZ_ABS");
+            yield return new EnumValue<T>(converter(1024),"EKF_UNINITIALIZED");
+        }
+    }
     /// <summary>
     ///  PID_TUNING_AXIS
     /// </summary>
-    public enum PidTuningAxis:uint
+    public enum PidTuningAxis : ulong
     {
         /// <summary>
         /// PID_TUNING_ROLL
@@ -1698,12 +2419,32 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         PidTuningLanding = 6,
     }
-
+    public static class PidTuningAxisHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"PID_TUNING_ROLL");
+            yield return new EnumValue<T>(converter(2),"PID_TUNING_PITCH");
+            yield return new EnumValue<T>(converter(3),"PID_TUNING_YAW");
+            yield return new EnumValue<T>(converter(4),"PID_TUNING_ACCZ");
+            yield return new EnumValue<T>(converter(5),"PID_TUNING_STEER");
+            yield return new EnumValue<T>(converter(6),"PID_TUNING_LANDING");
+        }
+    }
     /// <summary>
     /// Special ACK block numbers control activation of dataflash log streaming.
     ///  MAV_REMOTE_LOG_DATA_BLOCK_COMMANDS
     /// </summary>
-    public enum MavRemoteLogDataBlockCommands:uint
+    public enum MavRemoteLogDataBlockCommands : ulong
     {
         /// <summary>
         /// UAV to stop sending DataFlash blocks.
@@ -1716,12 +2457,24 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         MavRemoteLogDataBlockStart = 2147483646,
     }
-
+    public static class MavRemoteLogDataBlockCommandsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(2147483645);
+            yield return converter(2147483646);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(2147483645),"MAV_REMOTE_LOG_DATA_BLOCK_STOP");
+            yield return new EnumValue<T>(converter(2147483646),"MAV_REMOTE_LOG_DATA_BLOCK_START");
+        }
+    }
     /// <summary>
     /// Possible remote log data block statuses.
     ///  MAV_REMOTE_LOG_DATA_BLOCK_STATUSES
     /// </summary>
-    public enum MavRemoteLogDataBlockStatuses:uint
+    public enum MavRemoteLogDataBlockStatuses : ulong
     {
         /// <summary>
         /// This block has NOT been received.
@@ -1734,12 +2487,24 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         MavRemoteLogDataBlockAck = 1,
     }
-
+    public static class MavRemoteLogDataBlockStatusesHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_REMOTE_LOG_DATA_BLOCK_NACK");
+            yield return new EnumValue<T>(converter(1),"MAV_REMOTE_LOG_DATA_BLOCK_ACK");
+        }
+    }
     /// <summary>
     /// Bus types for device operations.
     ///  DEVICE_OP_BUSTYPE
     /// </summary>
-    public enum DeviceOpBustype:uint
+    public enum DeviceOpBustype : ulong
     {
         /// <summary>
         /// I2C Device operation.
@@ -1752,12 +2517,24 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         DeviceOpBustypeSpi = 1,
     }
-
+    public static class DeviceOpBustypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"DEVICE_OP_BUSTYPE_I2C");
+            yield return new EnumValue<T>(converter(1),"DEVICE_OP_BUSTYPE_SPI");
+        }
+    }
     /// <summary>
     /// Deepstall flight stage.
     ///  DEEPSTALL_STAGE
     /// </summary>
-    public enum DeepstallStage:uint
+    public enum DeepstallStage : ulong
     {
         /// <summary>
         /// Flying to the landing point.
@@ -1795,12 +2572,34 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         DeepstallStageLand = 6,
     }
-
+    public static class DeepstallStageHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"DEEPSTALL_STAGE_FLY_TO_LANDING");
+            yield return new EnumValue<T>(converter(1),"DEEPSTALL_STAGE_ESTIMATE_WIND");
+            yield return new EnumValue<T>(converter(2),"DEEPSTALL_STAGE_WAIT_FOR_BREAKOUT");
+            yield return new EnumValue<T>(converter(3),"DEEPSTALL_STAGE_FLY_TO_ARC");
+            yield return new EnumValue<T>(converter(4),"DEEPSTALL_STAGE_ARC");
+            yield return new EnumValue<T>(converter(5),"DEEPSTALL_STAGE_APPROACH");
+            yield return new EnumValue<T>(converter(6),"DEEPSTALL_STAGE_LAND");
+        }
+    }
     /// <summary>
     /// A mapping of plane flight modes for custom_mode field of heartbeat.
     ///  PLANE_MODE
     /// </summary>
-    public enum PlaneMode:uint
+    public enum PlaneMode : ulong
     {
         /// <summary>
         /// PLANE_MODE_MANUAL
@@ -1899,12 +2698,68 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         PlaneModeThermal = 24,
     }
-
+    public static class PlaneModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+            yield return converter(16);
+            yield return converter(17);
+            yield return converter(18);
+            yield return converter(19);
+            yield return converter(20);
+            yield return converter(21);
+            yield return converter(22);
+            yield return converter(23);
+            yield return converter(24);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"PLANE_MODE_MANUAL");
+            yield return new EnumValue<T>(converter(1),"PLANE_MODE_CIRCLE");
+            yield return new EnumValue<T>(converter(2),"PLANE_MODE_STABILIZE");
+            yield return new EnumValue<T>(converter(3),"PLANE_MODE_TRAINING");
+            yield return new EnumValue<T>(converter(4),"PLANE_MODE_ACRO");
+            yield return new EnumValue<T>(converter(5),"PLANE_MODE_FLY_BY_WIRE_A");
+            yield return new EnumValue<T>(converter(6),"PLANE_MODE_FLY_BY_WIRE_B");
+            yield return new EnumValue<T>(converter(7),"PLANE_MODE_CRUISE");
+            yield return new EnumValue<T>(converter(8),"PLANE_MODE_AUTOTUNE");
+            yield return new EnumValue<T>(converter(10),"PLANE_MODE_AUTO");
+            yield return new EnumValue<T>(converter(11),"PLANE_MODE_RTL");
+            yield return new EnumValue<T>(converter(12),"PLANE_MODE_LOITER");
+            yield return new EnumValue<T>(converter(13),"PLANE_MODE_TAKEOFF");
+            yield return new EnumValue<T>(converter(14),"PLANE_MODE_AVOID_ADSB");
+            yield return new EnumValue<T>(converter(15),"PLANE_MODE_GUIDED");
+            yield return new EnumValue<T>(converter(16),"PLANE_MODE_INITIALIZING");
+            yield return new EnumValue<T>(converter(17),"PLANE_MODE_QSTABILIZE");
+            yield return new EnumValue<T>(converter(18),"PLANE_MODE_QHOVER");
+            yield return new EnumValue<T>(converter(19),"PLANE_MODE_QLOITER");
+            yield return new EnumValue<T>(converter(20),"PLANE_MODE_QLAND");
+            yield return new EnumValue<T>(converter(21),"PLANE_MODE_QRTL");
+            yield return new EnumValue<T>(converter(22),"PLANE_MODE_QAUTOTUNE");
+            yield return new EnumValue<T>(converter(23),"PLANE_MODE_QACRO");
+            yield return new EnumValue<T>(converter(24),"PLANE_MODE_THERMAL");
+        }
+    }
     /// <summary>
     /// A mapping of copter flight modes for custom_mode field of heartbeat.
     ///  COPTER_MODE
     /// </summary>
-    public enum CopterMode:uint
+    public enum CopterMode : ulong
     {
         /// <summary>
         /// COPTER_MODE_STABILIZE
@@ -2007,12 +2862,70 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         CopterModeAutoRtl = 27,
     }
-
+    public static class CopterModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(9);
+            yield return converter(11);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+            yield return converter(16);
+            yield return converter(17);
+            yield return converter(18);
+            yield return converter(19);
+            yield return converter(20);
+            yield return converter(21);
+            yield return converter(22);
+            yield return converter(23);
+            yield return converter(24);
+            yield return converter(25);
+            yield return converter(26);
+            yield return converter(27);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"COPTER_MODE_STABILIZE");
+            yield return new EnumValue<T>(converter(1),"COPTER_MODE_ACRO");
+            yield return new EnumValue<T>(converter(2),"COPTER_MODE_ALT_HOLD");
+            yield return new EnumValue<T>(converter(3),"COPTER_MODE_AUTO");
+            yield return new EnumValue<T>(converter(4),"COPTER_MODE_GUIDED");
+            yield return new EnumValue<T>(converter(5),"COPTER_MODE_LOITER");
+            yield return new EnumValue<T>(converter(6),"COPTER_MODE_RTL");
+            yield return new EnumValue<T>(converter(7),"COPTER_MODE_CIRCLE");
+            yield return new EnumValue<T>(converter(9),"COPTER_MODE_LAND");
+            yield return new EnumValue<T>(converter(11),"COPTER_MODE_DRIFT");
+            yield return new EnumValue<T>(converter(13),"COPTER_MODE_SPORT");
+            yield return new EnumValue<T>(converter(14),"COPTER_MODE_FLIP");
+            yield return new EnumValue<T>(converter(15),"COPTER_MODE_AUTOTUNE");
+            yield return new EnumValue<T>(converter(16),"COPTER_MODE_POSHOLD");
+            yield return new EnumValue<T>(converter(17),"COPTER_MODE_BRAKE");
+            yield return new EnumValue<T>(converter(18),"COPTER_MODE_THROW");
+            yield return new EnumValue<T>(converter(19),"COPTER_MODE_AVOID_ADSB");
+            yield return new EnumValue<T>(converter(20),"COPTER_MODE_GUIDED_NOGPS");
+            yield return new EnumValue<T>(converter(21),"COPTER_MODE_SMART_RTL");
+            yield return new EnumValue<T>(converter(22),"COPTER_MODE_FLOWHOLD");
+            yield return new EnumValue<T>(converter(23),"COPTER_MODE_FOLLOW");
+            yield return new EnumValue<T>(converter(24),"COPTER_MODE_ZIGZAG");
+            yield return new EnumValue<T>(converter(25),"COPTER_MODE_SYSTEMID");
+            yield return new EnumValue<T>(converter(26),"COPTER_MODE_AUTOROTATE");
+            yield return new EnumValue<T>(converter(27),"COPTER_MODE_AUTO_RTL");
+        }
+    }
     /// <summary>
     /// A mapping of sub flight modes for custom_mode field of heartbeat.
     ///  SUB_MODE
     /// </summary>
-    public enum SubMode:uint
+    public enum SubMode : ulong
     {
         /// <summary>
         /// SUB_MODE_STABILIZE
@@ -2051,12 +2964,38 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         SubModeManual = 19,
     }
-
+    public static class SubModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(7);
+            yield return converter(9);
+            yield return converter(16);
+            yield return converter(19);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"SUB_MODE_STABILIZE");
+            yield return new EnumValue<T>(converter(1),"SUB_MODE_ACRO");
+            yield return new EnumValue<T>(converter(2),"SUB_MODE_ALT_HOLD");
+            yield return new EnumValue<T>(converter(3),"SUB_MODE_AUTO");
+            yield return new EnumValue<T>(converter(4),"SUB_MODE_GUIDED");
+            yield return new EnumValue<T>(converter(7),"SUB_MODE_CIRCLE");
+            yield return new EnumValue<T>(converter(9),"SUB_MODE_SURFACE");
+            yield return new EnumValue<T>(converter(16),"SUB_MODE_POSHOLD");
+            yield return new EnumValue<T>(converter(19),"SUB_MODE_MANUAL");
+        }
+    }
     /// <summary>
     /// A mapping of rover flight modes for custom_mode field of heartbeat.
     ///  ROVER_MODE
     /// </summary>
-    public enum RoverMode:uint
+    public enum RoverMode : ulong
     {
         /// <summary>
         /// ROVER_MODE_MANUAL
@@ -2107,12 +3046,44 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         RoverModeInitializing = 16,
     }
-
+    public static class RoverModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(15);
+            yield return converter(16);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ROVER_MODE_MANUAL");
+            yield return new EnumValue<T>(converter(1),"ROVER_MODE_ACRO");
+            yield return new EnumValue<T>(converter(3),"ROVER_MODE_STEERING");
+            yield return new EnumValue<T>(converter(4),"ROVER_MODE_HOLD");
+            yield return new EnumValue<T>(converter(5),"ROVER_MODE_LOITER");
+            yield return new EnumValue<T>(converter(6),"ROVER_MODE_FOLLOW");
+            yield return new EnumValue<T>(converter(7),"ROVER_MODE_SIMPLE");
+            yield return new EnumValue<T>(converter(10),"ROVER_MODE_AUTO");
+            yield return new EnumValue<T>(converter(11),"ROVER_MODE_RTL");
+            yield return new EnumValue<T>(converter(12),"ROVER_MODE_SMART_RTL");
+            yield return new EnumValue<T>(converter(15),"ROVER_MODE_GUIDED");
+            yield return new EnumValue<T>(converter(16),"ROVER_MODE_INITIALIZING");
+        }
+    }
     /// <summary>
     /// A mapping of antenna tracker flight modes for custom_mode field of heartbeat.
     ///  TRACKER_MODE
     /// </summary>
-    public enum TrackerMode:uint
+    public enum TrackerMode : ulong
     {
         /// <summary>
         /// TRACKER_MODE_MANUAL
@@ -2139,12 +3110,32 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         TrackerModeInitializing = 16,
     }
-
+    public static class TrackerModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(10);
+            yield return converter(16);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"TRACKER_MODE_MANUAL");
+            yield return new EnumValue<T>(converter(1),"TRACKER_MODE_STOP");
+            yield return new EnumValue<T>(converter(2),"TRACKER_MODE_SCAN");
+            yield return new EnumValue<T>(converter(3),"TRACKER_MODE_SERVO_TEST");
+            yield return new EnumValue<T>(converter(10),"TRACKER_MODE_AUTO");
+            yield return new EnumValue<T>(converter(16),"TRACKER_MODE_INITIALIZING");
+        }
+    }
     /// <summary>
     /// The type of parameter for the OSD parameter editor.
     ///  OSD_PARAM_CONFIG_TYPE
     /// </summary>
-    public enum OsdParamConfigType:uint
+    public enum OsdParamConfigType : ulong
     {
         /// <summary>
         /// OSD_PARAM_NONE
@@ -2183,12 +3174,38 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         OsdParamNumTypes = 8,
     }
-
+    public static class OsdParamConfigTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"OSD_PARAM_NONE");
+            yield return new EnumValue<T>(converter(1),"OSD_PARAM_SERIAL_PROTOCOL");
+            yield return new EnumValue<T>(converter(2),"OSD_PARAM_SERVO_FUNCTION");
+            yield return new EnumValue<T>(converter(3),"OSD_PARAM_AUX_FUNCTION");
+            yield return new EnumValue<T>(converter(4),"OSD_PARAM_FLIGHT_MODE");
+            yield return new EnumValue<T>(converter(5),"OSD_PARAM_FAILSAFE_ACTION");
+            yield return new EnumValue<T>(converter(6),"OSD_PARAM_FAILSAFE_ACTION_1");
+            yield return new EnumValue<T>(converter(7),"OSD_PARAM_FAILSAFE_ACTION_2");
+            yield return new EnumValue<T>(converter(8),"OSD_PARAM_NUM_TYPES");
+        }
+    }
     /// <summary>
     /// The error type for the OSD parameter editor.
     ///  OSD_PARAM_CONFIG_ERROR
     /// </summary>
-    public enum OsdParamConfigError:uint
+    public enum OsdParamConfigError : ulong
     {
         /// <summary>
         /// OSD_PARAM_SUCCESS
@@ -2207,7 +3224,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         OsdParamInvalidParameter = 3,
     }
-
+    public static class OsdParamConfigErrorHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"OSD_PARAM_SUCCESS");
+            yield return new EnumValue<T>(converter(1),"OSD_PARAM_INVALID_SCREEN");
+            yield return new EnumValue<T>(converter(2),"OSD_PARAM_INVALID_PARAMETER_INDEX");
+            yield return new EnumValue<T>(converter(3),"OSD_PARAM_INVALID_PARAMETER");
+        }
+    }
 
 #endregion
 
@@ -2301,18 +3334,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,MagDeclinationField, ref _magDeclination);    
-            Int32Type.Accept(visitor,RawPressField, ref _rawPress);    
-            Int32Type.Accept(visitor,RawTempField, ref _rawTemp);    
-            FloatType.Accept(visitor,GyroCalXField, ref _gyroCalX);    
-            FloatType.Accept(visitor,GyroCalYField, ref _gyroCalY);    
-            FloatType.Accept(visitor,GyroCalZField, ref _gyroCalZ);    
-            FloatType.Accept(visitor,AccelCalXField, ref _accelCalX);    
-            FloatType.Accept(visitor,AccelCalYField, ref _accelCalY);    
-            FloatType.Accept(visitor,AccelCalZField, ref _accelCalZ);    
-            Int16Type.Accept(visitor,MagOfsXField, ref _magOfsX);
-            Int16Type.Accept(visitor,MagOfsYField, ref _magOfsY);
-            Int16Type.Accept(visitor,MagOfsZField, ref _magOfsZ);
+            FloatType.Accept(visitor,MagDeclinationField, MagDeclinationField.DataType, ref _magDeclination);    
+            Int32Type.Accept(visitor,RawPressField, RawPressField.DataType, ref _rawPress);    
+            Int32Type.Accept(visitor,RawTempField, RawTempField.DataType, ref _rawTemp);    
+            FloatType.Accept(visitor,GyroCalXField, GyroCalXField.DataType, ref _gyroCalX);    
+            FloatType.Accept(visitor,GyroCalYField, GyroCalYField.DataType, ref _gyroCalY);    
+            FloatType.Accept(visitor,GyroCalZField, GyroCalZField.DataType, ref _gyroCalZ);    
+            FloatType.Accept(visitor,AccelCalXField, AccelCalXField.DataType, ref _accelCalX);    
+            FloatType.Accept(visitor,AccelCalYField, AccelCalYField.DataType, ref _accelCalY);    
+            FloatType.Accept(visitor,AccelCalZField, AccelCalZField.DataType, ref _accelCalZ);    
+            Int16Type.Accept(visitor,MagOfsXField, MagOfsXField.DataType, ref _magOfsX);
+            Int16Type.Accept(visitor,MagOfsYField, MagOfsYField.DataType, ref _magOfsY);
+            Int16Type.Accept(visitor,MagOfsZField, MagOfsZField.DataType, ref _magOfsZ);
 
         }
 
@@ -2324,11 +3357,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MagDeclination))
             .Title("mag_declination")
             .Description("Magnetic declination.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _magDeclination;
         public float MagDeclination { get => _magDeclination; set => _magDeclination = value; }
         /// <summary>
@@ -2339,11 +3370,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RawPress))
             .Title("raw_press")
             .Description("Raw pressure from barometer.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int32Type.Default)
 
-            .Build();
+            .DataType(Int32Type.Default)
+        .Build();
         private int _rawPress;
         public int RawPress { get => _rawPress; set => _rawPress = value; }
         /// <summary>
@@ -2354,11 +3383,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RawTemp))
             .Title("raw_temp")
             .Description("Raw temperature from barometer.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int32Type.Default)
 
-            .Build();
+            .DataType(Int32Type.Default)
+        .Build();
         private int _rawTemp;
         public int RawTemp { get => _rawTemp; set => _rawTemp = value; }
         /// <summary>
@@ -2369,11 +3396,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(GyroCalX))
             .Title("gyro_cal_x")
             .Description("Gyro X calibration.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _gyroCalX;
         public float GyroCalX { get => _gyroCalX; set => _gyroCalX = value; }
         /// <summary>
@@ -2384,11 +3409,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(GyroCalY))
             .Title("gyro_cal_y")
             .Description("Gyro Y calibration.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _gyroCalY;
         public float GyroCalY { get => _gyroCalY; set => _gyroCalY = value; }
         /// <summary>
@@ -2399,11 +3422,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(GyroCalZ))
             .Title("gyro_cal_z")
             .Description("Gyro Z calibration.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _gyroCalZ;
         public float GyroCalZ { get => _gyroCalZ; set => _gyroCalZ = value; }
         /// <summary>
@@ -2414,11 +3435,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(AccelCalX))
             .Title("accel_cal_x")
             .Description("Accel X calibration.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _accelCalX;
         public float AccelCalX { get => _accelCalX; set => _accelCalX = value; }
         /// <summary>
@@ -2429,11 +3448,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(AccelCalY))
             .Title("accel_cal_y")
             .Description("Accel Y calibration.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _accelCalY;
         public float AccelCalY { get => _accelCalY; set => _accelCalY = value; }
         /// <summary>
@@ -2444,11 +3461,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(AccelCalZ))
             .Title("accel_cal_z")
             .Description("Accel Z calibration.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _accelCalZ;
         public float AccelCalZ { get => _accelCalZ; set => _accelCalZ = value; }
         /// <summary>
@@ -2459,11 +3474,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MagOfsX))
             .Title("mag_ofs_x")
             .Description("Magnetometer X offset.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int16Type.Default)
 
-            .Build();
+            .DataType(Int16Type.Default)
+        .Build();
         private short _magOfsX;
         public short MagOfsX { get => _magOfsX; set => _magOfsX = value; }
         /// <summary>
@@ -2474,11 +3487,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MagOfsY))
             .Title("mag_ofs_y")
             .Description("Magnetometer Y offset.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int16Type.Default)
 
-            .Build();
+            .DataType(Int16Type.Default)
+        .Build();
         private short _magOfsY;
         public short MagOfsY { get => _magOfsY; set => _magOfsY = value; }
         /// <summary>
@@ -2489,11 +3500,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MagOfsZ))
             .Title("mag_ofs_z")
             .Description("Magnetometer Z offset.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int16Type.Default)
 
-            .Build();
+            .DataType(Int16Type.Default)
+        .Build();
         private short _magOfsZ;
         public short MagOfsZ { get => _magOfsZ; set => _magOfsZ = value; }
     }
@@ -2564,11 +3573,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int16Type.Accept(visitor,MagOfsXField, ref _magOfsX);
-            Int16Type.Accept(visitor,MagOfsYField, ref _magOfsY);
-            Int16Type.Accept(visitor,MagOfsZField, ref _magOfsZ);
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            Int16Type.Accept(visitor,MagOfsXField, MagOfsXField.DataType, ref _magOfsX);
+            Int16Type.Accept(visitor,MagOfsYField, MagOfsYField.DataType, ref _magOfsY);
+            Int16Type.Accept(visitor,MagOfsZField, MagOfsZField.DataType, ref _magOfsZ);
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -2580,11 +3589,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MagOfsX))
             .Title("mag_ofs_x")
             .Description("Magnetometer X offset.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int16Type.Default)
 
-            .Build();
+            .DataType(Int16Type.Default)
+        .Build();
         private short _magOfsX;
         public short MagOfsX { get => _magOfsX; set => _magOfsX = value; }
         /// <summary>
@@ -2595,11 +3602,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MagOfsY))
             .Title("mag_ofs_y")
             .Description("Magnetometer Y offset.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int16Type.Default)
 
-            .Build();
+            .DataType(Int16Type.Default)
+        .Build();
         private short _magOfsY;
         public short MagOfsY { get => _magOfsY; set => _magOfsY = value; }
         /// <summary>
@@ -2610,11 +3615,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MagOfsZ))
             .Title("mag_ofs_z")
             .Description("Magnetometer Z offset.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int16Type.Default)
 
-            .Build();
+            .DataType(Int16Type.Default)
+        .Build();
         private short _magOfsZ;
         public short MagOfsZ { get => _magOfsZ; set => _magOfsZ = value; }
         /// <summary>
@@ -2625,11 +3628,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -2640,11 +3641,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -2711,9 +3710,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,BrkvalField, ref _brkval);    
-            UInt16Type.Accept(visitor,FreememField, ref _freemem);    
-            UInt32Type.Accept(visitor,Freemem32Field, ref _freemem32);    
+            UInt16Type.Accept(visitor,BrkvalField, BrkvalField.DataType, ref _brkval);    
+            UInt16Type.Accept(visitor,FreememField, FreememField.DataType, ref _freemem);    
+            UInt32Type.Accept(visitor,Freemem32Field, Freemem32Field.DataType, ref _freemem32);    
 
         }
 
@@ -2725,11 +3724,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Brkval))
             .Title("brkval")
             .Description("Heap top.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _brkval;
         public ushort Brkval { get => _brkval; set => _brkval = value; }
         /// <summary>
@@ -2740,11 +3737,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Freemem))
             .Title("freemem")
             .Description("Free memory.")
-            .FormatString(string.Empty)
-            .Units(@"bytes")
+.Units(@"bytes")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _freemem;
         public ushort Freemem { get => _freemem; set => _freemem = value; }
         /// <summary>
@@ -2755,11 +3750,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Freemem32))
             .Title("freemem32")
             .Description("Free memory (32 bit).")
-            .FormatString(string.Empty)
-            .Units(@"bytes")
+.Units(@"bytes")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _freemem32;
         public uint Freemem32 { get => _freemem32; set => _freemem32 = value; }
     }
@@ -2833,12 +3826,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,Adc1Field, ref _adc1);    
-            UInt16Type.Accept(visitor,Adc2Field, ref _adc2);    
-            UInt16Type.Accept(visitor,Adc3Field, ref _adc3);    
-            UInt16Type.Accept(visitor,Adc4Field, ref _adc4);    
-            UInt16Type.Accept(visitor,Adc5Field, ref _adc5);    
-            UInt16Type.Accept(visitor,Adc6Field, ref _adc6);    
+            UInt16Type.Accept(visitor,Adc1Field, Adc1Field.DataType, ref _adc1);    
+            UInt16Type.Accept(visitor,Adc2Field, Adc2Field.DataType, ref _adc2);    
+            UInt16Type.Accept(visitor,Adc3Field, Adc3Field.DataType, ref _adc3);    
+            UInt16Type.Accept(visitor,Adc4Field, Adc4Field.DataType, ref _adc4);    
+            UInt16Type.Accept(visitor,Adc5Field, Adc5Field.DataType, ref _adc5);    
+            UInt16Type.Accept(visitor,Adc6Field, Adc6Field.DataType, ref _adc6);    
 
         }
 
@@ -2850,11 +3843,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Adc1))
             .Title("adc1")
             .Description("ADC output 1.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _adc1;
         public ushort Adc1 { get => _adc1; set => _adc1 = value; }
         /// <summary>
@@ -2865,11 +3856,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Adc2))
             .Title("adc2")
             .Description("ADC output 2.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _adc2;
         public ushort Adc2 { get => _adc2; set => _adc2 = value; }
         /// <summary>
@@ -2880,11 +3869,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Adc3))
             .Title("adc3")
             .Description("ADC output 3.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _adc3;
         public ushort Adc3 { get => _adc3; set => _adc3 = value; }
         /// <summary>
@@ -2895,11 +3882,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Adc4))
             .Title("adc4")
             .Description("ADC output 4.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _adc4;
         public ushort Adc4 { get => _adc4; set => _adc4 = value; }
         /// <summary>
@@ -2910,11 +3895,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Adc5))
             .Title("adc5")
             .Description("ADC output 5.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _adc5;
         public ushort Adc5 { get => _adc5; set => _adc5 = value; }
         /// <summary>
@@ -2925,11 +3908,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Adc6))
             .Title("adc6")
             .Description("ADC output 6.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _adc6;
         public ushort Adc6 { get => _adc6; set => _adc6 = value; }
     }
@@ -3018,17 +3999,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,ExtraValueField, ref _extraValue);    
-            UInt16Type.Accept(visitor,ShutterSpeedField, ref _shutterSpeed);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,ModeField, ref _mode);    
-            UInt8Type.Accept(visitor,ApertureField, ref _aperture);    
-            UInt8Type.Accept(visitor,IsoField, ref _iso);    
-            UInt8Type.Accept(visitor,ExposureTypeField, ref _exposureType);    
-            UInt8Type.Accept(visitor,CommandIdField, ref _commandId);    
-            UInt8Type.Accept(visitor,EngineCutOffField, ref _engineCutOff);    
-            UInt8Type.Accept(visitor,ExtraParamField, ref _extraParam);    
+            FloatType.Accept(visitor,ExtraValueField, ExtraValueField.DataType, ref _extraValue);    
+            UInt16Type.Accept(visitor,ShutterSpeedField, ShutterSpeedField.DataType, ref _shutterSpeed);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,ModeField, ModeField.DataType, ref _mode);    
+            UInt8Type.Accept(visitor,ApertureField, ApertureField.DataType, ref _aperture);    
+            UInt8Type.Accept(visitor,IsoField, IsoField.DataType, ref _iso);    
+            UInt8Type.Accept(visitor,ExposureTypeField, ExposureTypeField.DataType, ref _exposureType);    
+            UInt8Type.Accept(visitor,CommandIdField, CommandIdField.DataType, ref _commandId);    
+            UInt8Type.Accept(visitor,EngineCutOffField, EngineCutOffField.DataType, ref _engineCutOff);    
+            UInt8Type.Accept(visitor,ExtraParamField, ExtraParamField.DataType, ref _extraParam);    
 
         }
 
@@ -3040,11 +4021,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ExtraValue))
             .Title("extra_value")
             .Description("Correspondent value to given extra_param.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _extraValue;
         public float ExtraValue { get => _extraValue; set => _extraValue = value; }
         /// <summary>
@@ -3055,11 +4034,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ShutterSpeed))
             .Title("shutter_speed")
             .Description("Divisor number //e.g. 1000 means 1/1000 (0 means ignore).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _shutterSpeed;
         public ushort ShutterSpeed { get => _shutterSpeed; set => _shutterSpeed = value; }
         /// <summary>
@@ -3070,11 +4047,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -3085,11 +4060,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -3100,11 +4073,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Mode))
             .Title("mode")
             .Description("Mode enumeration from 1 to N //P, TV, AV, M, etc. (0 means ignore).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _mode;
         public byte Mode { get => _mode; set => _mode = value; }
         /// <summary>
@@ -3115,11 +4086,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Aperture))
             .Title("aperture")
             .Description("F stop number x 10 //e.g. 28 means 2.8 (0 means ignore).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _aperture;
         public byte Aperture { get => _aperture; set => _aperture = value; }
         /// <summary>
@@ -3130,11 +4099,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Iso))
             .Title("iso")
             .Description("ISO enumeration from 1 to N //e.g. 80, 100, 200, Etc (0 means ignore).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _iso;
         public byte Iso { get => _iso; set => _iso = value; }
         /// <summary>
@@ -3145,11 +4112,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ExposureType))
             .Title("exposure_type")
             .Description("Exposure type enumeration from 1 to N (0 means ignore).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _exposureType;
         public byte ExposureType { get => _exposureType; set => _exposureType = value; }
         /// <summary>
@@ -3160,11 +4125,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CommandId))
             .Title("command_id")
             .Description("Command Identity (incremental loop: 0 to 255). //A command sent multiple times will be executed or pooled just once.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _commandId;
         public byte CommandId { get => _commandId; set => _commandId = value; }
         /// <summary>
@@ -3175,11 +4138,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(EngineCutOff))
             .Title("engine_cut_off")
             .Description("Main engine cut-off time before camera trigger (0 means no cut-off).")
-            .FormatString(string.Empty)
-            .Units(@"ds")
+.Units(@"ds")
             .DataType(UInt8Type.Default)
-
-            .Build();
+        .Build();
         private byte _engineCutOff;
         public byte EngineCutOff { get => _engineCutOff; set => _engineCutOff = value; }
         /// <summary>
@@ -3190,11 +4151,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ExtraParam))
             .Title("extra_param")
             .Description("Extra parameters enumeration (0 means ignore).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _extraParam;
         public byte ExtraParam { get => _extraParam; set => _extraParam = value; }
     }
@@ -3280,16 +4239,16 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,ExtraValueField, ref _extraValue);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,SessionField, ref _session);    
-            UInt8Type.Accept(visitor,ZoomPosField, ref _zoomPos);    
-            Int8Type.Accept(visitor,ZoomStepField, ref _zoomStep);                
-            UInt8Type.Accept(visitor,FocusLockField, ref _focusLock);    
-            UInt8Type.Accept(visitor,ShotField, ref _shot);    
-            UInt8Type.Accept(visitor,CommandIdField, ref _commandId);    
-            UInt8Type.Accept(visitor,ExtraParamField, ref _extraParam);    
+            FloatType.Accept(visitor,ExtraValueField, ExtraValueField.DataType, ref _extraValue);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,SessionField, SessionField.DataType, ref _session);    
+            UInt8Type.Accept(visitor,ZoomPosField, ZoomPosField.DataType, ref _zoomPos);    
+            Int8Type.Accept(visitor,ZoomStepField, ZoomStepField.DataType, ref _zoomStep);                
+            UInt8Type.Accept(visitor,FocusLockField, FocusLockField.DataType, ref _focusLock);    
+            UInt8Type.Accept(visitor,ShotField, ShotField.DataType, ref _shot);    
+            UInt8Type.Accept(visitor,CommandIdField, CommandIdField.DataType, ref _commandId);    
+            UInt8Type.Accept(visitor,ExtraParamField, ExtraParamField.DataType, ref _extraParam);    
 
         }
 
@@ -3301,11 +4260,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ExtraValue))
             .Title("extra_value")
             .Description("Correspondent value to given extra_param.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _extraValue;
         public float ExtraValue { get => _extraValue; set => _extraValue = value; }
         /// <summary>
@@ -3316,11 +4273,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -3331,11 +4286,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -3346,11 +4299,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Session))
             .Title("session")
             .Description("0: stop, 1: start or keep it up //Session control e.g. show/hide lens.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _session;
         public byte Session { get => _session; set => _session = value; }
         /// <summary>
@@ -3361,11 +4312,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ZoomPos))
             .Title("zoom_pos")
             .Description("1 to N //Zoom's absolute position (0 means ignore).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _zoomPos;
         public byte ZoomPos { get => _zoomPos; set => _zoomPos = value; }
         /// <summary>
@@ -3376,11 +4325,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ZoomStep))
             .Title("zoom_step")
             .Description("-100 to 100 //Zooming step value to offset zoom from the current position.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int8Type.Default)
 
-            .Build();
+            .DataType(Int8Type.Default)
+        .Build();
         private sbyte _zoomStep;
         public sbyte ZoomStep { get => _zoomStep; set => _zoomStep = value; }
         /// <summary>
@@ -3391,11 +4338,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(FocusLock))
             .Title("focus_lock")
             .Description("0: unlock focus or keep unlocked, 1: lock focus or keep locked, 3: re-lock focus.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _focusLock;
         public byte FocusLock { get => _focusLock; set => _focusLock = value; }
         /// <summary>
@@ -3406,11 +4351,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Shot))
             .Title("shot")
             .Description("0: ignore, 1: shot or start filming.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _shot;
         public byte Shot { get => _shot; set => _shot = value; }
         /// <summary>
@@ -3421,11 +4364,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CommandId))
             .Title("command_id")
             .Description("Command Identity (incremental loop: 0 to 255)//A command sent multiple times will be executed or pooled just once.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _commandId;
         public byte CommandId { get => _commandId; set => _commandId = value; }
         /// <summary>
@@ -3436,11 +4377,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ExtraParam))
             .Title("extra_param")
             .Description("Extra parameters enumeration (0 means ignore).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _extraParam;
         public byte ExtraParam { get => _extraParam; set => _extraParam = value; }
     }
@@ -3514,14 +4453,14 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
             var tmpMountMode = (byte)MountMode;
-            UInt8Type.Accept(visitor,MountModeField, ref tmpMountMode);
+            UInt8Type.Accept(visitor,MountModeField, MountModeField.DataType, ref tmpMountMode);
             MountMode = (MavMountMode)tmpMountMode;
-            UInt8Type.Accept(visitor,StabRollField, ref _stabRoll);    
-            UInt8Type.Accept(visitor,StabPitchField, ref _stabPitch);    
-            UInt8Type.Accept(visitor,StabYawField, ref _stabYaw);    
+            UInt8Type.Accept(visitor,StabRollField, StabRollField.DataType, ref _stabRoll);    
+            UInt8Type.Accept(visitor,StabPitchField, StabPitchField.DataType, ref _stabPitch);    
+            UInt8Type.Accept(visitor,StabYawField, StabYawField.DataType, ref _stabYaw);    
 
         }
 
@@ -3533,11 +4472,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -3548,11 +4485,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -3563,12 +4498,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MountMode))
             .Title("mount_mode")
             .Description("Mount operating mode.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavMountModeHelper.GetValues(x=>(byte)x).Min(),MavMountModeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavMountModeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavMountMode _mountMode;
+        private MavMountMode _mountMode;
         public MavMountMode MountMode { get => _mountMode; set => _mountMode = value; } 
         /// <summary>
         /// (1 = yes, 0 = no).
@@ -3578,11 +4511,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(StabRoll))
             .Title("stab_roll")
             .Description("(1 = yes, 0 = no).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _stabRoll;
         public byte StabRoll { get => _stabRoll; set => _stabRoll = value; }
         /// <summary>
@@ -3593,11 +4524,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(StabPitch))
             .Title("stab_pitch")
             .Description("(1 = yes, 0 = no).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _stabPitch;
         public byte StabPitch { get => _stabPitch; set => _stabPitch = value; }
         /// <summary>
@@ -3608,11 +4537,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(StabYaw))
             .Title("stab_yaw")
             .Description("(1 = yes, 0 = no).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _stabYaw;
         public byte StabYaw { get => _stabYaw; set => _stabYaw = value; }
     }
@@ -3686,12 +4613,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int32Type.Accept(visitor,InputAField, ref _inputA);    
-            Int32Type.Accept(visitor,InputBField, ref _inputB);    
-            Int32Type.Accept(visitor,InputCField, ref _inputC);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,SavePositionField, ref _savePosition);    
+            Int32Type.Accept(visitor,InputAField, InputAField.DataType, ref _inputA);    
+            Int32Type.Accept(visitor,InputBField, InputBField.DataType, ref _inputB);    
+            Int32Type.Accept(visitor,InputCField, InputCField.DataType, ref _inputC);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,SavePositionField, SavePositionField.DataType, ref _savePosition);    
 
         }
 
@@ -3703,11 +4630,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(InputA))
             .Title("input_a")
             .Description("Pitch (centi-degrees) or lat (degE7), depending on mount mode.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int32Type.Default)
 
-            .Build();
+            .DataType(Int32Type.Default)
+        .Build();
         private int _inputA;
         public int InputA { get => _inputA; set => _inputA = value; }
         /// <summary>
@@ -3718,11 +4643,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(InputB))
             .Title("input_b")
             .Description("Roll (centi-degrees) or lon (degE7) depending on mount mode.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int32Type.Default)
 
-            .Build();
+            .DataType(Int32Type.Default)
+        .Build();
         private int _inputB;
         public int InputB { get => _inputB; set => _inputB = value; }
         /// <summary>
@@ -3733,11 +4656,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(InputC))
             .Title("input_c")
             .Description("Yaw (centi-degrees) or alt (cm) depending on mount mode.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int32Type.Default)
 
-            .Build();
+            .DataType(Int32Type.Default)
+        .Build();
         private int _inputC;
         public int InputC { get => _inputC; set => _inputC = value; }
         /// <summary>
@@ -3748,11 +4669,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -3763,11 +4682,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -3778,11 +4695,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(SavePosition))
             .Title("save_position")
             .Description("If \"1\" it will save current trimmed position on EEPROM (just valid for NEUTRAL and LANDING).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _savePosition;
         public byte SavePosition { get => _savePosition; set => _savePosition = value; }
     }
@@ -3858,13 +4773,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int32Type.Accept(visitor,PointingAField, ref _pointingA);    
-            Int32Type.Accept(visitor,PointingBField, ref _pointingB);    
-            Int32Type.Accept(visitor,PointingCField, ref _pointingC);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            Int32Type.Accept(visitor,PointingAField, PointingAField.DataType, ref _pointingA);    
+            Int32Type.Accept(visitor,PointingBField, PointingBField.DataType, ref _pointingB);    
+            Int32Type.Accept(visitor,PointingCField, PointingCField.DataType, ref _pointingC);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
             var tmpMountMode = (byte)MountMode;
-            UInt8Type.Accept(visitor,MountModeField, ref tmpMountMode);
+            UInt8Type.Accept(visitor,MountModeField, MountModeField.DataType, ref tmpMountMode);
             MountMode = (MavMountMode)tmpMountMode;
 
         }
@@ -3877,11 +4792,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(PointingA))
             .Title("pointing_a")
             .Description("Pitch.")
-            .FormatString(string.Empty)
-            .Units(@"cdeg")
+.Units(@"cdeg")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _pointingA;
         public int PointingA { get => _pointingA; set => _pointingA = value; }
         /// <summary>
@@ -3892,11 +4805,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(PointingB))
             .Title("pointing_b")
             .Description("Roll.")
-            .FormatString(string.Empty)
-            .Units(@"cdeg")
+.Units(@"cdeg")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _pointingB;
         public int PointingB { get => _pointingB; set => _pointingB = value; }
         /// <summary>
@@ -3907,11 +4818,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(PointingC))
             .Title("pointing_c")
             .Description("Yaw.")
-            .FormatString(string.Empty)
-            .Units(@"cdeg")
+.Units(@"cdeg")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _pointingC;
         public int PointingC { get => _pointingC; set => _pointingC = value; }
         /// <summary>
@@ -3922,11 +4831,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -3937,11 +4844,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -3952,12 +4857,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MountMode))
             .Title("mount_mode")
             .Description("Mount operating mode.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavMountModeHelper.GetValues(x=>(byte)x).Min(),MavMountModeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavMountModeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavMountMode _mountMode;
+        private MavMountMode _mountMode;
         public MavMountMode MountMode { get => _mountMode; set => _mountMode = value; } 
     }
     /// <summary>
@@ -4030,12 +4933,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,LatField, ref _lat);    
-            FloatType.Accept(visitor,LngField, ref _lng);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,IdxField, ref _idx);    
-            UInt8Type.Accept(visitor,CountField, ref _count);    
+            FloatType.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            FloatType.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
 
         }
 
@@ -4047,11 +4950,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Latitude of point.")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _lat;
         public float Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -4062,11 +4963,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lng))
             .Title("lng")
             .Description("Longitude of point.")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _lng;
         public float Lng { get => _lng; set => _lng = value; }
         /// <summary>
@@ -4077,11 +4976,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -4092,11 +4989,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -4107,11 +5002,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Idx))
             .Title("idx")
             .Description("Point index (first point is 1, 0 is for return point).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _idx;
         public byte Idx { get => _idx; set => _idx = value; }
         /// <summary>
@@ -4122,11 +5015,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Count))
             .Title("count")
             .Description("Total number of points (for sanity checking).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _count;
         public byte Count { get => _count; set => _count = value; }
     }
@@ -4191,9 +5082,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,IdxField, ref _idx);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
 
         }
 
@@ -4205,11 +5096,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -4220,11 +5109,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -4235,11 +5122,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Idx))
             .Title("idx")
             .Description("Point index (first point is 1, 0 is for return point).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _idx;
         public byte Idx { get => _idx; set => _idx = value; }
     }
@@ -4316,13 +5201,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,OmegaixField, ref _omegaix);    
-            FloatType.Accept(visitor,OmegaiyField, ref _omegaiy);    
-            FloatType.Accept(visitor,OmegaizField, ref _omegaiz);    
-            FloatType.Accept(visitor,AccelWeightField, ref _accelWeight);    
-            FloatType.Accept(visitor,RenormValField, ref _renormVal);    
-            FloatType.Accept(visitor,ErrorRpField, ref _errorRp);    
-            FloatType.Accept(visitor,ErrorYawField, ref _errorYaw);    
+            FloatType.Accept(visitor,OmegaixField, OmegaixField.DataType, ref _omegaix);    
+            FloatType.Accept(visitor,OmegaiyField, OmegaiyField.DataType, ref _omegaiy);    
+            FloatType.Accept(visitor,OmegaizField, OmegaizField.DataType, ref _omegaiz);    
+            FloatType.Accept(visitor,AccelWeightField, AccelWeightField.DataType, ref _accelWeight);    
+            FloatType.Accept(visitor,RenormValField, RenormValField.DataType, ref _renormVal);    
+            FloatType.Accept(visitor,ErrorRpField, ErrorRpField.DataType, ref _errorRp);    
+            FloatType.Accept(visitor,ErrorYawField, ErrorYawField.DataType, ref _errorYaw);    
 
         }
 
@@ -4334,11 +5219,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Omegaix))
             .Title("omegaIx")
             .Description("X gyro drift estimate.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _omegaix;
         public float Omegaix { get => _omegaix; set => _omegaix = value; }
         /// <summary>
@@ -4349,11 +5232,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Omegaiy))
             .Title("omegaIy")
             .Description("Y gyro drift estimate.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _omegaiy;
         public float Omegaiy { get => _omegaiy; set => _omegaiy = value; }
         /// <summary>
@@ -4364,11 +5245,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Omegaiz))
             .Title("omegaIz")
             .Description("Z gyro drift estimate.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _omegaiz;
         public float Omegaiz { get => _omegaiz; set => _omegaiz = value; }
         /// <summary>
@@ -4379,11 +5258,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(AccelWeight))
             .Title("accel_weight")
             .Description("Average accel_weight.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _accelWeight;
         public float AccelWeight { get => _accelWeight; set => _accelWeight = value; }
         /// <summary>
@@ -4394,11 +5271,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RenormVal))
             .Title("renorm_val")
             .Description("Average renormalisation value.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _renormVal;
         public float RenormVal { get => _renormVal; set => _renormVal = value; }
         /// <summary>
@@ -4409,11 +5284,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ErrorRp))
             .Title("error_rp")
             .Description("Average error_roll_pitch value.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _errorRp;
         public float ErrorRp { get => _errorRp; set => _errorRp = value; }
         /// <summary>
@@ -4424,11 +5297,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ErrorYaw))
             .Title("error_yaw")
             .Description("Average error_yaw value.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _errorYaw;
         public float ErrorYaw { get => _errorYaw; set => _errorYaw = value; }
     }
@@ -4517,17 +5388,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,RollField, ref _roll);    
-            FloatType.Accept(visitor,PitchField, ref _pitch);    
-            FloatType.Accept(visitor,YawField, ref _yaw);    
-            FloatType.Accept(visitor,XaccField, ref _xacc);    
-            FloatType.Accept(visitor,YaccField, ref _yacc);    
-            FloatType.Accept(visitor,ZaccField, ref _zacc);    
-            FloatType.Accept(visitor,XgyroField, ref _xgyro);    
-            FloatType.Accept(visitor,YgyroField, ref _ygyro);    
-            FloatType.Accept(visitor,ZgyroField, ref _zgyro);    
-            Int32Type.Accept(visitor,LatField, ref _lat);    
-            Int32Type.Accept(visitor,LngField, ref _lng);    
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,XaccField, XaccField.DataType, ref _xacc);    
+            FloatType.Accept(visitor,YaccField, YaccField.DataType, ref _yacc);    
+            FloatType.Accept(visitor,ZaccField, ZaccField.DataType, ref _zacc);    
+            FloatType.Accept(visitor,XgyroField, XgyroField.DataType, ref _xgyro);    
+            FloatType.Accept(visitor,YgyroField, YgyroField.DataType, ref _ygyro);    
+            FloatType.Accept(visitor,ZgyroField, ZgyroField.DataType, ref _zgyro);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
 
         }
 
@@ -4539,11 +5410,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Roll))
             .Title("roll")
             .Description("Roll angle.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _roll;
         public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
@@ -4554,11 +5423,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Pitch))
             .Title("pitch")
             .Description("Pitch angle.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitch;
         public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
@@ -4569,11 +5436,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Yaw))
             .Title("yaw")
             .Description("Yaw angle.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yaw;
         public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
@@ -4584,11 +5449,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Xacc))
             .Title("xacc")
             .Description("X acceleration.")
-            .FormatString(string.Empty)
-            .Units(@"m/s/s")
+.Units(@"m/s/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _xacc;
         public float Xacc { get => _xacc; set => _xacc = value; }
         /// <summary>
@@ -4599,11 +5462,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Yacc))
             .Title("yacc")
             .Description("Y acceleration.")
-            .FormatString(string.Empty)
-            .Units(@"m/s/s")
+.Units(@"m/s/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yacc;
         public float Yacc { get => _yacc; set => _yacc = value; }
         /// <summary>
@@ -4614,11 +5475,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Zacc))
             .Title("zacc")
             .Description("Z acceleration.")
-            .FormatString(string.Empty)
-            .Units(@"m/s/s")
+.Units(@"m/s/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _zacc;
         public float Zacc { get => _zacc; set => _zacc = value; }
         /// <summary>
@@ -4629,11 +5488,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Xgyro))
             .Title("xgyro")
             .Description("Angular speed around X axis.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _xgyro;
         public float Xgyro { get => _xgyro; set => _xgyro = value; }
         /// <summary>
@@ -4644,11 +5501,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Ygyro))
             .Title("ygyro")
             .Description("Angular speed around Y axis.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _ygyro;
         public float Ygyro { get => _ygyro; set => _ygyro = value; }
         /// <summary>
@@ -4659,11 +5514,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Zgyro))
             .Title("zgyro")
             .Description("Angular speed around Z axis.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _zgyro;
         public float Zgyro { get => _zgyro; set => _zgyro = value; }
         /// <summary>
@@ -4674,11 +5527,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Latitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lat;
         public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -4689,11 +5540,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lng))
             .Title("lng")
             .Description("Longitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lng;
         public int Lng { get => _lng; set => _lng = value; }
     }
@@ -4755,8 +5604,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,VccField, ref _vcc);    
-            UInt8Type.Accept(visitor,I2cerrField, ref _i2cerr);    
+            UInt16Type.Accept(visitor,VccField, VccField.DataType, ref _vcc);    
+            UInt8Type.Accept(visitor,I2cerrField, I2cerrField.DataType, ref _i2cerr);    
 
         }
 
@@ -4768,11 +5617,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Vcc))
             .Title("Vcc")
             .Description("Board voltage.")
-            .FormatString(string.Empty)
-            .Units(@"mV")
+.Units(@"mV")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _vcc;
         public ushort Vcc { get => _vcc; set => _vcc = value; }
         /// <summary>
@@ -4783,11 +5630,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(I2cerr))
             .Title("I2Cerr")
             .Description("I2C error count.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _i2cerr;
         public byte I2cerr { get => _i2cerr; set => _i2cerr = value; }
     }
@@ -4864,13 +5709,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RxerrorsField, ref _rxerrors);    
-            UInt16Type.Accept(visitor,FixedField, ref _fixed);    
-            UInt8Type.Accept(visitor,RssiField, ref _rssi);    
-            UInt8Type.Accept(visitor,RemrssiField, ref _remrssi);    
-            UInt8Type.Accept(visitor,TxbufField, ref _txbuf);    
-            UInt8Type.Accept(visitor,NoiseField, ref _noise);    
-            UInt8Type.Accept(visitor,RemnoiseField, ref _remnoise);    
+            UInt16Type.Accept(visitor,RxerrorsField, RxerrorsField.DataType, ref _rxerrors);    
+            UInt16Type.Accept(visitor,FixedField, FixedField.DataType, ref _fixed);    
+            UInt8Type.Accept(visitor,RssiField, RssiField.DataType, ref _rssi);    
+            UInt8Type.Accept(visitor,RemrssiField, RemrssiField.DataType, ref _remrssi);    
+            UInt8Type.Accept(visitor,TxbufField, TxbufField.DataType, ref _txbuf);    
+            UInt8Type.Accept(visitor,NoiseField, NoiseField.DataType, ref _noise);    
+            UInt8Type.Accept(visitor,RemnoiseField, RemnoiseField.DataType, ref _remnoise);    
 
         }
 
@@ -4882,11 +5727,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Rxerrors))
             .Title("rxerrors")
             .Description("Receive errors.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _rxerrors;
         public ushort Rxerrors { get => _rxerrors; set => _rxerrors = value; }
         /// <summary>
@@ -4897,11 +5740,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Fixed))
             .Title("fixed")
             .Description("Count of error corrected packets.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _fixed;
         public ushort Fixed { get => _fixed; set => _fixed = value; }
         /// <summary>
@@ -4912,11 +5753,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Rssi))
             .Title("rssi")
             .Description("Local signal strength.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _rssi;
         public byte Rssi { get => _rssi; set => _rssi = value; }
         /// <summary>
@@ -4927,11 +5766,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Remrssi))
             .Title("remrssi")
             .Description("Remote signal strength.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _remrssi;
         public byte Remrssi { get => _remrssi; set => _remrssi = value; }
         /// <summary>
@@ -4942,11 +5779,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Txbuf))
             .Title("txbuf")
             .Description("How full the tx buffer is.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(UInt8Type.Default)
-
-            .Build();
+        .Build();
         private byte _txbuf;
         public byte Txbuf { get => _txbuf; set => _txbuf = value; }
         /// <summary>
@@ -4957,11 +5792,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Noise))
             .Title("noise")
             .Description("Background noise level.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _noise;
         public byte Noise { get => _noise; set => _noise = value; }
         /// <summary>
@@ -4972,11 +5805,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Remnoise))
             .Title("remnoise")
             .Description("Remote background noise level.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _remnoise;
         public byte Remnoise { get => _remnoise; set => _remnoise = value; }
     }
@@ -5059,22 +5890,22 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,LastTriggerField, ref _lastTrigger);    
-            UInt32Type.Accept(visitor,LastActionField, ref _lastAction);    
-            UInt32Type.Accept(visitor,LastRecoveryField, ref _lastRecovery);    
-            UInt32Type.Accept(visitor,LastClearField, ref _lastClear);    
-            UInt16Type.Accept(visitor,BreachCountField, ref _breachCount);    
+            UInt32Type.Accept(visitor,LastTriggerField, LastTriggerField.DataType, ref _lastTrigger);    
+            UInt32Type.Accept(visitor,LastActionField, LastActionField.DataType, ref _lastAction);    
+            UInt32Type.Accept(visitor,LastRecoveryField, LastRecoveryField.DataType, ref _lastRecovery);    
+            UInt32Type.Accept(visitor,LastClearField, LastClearField.DataType, ref _lastClear);    
+            UInt16Type.Accept(visitor,BreachCountField, BreachCountField.DataType, ref _breachCount);    
             var tmpLimitsState = (byte)LimitsState;
-            UInt8Type.Accept(visitor,LimitsStateField, ref tmpLimitsState);
+            UInt8Type.Accept(visitor,LimitsStateField, LimitsStateField.DataType, ref tmpLimitsState);
             LimitsState = (LimitsState)tmpLimitsState;
             var tmpModsEnabled = (byte)ModsEnabled;
-            UInt8Type.Accept(visitor,ModsEnabledField, ref tmpModsEnabled);
+            UInt8Type.Accept(visitor,ModsEnabledField, ModsEnabledField.DataType, ref tmpModsEnabled);
             ModsEnabled = (LimitModule)tmpModsEnabled;
             var tmpModsRequired = (byte)ModsRequired;
-            UInt8Type.Accept(visitor,ModsRequiredField, ref tmpModsRequired);
+            UInt8Type.Accept(visitor,ModsRequiredField, ModsRequiredField.DataType, ref tmpModsRequired);
             ModsRequired = (LimitModule)tmpModsRequired;
             var tmpModsTriggered = (byte)ModsTriggered;
-            UInt8Type.Accept(visitor,ModsTriggeredField, ref tmpModsTriggered);
+            UInt8Type.Accept(visitor,ModsTriggeredField, ModsTriggeredField.DataType, ref tmpModsTriggered);
             ModsTriggered = (LimitModule)tmpModsTriggered;
 
         }
@@ -5087,11 +5918,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(LastTrigger))
             .Title("last_trigger")
             .Description("Time (since boot) of last breach.")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _lastTrigger;
         public uint LastTrigger { get => _lastTrigger; set => _lastTrigger = value; }
         /// <summary>
@@ -5102,11 +5931,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(LastAction))
             .Title("last_action")
             .Description("Time (since boot) of last recovery action.")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _lastAction;
         public uint LastAction { get => _lastAction; set => _lastAction = value; }
         /// <summary>
@@ -5117,11 +5944,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(LastRecovery))
             .Title("last_recovery")
             .Description("Time (since boot) of last successful recovery.")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _lastRecovery;
         public uint LastRecovery { get => _lastRecovery; set => _lastRecovery = value; }
         /// <summary>
@@ -5132,11 +5957,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(LastClear))
             .Title("last_clear")
             .Description("Time (since boot) of last all-clear.")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _lastClear;
         public uint LastClear { get => _lastClear; set => _lastClear = value; }
         /// <summary>
@@ -5147,11 +5970,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(BreachCount))
             .Title("breach_count")
             .Description("Number of fence breaches.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _breachCount;
         public ushort BreachCount { get => _breachCount; set => _breachCount = value; }
         /// <summary>
@@ -5162,12 +5983,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(LimitsState))
             .Title("limits_state")
             .Description("State of AP_Limits.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(LimitsStateHelper.GetValues(x=>(byte)x).Min(),LimitsStateHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(LimitsStateHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public LimitsState _limitsState;
+        private LimitsState _limitsState;
         public LimitsState LimitsState { get => _limitsState; set => _limitsState = value; } 
         /// <summary>
         /// AP_Limit_Module bitfield of enabled modules.
@@ -5177,12 +5996,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ModsEnabled))
             .Title("bitmask")
             .Description("AP_Limit_Module bitfield of enabled modules.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(LimitModuleHelper.GetValues(x=>(byte)x).Min(),LimitModuleHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(LimitModuleHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public LimitModule _modsEnabled;
+        private LimitModule _modsEnabled;
         public LimitModule ModsEnabled { get => _modsEnabled; set => _modsEnabled = value; } 
         /// <summary>
         /// AP_Limit_Module bitfield of required modules.
@@ -5192,12 +6009,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ModsRequired))
             .Title("bitmask")
             .Description("AP_Limit_Module bitfield of required modules.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(LimitModuleHelper.GetValues(x=>(byte)x).Min(),LimitModuleHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(LimitModuleHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public LimitModule _modsRequired;
+        private LimitModule _modsRequired;
         public LimitModule ModsRequired { get => _modsRequired; set => _modsRequired = value; } 
         /// <summary>
         /// AP_Limit_Module bitfield of triggered modules.
@@ -5207,12 +6022,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ModsTriggered))
             .Title("bitmask")
             .Description("AP_Limit_Module bitfield of triggered modules.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(LimitModuleHelper.GetValues(x=>(byte)x).Min(),LimitModuleHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(LimitModuleHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public LimitModule _modsTriggered;
+        private LimitModule _modsTriggered;
         public LimitModule ModsTriggered { get => _modsTriggered; set => _modsTriggered = value; } 
     }
     /// <summary>
@@ -5276,9 +6089,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DirectionField, ref _direction);    
-            FloatType.Accept(visitor,SpeedField, ref _speed);    
-            FloatType.Accept(visitor,SpeedZField, ref _speedZ);    
+            FloatType.Accept(visitor,DirectionField, DirectionField.DataType, ref _direction);    
+            FloatType.Accept(visitor,SpeedField, SpeedField.DataType, ref _speed);    
+            FloatType.Accept(visitor,SpeedZField, SpeedZField.DataType, ref _speedZ);    
 
         }
 
@@ -5290,11 +6103,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Direction))
             .Title("direction")
             .Description("Wind direction (that wind is coming from).")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _direction;
         public float Direction { get => _direction; set => _direction = value; }
         /// <summary>
@@ -5305,11 +6116,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Speed))
             .Title("speed")
             .Description("Wind speed in ground plane.")
-            .FormatString(string.Empty)
-            .Units(@"m/s")
+.Units(@"m/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _speed;
         public float Speed { get => _speed; set => _speed = value; }
         /// <summary>
@@ -5320,11 +6129,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(SpeedZ))
             .Title("speed_z")
             .Description("Vertical wind speed.")
-            .FormatString(string.Empty)
-            .Units(@"m/s")
+.Units(@"m/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _speedZ;
         public float SpeedZ { get => _speedZ; set => _speedZ = value; }
     }
@@ -5399,10 +6206,10 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TypeField, ref _type);    
-            UInt8Type.Accept(visitor,LenField, ref _len);    
-            ArrayType.Accept(visitor,DataField, 16,
-                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
+            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
+            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
 
@@ -5414,11 +6221,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Type))
             .Title("type")
             .Description("Data type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _type;
         public byte Type { get => _type; set => _type = value; }
         /// <summary>
@@ -5429,11 +6234,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Len))
             .Title("len")
             .Description("Data length.")
-            .FormatString(string.Empty)
-            .Units(@"bytes")
+.Units(@"bytes")
             .DataType(UInt8Type.Default)
-
-            .Build();
+        .Build();
         private byte _len;
         public byte Len { get => _len; set => _len = value; }
         /// <summary>
@@ -5444,11 +6247,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Data))
             .Title("data")
             .Description("Raw data.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int DataMaxItemsCount = 16;
         public byte[] Data { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
@@ -5525,10 +6326,10 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TypeField, ref _type);    
-            UInt8Type.Accept(visitor,LenField, ref _len);    
-            ArrayType.Accept(visitor,DataField, 32,
-                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
+            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
+            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 32,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
 
@@ -5540,11 +6341,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Type))
             .Title("type")
             .Description("Data type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _type;
         public byte Type { get => _type; set => _type = value; }
         /// <summary>
@@ -5555,11 +6354,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Len))
             .Title("len")
             .Description("Data length.")
-            .FormatString(string.Empty)
-            .Units(@"bytes")
+.Units(@"bytes")
             .DataType(UInt8Type.Default)
-
-            .Build();
+        .Build();
         private byte _len;
         public byte Len { get => _len; set => _len = value; }
         /// <summary>
@@ -5570,11 +6367,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Data))
             .Title("data")
             .Description("Raw data.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,32))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,32))
+        .Build();
         public const int DataMaxItemsCount = 32;
         public byte[] Data { get; } = new byte[32];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
@@ -5651,10 +6446,10 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TypeField, ref _type);    
-            UInt8Type.Accept(visitor,LenField, ref _len);    
-            ArrayType.Accept(visitor,DataField, 64,
-                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
+            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
+            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 64,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
 
@@ -5666,11 +6461,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Type))
             .Title("type")
             .Description("Data type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _type;
         public byte Type { get => _type; set => _type = value; }
         /// <summary>
@@ -5681,11 +6474,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Len))
             .Title("len")
             .Description("Data length.")
-            .FormatString(string.Empty)
-            .Units(@"bytes")
+.Units(@"bytes")
             .DataType(UInt8Type.Default)
-
-            .Build();
+        .Build();
         private byte _len;
         public byte Len { get => _len; set => _len = value; }
         /// <summary>
@@ -5696,11 +6487,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Data))
             .Title("data")
             .Description("Raw data.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,64))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,64))
+        .Build();
         public const int DataMaxItemsCount = 64;
         public byte[] Data { get; } = new byte[64];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
@@ -5777,10 +6566,10 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TypeField, ref _type);    
-            UInt8Type.Accept(visitor,LenField, ref _len);    
-            ArrayType.Accept(visitor,DataField, 96,
-                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
+            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
+            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 96,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
 
@@ -5792,11 +6581,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Type))
             .Title("type")
             .Description("Data type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _type;
         public byte Type { get => _type; set => _type = value; }
         /// <summary>
@@ -5807,11 +6594,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Len))
             .Title("len")
             .Description("Data length.")
-            .FormatString(string.Empty)
-            .Units(@"bytes")
+.Units(@"bytes")
             .DataType(UInt8Type.Default)
-
-            .Build();
+        .Build();
         private byte _len;
         public byte Len { get => _len; set => _len = value; }
         /// <summary>
@@ -5822,11 +6607,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Data))
             .Title("data")
             .Description("Raw data.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,96))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,96))
+        .Build();
         public const int DataMaxItemsCount = 96;
         public byte[] Data { get; } = new byte[96];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
@@ -5890,8 +6673,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DistanceField, ref _distance);    
-            FloatType.Accept(visitor,VoltageField, ref _voltage);    
+            FloatType.Accept(visitor,DistanceField, DistanceField.DataType, ref _distance);    
+            FloatType.Accept(visitor,VoltageField, VoltageField.DataType, ref _voltage);    
 
         }
 
@@ -5903,11 +6686,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Distance))
             .Title("distance")
             .Description("Distance.")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _distance;
         public float Distance { get => _distance; set => _distance = value; }
         /// <summary>
@@ -5918,11 +6699,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Voltage))
             .Title("voltage")
             .Description("Raw voltage if available, zero otherwise.")
-            .FormatString(string.Empty)
-            .Units(@"V")
+.Units(@"V")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _voltage;
         public float Voltage { get => _voltage; set => _voltage = value; }
     }
@@ -6014,18 +6793,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,VxField, ref _vx);    
-            FloatType.Accept(visitor,VyField, ref _vy);    
-            FloatType.Accept(visitor,VzField, ref _vz);    
-            FloatType.Accept(visitor,DiffPressureField, ref _diffPressure);    
-            FloatType.Accept(visitor,Eas2tasField, ref _eas2tas);    
-            FloatType.Accept(visitor,RatioField, ref _ratio);    
-            FloatType.Accept(visitor,StateXField, ref _stateX);    
-            FloatType.Accept(visitor,StateYField, ref _stateY);    
-            FloatType.Accept(visitor,StateZField, ref _stateZ);    
-            FloatType.Accept(visitor,PaxField, ref _pax);    
-            FloatType.Accept(visitor,PbyField, ref _pby);    
-            FloatType.Accept(visitor,PczField, ref _pcz);    
+            FloatType.Accept(visitor,VxField, VxField.DataType, ref _vx);    
+            FloatType.Accept(visitor,VyField, VyField.DataType, ref _vy);    
+            FloatType.Accept(visitor,VzField, VzField.DataType, ref _vz);    
+            FloatType.Accept(visitor,DiffPressureField, DiffPressureField.DataType, ref _diffPressure);    
+            FloatType.Accept(visitor,Eas2tasField, Eas2tasField.DataType, ref _eas2tas);    
+            FloatType.Accept(visitor,RatioField, RatioField.DataType, ref _ratio);    
+            FloatType.Accept(visitor,StateXField, StateXField.DataType, ref _stateX);    
+            FloatType.Accept(visitor,StateYField, StateYField.DataType, ref _stateY);    
+            FloatType.Accept(visitor,StateZField, StateZField.DataType, ref _stateZ);    
+            FloatType.Accept(visitor,PaxField, PaxField.DataType, ref _pax);    
+            FloatType.Accept(visitor,PbyField, PbyField.DataType, ref _pby);    
+            FloatType.Accept(visitor,PczField, PczField.DataType, ref _pcz);    
 
         }
 
@@ -6037,11 +6816,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Vx))
             .Title("vx")
             .Description("GPS velocity north.")
-            .FormatString(string.Empty)
-            .Units(@"m/s")
+.Units(@"m/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _vx;
         public float Vx { get => _vx; set => _vx = value; }
         /// <summary>
@@ -6052,11 +6829,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Vy))
             .Title("vy")
             .Description("GPS velocity east.")
-            .FormatString(string.Empty)
-            .Units(@"m/s")
+.Units(@"m/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _vy;
         public float Vy { get => _vy; set => _vy = value; }
         /// <summary>
@@ -6067,11 +6842,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Vz))
             .Title("vz")
             .Description("GPS velocity down.")
-            .FormatString(string.Empty)
-            .Units(@"m/s")
+.Units(@"m/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _vz;
         public float Vz { get => _vz; set => _vz = value; }
         /// <summary>
@@ -6082,11 +6855,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DiffPressure))
             .Title("diff_pressure")
             .Description("Differential pressure.")
-            .FormatString(string.Empty)
-            .Units(@"Pa")
+.Units(@"Pa")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _diffPressure;
         public float DiffPressure { get => _diffPressure; set => _diffPressure = value; }
         /// <summary>
@@ -6097,11 +6868,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Eas2tas))
             .Title("EAS2TAS")
             .Description("Estimated to true airspeed ratio.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _eas2tas;
         public float Eas2tas { get => _eas2tas; set => _eas2tas = value; }
         /// <summary>
@@ -6112,11 +6881,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Ratio))
             .Title("ratio")
             .Description("Airspeed ratio.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _ratio;
         public float Ratio { get => _ratio; set => _ratio = value; }
         /// <summary>
@@ -6127,11 +6894,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(StateX))
             .Title("state_x")
             .Description("EKF state x.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _stateX;
         public float StateX { get => _stateX; set => _stateX = value; }
         /// <summary>
@@ -6142,11 +6907,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(StateY))
             .Title("state_y")
             .Description("EKF state y.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _stateY;
         public float StateY { get => _stateY; set => _stateY = value; }
         /// <summary>
@@ -6157,11 +6920,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(StateZ))
             .Title("state_z")
             .Description("EKF state z.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _stateZ;
         public float StateZ { get => _stateZ; set => _stateZ = value; }
         /// <summary>
@@ -6172,11 +6933,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Pax))
             .Title("Pax")
             .Description("EKF Pax.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _pax;
         public float Pax { get => _pax; set => _pax = value; }
         /// <summary>
@@ -6187,11 +6946,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Pby))
             .Title("Pby")
             .Description("EKF Pby.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _pby;
         public float Pby { get => _pby; set => _pby = value; }
         /// <summary>
@@ -6202,11 +6959,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Pcz))
             .Title("Pcz")
             .Description("EKF Pcz.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _pcz;
         public float Pcz { get => _pcz; set => _pcz = value; }
     }
@@ -6292,17 +7047,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int32Type.Accept(visitor,LatField, ref _lat);    
-            Int32Type.Accept(visitor,LngField, ref _lng);    
-            Int16Type.Accept(visitor,AltField, ref _alt);
-            Int16Type.Accept(visitor,BreakAltField, ref _breakAlt);
-            UInt16Type.Accept(visitor,LandDirField, ref _landDir);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,IdxField, ref _idx);    
-            UInt8Type.Accept(visitor,CountField, ref _count);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            Int16Type.Accept(visitor,AltField, AltField.DataType, ref _alt);
+            Int16Type.Accept(visitor,BreakAltField, BreakAltField.DataType, ref _breakAlt);
+            UInt16Type.Accept(visitor,LandDirField, LandDirField.DataType, ref _landDir);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
             var tmpFlags = (byte)Flags;
-            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt8Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (RallyFlags)tmpFlags;
 
         }
@@ -6315,11 +7070,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Latitude of point.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lat;
         public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -6330,11 +7083,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lng))
             .Title("lng")
             .Description("Longitude of point.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lng;
         public int Lng { get => _lng; set => _lng = value; }
         /// <summary>
@@ -6345,11 +7096,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Alt))
             .Title("alt")
             .Description("Transit / loiter altitude relative to home.")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _alt;
         public short Alt { get => _alt; set => _alt = value; }
         /// <summary>
@@ -6360,11 +7109,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(BreakAlt))
             .Title("break_alt")
             .Description("Break altitude relative to home.")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _breakAlt;
         public short BreakAlt { get => _breakAlt; set => _breakAlt = value; }
         /// <summary>
@@ -6375,11 +7122,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(LandDir))
             .Title("land_dir")
             .Description("Heading to aim for when landing.")
-            .FormatString(string.Empty)
-            .Units(@"cdeg")
+.Units(@"cdeg")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _landDir;
         public ushort LandDir { get => _landDir; set => _landDir = value; }
         /// <summary>
@@ -6390,11 +7135,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -6405,11 +7148,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -6420,11 +7161,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Idx))
             .Title("idx")
             .Description("Point index (first point is 0).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _idx;
         public byte Idx { get => _idx; set => _idx = value; }
         /// <summary>
@@ -6435,11 +7174,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Count))
             .Title("count")
             .Description("Total number of points (for sanity checking).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _count;
         public byte Count { get => _count; set => _count = value; }
         /// <summary>
@@ -6450,12 +7187,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Flags))
             .Title("bitmask")
             .Description("Configuration flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(RallyFlagsHelper.GetValues(x=>(byte)x).Min(),RallyFlagsHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(RallyFlagsHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public RallyFlags _flags;
+        private RallyFlags _flags;
         public RallyFlags Flags { get => _flags; set => _flags = value; } 
     }
     /// <summary>
@@ -6519,9 +7254,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,IdxField, ref _idx);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
 
         }
 
@@ -6533,11 +7268,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -6548,11 +7281,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -6563,11 +7294,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Idx))
             .Title("idx")
             .Description("Point index (first point is 0).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _idx;
         public byte Idx { get => _idx; set => _idx = value; }
     }
@@ -6641,12 +7370,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,CurrentField, ref _current);    
-            FloatType.Accept(visitor,CompensationxField, ref _compensationx);    
-            FloatType.Accept(visitor,CompensationyField, ref _compensationy);    
-            FloatType.Accept(visitor,CompensationzField, ref _compensationz);    
-            UInt16Type.Accept(visitor,ThrottleField, ref _throttle);    
-            UInt16Type.Accept(visitor,InterferenceField, ref _interference);    
+            FloatType.Accept(visitor,CurrentField, CurrentField.DataType, ref _current);    
+            FloatType.Accept(visitor,CompensationxField, CompensationxField.DataType, ref _compensationx);    
+            FloatType.Accept(visitor,CompensationyField, CompensationyField.DataType, ref _compensationy);    
+            FloatType.Accept(visitor,CompensationzField, CompensationzField.DataType, ref _compensationz);    
+            UInt16Type.Accept(visitor,ThrottleField, ThrottleField.DataType, ref _throttle);    
+            UInt16Type.Accept(visitor,InterferenceField, InterferenceField.DataType, ref _interference);    
 
         }
 
@@ -6658,11 +7387,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Current))
             .Title("current")
             .Description("Current.")
-            .FormatString(string.Empty)
-            .Units(@"A")
+.Units(@"A")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _current;
         public float Current { get => _current; set => _current = value; }
         /// <summary>
@@ -6673,11 +7400,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Compensationx))
             .Title("CompensationX")
             .Description("Motor Compensation X.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _compensationx;
         public float Compensationx { get => _compensationx; set => _compensationx = value; }
         /// <summary>
@@ -6688,11 +7413,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Compensationy))
             .Title("CompensationY")
             .Description("Motor Compensation Y.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _compensationy;
         public float Compensationy { get => _compensationy; set => _compensationy = value; }
         /// <summary>
@@ -6703,11 +7426,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Compensationz))
             .Title("CompensationZ")
             .Description("Motor Compensation Z.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _compensationz;
         public float Compensationz { get => _compensationz; set => _compensationz = value; }
         /// <summary>
@@ -6718,11 +7439,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Throttle))
             .Title("throttle")
             .Description("Throttle.")
-            .FormatString(string.Empty)
-            .Units(@"d%")
+.Units(@"d%")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _throttle;
         public ushort Throttle { get => _throttle; set => _throttle = value; }
         /// <summary>
@@ -6733,11 +7452,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Interference))
             .Title("interference")
             .Description("Interference.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _interference;
         public ushort Interference { get => _interference; set => _interference = value; }
     }
@@ -6811,12 +7528,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,RollField, ref _roll);    
-            FloatType.Accept(visitor,PitchField, ref _pitch);    
-            FloatType.Accept(visitor,YawField, ref _yaw);    
-            FloatType.Accept(visitor,AltitudeField, ref _altitude);    
-            Int32Type.Accept(visitor,LatField, ref _lat);    
-            Int32Type.Accept(visitor,LngField, ref _lng);    
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,AltitudeField, AltitudeField.DataType, ref _altitude);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
 
         }
 
@@ -6828,11 +7545,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Roll))
             .Title("roll")
             .Description("Roll angle.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _roll;
         public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
@@ -6843,11 +7558,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Pitch))
             .Title("pitch")
             .Description("Pitch angle.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitch;
         public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
@@ -6858,11 +7571,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Yaw))
             .Title("yaw")
             .Description("Yaw angle.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yaw;
         public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
@@ -6873,11 +7584,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Altitude))
             .Title("altitude")
             .Description("Altitude (MSL).")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _altitude;
         public float Altitude { get => _altitude; set => _altitude = value; }
         /// <summary>
@@ -6888,11 +7597,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Latitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lat;
         public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -6903,11 +7610,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lng))
             .Title("lng")
             .Description("Longitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lng;
         public int Lng { get => _lng; set => _lng = value; }
     }
@@ -6990,16 +7695,16 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUsecField, ref _timeUsec);    
-            FloatType.Accept(visitor,P1Field, ref _p1);    
-            FloatType.Accept(visitor,P2Field, ref _p2);    
-            FloatType.Accept(visitor,P3Field, ref _p3);    
-            FloatType.Accept(visitor,P4Field, ref _p4);    
-            UInt16Type.Accept(visitor,ImgIdxField, ref _imgIdx);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,CamIdxField, ref _camIdx);    
+            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
+            FloatType.Accept(visitor,P1Field, P1Field.DataType, ref _p1);    
+            FloatType.Accept(visitor,P2Field, P2Field.DataType, ref _p2);    
+            FloatType.Accept(visitor,P3Field, P3Field.DataType, ref _p3);    
+            FloatType.Accept(visitor,P4Field, P4Field.DataType, ref _p4);    
+            UInt16Type.Accept(visitor,ImgIdxField, ImgIdxField.DataType, ref _imgIdx);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,CamIdxField, CamIdxField.DataType, ref _camIdx);    
             var tmpEventId = (byte)EventId;
-            UInt8Type.Accept(visitor,EventIdField, ref tmpEventId);
+            UInt8Type.Accept(visitor,EventIdField, EventIdField.DataType, ref tmpEventId);
             EventId = (CameraStatusTypes)tmpEventId;
 
         }
@@ -7012,11 +7717,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TimeUsec))
             .Title("time_usec")
             .Description("Image timestamp (since UNIX epoch, according to camera clock).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUsec;
         public ulong TimeUsec { get => _timeUsec; set => _timeUsec = value; }
         /// <summary>
@@ -7027,11 +7730,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(P1))
             .Title("p1")
             .Description("Parameter 1 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _p1;
         public float P1 { get => _p1; set => _p1 = value; }
         /// <summary>
@@ -7042,11 +7743,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(P2))
             .Title("p2")
             .Description("Parameter 2 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _p2;
         public float P2 { get => _p2; set => _p2 = value; }
         /// <summary>
@@ -7057,11 +7756,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(P3))
             .Title("p3")
             .Description("Parameter 3 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _p3;
         public float P3 { get => _p3; set => _p3 = value; }
         /// <summary>
@@ -7072,11 +7769,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(P4))
             .Title("p4")
             .Description("Parameter 4 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _p4;
         public float P4 { get => _p4; set => _p4 = value; }
         /// <summary>
@@ -7087,11 +7782,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ImgIdx))
             .Title("img_idx")
             .Description("Image index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _imgIdx;
         public ushort ImgIdx { get => _imgIdx; set => _imgIdx = value; }
         /// <summary>
@@ -7102,11 +7795,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -7117,11 +7808,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CamIdx))
             .Title("cam_idx")
             .Description("Camera ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _camIdx;
         public byte CamIdx { get => _camIdx; set => _camIdx = value; }
         /// <summary>
@@ -7132,12 +7821,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(EventId))
             .Title("event_id")
             .Description("Event type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(CameraStatusTypesHelper.GetValues(x=>(byte)x).Min(),CameraStatusTypesHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(CameraStatusTypesHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public CameraStatusTypes _eventId;
+        private CameraStatusTypes _eventId;
         public CameraStatusTypes EventId { get => _eventId; set => _eventId = value; } 
     }
     /// <summary>
@@ -7236,22 +7923,22 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUsecField, ref _timeUsec);    
-            Int32Type.Accept(visitor,LatField, ref _lat);    
-            Int32Type.Accept(visitor,LngField, ref _lng);    
-            FloatType.Accept(visitor,AltMslField, ref _altMsl);    
-            FloatType.Accept(visitor,AltRelField, ref _altRel);    
-            FloatType.Accept(visitor,RollField, ref _roll);    
-            FloatType.Accept(visitor,PitchField, ref _pitch);    
-            FloatType.Accept(visitor,YawField, ref _yaw);    
-            FloatType.Accept(visitor,FocLenField, ref _focLen);    
-            UInt16Type.Accept(visitor,ImgIdxField, ref _imgIdx);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,CamIdxField, ref _camIdx);    
+            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            FloatType.Accept(visitor,AltMslField, AltMslField.DataType, ref _altMsl);    
+            FloatType.Accept(visitor,AltRelField, AltRelField.DataType, ref _altRel);    
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,FocLenField, FocLenField.DataType, ref _focLen);    
+            UInt16Type.Accept(visitor,ImgIdxField, ImgIdxField.DataType, ref _imgIdx);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,CamIdxField, CamIdxField.DataType, ref _camIdx);    
             var tmpFlags = (byte)Flags;
-            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt8Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (CameraFeedbackFlags)tmpFlags;
-            UInt16Type.Accept(visitor,CompletedCapturesField, ref _completedCaptures);    
+            UInt16Type.Accept(visitor,CompletedCapturesField, CompletedCapturesField.DataType, ref _completedCaptures);    
 
         }
 
@@ -7263,11 +7950,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TimeUsec))
             .Title("time_usec")
             .Description("Image timestamp (since UNIX epoch), as passed in by CAMERA_STATUS message (or autopilot if no CCB).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUsec;
         public ulong TimeUsec { get => _timeUsec; set => _timeUsec = value; }
         /// <summary>
@@ -7278,11 +7963,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Latitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lat;
         public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -7293,11 +7976,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lng))
             .Title("lng")
             .Description("Longitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lng;
         public int Lng { get => _lng; set => _lng = value; }
         /// <summary>
@@ -7308,11 +7989,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(AltMsl))
             .Title("alt_msl")
             .Description("Altitude (MSL).")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _altMsl;
         public float AltMsl { get => _altMsl; set => _altMsl = value; }
         /// <summary>
@@ -7323,11 +8002,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(AltRel))
             .Title("alt_rel")
             .Description("Altitude (Relative to HOME location).")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _altRel;
         public float AltRel { get => _altRel; set => _altRel = value; }
         /// <summary>
@@ -7338,11 +8015,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Roll))
             .Title("roll")
             .Description("Camera Roll angle (earth frame, +-180).")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _roll;
         public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
@@ -7353,11 +8028,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Pitch))
             .Title("pitch")
             .Description("Camera Pitch angle (earth frame, +-180).")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitch;
         public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
@@ -7368,11 +8041,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Yaw))
             .Title("yaw")
             .Description("Camera Yaw (earth frame, 0-360, true).")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yaw;
         public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
@@ -7383,11 +8054,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(FocLen))
             .Title("foc_len")
             .Description("Focal Length.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _focLen;
         public float FocLen { get => _focLen; set => _focLen = value; }
         /// <summary>
@@ -7398,11 +8067,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ImgIdx))
             .Title("img_idx")
             .Description("Image index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _imgIdx;
         public ushort ImgIdx { get => _imgIdx; set => _imgIdx = value; }
         /// <summary>
@@ -7413,11 +8080,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -7428,11 +8093,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CamIdx))
             .Title("cam_idx")
             .Description("Camera ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _camIdx;
         public byte CamIdx { get => _camIdx; set => _camIdx = value; }
         /// <summary>
@@ -7443,12 +8106,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Feedback flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(CameraFeedbackFlagsHelper.GetValues(x=>(byte)x).Min(),CameraFeedbackFlagsHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(CameraFeedbackFlagsHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public CameraFeedbackFlags _flags;
+        private CameraFeedbackFlags _flags;
         public CameraFeedbackFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Completed image captures.
@@ -7458,11 +8119,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CompletedCaptures))
             .Title("completed_captures")
             .Description("Completed image captures.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _completedCaptures;
         public ushort CompletedCaptures { get => _completedCaptures; set => _completedCaptures = value; }
     }
@@ -7524,8 +8183,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,VoltageField, ref _voltage);    
-            Int16Type.Accept(visitor,CurrentBatteryField, ref _currentBattery);
+            UInt16Type.Accept(visitor,VoltageField, VoltageField.DataType, ref _voltage);    
+            Int16Type.Accept(visitor,CurrentBatteryField, CurrentBatteryField.DataType, ref _currentBattery);
 
         }
 
@@ -7537,11 +8196,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Voltage))
             .Title("voltage")
             .Description("Voltage.")
-            .FormatString(string.Empty)
-            .Units(@"mV")
+.Units(@"mV")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _voltage;
         public ushort Voltage { get => _voltage; set => _voltage = value; }
         /// <summary>
@@ -7552,11 +8209,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CurrentBattery))
             .Title("current_battery")
             .Description("Battery current, -1: autopilot does not measure the current.")
-            .FormatString(string.Empty)
-            .Units(@"cA")
+.Units(@"cA")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _currentBattery;
         public short CurrentBattery { get => _currentBattery; set => _currentBattery = value; }
     }
@@ -7642,16 +8297,16 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,RollField, ref _roll);    
-            FloatType.Accept(visitor,PitchField, ref _pitch);    
-            FloatType.Accept(visitor,YawField, ref _yaw);    
-            FloatType.Accept(visitor,AltitudeField, ref _altitude);    
-            Int32Type.Accept(visitor,LatField, ref _lat);    
-            Int32Type.Accept(visitor,LngField, ref _lng);    
-            FloatType.Accept(visitor,V1Field, ref _v1);    
-            FloatType.Accept(visitor,V2Field, ref _v2);    
-            FloatType.Accept(visitor,V3Field, ref _v3);    
-            FloatType.Accept(visitor,V4Field, ref _v4);    
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,AltitudeField, AltitudeField.DataType, ref _altitude);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            FloatType.Accept(visitor,V1Field, V1Field.DataType, ref _v1);    
+            FloatType.Accept(visitor,V2Field, V2Field.DataType, ref _v2);    
+            FloatType.Accept(visitor,V3Field, V3Field.DataType, ref _v3);    
+            FloatType.Accept(visitor,V4Field, V4Field.DataType, ref _v4);    
 
         }
 
@@ -7663,11 +8318,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Roll))
             .Title("roll")
             .Description("Roll angle.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _roll;
         public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
@@ -7678,11 +8331,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Pitch))
             .Title("pitch")
             .Description("Pitch angle.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitch;
         public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
@@ -7693,11 +8344,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Yaw))
             .Title("yaw")
             .Description("Yaw angle.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yaw;
         public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
@@ -7708,11 +8357,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Altitude))
             .Title("altitude")
             .Description("Altitude (MSL).")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _altitude;
         public float Altitude { get => _altitude; set => _altitude = value; }
         /// <summary>
@@ -7723,11 +8370,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Latitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lat;
         public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -7738,11 +8383,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lng))
             .Title("lng")
             .Description("Longitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lng;
         public int Lng { get => _lng; set => _lng = value; }
         /// <summary>
@@ -7753,11 +8396,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(V1))
             .Title("v1")
             .Description("Test variable1.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _v1;
         public float V1 { get => _v1; set => _v1 = value; }
         /// <summary>
@@ -7768,11 +8409,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(V2))
             .Title("v2")
             .Description("Test variable2.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _v2;
         public float V2 { get => _v2; set => _v2 = value; }
         /// <summary>
@@ -7783,11 +8422,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(V3))
             .Title("v3")
             .Description("Test variable3.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _v3;
         public float V3 { get => _v3; set => _v3 = value; }
         /// <summary>
@@ -7798,11 +8435,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(V4))
             .Title("v4")
             .Description("Test variable4.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _v4;
         public float V4 { get => _v4; set => _v4 = value; }
     }
@@ -7864,8 +8499,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -7877,11 +8512,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -7892,11 +8525,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -7975,12 +8606,12 @@ namespace Asv.Mavlink.Ardupilotmega
         public void Accept(IVisitor visitor)
         {
             var tmpSeqno = (uint)Seqno;
-            UInt32Type.Accept(visitor,SeqnoField, ref tmpSeqno);
+            UInt32Type.Accept(visitor,SeqnoField, SeqnoField.DataType, ref tmpSeqno);
             Seqno = (MavRemoteLogDataBlockCommands)tmpSeqno;
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            ArrayType.Accept(visitor,DataField, 200,
-                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 200,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
 
@@ -7992,12 +8623,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Seqno))
             .Title("seqno")
             .Description("LoggerFactory data block sequence number.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
-
+            .DataType(new UInt32Type(MavRemoteLogDataBlockCommandsHelper.GetValues(x=>(uint)x).Min(),MavRemoteLogDataBlockCommandsHelper.GetValues(x=>(uint)x).Max()))
+            .Enum(MavRemoteLogDataBlockCommandsHelper.GetEnumValues(x=>(uint)x))
             .Build();
-        public MavRemoteLogDataBlockCommands _seqno;
+        private MavRemoteLogDataBlockCommands _seqno;
         public MavRemoteLogDataBlockCommands Seqno { get => _seqno; set => _seqno = value; } 
         /// <summary>
         /// System ID.
@@ -8007,11 +8636,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -8022,11 +8649,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -8037,11 +8662,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Data))
             .Title("data")
             .Description("LoggerFactory data block.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,200))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,200))
+        .Build();
         public const int DataMaxItemsCount = 200;
         public byte[] Data { get; } = new byte[200];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
@@ -8111,11 +8734,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,SeqnoField, ref _seqno);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt32Type.Accept(visitor,SeqnoField, SeqnoField.DataType, ref _seqno);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
             var tmpStatus = (byte)Status;
-            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
+            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
             Status = (MavRemoteLogDataBlockStatuses)tmpStatus;
 
         }
@@ -8128,11 +8751,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Seqno))
             .Title("seqno")
             .Description("LoggerFactory data block sequence number.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _seqno;
         public uint Seqno { get => _seqno; set => _seqno = value; }
         /// <summary>
@@ -8143,11 +8764,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -8158,11 +8777,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -8173,12 +8790,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Status))
             .Title("status")
             .Description("LoggerFactory data block status.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavRemoteLogDataBlockStatusesHelper.GetValues(x=>(byte)x).Min(),MavRemoteLogDataBlockStatusesHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavRemoteLogDataBlockStatusesHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavRemoteLogDataBlockStatuses _status;
+        private MavRemoteLogDataBlockStatuses _status;
         public MavRemoteLogDataBlockStatuses Status { get => _status; set => _status = value; } 
     }
     /// <summary>
@@ -8261,13 +8876,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,InstanceField, ref _instance);    
-            UInt8Type.Accept(visitor,PatternField, ref _pattern);    
-            UInt8Type.Accept(visitor,CustomLenField, ref _customLen);    
-            ArrayType.Accept(visitor,CustomBytesField, 24,
-                (index,v) => UInt8Type.Accept(v, CustomBytesField, ref CustomBytes[index]));    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,InstanceField, InstanceField.DataType, ref _instance);    
+            UInt8Type.Accept(visitor,PatternField, PatternField.DataType, ref _pattern);    
+            UInt8Type.Accept(visitor,CustomLenField, CustomLenField.DataType, ref _customLen);    
+            ArrayType.Accept(visitor,CustomBytesField, CustomBytesField.DataType, 24,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref CustomBytes[index]));    
 
         }
 
@@ -8279,11 +8894,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -8294,11 +8907,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -8309,11 +8920,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Instance))
             .Title("instance")
             .Description("Instance (LED instance to control or 255 for all LEDs).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _instance;
         public byte Instance { get => _instance; set => _instance = value; }
         /// <summary>
@@ -8324,11 +8933,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Pattern))
             .Title("pattern")
             .Description("Pattern (see LED_PATTERN_ENUM).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _pattern;
         public byte Pattern { get => _pattern; set => _pattern = value; }
         /// <summary>
@@ -8339,11 +8946,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CustomLen))
             .Title("custom_len")
             .Description("Custom Byte Length.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _customLen;
         public byte CustomLen { get => _customLen; set => _customLen = value; }
         /// <summary>
@@ -8354,11 +8959,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CustomBytes))
             .Title("custom_bytes")
             .Description("Custom Bytes.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,24))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,24))
+        .Build();
         public const int CustomBytesMaxItemsCount = 24;
         public byte[] CustomBytes { get; } = new byte[24];
         [Obsolete("This method is deprecated. Use GetCustomBytesMaxItemsCount instead.")]
@@ -8453,18 +9056,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DirectionXField, ref _directionX);    
-            FloatType.Accept(visitor,DirectionYField, ref _directionY);    
-            FloatType.Accept(visitor,DirectionZField, ref _directionZ);    
-            UInt8Type.Accept(visitor,CompassIdField, ref _compassId);    
-            UInt8Type.Accept(visitor,CalMaskField, ref _calMask);    
+            FloatType.Accept(visitor,DirectionXField, DirectionXField.DataType, ref _directionX);    
+            FloatType.Accept(visitor,DirectionYField, DirectionYField.DataType, ref _directionY);    
+            FloatType.Accept(visitor,DirectionZField, DirectionZField.DataType, ref _directionZ);    
+            UInt8Type.Accept(visitor,CompassIdField, CompassIdField.DataType, ref _compassId);    
+            UInt8Type.Accept(visitor,CalMaskField, CalMaskField.DataType, ref _calMask);    
             var tmpCalStatus = (byte)CalStatus;
-            UInt8Type.Accept(visitor,CalStatusField, ref tmpCalStatus);
+            UInt8Type.Accept(visitor,CalStatusField, CalStatusField.DataType, ref tmpCalStatus);
             CalStatus = (MagCalStatus)tmpCalStatus;
-            UInt8Type.Accept(visitor,AttemptField, ref _attempt);    
-            UInt8Type.Accept(visitor,CompletionPctField, ref _completionPct);    
-            ArrayType.Accept(visitor,CompletionMaskField, 10,
-                (index,v) => UInt8Type.Accept(v, CompletionMaskField, ref CompletionMask[index]));    
+            UInt8Type.Accept(visitor,AttemptField, AttemptField.DataType, ref _attempt);    
+            UInt8Type.Accept(visitor,CompletionPctField, CompletionPctField.DataType, ref _completionPct);    
+            ArrayType.Accept(visitor,CompletionMaskField, CompletionMaskField.DataType, 10,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref CompletionMask[index]));    
 
         }
 
@@ -8476,11 +9079,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DirectionX))
             .Title("direction_x")
             .Description("Body frame direction vector for display.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _directionX;
         public float DirectionX { get => _directionX; set => _directionX = value; }
         /// <summary>
@@ -8491,11 +9092,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DirectionY))
             .Title("direction_y")
             .Description("Body frame direction vector for display.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _directionY;
         public float DirectionY { get => _directionY; set => _directionY = value; }
         /// <summary>
@@ -8506,11 +9105,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DirectionZ))
             .Title("direction_z")
             .Description("Body frame direction vector for display.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _directionZ;
         public float DirectionZ { get => _directionZ; set => _directionZ = value; }
         /// <summary>
@@ -8521,11 +9118,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CompassId))
             .Title("compass_id")
             .Description("Compass being calibrated.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _compassId;
         public byte CompassId { get => _compassId; set => _compassId = value; }
         /// <summary>
@@ -8536,11 +9131,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CalMask))
             .Title("bitmask")
             .Description("Bitmask of compasses being calibrated.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _calMask;
         public byte CalMask { get => _calMask; set => _calMask = value; }
         /// <summary>
@@ -8551,12 +9144,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CalStatus))
             .Title("cal_status")
             .Description("Calibration Status.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MagCalStatusHelper.GetValues(x=>(byte)x).Min(),MagCalStatusHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MagCalStatusHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MagCalStatus _calStatus;
+        private MagCalStatus _calStatus;
         public MagCalStatus CalStatus { get => _calStatus; set => _calStatus = value; } 
         /// <summary>
         /// Attempt number.
@@ -8566,11 +9157,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Attempt))
             .Title("attempt")
             .Description("Attempt number.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _attempt;
         public byte Attempt { get => _attempt; set => _attempt = value; }
         /// <summary>
@@ -8581,11 +9170,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CompletionPct))
             .Title("completion_pct")
             .Description("Completion percentage.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(UInt8Type.Default)
-
-            .Build();
+        .Build();
         private byte _completionPct;
         public byte CompletionPct { get => _completionPct; set => _completionPct = value; }
         /// <summary>
@@ -8596,11 +9183,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CompletionMask))
             .Title("completion_mask")
             .Description("Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,10))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,10))
+        .Build();
         public const int CompletionMaskMaxItemsCount = 10;
         public byte[] CompletionMask { get; } = new byte[10];
         [Obsolete("This method is deprecated. Use GetCompletionMaskMaxItemsCount instead.")]
@@ -8681,15 +9266,15 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,VelocityVarianceField, ref _velocityVariance);    
-            FloatType.Accept(visitor,PosHorizVarianceField, ref _posHorizVariance);    
-            FloatType.Accept(visitor,PosVertVarianceField, ref _posVertVariance);    
-            FloatType.Accept(visitor,CompassVarianceField, ref _compassVariance);    
-            FloatType.Accept(visitor,TerrainAltVarianceField, ref _terrainAltVariance);    
+            FloatType.Accept(visitor,VelocityVarianceField, VelocityVarianceField.DataType, ref _velocityVariance);    
+            FloatType.Accept(visitor,PosHorizVarianceField, PosHorizVarianceField.DataType, ref _posHorizVariance);    
+            FloatType.Accept(visitor,PosVertVarianceField, PosVertVarianceField.DataType, ref _posVertVariance);    
+            FloatType.Accept(visitor,CompassVarianceField, CompassVarianceField.DataType, ref _compassVariance);    
+            FloatType.Accept(visitor,TerrainAltVarianceField, TerrainAltVarianceField.DataType, ref _terrainAltVariance);    
             var tmpFlags = (ushort)Flags;
-            UInt16Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt16Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (EkfStatusFlags)tmpFlags;
-            FloatType.Accept(visitor,AirspeedVarianceField, ref _airspeedVariance);    
+            FloatType.Accept(visitor,AirspeedVarianceField, AirspeedVarianceField.DataType, ref _airspeedVariance);    
 
         }
 
@@ -8701,11 +9286,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(VelocityVariance))
             .Title("velocity_variance")
             .Description("Velocity variance.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _velocityVariance;
         public float VelocityVariance { get => _velocityVariance; set => _velocityVariance = value; }
         /// <summary>
@@ -8716,11 +9299,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(PosHorizVariance))
             .Title("pos_horiz_variance")
             .Description("Horizontal Position variance.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _posHorizVariance;
         public float PosHorizVariance { get => _posHorizVariance; set => _posHorizVariance = value; }
         /// <summary>
@@ -8731,11 +9312,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(PosVertVariance))
             .Title("pos_vert_variance")
             .Description("Vertical Position variance.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _posVertVariance;
         public float PosVertVariance { get => _posVertVariance; set => _posVertVariance = value; }
         /// <summary>
@@ -8746,11 +9325,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CompassVariance))
             .Title("compass_variance")
             .Description("Compass variance.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _compassVariance;
         public float CompassVariance { get => _compassVariance; set => _compassVariance = value; }
         /// <summary>
@@ -8761,11 +9338,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TerrainAltVariance))
             .Title("terrain_alt_variance")
             .Description("Terrain Altitude variance.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _terrainAltVariance;
         public float TerrainAltVariance { get => _terrainAltVariance; set => _terrainAltVariance = value; }
         /// <summary>
@@ -8776,12 +9351,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Flags))
             .Title("bitmask")
             .Description("Flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
-
+            .DataType(new UInt16Type(EkfStatusFlagsHelper.GetValues(x=>(ushort)x).Min(),EkfStatusFlagsHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(EkfStatusFlagsHelper.GetEnumValues(x=>(ushort)x))
             .Build();
-        public EkfStatusFlags _flags;
+        private EkfStatusFlags _flags;
         public EkfStatusFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Airspeed variance.
@@ -8791,11 +9364,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(AirspeedVariance))
             .Title("airspeed_variance")
             .Description("Airspeed variance.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _airspeedVariance;
         public float AirspeedVariance { get => _airspeedVariance; set => _airspeedVariance = value; }
     }
@@ -8882,17 +9453,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DesiredField, ref _desired);    
-            FloatType.Accept(visitor,AchievedField, ref _achieved);    
-            FloatType.Accept(visitor,FfField, ref _ff);    
-            FloatType.Accept(visitor,PField, ref _p);    
-            FloatType.Accept(visitor,IField, ref _i);    
-            FloatType.Accept(visitor,DField, ref _d);    
+            FloatType.Accept(visitor,DesiredField, DesiredField.DataType, ref _desired);    
+            FloatType.Accept(visitor,AchievedField, AchievedField.DataType, ref _achieved);    
+            FloatType.Accept(visitor,FfField, FfField.DataType, ref _ff);    
+            FloatType.Accept(visitor,PField, PField.DataType, ref _p);    
+            FloatType.Accept(visitor,IField, IField.DataType, ref _i);    
+            FloatType.Accept(visitor,DField, DField.DataType, ref _d);    
             var tmpAxis = (byte)Axis;
-            UInt8Type.Accept(visitor,AxisField, ref tmpAxis);
+            UInt8Type.Accept(visitor,AxisField, AxisField.DataType, ref tmpAxis);
             Axis = (PidTuningAxis)tmpAxis;
-            FloatType.Accept(visitor,SrateField, ref _srate);    
-            FloatType.Accept(visitor,PdmodField, ref _pdmod);    
+            FloatType.Accept(visitor,SrateField, SrateField.DataType, ref _srate);    
+            FloatType.Accept(visitor,PdmodField, PdmodField.DataType, ref _pdmod);    
 
         }
 
@@ -8904,11 +9475,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Desired))
             .Title("desired")
             .Description("Desired rate.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _desired;
         public float Desired { get => _desired; set => _desired = value; }
         /// <summary>
@@ -8919,11 +9488,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Achieved))
             .Title("achieved")
             .Description("Achieved rate.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _achieved;
         public float Achieved { get => _achieved; set => _achieved = value; }
         /// <summary>
@@ -8934,11 +9501,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Ff))
             .Title("FF")
             .Description("FF component.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _ff;
         public float Ff { get => _ff; set => _ff = value; }
         /// <summary>
@@ -8949,11 +9514,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(P))
             .Title("P")
             .Description("P component.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _p;
         public float P { get => _p; set => _p = value; }
         /// <summary>
@@ -8964,11 +9527,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(I))
             .Title("I")
             .Description("I component.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _i;
         public float I { get => _i; set => _i = value; }
         /// <summary>
@@ -8979,11 +9540,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(D))
             .Title("D")
             .Description("D component.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _d;
         public float D { get => _d; set => _d = value; }
         /// <summary>
@@ -8994,12 +9553,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Axis))
             .Title("axis")
             .Description("Axis.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(PidTuningAxisHelper.GetValues(x=>(byte)x).Min(),PidTuningAxisHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(PidTuningAxisHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public PidTuningAxis _axis;
+        private PidTuningAxis _axis;
         public PidTuningAxis Axis { get => _axis; set => _axis = value; } 
         /// <summary>
         /// Slew rate.
@@ -9009,11 +9566,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Srate))
             .Title("SRate")
             .Description("Slew rate.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _srate;
         public float Srate { get => _srate; set => _srate = value; }
         /// <summary>
@@ -9024,11 +9579,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Pdmod))
             .Title("PDmod")
             .Description("P/D oscillation modifier.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _pdmod;
         public float Pdmod { get => _pdmod; set => _pdmod = value; }
     }
@@ -9114,17 +9667,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int32Type.Accept(visitor,LandingLatField, ref _landingLat);    
-            Int32Type.Accept(visitor,LandingLonField, ref _landingLon);    
-            Int32Type.Accept(visitor,PathLatField, ref _pathLat);    
-            Int32Type.Accept(visitor,PathLonField, ref _pathLon);    
-            Int32Type.Accept(visitor,ArcEntryLatField, ref _arcEntryLat);    
-            Int32Type.Accept(visitor,ArcEntryLonField, ref _arcEntryLon);    
-            FloatType.Accept(visitor,AltitudeField, ref _altitude);    
-            FloatType.Accept(visitor,ExpectedTravelDistanceField, ref _expectedTravelDistance);    
-            FloatType.Accept(visitor,CrossTrackErrorField, ref _crossTrackError);    
+            Int32Type.Accept(visitor,LandingLatField, LandingLatField.DataType, ref _landingLat);    
+            Int32Type.Accept(visitor,LandingLonField, LandingLonField.DataType, ref _landingLon);    
+            Int32Type.Accept(visitor,PathLatField, PathLatField.DataType, ref _pathLat);    
+            Int32Type.Accept(visitor,PathLonField, PathLonField.DataType, ref _pathLon);    
+            Int32Type.Accept(visitor,ArcEntryLatField, ArcEntryLatField.DataType, ref _arcEntryLat);    
+            Int32Type.Accept(visitor,ArcEntryLonField, ArcEntryLonField.DataType, ref _arcEntryLon);    
+            FloatType.Accept(visitor,AltitudeField, AltitudeField.DataType, ref _altitude);    
+            FloatType.Accept(visitor,ExpectedTravelDistanceField, ExpectedTravelDistanceField.DataType, ref _expectedTravelDistance);    
+            FloatType.Accept(visitor,CrossTrackErrorField, CrossTrackErrorField.DataType, ref _crossTrackError);    
             var tmpStage = (byte)Stage;
-            UInt8Type.Accept(visitor,StageField, ref tmpStage);
+            UInt8Type.Accept(visitor,StageField, StageField.DataType, ref tmpStage);
             Stage = (DeepstallStage)tmpStage;
 
         }
@@ -9137,11 +9690,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(LandingLat))
             .Title("landing_lat")
             .Description("Landing latitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _landingLat;
         public int LandingLat { get => _landingLat; set => _landingLat = value; }
         /// <summary>
@@ -9152,11 +9703,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(LandingLon))
             .Title("landing_lon")
             .Description("Landing longitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _landingLon;
         public int LandingLon { get => _landingLon; set => _landingLon = value; }
         /// <summary>
@@ -9167,11 +9716,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(PathLat))
             .Title("path_lat")
             .Description("Final heading start point, latitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _pathLat;
         public int PathLat { get => _pathLat; set => _pathLat = value; }
         /// <summary>
@@ -9182,11 +9729,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(PathLon))
             .Title("path_lon")
             .Description("Final heading start point, longitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _pathLon;
         public int PathLon { get => _pathLon; set => _pathLon = value; }
         /// <summary>
@@ -9197,11 +9742,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ArcEntryLat))
             .Title("arc_entry_lat")
             .Description("Arc entry point, latitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _arcEntryLat;
         public int ArcEntryLat { get => _arcEntryLat; set => _arcEntryLat = value; }
         /// <summary>
@@ -9212,11 +9755,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ArcEntryLon))
             .Title("arc_entry_lon")
             .Description("Arc entry point, longitude.")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _arcEntryLon;
         public int ArcEntryLon { get => _arcEntryLon; set => _arcEntryLon = value; }
         /// <summary>
@@ -9227,11 +9768,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Altitude))
             .Title("altitude")
             .Description("Altitude.")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _altitude;
         public float Altitude { get => _altitude; set => _altitude = value; }
         /// <summary>
@@ -9242,11 +9781,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ExpectedTravelDistance))
             .Title("expected_travel_distance")
             .Description("Distance the aircraft expects to travel during the deepstall.")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _expectedTravelDistance;
         public float ExpectedTravelDistance { get => _expectedTravelDistance; set => _expectedTravelDistance = value; }
         /// <summary>
@@ -9257,11 +9794,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CrossTrackError))
             .Title("cross_track_error")
             .Description("Deepstall cross track error (only valid when in DEEPSTALL_STAGE_LAND).")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _crossTrackError;
         public float CrossTrackError { get => _crossTrackError; set => _crossTrackError = value; }
         /// <summary>
@@ -9272,12 +9807,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Stage))
             .Title("stage")
             .Description("Deepstall stage.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(DeepstallStageHelper.GetValues(x=>(byte)x).Min(),DeepstallStageHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(DeepstallStageHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public DeepstallStage _stage;
+        private DeepstallStage _stage;
         public DeepstallStage Stage { get => _stage; set => _stage = value; } 
     }
     /// <summary>
@@ -9368,18 +9901,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DeltaTimeField, ref _deltaTime);    
-            FloatType.Accept(visitor,DeltaAngleXField, ref _deltaAngleX);    
-            FloatType.Accept(visitor,DeltaAngleYField, ref _deltaAngleY);    
-            FloatType.Accept(visitor,DeltaAngleZField, ref _deltaAngleZ);    
-            FloatType.Accept(visitor,DeltaVelocityXField, ref _deltaVelocityX);    
-            FloatType.Accept(visitor,DeltaVelocityYField, ref _deltaVelocityY);    
-            FloatType.Accept(visitor,DeltaVelocityZField, ref _deltaVelocityZ);    
-            FloatType.Accept(visitor,JointRollField, ref _jointRoll);    
-            FloatType.Accept(visitor,JointElField, ref _jointEl);    
-            FloatType.Accept(visitor,JointAzField, ref _jointAz);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            FloatType.Accept(visitor,DeltaTimeField, DeltaTimeField.DataType, ref _deltaTime);    
+            FloatType.Accept(visitor,DeltaAngleXField, DeltaAngleXField.DataType, ref _deltaAngleX);    
+            FloatType.Accept(visitor,DeltaAngleYField, DeltaAngleYField.DataType, ref _deltaAngleY);    
+            FloatType.Accept(visitor,DeltaAngleZField, DeltaAngleZField.DataType, ref _deltaAngleZ);    
+            FloatType.Accept(visitor,DeltaVelocityXField, DeltaVelocityXField.DataType, ref _deltaVelocityX);    
+            FloatType.Accept(visitor,DeltaVelocityYField, DeltaVelocityYField.DataType, ref _deltaVelocityY);    
+            FloatType.Accept(visitor,DeltaVelocityZField, DeltaVelocityZField.DataType, ref _deltaVelocityZ);    
+            FloatType.Accept(visitor,JointRollField, JointRollField.DataType, ref _jointRoll);    
+            FloatType.Accept(visitor,JointElField, JointElField.DataType, ref _jointEl);    
+            FloatType.Accept(visitor,JointAzField, JointAzField.DataType, ref _jointAz);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -9391,11 +9924,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DeltaTime))
             .Title("delta_time")
             .Description("Time since last update.")
-            .FormatString(string.Empty)
-            .Units(@"s")
+.Units(@"s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _deltaTime;
         public float DeltaTime { get => _deltaTime; set => _deltaTime = value; }
         /// <summary>
@@ -9406,11 +9937,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DeltaAngleX))
             .Title("delta_angle_x")
             .Description("Delta angle X.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _deltaAngleX;
         public float DeltaAngleX { get => _deltaAngleX; set => _deltaAngleX = value; }
         /// <summary>
@@ -9421,11 +9950,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DeltaAngleY))
             .Title("delta_angle_y")
             .Description("Delta angle Y.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _deltaAngleY;
         public float DeltaAngleY { get => _deltaAngleY; set => _deltaAngleY = value; }
         /// <summary>
@@ -9436,11 +9963,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DeltaAngleZ))
             .Title("delta_angle_z")
             .Description("Delta angle X.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _deltaAngleZ;
         public float DeltaAngleZ { get => _deltaAngleZ; set => _deltaAngleZ = value; }
         /// <summary>
@@ -9451,11 +9976,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DeltaVelocityX))
             .Title("delta_velocity_x")
             .Description("Delta velocity X.")
-            .FormatString(string.Empty)
-            .Units(@"m/s")
+.Units(@"m/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _deltaVelocityX;
         public float DeltaVelocityX { get => _deltaVelocityX; set => _deltaVelocityX = value; }
         /// <summary>
@@ -9466,11 +9989,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DeltaVelocityY))
             .Title("delta_velocity_y")
             .Description("Delta velocity Y.")
-            .FormatString(string.Empty)
-            .Units(@"m/s")
+.Units(@"m/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _deltaVelocityY;
         public float DeltaVelocityY { get => _deltaVelocityY; set => _deltaVelocityY = value; }
         /// <summary>
@@ -9481,11 +10002,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DeltaVelocityZ))
             .Title("delta_velocity_z")
             .Description("Delta velocity Z.")
-            .FormatString(string.Empty)
-            .Units(@"m/s")
+.Units(@"m/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _deltaVelocityZ;
         public float DeltaVelocityZ { get => _deltaVelocityZ; set => _deltaVelocityZ = value; }
         /// <summary>
@@ -9496,11 +10015,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(JointRoll))
             .Title("joint_roll")
             .Description("Joint ROLL.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _jointRoll;
         public float JointRoll { get => _jointRoll; set => _jointRoll = value; }
         /// <summary>
@@ -9511,11 +10028,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(JointEl))
             .Title("joint_el")
             .Description("Joint EL.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _jointEl;
         public float JointEl { get => _jointEl; set => _jointEl = value; }
         /// <summary>
@@ -9526,11 +10041,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(JointAz))
             .Title("joint_az")
             .Description("Joint AZ.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _jointAz;
         public float JointAz { get => _jointAz; set => _jointAz = value; }
         /// <summary>
@@ -9541,11 +10054,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -9556,11 +10067,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -9631,11 +10140,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DemandedRateXField, ref _demandedRateX);    
-            FloatType.Accept(visitor,DemandedRateYField, ref _demandedRateY);    
-            FloatType.Accept(visitor,DemandedRateZField, ref _demandedRateZ);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            FloatType.Accept(visitor,DemandedRateXField, DemandedRateXField.DataType, ref _demandedRateX);    
+            FloatType.Accept(visitor,DemandedRateYField, DemandedRateYField.DataType, ref _demandedRateY);    
+            FloatType.Accept(visitor,DemandedRateZField, DemandedRateZField.DataType, ref _demandedRateZ);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -9647,11 +10156,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DemandedRateX))
             .Title("demanded_rate_x")
             .Description("Demanded angular rate X.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _demandedRateX;
         public float DemandedRateX { get => _demandedRateX; set => _demandedRateX = value; }
         /// <summary>
@@ -9662,11 +10169,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DemandedRateY))
             .Title("demanded_rate_y")
             .Description("Demanded angular rate Y.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _demandedRateY;
         public float DemandedRateY { get => _demandedRateY; set => _demandedRateY = value; }
         /// <summary>
@@ -9677,11 +10182,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(DemandedRateZ))
             .Title("demanded_rate_z")
             .Description("Demanded angular rate Z.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _demandedRateZ;
         public float DemandedRateZ { get => _demandedRateZ; set => _demandedRateZ = value; }
         /// <summary>
@@ -9692,11 +10195,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -9707,11 +10208,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -9782,11 +10281,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int16Type.Accept(visitor,RlTorqueCmdField, ref _rlTorqueCmd);
-            Int16Type.Accept(visitor,ElTorqueCmdField, ref _elTorqueCmd);
-            Int16Type.Accept(visitor,AzTorqueCmdField, ref _azTorqueCmd);
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            Int16Type.Accept(visitor,RlTorqueCmdField, RlTorqueCmdField.DataType, ref _rlTorqueCmd);
+            Int16Type.Accept(visitor,ElTorqueCmdField, ElTorqueCmdField.DataType, ref _elTorqueCmd);
+            Int16Type.Accept(visitor,AzTorqueCmdField, AzTorqueCmdField.DataType, ref _azTorqueCmd);
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -9798,11 +10297,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RlTorqueCmd))
             .Title("rl_torque_cmd")
             .Description("Roll Torque Command.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int16Type.Default)
 
-            .Build();
+            .DataType(Int16Type.Default)
+        .Build();
         private short _rlTorqueCmd;
         public short RlTorqueCmd { get => _rlTorqueCmd; set => _rlTorqueCmd = value; }
         /// <summary>
@@ -9813,11 +10310,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ElTorqueCmd))
             .Title("el_torque_cmd")
             .Description("Elevation Torque Command.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int16Type.Default)
 
-            .Build();
+            .DataType(Int16Type.Default)
+        .Build();
         private short _elTorqueCmd;
         public short ElTorqueCmd { get => _elTorqueCmd; set => _elTorqueCmd = value; }
         /// <summary>
@@ -9828,11 +10323,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(AzTorqueCmd))
             .Title("az_torque_cmd")
             .Description("Azimuth Torque Command.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int16Type.Default)
 
-            .Build();
+            .DataType(Int16Type.Default)
+        .Build();
         private short _azTorqueCmd;
         public short AzTorqueCmd { get => _azTorqueCmd; set => _azTorqueCmd = value; }
         /// <summary>
@@ -9843,11 +10336,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -9858,11 +10349,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -9928,13 +10417,13 @@ namespace Asv.Mavlink.Ardupilotmega
         public void Accept(IVisitor visitor)
         {
             var tmpStatus = (byte)Status;
-            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
+            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
             Status = (GoproHeartbeatStatus)tmpStatus;
             var tmpCaptureMode = (byte)CaptureMode;
-            UInt8Type.Accept(visitor,CaptureModeField, ref tmpCaptureMode);
+            UInt8Type.Accept(visitor,CaptureModeField, CaptureModeField.DataType, ref tmpCaptureMode);
             CaptureMode = (GoproCaptureMode)tmpCaptureMode;
             var tmpFlags = (byte)Flags;
-            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt8Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (GoproHeartbeatFlags)tmpFlags;
 
         }
@@ -9947,12 +10436,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Status))
             .Title("status")
             .Description("Status.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GoproHeartbeatStatusHelper.GetValues(x=>(byte)x).Min(),GoproHeartbeatStatusHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproHeartbeatStatusHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GoproHeartbeatStatus _status;
+        private GoproHeartbeatStatus _status;
         public GoproHeartbeatStatus Status { get => _status; set => _status = value; } 
         /// <summary>
         /// Current capture mode.
@@ -9962,12 +10449,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CaptureMode))
             .Title("capture_mode")
             .Description("Current capture mode.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GoproCaptureModeHelper.GetValues(x=>(byte)x).Min(),GoproCaptureModeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproCaptureModeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GoproCaptureMode _captureMode;
+        private GoproCaptureMode _captureMode;
         public GoproCaptureMode CaptureMode { get => _captureMode; set => _captureMode = value; } 
         /// <summary>
         /// Additional status bits.
@@ -9977,12 +10462,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Flags))
             .Title("bitmask")
             .Description("Additional status bits.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GoproHeartbeatFlagsHelper.GetValues(x=>(byte)x).Min(),GoproHeartbeatFlagsHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproHeartbeatFlagsHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GoproHeartbeatFlags _flags;
+        private GoproHeartbeatFlags _flags;
         public GoproHeartbeatFlags Flags { get => _flags; set => _flags = value; } 
     }
     /// <summary>
@@ -10046,10 +10529,10 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
             var tmpCmdId = (byte)CmdId;
-            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
+            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
             CmdId = (GoproCommand)tmpCmdId;
 
         }
@@ -10062,11 +10545,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -10077,11 +10558,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -10092,12 +10571,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CmdId))
             .Title("cmd_id")
             .Description("Command ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GoproCommandHelper.GetValues(x=>(byte)x).Min(),GoproCommandHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproCommandHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GoproCommand _cmdId;
+        private GoproCommand _cmdId;
         public GoproCommand CmdId { get => _cmdId; set => _cmdId = value; } 
     }
     /// <summary>
@@ -10172,13 +10649,13 @@ namespace Asv.Mavlink.Ardupilotmega
         public void Accept(IVisitor visitor)
         {
             var tmpCmdId = (byte)CmdId;
-            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
+            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
             CmdId = (GoproCommand)tmpCmdId;
             var tmpStatus = (byte)Status;
-            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
+            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
             Status = (GoproRequestStatus)tmpStatus;
-            ArrayType.Accept(visitor,ValueField, 4,
-                (index,v) => UInt8Type.Accept(v, ValueField, ref Value[index]));    
+            ArrayType.Accept(visitor,ValueField, ValueField.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Value[index]));    
 
         }
 
@@ -10190,12 +10667,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CmdId))
             .Title("cmd_id")
             .Description("Command ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GoproCommandHelper.GetValues(x=>(byte)x).Min(),GoproCommandHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproCommandHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GoproCommand _cmdId;
+        private GoproCommand _cmdId;
         public GoproCommand CmdId { get => _cmdId; set => _cmdId = value; } 
         /// <summary>
         /// Status.
@@ -10205,12 +10680,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Status))
             .Title("status")
             .Description("Status.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GoproRequestStatusHelper.GetValues(x=>(byte)x).Min(),GoproRequestStatusHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproRequestStatusHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GoproRequestStatus _status;
+        private GoproRequestStatus _status;
         public GoproRequestStatus Status { get => _status; set => _status = value; } 
         /// <summary>
         /// Value.
@@ -10220,11 +10693,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Value))
             .Title("value")
             .Description("Value.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,4))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,4))
+        .Build();
         public const int ValueMaxItemsCount = 4;
         public byte[] Value { get; } = new byte[4];
         [Obsolete("This method is deprecated. Use GetValueMaxItemsCount instead.")]
@@ -10304,13 +10775,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
             var tmpCmdId = (byte)CmdId;
-            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
+            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
             CmdId = (GoproCommand)tmpCmdId;
-            ArrayType.Accept(visitor,ValueField, 4,
-                (index,v) => UInt8Type.Accept(v, ValueField, ref Value[index]));    
+            ArrayType.Accept(visitor,ValueField, ValueField.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Value[index]));    
 
         }
 
@@ -10322,11 +10793,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -10337,11 +10806,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -10352,12 +10819,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CmdId))
             .Title("cmd_id")
             .Description("Command ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GoproCommandHelper.GetValues(x=>(byte)x).Min(),GoproCommandHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproCommandHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GoproCommand _cmdId;
+        private GoproCommand _cmdId;
         public GoproCommand CmdId { get => _cmdId; set => _cmdId = value; } 
         /// <summary>
         /// Value.
@@ -10367,11 +10832,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Value))
             .Title("value")
             .Description("Value.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,4))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,4))
+        .Build();
         public const int ValueMaxItemsCount = 4;
         public byte[] Value { get; } = new byte[4];
         [Obsolete("This method is deprecated. Use GetValueMaxItemsCount instead.")]
@@ -10436,10 +10899,10 @@ namespace Asv.Mavlink.Ardupilotmega
         public void Accept(IVisitor visitor)
         {
             var tmpCmdId = (byte)CmdId;
-            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
+            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
             CmdId = (GoproCommand)tmpCmdId;
             var tmpStatus = (byte)Status;
-            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
+            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
             Status = (GoproRequestStatus)tmpStatus;
 
         }
@@ -10452,12 +10915,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(CmdId))
             .Title("cmd_id")
             .Description("Command ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GoproCommandHelper.GetValues(x=>(byte)x).Min(),GoproCommandHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproCommandHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GoproCommand _cmdId;
+        private GoproCommand _cmdId;
         public GoproCommand CmdId { get => _cmdId; set => _cmdId = value; } 
         /// <summary>
         /// Status.
@@ -10467,12 +10928,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Status))
             .Title("status")
             .Description("Status.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GoproRequestStatusHelper.GetValues(x=>(byte)x).Min(),GoproRequestStatusHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproRequestStatusHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GoproRequestStatus _status;
+        private GoproRequestStatus _status;
         public GoproRequestStatus Status { get => _status; set => _status = value; } 
     }
     /// <summary>
@@ -10533,8 +10992,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,Rpm1Field, ref _rpm1);    
-            FloatType.Accept(visitor,Rpm2Field, ref _rpm2);    
+            FloatType.Accept(visitor,Rpm1Field, Rpm1Field.DataType, ref _rpm1);    
+            FloatType.Accept(visitor,Rpm2Field, Rpm2Field.DataType, ref _rpm2);    
 
         }
 
@@ -10546,11 +11005,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Rpm1))
             .Title("rpm1")
             .Description("RPM Sensor1.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _rpm1;
         public float Rpm1 { get => _rpm1; set => _rpm1 = value; }
         /// <summary>
@@ -10561,11 +11018,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Rpm2))
             .Title("rpm2")
             .Description("RPM Sensor2.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _rpm2;
         public float Rpm2 { get => _rpm2; set => _rpm2 = value; }
     }
@@ -10675,23 +11130,19 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
             var tmpBustype = (byte)Bustype;
-            UInt8Type.Accept(visitor,BustypeField, ref tmpBustype);
+            UInt8Type.Accept(visitor,BustypeField, BustypeField.DataType, ref tmpBustype);
             Bustype = (DeviceOpBustype)tmpBustype;
-            UInt8Type.Accept(visitor,BusField, ref _bus);    
-            UInt8Type.Accept(visitor,AddressField, ref _address);    
-            ArrayType.Accept(visitor,BusnameField, 40, (index,v) =>
-            {
-                var tmp = (byte)Busname[index];
-                UInt8Type.Accept(v,BusnameField, ref tmp);
-                Busname[index] = (char)tmp;
-            });
-            UInt8Type.Accept(visitor,RegstartField, ref _regstart);    
-            UInt8Type.Accept(visitor,CountField, ref _count);    
-            UInt8Type.Accept(visitor,BankField, ref _bank);    
+            UInt8Type.Accept(visitor,BusField, BusField.DataType, ref _bus);    
+            UInt8Type.Accept(visitor,AddressField, AddressField.DataType, ref _address);    
+            ArrayType.Accept(visitor,BusnameField, BusnameField.DataType, 40, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Busname[index]));
+            UInt8Type.Accept(visitor,RegstartField, RegstartField.DataType, ref _regstart);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            UInt8Type.Accept(visitor,BankField, BankField.DataType, ref _bank);    
 
         }
 
@@ -10703,11 +11154,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Request ID - copied to reply.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _requestId;
         public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -10718,11 +11167,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -10733,11 +11180,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -10748,12 +11193,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Bustype))
             .Title("bustype")
             .Description("The bus type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(DeviceOpBustypeHelper.GetValues(x=>(byte)x).Min(),DeviceOpBustypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(DeviceOpBustypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public DeviceOpBustype _bustype;
+        private DeviceOpBustype _bustype;
         public DeviceOpBustype Bustype { get => _bustype; set => _bustype = value; } 
         /// <summary>
         /// Bus number.
@@ -10763,11 +11206,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Bus))
             .Title("bus")
             .Description("Bus number.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _bus;
         public byte Bus { get => _bus; set => _bus = value; }
         /// <summary>
@@ -10778,11 +11219,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Address))
             .Title("address")
             .Description("Bus address.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _address;
         public byte Address { get => _address; set => _address = value; }
         /// <summary>
@@ -10793,11 +11232,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Busname))
             .Title("busname")
             .Description("Name of device on bus (for SPI).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,40))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,40))
+        .Build();
         public const int BusnameMaxItemsCount = 40;
         public char[] Busname { get; } = new char[40];
         [Obsolete("This method is deprecated. Use GetBusnameMaxItemsCount instead.")]
@@ -10810,11 +11247,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Regstart))
             .Title("regstart")
             .Description("First register to read.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _regstart;
         public byte Regstart { get => _regstart; set => _regstart = value; }
         /// <summary>
@@ -10825,11 +11260,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Count))
             .Title("count")
             .Description("Count of registers to read.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _count;
         public byte Count { get => _count; set => _count = value; }
         /// <summary>
@@ -10840,11 +11273,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Bank))
             .Title("bank")
             .Description("Bank number.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _bank;
         public byte Bank { get => _bank; set => _bank = value; }
     }
@@ -10930,13 +11361,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt8Type.Accept(visitor,ResultField, ref _result);    
-            UInt8Type.Accept(visitor,RegstartField, ref _regstart);    
-            UInt8Type.Accept(visitor,CountField, ref _count);    
-            ArrayType.Accept(visitor,DataField, 128,
-                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
-            UInt8Type.Accept(visitor,BankField, ref _bank);    
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref _result);    
+            UInt8Type.Accept(visitor,RegstartField, RegstartField.DataType, ref _regstart);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 128,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
+            UInt8Type.Accept(visitor,BankField, BankField.DataType, ref _bank);    
 
         }
 
@@ -10948,11 +11379,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Request ID - copied from request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _requestId;
         public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -10963,11 +11392,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Result))
             .Title("result")
             .Description("0 for success, anything else is failure code.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _result;
         public byte Result { get => _result; set => _result = value; }
         /// <summary>
@@ -10978,11 +11405,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Regstart))
             .Title("regstart")
             .Description("Starting register.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _regstart;
         public byte Regstart { get => _regstart; set => _regstart = value; }
         /// <summary>
@@ -10993,11 +11418,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Count))
             .Title("count")
             .Description("Count of bytes read.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _count;
         public byte Count { get => _count; set => _count = value; }
         /// <summary>
@@ -11008,11 +11431,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Data))
             .Title("data")
             .Description("Reply data.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,128))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,128))
+        .Build();
         public const int DataMaxItemsCount = 128;
         public byte[] Data { get; } = new byte[128];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
@@ -11025,11 +11446,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Bank))
             .Title("bank")
             .Description("Bank number.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _bank;
         public byte Bank { get => _bank; set => _bank = value; }
     }
@@ -11149,25 +11568,21 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
             var tmpBustype = (byte)Bustype;
-            UInt8Type.Accept(visitor,BustypeField, ref tmpBustype);
+            UInt8Type.Accept(visitor,BustypeField, BustypeField.DataType, ref tmpBustype);
             Bustype = (DeviceOpBustype)tmpBustype;
-            UInt8Type.Accept(visitor,BusField, ref _bus);    
-            UInt8Type.Accept(visitor,AddressField, ref _address);    
-            ArrayType.Accept(visitor,BusnameField, 40, (index,v) =>
-            {
-                var tmp = (byte)Busname[index];
-                UInt8Type.Accept(v,BusnameField, ref tmp);
-                Busname[index] = (char)tmp;
-            });
-            UInt8Type.Accept(visitor,RegstartField, ref _regstart);    
-            UInt8Type.Accept(visitor,CountField, ref _count);    
-            ArrayType.Accept(visitor,DataField, 128,
-                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
-            UInt8Type.Accept(visitor,BankField, ref _bank);    
+            UInt8Type.Accept(visitor,BusField, BusField.DataType, ref _bus);    
+            UInt8Type.Accept(visitor,AddressField, AddressField.DataType, ref _address);    
+            ArrayType.Accept(visitor,BusnameField, BusnameField.DataType, 40, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Busname[index]));
+            UInt8Type.Accept(visitor,RegstartField, RegstartField.DataType, ref _regstart);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 128,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
+            UInt8Type.Accept(visitor,BankField, BankField.DataType, ref _bank);    
 
         }
 
@@ -11179,11 +11594,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Request ID - copied to reply.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _requestId;
         public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -11194,11 +11607,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -11209,11 +11620,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -11224,12 +11633,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Bustype))
             .Title("bustype")
             .Description("The bus type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(DeviceOpBustypeHelper.GetValues(x=>(byte)x).Min(),DeviceOpBustypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(DeviceOpBustypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public DeviceOpBustype _bustype;
+        private DeviceOpBustype _bustype;
         public DeviceOpBustype Bustype { get => _bustype; set => _bustype = value; } 
         /// <summary>
         /// Bus number.
@@ -11239,11 +11646,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Bus))
             .Title("bus")
             .Description("Bus number.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _bus;
         public byte Bus { get => _bus; set => _bus = value; }
         /// <summary>
@@ -11254,11 +11659,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Address))
             .Title("address")
             .Description("Bus address.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _address;
         public byte Address { get => _address; set => _address = value; }
         /// <summary>
@@ -11269,11 +11672,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Busname))
             .Title("busname")
             .Description("Name of device on bus (for SPI).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,40))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,40))
+        .Build();
         public const int BusnameMaxItemsCount = 40;
         public char[] Busname { get; } = new char[40];
         /// <summary>
@@ -11284,11 +11685,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Regstart))
             .Title("regstart")
             .Description("First register to write.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _regstart;
         public byte Regstart { get => _regstart; set => _regstart = value; }
         /// <summary>
@@ -11299,11 +11698,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Count))
             .Title("count")
             .Description("Count of registers to write.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _count;
         public byte Count { get => _count; set => _count = value; }
         /// <summary>
@@ -11314,11 +11711,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Data))
             .Title("data")
             .Description("Write data.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,128))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,128))
+        .Build();
         public const int DataMaxItemsCount = 128;
         public byte[] Data { get; } = new byte[128];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
@@ -11331,11 +11726,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Bank))
             .Title("bank")
             .Description("Bank number.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _bank;
         public byte Bank { get => _bank; set => _bank = value; }
     }
@@ -11397,8 +11790,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt8Type.Accept(visitor,ResultField, ref _result);    
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref _result);    
 
         }
 
@@ -11410,11 +11803,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Request ID - copied from request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _requestId;
         public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -11425,11 +11816,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Result))
             .Title("result")
             .Description("0 for success, anything else is failure code.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _result;
         public byte Result { get => _result; set => _result = value; }
     }
@@ -11524,20 +11913,20 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DesiredField, ref _desired);    
-            FloatType.Accept(visitor,AchievedField, ref _achieved);    
-            FloatType.Accept(visitor,ErrorField, ref _error);    
-            FloatType.Accept(visitor,ThetaField, ref _theta);    
-            FloatType.Accept(visitor,OmegaField, ref _omega);    
-            FloatType.Accept(visitor,SigmaField, ref _sigma);    
-            FloatType.Accept(visitor,ThetaDotField, ref _thetaDot);    
-            FloatType.Accept(visitor,OmegaDotField, ref _omegaDot);    
-            FloatType.Accept(visitor,SigmaDotField, ref _sigmaDot);    
-            FloatType.Accept(visitor,FField, ref _f);    
-            FloatType.Accept(visitor,FDotField, ref _fDot);    
-            FloatType.Accept(visitor,UField, ref _u);    
+            FloatType.Accept(visitor,DesiredField, DesiredField.DataType, ref _desired);    
+            FloatType.Accept(visitor,AchievedField, AchievedField.DataType, ref _achieved);    
+            FloatType.Accept(visitor,ErrorField, ErrorField.DataType, ref _error);    
+            FloatType.Accept(visitor,ThetaField, ThetaField.DataType, ref _theta);    
+            FloatType.Accept(visitor,OmegaField, OmegaField.DataType, ref _omega);    
+            FloatType.Accept(visitor,SigmaField, SigmaField.DataType, ref _sigma);    
+            FloatType.Accept(visitor,ThetaDotField, ThetaDotField.DataType, ref _thetaDot);    
+            FloatType.Accept(visitor,OmegaDotField, OmegaDotField.DataType, ref _omegaDot);    
+            FloatType.Accept(visitor,SigmaDotField, SigmaDotField.DataType, ref _sigmaDot);    
+            FloatType.Accept(visitor,FField, FField.DataType, ref _f);    
+            FloatType.Accept(visitor,FDotField, FDotField.DataType, ref _fDot);    
+            FloatType.Accept(visitor,UField, UField.DataType, ref _u);    
             var tmpAxis = (byte)Axis;
-            UInt8Type.Accept(visitor,AxisField, ref tmpAxis);
+            UInt8Type.Accept(visitor,AxisField, AxisField.DataType, ref tmpAxis);
             Axis = (PidTuningAxis)tmpAxis;
 
         }
@@ -11550,11 +11939,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Desired))
             .Title("desired")
             .Description("Desired rate.")
-            .FormatString(string.Empty)
-            .Units(@"deg/s")
+.Units(@"deg/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _desired;
         public float Desired { get => _desired; set => _desired = value; }
         /// <summary>
@@ -11565,11 +11952,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Achieved))
             .Title("achieved")
             .Description("Achieved rate.")
-            .FormatString(string.Empty)
-            .Units(@"deg/s")
+.Units(@"deg/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _achieved;
         public float Achieved { get => _achieved; set => _achieved = value; }
         /// <summary>
@@ -11580,11 +11965,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Error))
             .Title("error")
             .Description("Error between model and vehicle.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _error;
         public float Error { get => _error; set => _error = value; }
         /// <summary>
@@ -11595,11 +11978,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Theta))
             .Title("theta")
             .Description("Theta estimated state predictor.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _theta;
         public float Theta { get => _theta; set => _theta = value; }
         /// <summary>
@@ -11610,11 +11991,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Omega))
             .Title("omega")
             .Description("Omega estimated state predictor.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _omega;
         public float Omega { get => _omega; set => _omega = value; }
         /// <summary>
@@ -11625,11 +12004,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Sigma))
             .Title("sigma")
             .Description("Sigma estimated state predictor.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _sigma;
         public float Sigma { get => _sigma; set => _sigma = value; }
         /// <summary>
@@ -11640,11 +12017,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ThetaDot))
             .Title("theta_dot")
             .Description("Theta derivative.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _thetaDot;
         public float ThetaDot { get => _thetaDot; set => _thetaDot = value; }
         /// <summary>
@@ -11655,11 +12030,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(OmegaDot))
             .Title("omega_dot")
             .Description("Omega derivative.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _omegaDot;
         public float OmegaDot { get => _omegaDot; set => _omegaDot = value; }
         /// <summary>
@@ -11670,11 +12043,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(SigmaDot))
             .Title("sigma_dot")
             .Description("Sigma derivative.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _sigmaDot;
         public float SigmaDot { get => _sigmaDot; set => _sigmaDot = value; }
         /// <summary>
@@ -11685,11 +12056,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(F))
             .Title("f")
             .Description("Projection operator value.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _f;
         public float F { get => _f; set => _f = value; }
         /// <summary>
@@ -11700,11 +12069,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(FDot))
             .Title("f_dot")
             .Description("Projection operator derivative.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _fDot;
         public float FDot { get => _fDot; set => _fDot = value; }
         /// <summary>
@@ -11715,11 +12082,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(U))
             .Title("u")
             .Description("u adaptive controlled output command.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _u;
         public float U { get => _u; set => _u = value; }
         /// <summary>
@@ -11730,12 +12095,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Axis))
             .Title("axis")
             .Description("Axis.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(PidTuningAxisHelper.GetValues(x=>(byte)x).Min(),PidTuningAxisHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(PidTuningAxisHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public PidTuningAxis _axis;
+        private PidTuningAxis _axis;
         public PidTuningAxis Axis { get => _axis; set => _axis = value; } 
     }
     /// <summary>
@@ -11822,13 +12185,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUsecField, ref _timeUsec);    
-            UInt64Type.Accept(visitor,TimeDeltaUsecField, ref _timeDeltaUsec);    
-            ArrayType.Accept(visitor,AngleDeltaField, 3,
-                (index,v) => FloatType.Accept(v, AngleDeltaField, ref AngleDelta[index]));
-            ArrayType.Accept(visitor,PositionDeltaField, 3,
-                (index,v) => FloatType.Accept(v, PositionDeltaField, ref PositionDelta[index]));
-            FloatType.Accept(visitor,ConfidenceField, ref _confidence);    
+            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
+            UInt64Type.Accept(visitor,TimeDeltaUsecField, TimeDeltaUsecField.DataType, ref _timeDeltaUsec);    
+            ArrayType.Accept(visitor,AngleDeltaField, AngleDeltaField.DataType, 3,
+                (index, v, f, t) => FloatType.Accept(v, f, t, ref AngleDelta[index]));
+            ArrayType.Accept(visitor,PositionDeltaField, PositionDeltaField.DataType, 3,
+                (index, v, f, t) => FloatType.Accept(v, f, t, ref PositionDelta[index]));
+            FloatType.Accept(visitor,ConfidenceField, ConfidenceField.DataType, ref _confidence);    
 
         }
 
@@ -11840,11 +12203,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TimeUsec))
             .Title("time_usec")
             .Description("Timestamp (synced to UNIX time or since system boot).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUsec;
         public ulong TimeUsec { get => _timeUsec; set => _timeUsec = value; }
         /// <summary>
@@ -11855,11 +12216,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TimeDeltaUsec))
             .Title("time_delta_usec")
             .Description("Time since the last reported camera frame.")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeDeltaUsec;
         public ulong TimeDeltaUsec { get => _timeDeltaUsec; set => _timeDeltaUsec = value; }
         /// <summary>
@@ -11870,11 +12229,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(AngleDelta))
             .Title("angle_delta")
             .Description("Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(new ArrayType(FloatType.Default,3))        
-
-            .Build();
+        .Build();
         public const int AngleDeltaMaxItemsCount = 3;
         public float[] AngleDelta { get; } = new float[3];
         [Obsolete("This method is deprecated. Use GetAngleDeltaMaxItemsCount instead.")]
@@ -11887,11 +12244,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(PositionDelta))
             .Title("position_delta")
             .Description("Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(new ArrayType(FloatType.Default,3))        
-
-            .Build();
+        .Build();
         public const int PositionDeltaMaxItemsCount = 3;
         public float[] PositionDelta { get; } = new float[3];
         /// <summary>
@@ -11902,11 +12257,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Confidence))
             .Title("confidence")
             .Description("Normalised confidence value from 0 to 100.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _confidence;
         public float Confidence { get => _confidence; set => _confidence = value; }
     }
@@ -11971,9 +12324,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUsecField, ref _timeUsec);    
-            FloatType.Accept(visitor,AoaField, ref _aoa);    
-            FloatType.Accept(visitor,SsaField, ref _ssa);    
+            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
+            FloatType.Accept(visitor,AoaField, AoaField.DataType, ref _aoa);    
+            FloatType.Accept(visitor,SsaField, SsaField.DataType, ref _ssa);    
 
         }
 
@@ -11985,11 +12338,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TimeUsec))
             .Title("time_usec")
             .Description("Timestamp (since boot or Unix epoch).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUsec;
         public ulong TimeUsec { get => _timeUsec; set => _timeUsec = value; }
         /// <summary>
@@ -12000,11 +12351,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Aoa))
             .Title("AOA")
             .Description("Angle of Attack.")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _aoa;
         public float Aoa { get => _aoa; set => _aoa = value; }
         /// <summary>
@@ -12015,11 +12364,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Ssa))
             .Title("SSA")
             .Description("Side Slip Angle.")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _ssa;
         public float Ssa { get => _ssa; set => _ssa = value; }
     }
@@ -12138,18 +12485,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,VoltageField, 4,
-                (index,v) => UInt16Type.Accept(v, VoltageField, ref Voltage[index]));    
-            ArrayType.Accept(visitor,CurrentField, 4,
-                (index,v) => UInt16Type.Accept(v, CurrentField, ref Current[index]));    
-            ArrayType.Accept(visitor,TotalcurrentField, 4,
-                (index,v) => UInt16Type.Accept(v, TotalcurrentField, ref Totalcurrent[index]));    
-            ArrayType.Accept(visitor,RpmField, 4,
-                (index,v) => UInt16Type.Accept(v, RpmField, ref Rpm[index]));    
-            ArrayType.Accept(visitor,CountField, 4,
-                (index,v) => UInt16Type.Accept(v, CountField, ref Count[index]));    
-            ArrayType.Accept(visitor,TemperatureField, 4,
-                (index,v) => UInt8Type.Accept(v, TemperatureField, ref Temperature[index]));    
+            ArrayType.Accept(visitor,VoltageField, VoltageField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Voltage[index]));    
+            ArrayType.Accept(visitor,CurrentField, CurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Current[index]));    
+            ArrayType.Accept(visitor,TotalcurrentField, TotalcurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Totalcurrent[index]));    
+            ArrayType.Accept(visitor,RpmField, RpmField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rpm[index]));    
+            ArrayType.Accept(visitor,CountField, CountField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Count[index]));    
+            ArrayType.Accept(visitor,TemperatureField, TemperatureField.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Temperature[index]));    
 
         }
 
@@ -12161,11 +12508,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Voltage))
             .Title("voltage")
             .Description("Voltage.")
-            .FormatString(string.Empty)
-            .Units(@"cV")
+.Units(@"cV")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int VoltageMaxItemsCount = 4;
         public ushort[] Voltage { get; } = new ushort[4];
         [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
@@ -12178,11 +12523,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Current))
             .Title("current")
             .Description("Current.")
-            .FormatString(string.Empty)
-            .Units(@"cA")
+.Units(@"cA")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
@@ -12193,11 +12536,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Totalcurrent))
             .Title("totalcurrent")
             .Description("Total current.")
-            .FormatString(string.Empty)
-            .Units(@"mAh")
+.Units(@"mAh")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
@@ -12208,11 +12549,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Rpm))
             .Title("rpm")
             .Description("RPM (eRPM).")
-            .FormatString(string.Empty)
-            .Units(@"rpm")
+.Units(@"rpm")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
@@ -12223,11 +12562,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Count))
             .Title("count")
             .Description("count of telemetry packets received (wraps at 65535).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,4))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
@@ -12238,11 +12575,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Temperature))
             .Title("temperature")
             .Description("Temperature.")
-            .FormatString(string.Empty)
-            .Units(@"degC")
+.Units(@"degC")
             .DataType(new ArrayType(UInt8Type.Default,4))
-
-            .Build();
+        .Build();
         public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
@@ -12361,18 +12696,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,VoltageField, 4,
-                (index,v) => UInt16Type.Accept(v, VoltageField, ref Voltage[index]));    
-            ArrayType.Accept(visitor,CurrentField, 4,
-                (index,v) => UInt16Type.Accept(v, CurrentField, ref Current[index]));    
-            ArrayType.Accept(visitor,TotalcurrentField, 4,
-                (index,v) => UInt16Type.Accept(v, TotalcurrentField, ref Totalcurrent[index]));    
-            ArrayType.Accept(visitor,RpmField, 4,
-                (index,v) => UInt16Type.Accept(v, RpmField, ref Rpm[index]));    
-            ArrayType.Accept(visitor,CountField, 4,
-                (index,v) => UInt16Type.Accept(v, CountField, ref Count[index]));    
-            ArrayType.Accept(visitor,TemperatureField, 4,
-                (index,v) => UInt8Type.Accept(v, TemperatureField, ref Temperature[index]));    
+            ArrayType.Accept(visitor,VoltageField, VoltageField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Voltage[index]));    
+            ArrayType.Accept(visitor,CurrentField, CurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Current[index]));    
+            ArrayType.Accept(visitor,TotalcurrentField, TotalcurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Totalcurrent[index]));    
+            ArrayType.Accept(visitor,RpmField, RpmField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rpm[index]));    
+            ArrayType.Accept(visitor,CountField, CountField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Count[index]));    
+            ArrayType.Accept(visitor,TemperatureField, TemperatureField.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Temperature[index]));    
 
         }
 
@@ -12384,11 +12719,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Voltage))
             .Title("voltage")
             .Description("Voltage.")
-            .FormatString(string.Empty)
-            .Units(@"cV")
+.Units(@"cV")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int VoltageMaxItemsCount = 4;
         public ushort[] Voltage { get; } = new ushort[4];
         [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
@@ -12401,11 +12734,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Current))
             .Title("current")
             .Description("Current.")
-            .FormatString(string.Empty)
-            .Units(@"cA")
+.Units(@"cA")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
@@ -12416,11 +12747,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Totalcurrent))
             .Title("totalcurrent")
             .Description("Total current.")
-            .FormatString(string.Empty)
-            .Units(@"mAh")
+.Units(@"mAh")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
@@ -12431,11 +12760,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Rpm))
             .Title("rpm")
             .Description("RPM (eRPM).")
-            .FormatString(string.Empty)
-            .Units(@"rpm")
+.Units(@"rpm")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
@@ -12446,11 +12773,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Count))
             .Title("count")
             .Description("count of telemetry packets received (wraps at 65535).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,4))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
@@ -12461,11 +12786,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Temperature))
             .Title("temperature")
             .Description("Temperature.")
-            .FormatString(string.Empty)
-            .Units(@"degC")
+.Units(@"degC")
             .DataType(new ArrayType(UInt8Type.Default,4))
-
-            .Build();
+        .Build();
         public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
@@ -12584,18 +12907,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,VoltageField, 4,
-                (index,v) => UInt16Type.Accept(v, VoltageField, ref Voltage[index]));    
-            ArrayType.Accept(visitor,CurrentField, 4,
-                (index,v) => UInt16Type.Accept(v, CurrentField, ref Current[index]));    
-            ArrayType.Accept(visitor,TotalcurrentField, 4,
-                (index,v) => UInt16Type.Accept(v, TotalcurrentField, ref Totalcurrent[index]));    
-            ArrayType.Accept(visitor,RpmField, 4,
-                (index,v) => UInt16Type.Accept(v, RpmField, ref Rpm[index]));    
-            ArrayType.Accept(visitor,CountField, 4,
-                (index,v) => UInt16Type.Accept(v, CountField, ref Count[index]));    
-            ArrayType.Accept(visitor,TemperatureField, 4,
-                (index,v) => UInt8Type.Accept(v, TemperatureField, ref Temperature[index]));    
+            ArrayType.Accept(visitor,VoltageField, VoltageField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Voltage[index]));    
+            ArrayType.Accept(visitor,CurrentField, CurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Current[index]));    
+            ArrayType.Accept(visitor,TotalcurrentField, TotalcurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Totalcurrent[index]));    
+            ArrayType.Accept(visitor,RpmField, RpmField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rpm[index]));    
+            ArrayType.Accept(visitor,CountField, CountField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Count[index]));    
+            ArrayType.Accept(visitor,TemperatureField, TemperatureField.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Temperature[index]));    
 
         }
 
@@ -12607,11 +12930,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Voltage))
             .Title("voltage")
             .Description("Voltage.")
-            .FormatString(string.Empty)
-            .Units(@"cV")
+.Units(@"cV")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int VoltageMaxItemsCount = 4;
         public ushort[] Voltage { get; } = new ushort[4];
         [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
@@ -12624,11 +12945,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Current))
             .Title("current")
             .Description("Current.")
-            .FormatString(string.Empty)
-            .Units(@"cA")
+.Units(@"cA")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
@@ -12639,11 +12958,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Totalcurrent))
             .Title("totalcurrent")
             .Description("Total current.")
-            .FormatString(string.Empty)
-            .Units(@"mAh")
+.Units(@"mAh")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
@@ -12654,11 +12971,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Rpm))
             .Title("rpm")
             .Description("RPM (eRPM).")
-            .FormatString(string.Empty)
-            .Units(@"rpm")
+.Units(@"rpm")
             .DataType(new ArrayType(UInt16Type.Default,4))
-
-            .Build();
+        .Build();
         public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
@@ -12669,11 +12984,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Count))
             .Title("count")
             .Description("count of telemetry packets received (wraps at 65535).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt16Type.Default,4))
 
-            .Build();
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
@@ -12684,11 +12997,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Temperature))
             .Title("temperature")
             .Description("Temperature.")
-            .FormatString(string.Empty)
-            .Units(@"degC")
+.Units(@"degC")
             .DataType(new ArrayType(UInt8Type.Default,4))
-
-            .Build();
+        .Build();
         public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
@@ -12796,22 +13107,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
-            FloatType.Accept(visitor,MinValueField, ref _minValue);    
-            FloatType.Accept(visitor,MaxValueField, ref _maxValue);    
-            FloatType.Accept(visitor,IncrementField, ref _increment);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,OsdScreenField, ref _osdScreen);    
-            UInt8Type.Accept(visitor,OsdIndexField, ref _osdIndex);    
-            ArrayType.Accept(visitor,ParamIdField, 16, (index,v) =>
-            {
-                var tmp = (byte)ParamId[index];
-                UInt8Type.Accept(v,ParamIdField, ref tmp);
-                ParamId[index] = (char)tmp;
-            });
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            FloatType.Accept(visitor,MinValueField, MinValueField.DataType, ref _minValue);    
+            FloatType.Accept(visitor,MaxValueField, MaxValueField.DataType, ref _maxValue);    
+            FloatType.Accept(visitor,IncrementField, IncrementField.DataType, ref _increment);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,OsdScreenField, OsdScreenField.DataType, ref _osdScreen);    
+            UInt8Type.Accept(visitor,OsdIndexField, OsdIndexField.DataType, ref _osdIndex);    
+            ArrayType.Accept(visitor,ParamIdField, ParamIdField.DataType, 16, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref ParamId[index]));
             var tmpConfigType = (byte)ConfigType;
-            UInt8Type.Accept(visitor,ConfigTypeField, ref tmpConfigType);
+            UInt8Type.Accept(visitor,ConfigTypeField, ConfigTypeField.DataType, ref tmpConfigType);
             ConfigType = (OsdParamConfigType)tmpConfigType;
 
         }
@@ -12824,11 +13131,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Request ID - copied to reply.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _requestId;
         public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -12839,11 +13144,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MinValue))
             .Title("min_value")
             .Description("OSD parameter minimum value.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _minValue;
         public float MinValue { get => _minValue; set => _minValue = value; }
         /// <summary>
@@ -12854,11 +13157,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MaxValue))
             .Title("max_value")
             .Description("OSD parameter maximum value.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _maxValue;
         public float MaxValue { get => _maxValue; set => _maxValue = value; }
         /// <summary>
@@ -12869,11 +13170,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Increment))
             .Title("increment")
             .Description("OSD parameter increment.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _increment;
         public float Increment { get => _increment; set => _increment = value; }
         /// <summary>
@@ -12884,11 +13183,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -12899,11 +13196,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -12914,11 +13209,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(OsdScreen))
             .Title("osd_screen")
             .Description("OSD parameter screen index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _osdScreen;
         public byte OsdScreen { get => _osdScreen; set => _osdScreen = value; }
         /// <summary>
@@ -12929,11 +13222,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(OsdIndex))
             .Title("osd_index")
             .Description("OSD parameter display index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _osdIndex;
         public byte OsdIndex { get => _osdIndex; set => _osdIndex = value; }
         /// <summary>
@@ -12944,11 +13235,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ParamId))
             .Title("param_id")
             .Description("Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,16))
+        .Build();
         public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; } = new char[16];
         [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
@@ -12961,12 +13250,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ConfigType))
             .Title("config_type")
             .Description("Config type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(OsdParamConfigTypeHelper.GetValues(x=>(byte)x).Min(),OsdParamConfigTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(OsdParamConfigTypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public OsdParamConfigType _configType;
+        private OsdParamConfigType _configType;
         public OsdParamConfigType ConfigType { get => _configType; set => _configType = value; } 
     }
     /// <summary>
@@ -13027,9 +13314,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
             Result = (OsdParamConfigError)tmpResult;
 
         }
@@ -13042,11 +13329,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Request ID - copied from request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _requestId;
         public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -13057,12 +13342,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Result))
             .Title("result")
             .Description("Config error type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(OsdParamConfigErrorHelper.GetValues(x=>(byte)x).Min(),OsdParamConfigErrorHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(OsdParamConfigErrorHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public OsdParamConfigError _result;
+        private OsdParamConfigError _result;
         public OsdParamConfigError Result { get => _result; set => _result = value; } 
     }
     /// <summary>
@@ -13132,11 +13415,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,OsdScreenField, ref _osdScreen);    
-            UInt8Type.Accept(visitor,OsdIndexField, ref _osdIndex);    
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,OsdScreenField, OsdScreenField.DataType, ref _osdScreen);    
+            UInt8Type.Accept(visitor,OsdIndexField, OsdIndexField.DataType, ref _osdIndex);    
 
         }
 
@@ -13148,11 +13431,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Request ID - copied to reply.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _requestId;
         public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -13163,11 +13444,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -13178,11 +13457,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -13193,11 +13470,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(OsdScreen))
             .Title("osd_screen")
             .Description("OSD parameter screen index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _osdScreen;
         public byte OsdScreen { get => _osdScreen; set => _osdScreen = value; }
         /// <summary>
@@ -13208,11 +13483,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(OsdIndex))
             .Title("osd_index")
             .Description("OSD parameter display index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _osdIndex;
         public byte OsdIndex { get => _osdIndex; set => _osdIndex = value; }
     }
@@ -13311,21 +13584,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
-            FloatType.Accept(visitor,MinValueField, ref _minValue);    
-            FloatType.Accept(visitor,MaxValueField, ref _maxValue);    
-            FloatType.Accept(visitor,IncrementField, ref _increment);    
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            FloatType.Accept(visitor,MinValueField, MinValueField.DataType, ref _minValue);    
+            FloatType.Accept(visitor,MaxValueField, MaxValueField.DataType, ref _maxValue);    
+            FloatType.Accept(visitor,IncrementField, IncrementField.DataType, ref _increment);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
             Result = (OsdParamConfigError)tmpResult;
-            ArrayType.Accept(visitor,ParamIdField, 16, (index,v) =>
-            {
-                var tmp = (byte)ParamId[index];
-                UInt8Type.Accept(v,ParamIdField, ref tmp);
-                ParamId[index] = (char)tmp;
-            });
+            ArrayType.Accept(visitor,ParamIdField, ParamIdField.DataType, 16, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref ParamId[index]));
             var tmpConfigType = (byte)ConfigType;
-            UInt8Type.Accept(visitor,ConfigTypeField, ref tmpConfigType);
+            UInt8Type.Accept(visitor,ConfigTypeField, ConfigTypeField.DataType, ref tmpConfigType);
             ConfigType = (OsdParamConfigType)tmpConfigType;
 
         }
@@ -13338,11 +13607,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Request ID - copied from request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _requestId;
         public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -13353,11 +13620,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MinValue))
             .Title("min_value")
             .Description("OSD parameter minimum value.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _minValue;
         public float MinValue { get => _minValue; set => _minValue = value; }
         /// <summary>
@@ -13368,11 +13633,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MaxValue))
             .Title("max_value")
             .Description("OSD parameter maximum value.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _maxValue;
         public float MaxValue { get => _maxValue; set => _maxValue = value; }
         /// <summary>
@@ -13383,11 +13646,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Increment))
             .Title("increment")
             .Description("OSD parameter increment.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _increment;
         public float Increment { get => _increment; set => _increment = value; }
         /// <summary>
@@ -13398,12 +13659,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Result))
             .Title("result")
             .Description("Config error type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(OsdParamConfigErrorHelper.GetValues(x=>(byte)x).Min(),OsdParamConfigErrorHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(OsdParamConfigErrorHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public OsdParamConfigError _result;
+        private OsdParamConfigError _result;
         public OsdParamConfigError Result { get => _result; set => _result = value; } 
         /// <summary>
         /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
@@ -13413,11 +13672,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ParamId))
             .Title("param_id")
             .Description("Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,16))
+        .Build();
         public const int ParamIdMaxItemsCount = 16;
         public char[] ParamId { get; } = new char[16];
         [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
@@ -13430,12 +13687,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ConfigType))
             .Title("config_type")
             .Description("Config type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(OsdParamConfigTypeHelper.GetValues(x=>(byte)x).Min(),OsdParamConfigTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(OsdParamConfigTypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public OsdParamConfigType _configType;
+        private OsdParamConfigType _configType;
         public OsdParamConfigType ConfigType { get => _configType; set => _configType = value; } 
     }
     /// <summary>
@@ -13517,18 +13772,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
-            FloatType.Accept(visitor,XField, ref _x);    
-            FloatType.Accept(visitor,YField, ref _y);    
-            FloatType.Accept(visitor,ZField, ref _z);    
-            FloatType.Accept(visitor,MinDistanceField, ref _minDistance);    
-            FloatType.Accept(visitor,MaxDistanceField, ref _maxDistance);    
-            UInt16Type.Accept(visitor,ObstacleIdField, ref _obstacleId);    
+            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
+            FloatType.Accept(visitor,XField, XField.DataType, ref _x);    
+            FloatType.Accept(visitor,YField, YField.DataType, ref _y);    
+            FloatType.Accept(visitor,ZField, ZField.DataType, ref _z);    
+            FloatType.Accept(visitor,MinDistanceField, MinDistanceField.DataType, ref _minDistance);    
+            FloatType.Accept(visitor,MaxDistanceField, MaxDistanceField.DataType, ref _maxDistance);    
+            UInt16Type.Accept(visitor,ObstacleIdField, ObstacleIdField.DataType, ref _obstacleId);    
             var tmpSensorType = (byte)SensorType;
-            UInt8Type.Accept(visitor,SensorTypeField, ref tmpSensorType);
+            UInt8Type.Accept(visitor,SensorTypeField, SensorTypeField.DataType, ref tmpSensorType);
             SensorType = (MavDistanceSensor)tmpSensorType;
             var tmpFrame = (byte)Frame;
-            UInt8Type.Accept(visitor,FrameField, ref tmpFrame);
+            UInt8Type.Accept(visitor,FrameField, FrameField.DataType, ref tmpFrame);
             Frame = (MavFrame)tmpFrame;
 
         }
@@ -13541,11 +13796,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TimeBootMs))
             .Title("time_boot_ms")
             .Description("Timestamp (time since system boot).")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _timeBootMs;
         public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
@@ -13556,11 +13809,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(X))
             .Title("x")
             .Description(" X position of the obstacle.")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _x;
         public float X { get => _x; set => _x = value; }
         /// <summary>
@@ -13571,11 +13822,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Y))
             .Title("y")
             .Description(" Y position of the obstacle.")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _y;
         public float Y { get => _y; set => _y = value; }
         /// <summary>
@@ -13586,11 +13835,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Z))
             .Title("z")
             .Description(" Z position of the obstacle.")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _z;
         public float Z { get => _z; set => _z = value; }
         /// <summary>
@@ -13601,11 +13848,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MinDistance))
             .Title("min_distance")
             .Description("Minimum distance the sensor can measure.")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _minDistance;
         public float MinDistance { get => _minDistance; set => _minDistance = value; }
         /// <summary>
@@ -13616,11 +13861,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(MaxDistance))
             .Title("max_distance")
             .Description("Maximum distance the sensor can measure.")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _maxDistance;
         public float MaxDistance { get => _maxDistance; set => _maxDistance = value; }
         /// <summary>
@@ -13631,11 +13874,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(ObstacleId))
             .Title("obstacle_id")
             .Description(" Unique ID given to each obstacle so that its movement can be tracked. Use UINT16_MAX if object ID is unknown or cannot be determined.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _obstacleId;
         public ushort ObstacleId { get => _obstacleId; set => _obstacleId = value; }
         /// <summary>
@@ -13646,12 +13887,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(SensorType))
             .Title("sensor_type")
             .Description("Class id of the distance sensor type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavDistanceSensorHelper.GetValues(x=>(byte)x).Min(),MavDistanceSensorHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavDistanceSensorHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavDistanceSensor _sensorType;
+        private MavDistanceSensor _sensorType;
         public MavDistanceSensor SensorType { get => _sensorType; set => _sensorType = value; } 
         /// <summary>
         /// Coordinate frame of reference.
@@ -13661,12 +13900,10 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Frame))
             .Title("frame")
             .Description("Coordinate frame of reference.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavFrameHelper.GetValues(x=>(byte)x).Min(),MavFrameHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavFrameHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavFrame _frame;
+        private MavFrame _frame;
         public MavFrame Frame { get => _frame; set => _frame = value; } 
     }
     /// <summary>
@@ -13754,17 +13991,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
-            Int32Type.Accept(visitor,LatField, ref _lat);    
-            Int32Type.Accept(visitor,LngField, ref _lng);    
-            FloatType.Accept(visitor,AltField, ref _alt);    
-            FloatType.Accept(visitor,RollField, ref _roll);    
-            FloatType.Accept(visitor,PitchField, ref _pitch);    
-            FloatType.Accept(visitor,YawField, ref _yaw);    
-            FloatType.Accept(visitor,DistanceField, ref _distance);    
-            FloatType.Accept(visitor,TemperatureField, ref _temperature);    
-            UInt8Type.Accept(visitor,IdField, ref _id);    
-            UInt8Type.Accept(visitor,HealthyField, ref _healthy);    
+            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            FloatType.Accept(visitor,AltField, AltField.DataType, ref _alt);    
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,DistanceField, DistanceField.DataType, ref _distance);    
+            FloatType.Accept(visitor,TemperatureField, TemperatureField.DataType, ref _temperature);    
+            UInt8Type.Accept(visitor,IdField, IdField.DataType, ref _id);    
+            UInt8Type.Accept(visitor,HealthyField, HealthyField.DataType, ref _healthy);    
 
         }
 
@@ -13776,11 +14013,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(TimeBootMs))
             .Title("time_boot_ms")
             .Description("Timestamp (time since system boot)")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _timeBootMs;
         public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
@@ -13791,11 +14026,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Latitude")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lat;
         public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -13806,11 +14039,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Lng))
             .Title("lng")
             .Description("Longitude")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lng;
         public int Lng { get => _lng; set => _lng = value; }
         /// <summary>
@@ -13821,11 +14052,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Alt))
             .Title("alt")
             .Description("Altitude (MSL) of vehicle")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _alt;
         public float Alt { get => _alt; set => _alt = value; }
         /// <summary>
@@ -13836,11 +14065,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Roll))
             .Title("roll")
             .Description("Roll angle")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _roll;
         public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
@@ -13851,11 +14078,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Pitch))
             .Title("pitch")
             .Description("Pitch angle")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitch;
         public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
@@ -13866,11 +14091,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Yaw))
             .Title("yaw")
             .Description("Yaw angle")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yaw;
         public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
@@ -13881,11 +14104,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Distance))
             .Title("distance")
             .Description("Distance (uncorrected)")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _distance;
         public float Distance { get => _distance; set => _distance = value; }
         /// <summary>
@@ -13896,11 +14117,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Temperature))
             .Title("temperature")
             .Description("Water temperature")
-            .FormatString(string.Empty)
-            .Units(@"degC")
+.Units(@"degC")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _temperature;
         public float Temperature { get => _temperature; set => _temperature = value; }
         /// <summary>
@@ -13911,11 +14130,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Id))
             .Title("id")
             .Description("Onboard ID of the sensor")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _id;
         public byte Id { get => _id; set => _id = value; }
         /// <summary>
@@ -13926,11 +14143,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Healthy))
             .Title("healthy")
             .Description("Sensor data healthy (0=unhealthy, 1=healthy)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _healthy;
         public byte Healthy { get => _healthy; set => _healthy = value; }
     }
@@ -14001,11 +14216,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int16Type.Accept(visitor,McuTemperatureField, ref _mcuTemperature);
-            UInt16Type.Accept(visitor,McuVoltageField, ref _mcuVoltage);    
-            UInt16Type.Accept(visitor,McuVoltageMinField, ref _mcuVoltageMin);    
-            UInt16Type.Accept(visitor,McuVoltageMaxField, ref _mcuVoltageMax);    
-            UInt8Type.Accept(visitor,IdField, ref _id);    
+            Int16Type.Accept(visitor,McuTemperatureField, McuTemperatureField.DataType, ref _mcuTemperature);
+            UInt16Type.Accept(visitor,McuVoltageField, McuVoltageField.DataType, ref _mcuVoltage);    
+            UInt16Type.Accept(visitor,McuVoltageMinField, McuVoltageMinField.DataType, ref _mcuVoltageMin);    
+            UInt16Type.Accept(visitor,McuVoltageMaxField, McuVoltageMaxField.DataType, ref _mcuVoltageMax);    
+            UInt8Type.Accept(visitor,IdField, IdField.DataType, ref _id);    
 
         }
 
@@ -14017,11 +14232,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(McuTemperature))
             .Title("MCU_temperature")
             .Description("MCU Internal temperature")
-            .FormatString(string.Empty)
-            .Units(@"cdegC")
+.Units(@"cdegC")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _mcuTemperature;
         public short McuTemperature { get => _mcuTemperature; set => _mcuTemperature = value; }
         /// <summary>
@@ -14032,11 +14245,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(McuVoltage))
             .Title("MCU_voltage")
             .Description("MCU voltage")
-            .FormatString(string.Empty)
-            .Units(@"mV")
+.Units(@"mV")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _mcuVoltage;
         public ushort McuVoltage { get => _mcuVoltage; set => _mcuVoltage = value; }
         /// <summary>
@@ -14047,11 +14258,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(McuVoltageMin))
             .Title("MCU_voltage_min")
             .Description("MCU voltage minimum")
-            .FormatString(string.Empty)
-            .Units(@"mV")
+.Units(@"mV")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _mcuVoltageMin;
         public ushort McuVoltageMin { get => _mcuVoltageMin; set => _mcuVoltageMin = value; }
         /// <summary>
@@ -14062,11 +14271,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(McuVoltageMax))
             .Title("MCU_voltage_max")
             .Description("MCU voltage maximum")
-            .FormatString(string.Empty)
-            .Units(@"mV")
+.Units(@"mV")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _mcuVoltageMax;
         public ushort McuVoltageMax { get => _mcuVoltageMax; set => _mcuVoltageMax = value; }
         /// <summary>
@@ -14077,11 +14284,9 @@ namespace Asv.Mavlink.Ardupilotmega
             .Name(nameof(Id))
             .Title("id")
             .Description("MCU instance")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _id;
         public byte Id { get => _id; set => _id = value; }
     }

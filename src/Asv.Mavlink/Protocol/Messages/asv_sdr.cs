@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvSdr
@@ -64,6 +66,7 @@ namespace Asv.Mavlink.AsvSdr
             src.Add(AsvSdrRecordDataGpPacket.MessageId, ()=>new AsvSdrRecordDataGpPacket());
             src.Add(AsvSdrRecordDataVorPacket.MessageId, ()=>new AsvSdrRecordDataVorPacket());
         }
+ 
     }
 
 #region Enums
@@ -71,7 +74,7 @@ namespace Asv.Mavlink.AsvSdr
     /// <summary>
     ///  MAV_TYPE
     /// </summary>
-    public enum MavType:uint
+    public enum MavType : ulong
     {
         /// <summary>
         /// Used to identify Software-defined radio payload in HEARTBEAT packet.
@@ -79,11 +82,21 @@ namespace Asv.Mavlink.AsvSdr
         /// </summary>
         MavTypeAsvSdrPayload = 251,
     }
-
+    public static class MavTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(251);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(251),"MAV_TYPE_ASV_SDR_PAYLOAD");
+        }
+    }
     /// <summary>
     ///  MAV_CMD
     /// </summary>
-    public enum MavCmd:uint
+    public enum MavCmd : ulong
     {
         /// <summary>
         /// Start one of ASV_SDR_CUSTOM_MODE. Can be used in the mission protocol for SDR payloads.
@@ -218,12 +231,42 @@ namespace Asv.Mavlink.AsvSdr
         /// </summary>
         MavCmdAsvSdrStopCalibration = 13110,
     }
-
+    public static class MavCmdHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(13100);
+            yield return converter(13101);
+            yield return converter(13102);
+            yield return converter(13103);
+            yield return converter(13104);
+            yield return converter(13105);
+            yield return converter(13106);
+            yield return converter(13107);
+            yield return converter(13108);
+            yield return converter(13109);
+            yield return converter(13110);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(13100),"MAV_CMD_ASV_SDR_SET_MODE");
+            yield return new EnumValue<T>(converter(13101),"MAV_CMD_ASV_SDR_START_RECORD");
+            yield return new EnumValue<T>(converter(13102),"MAV_CMD_ASV_SDR_STOP_RECORD");
+            yield return new EnumValue<T>(converter(13103),"MAV_CMD_ASV_SDR_SET_RECORD_TAG");
+            yield return new EnumValue<T>(converter(13104),"MAV_CMD_ASV_SDR_SYSTEM_CONTROL_ACTION");
+            yield return new EnumValue<T>(converter(13105),"MAV_CMD_ASV_SDR_WAIT_VEHICLE_WAYPOINT");
+            yield return new EnumValue<T>(converter(13106),"MAV_CMD_ASV_SDR_DELAY");
+            yield return new EnumValue<T>(converter(13107),"MAV_CMD_ASV_SDR_START_MISSION");
+            yield return new EnumValue<T>(converter(13108),"MAV_CMD_ASV_SDR_STOP_MISSION");
+            yield return new EnumValue<T>(converter(13109),"MAV_CMD_ASV_SDR_START_CALIBRATION");
+            yield return new EnumValue<T>(converter(13110),"MAV_CMD_ASV_SDR_STOP_CALIBRATION");
+        }
+    }
     /// <summary>
     /// State of the current mission (unit8_t).
     ///  ASV_SDR_MISSION_STATE
     /// </summary>
-    public enum AsvSdrMissionState:uint
+    public enum AsvSdrMissionState : ulong
     {
         /// <summary>
         /// Do nothing
@@ -241,12 +284,26 @@ namespace Asv.Mavlink.AsvSdr
         /// </summary>
         AsvSdrMissionStateError = 3,
     }
-
+    public static class AsvSdrMissionStateHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_SDR_MISSION_STATE_IDLE");
+            yield return new EnumValue<T>(converter(2),"ASV_SDR_MISSION_STATE_PROGRESS");
+            yield return new EnumValue<T>(converter(3),"ASV_SDR_MISSION_STATE_ERROR");
+        }
+    }
     /// <summary>
     /// Specifies the datatype of a record tag (unit8_t).
     ///  ASV_SDR_RECORD_TAG_TYPE
     /// </summary>
-    public enum AsvSdrRecordTagType:uint
+    public enum AsvSdrRecordTagType : ulong
     {
         /// <summary>
         /// 64-bit unsigned integer
@@ -269,12 +326,28 @@ namespace Asv.Mavlink.AsvSdr
         /// </summary>
         AsvSdrRecordTagTypeString8 = 4,
     }
-
+    public static class AsvSdrRecordTagTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_SDR_RECORD_TAG_TYPE_UINT64");
+            yield return new EnumValue<T>(converter(2),"ASV_SDR_RECORD_TAG_TYPE_INT64");
+            yield return new EnumValue<T>(converter(3),"ASV_SDR_RECORD_TAG_TYPE_REAL64");
+            yield return new EnumValue<T>(converter(4),"ASV_SDR_RECORD_TAG_TYPE_STRING8");
+        }
+    }
     /// <summary>
     /// A mapping of SDR payload modes for custom_mode field of heartbeat. Value of enum must be equal to message id from ASV_SDR_RECORD_DATA_* 13150-13199
     ///  ASV_SDR_CUSTOM_MODE
     /// </summary>
-    public enum AsvSdrCustomMode:uint
+    public enum AsvSdrCustomMode : ulong
     {
         /// <summary>
         /// Default mode. Do nothing.
@@ -297,13 +370,29 @@ namespace Asv.Mavlink.AsvSdr
         /// </summary>
         AsvSdrCustomModeVor = 13137,
     }
-
+    public static class AsvSdrCustomModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(13135);
+            yield return converter(13136);
+            yield return converter(13137);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_SDR_CUSTOM_MODE_IDLE");
+            yield return new EnumValue<T>(converter(13135),"ASV_SDR_CUSTOM_MODE_LLZ");
+            yield return new EnumValue<T>(converter(13136),"ASV_SDR_CUSTOM_MODE_GP");
+            yield return new EnumValue<T>(converter(13137),"ASV_SDR_CUSTOM_MODE_VOR");
+        }
+    }
     /// <summary>
     /// These flags encode supported mode.[!THIS_IS_ENUM_FLAG!]
     ///  ASV_SDR_CUSTOM_MODE_FLAG
     /// </summary>
     [Flags]
-    public enum AsvSdrCustomModeFlag:uint
+    public enum AsvSdrCustomModeFlag : ulong
     {
         /// <summary>
         /// ASV_SDR_CUSTOM_MODE_FLAG_LLZ
@@ -318,12 +407,26 @@ namespace Asv.Mavlink.AsvSdr
         /// </summary>
         AsvSdrCustomModeFlagVor = 4,
     }
-
+    public static class AsvSdrCustomModeFlagHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_SDR_CUSTOM_MODE_FLAG_LLZ");
+            yield return new EnumValue<T>(converter(2),"ASV_SDR_CUSTOM_MODE_FLAG_GP");
+            yield return new EnumValue<T>(converter(4),"ASV_SDR_CUSTOM_MODE_FLAG_VOR");
+        }
+    }
     /// <summary>
     /// ACK / NACK / ERROR values as a result of ASV_SDR_*_REQUEST or ASV_SDR_*_DELETE commands.
     ///  ASV_SDR_REQUEST_ACK
     /// </summary>
-    public enum AsvSdrRequestAck:uint
+    public enum AsvSdrRequestAck : ulong
     {
         /// <summary>
         /// Request is ok.
@@ -346,12 +449,28 @@ namespace Asv.Mavlink.AsvSdr
         /// </summary>
         AsvSdrRequestAckNotSupported = 3,
     }
-
+    public static class AsvSdrRequestAckHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_SDR_REQUEST_ACK_OK");
+            yield return new EnumValue<T>(converter(1),"ASV_SDR_REQUEST_ACK_IN_PROGRESS");
+            yield return new EnumValue<T>(converter(2),"ASV_SDR_REQUEST_ACK_FAIL");
+            yield return new EnumValue<T>(converter(3),"ASV_SDR_REQUEST_ACK_NOT_SUPPORTED");
+        }
+    }
     /// <summary>
     /// SDR system control actions [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_SDR_SYSTEM_CONTROL_ACTION
     /// </summary>
-    public enum AsvSdrSystemControlAction:uint
+    public enum AsvSdrSystemControlAction : ulong
     {
         /// <summary>
         /// Request system reboot [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -369,12 +488,26 @@ namespace Asv.Mavlink.AsvSdr
         /// </summary>
         AsvSdrSystemControlActionRestart = 2,
     }
-
+    public static class AsvSdrSystemControlActionHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_SDR_SYSTEM_CONTROL_ACTION_REBOOT");
+            yield return new EnumValue<T>(converter(1),"ASV_SDR_SYSTEM_CONTROL_ACTION_SHUTDOWN");
+            yield return new EnumValue<T>(converter(2),"ASV_SDR_SYSTEM_CONTROL_ACTION_RESTART");
+        }
+    }
     /// <summary>
     /// Status of calibration process.
     ///  ASV_SDR_CALIB_STATE
     /// </summary>
-    public enum AsvSdrCalibState:uint
+    public enum AsvSdrCalibState : ulong
     {
         /// <summary>
         /// Calibration not supported by device. Commands MAV_CMD_ASV_SDR_START_CALIBRATION and MAV_CMD_ASV_SDR_STOP_CALIBRATION not supported.
@@ -392,12 +525,26 @@ namespace Asv.Mavlink.AsvSdr
         /// </summary>
         AsvSdrCalibStateProgress = 2,
     }
-
+    public static class AsvSdrCalibStateHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_SDR_CALIB_STATE_NOT_SUPPORTED");
+            yield return new EnumValue<T>(converter(1),"ASV_SDR_CALIB_STATE_OK");
+            yield return new EnumValue<T>(converter(2),"ASV_SDR_CALIB_STATE_PROGRESS");
+        }
+    }
     /// <summary>
     /// SDR signal transmition data type
     ///  ASV_SDR_SIGNAL_FORMAT
     /// </summary>
-    public enum AsvSdrSignalFormat:uint
+    public enum AsvSdrSignalFormat : ulong
     {
         /// <summary>
         /// Write a value as a fraction between a given minimum and maximum. Uses 8 bits so we have '256' steps between min and max.
@@ -415,7 +562,21 @@ namespace Asv.Mavlink.AsvSdr
         /// </summary>
         AsvSdrSignalFormatFloat = 2,
     }
-
+    public static class AsvSdrSignalFormatHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_SDR_SIGNAL_FORMAT_RANGE_FLOAT_8BIT");
+            yield return new EnumValue<T>(converter(1),"ASV_SDR_SIGNAL_FORMAT_RANGE_FLOAT_16BIT");
+            yield return new EnumValue<T>(converter(2),"ASV_SDR_SIGNAL_FORMAT_FLOAT");
+        }
+    }
 
 #endregion
 
@@ -547,31 +708,27 @@ namespace Asv.Mavlink.AsvSdr
         public void Accept(IVisitor visitor)
         {
             var tmpSupportedModes = (ulong)SupportedModes;
-            UInt64Type.Accept(visitor,SupportedModesField, ref tmpSupportedModes);
+            UInt64Type.Accept(visitor,SupportedModesField, SupportedModesField.DataType, ref tmpSupportedModes);
             SupportedModes = (AsvSdrCustomModeFlag)tmpSupportedModes;
-            UInt64Type.Accept(visitor,SizeField, ref _size);    
-            UInt16Type.Accept(visitor,RecordCountField, ref _recordCount);    
-            UInt16Type.Accept(visitor,CurrentMissionIndexField, ref _currentMissionIndex);    
-            ArrayType.Accept(visitor,CurrentRecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, CurrentRecordGuidField, ref CurrentRecordGuid[index]));    
+            UInt64Type.Accept(visitor,SizeField, SizeField.DataType, ref _size);    
+            UInt16Type.Accept(visitor,RecordCountField, RecordCountField.DataType, ref _recordCount);    
+            UInt16Type.Accept(visitor,CurrentMissionIndexField, CurrentMissionIndexField.DataType, ref _currentMissionIndex);    
+            ArrayType.Accept(visitor,CurrentRecordGuidField, CurrentRecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref CurrentRecordGuid[index]));    
             var tmpCurrentRecordMode = (byte)CurrentRecordMode;
-            UInt8Type.Accept(visitor,CurrentRecordModeField, ref tmpCurrentRecordMode);
+            UInt8Type.Accept(visitor,CurrentRecordModeField, CurrentRecordModeField.DataType, ref tmpCurrentRecordMode);
             CurrentRecordMode = (AsvSdrCustomMode)tmpCurrentRecordMode;
-            ArrayType.Accept(visitor,CurrentRecordNameField, 28, (index,v) =>
-            {
-                var tmp = (byte)CurrentRecordName[index];
-                UInt8Type.Accept(v,CurrentRecordNameField, ref tmp);
-                CurrentRecordName[index] = (char)tmp;
-            });
+            ArrayType.Accept(visitor,CurrentRecordNameField, CurrentRecordNameField.DataType, 28, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref CurrentRecordName[index]));
             var tmpMissionState = (byte)MissionState;
-            UInt8Type.Accept(visitor,MissionStateField, ref tmpMissionState);
+            UInt8Type.Accept(visitor,MissionStateField, MissionStateField.DataType, ref tmpMissionState);
             MissionState = (AsvSdrMissionState)tmpMissionState;
             var tmpCalibState = (byte)CalibState;
-            UInt8Type.Accept(visitor,CalibStateField, ref tmpCalibState);
+            UInt8Type.Accept(visitor,CalibStateField, CalibStateField.DataType, ref tmpCalibState);
             CalibState = (AsvSdrCalibState)tmpCalibState;
-            UInt16Type.Accept(visitor,CalibTableCountField, ref _calibTableCount);    
-            FloatType.Accept(visitor,RefPowerField, ref _refPower);    
-            FloatType.Accept(visitor,SignalOverflowField, ref _signalOverflow);    
+            UInt16Type.Accept(visitor,CalibTableCountField, CalibTableCountField.DataType, ref _calibTableCount);    
+            FloatType.Accept(visitor,RefPowerField, RefPowerField.DataType, ref _refPower);    
+            FloatType.Accept(visitor,SignalOverflowField, SignalOverflowField.DataType, ref _signalOverflow);    
 
         }
 
@@ -583,12 +740,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(SupportedModes))
             .Title("supported_modes")
             .Description("Supported ASV_SDR_CUSTOM_MODE.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvSdrCustomModeFlagHelper.GetValues(x=>(ulong)x).Min(),AsvSdrCustomModeFlagHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvSdrCustomModeFlagHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvSdrCustomModeFlag _supportedModes;
+        private AsvSdrCustomModeFlag _supportedModes;
         public AsvSdrCustomModeFlag SupportedModes { get => _supportedModes; set => _supportedModes = value; } 
         /// <summary>
         /// Total storage size in bytes.
@@ -598,11 +753,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Size))
             .Title("size")
             .Description("Total storage size in bytes.")
-            .FormatString(string.Empty)
-            .Units(@"bytes")
+.Units(@"bytes")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _size;
         public ulong Size { get => _size; set => _size = value; }
         /// <summary>
@@ -613,11 +766,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordCount))
             .Title("record_count")
             .Description("Number of records in storage.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _recordCount;
         public ushort RecordCount { get => _recordCount; set => _recordCount = value; }
         /// <summary>
@@ -628,11 +779,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CurrentMissionIndex))
             .Title("current_mission_index")
             .Description("Current mission index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _currentMissionIndex;
         public ushort CurrentMissionIndex { get => _currentMissionIndex; set => _currentMissionIndex = value; }
         /// <summary>
@@ -643,11 +792,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CurrentRecordGuid))
             .Title("current_record_guid")
             .Description("Record GUID. Also by this field we can understand if the data is currently being recorded (GUID!=0x00) or not (GUID==0x00).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int CurrentRecordGuidMaxItemsCount = 16;
         public byte[] CurrentRecordGuid { get; } = new byte[16];
         /// <summary>
@@ -658,12 +805,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CurrentRecordMode))
             .Title("current_record_mode")
             .Description("Current record mode (record data type).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvSdrCustomModeHelper.GetValues(x=>(byte)x).Min(),AsvSdrCustomModeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvSdrCustomModeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvSdrCustomMode _currentRecordMode;
+        private AsvSdrCustomMode _currentRecordMode;
         public AsvSdrCustomMode CurrentRecordMode { get => _currentRecordMode; set => _currentRecordMode = value; } 
         /// <summary>
         /// Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string. If the data is currently not being recorded, than return null; 
@@ -673,11 +818,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CurrentRecordName))
             .Title("current_record_name")
             .Description("Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string. If the data is currently not being recorded, than return null; ")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,28))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,28))
+        .Build();
         public const int CurrentRecordNameMaxItemsCount = 28;
         public char[] CurrentRecordName { get; } = new char[28];
         [Obsolete("This method is deprecated. Use GetCurrentRecordNameMaxItemsCount instead.")]
@@ -690,12 +833,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(MissionState))
             .Title("mission_state")
             .Description("Mission state.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvSdrMissionStateHelper.GetValues(x=>(byte)x).Min(),AsvSdrMissionStateHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvSdrMissionStateHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvSdrMissionState _missionState;
+        private AsvSdrMissionState _missionState;
         public AsvSdrMissionState MissionState { get => _missionState; set => _missionState = value; } 
         /// <summary>
         /// Calibration status.
@@ -705,12 +846,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CalibState))
             .Title("calib_state")
             .Description("Calibration status.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvSdrCalibStateHelper.GetValues(x=>(byte)x).Min(),AsvSdrCalibStateHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvSdrCalibStateHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvSdrCalibState _calibState;
+        private AsvSdrCalibState _calibState;
         public AsvSdrCalibState CalibState { get => _calibState; set => _calibState = value; } 
         /// <summary>
         /// Number of calibration tables.
@@ -720,11 +859,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CalibTableCount))
             .Title("calib_table_count")
             .Description("Number of calibration tables.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _calibTableCount;
         public ushort CalibTableCount { get => _calibTableCount; set => _calibTableCount = value; }
         /// <summary>
@@ -735,11 +872,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RefPower))
             .Title("ref_power")
             .Description("Estimated reference power in dBm. Entered in MAV_CMD_ASV_SDR_SET_MODE command.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _refPower;
         public float RefPower { get => _refPower; set => _refPower = value; }
         /// <summary>
@@ -750,11 +885,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(SignalOverflow))
             .Title("signal_overflow")
             .Description("Input path signal overflow indicator. Relative value from 0.0 to 1.0.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _signalOverflow;
         public float SignalOverflow { get => _signalOverflow; set => _signalOverflow = value; }
     }
@@ -825,11 +958,11 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt16Type.Accept(visitor,SkipField, ref _skip);    
-            UInt16Type.Accept(visitor,CountField, ref _count);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt16Type.Accept(visitor,SkipField, SkipField.DataType, ref _skip);    
+            UInt16Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -841,11 +974,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies a unique number for this request. This allows the response packet to be identified.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -856,11 +987,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Skip))
             .Title("skip")
             .Description("Specifies the start index of the records to be sent in the response.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _skip;
         public ushort Skip { get => _skip; set => _skip = value; }
         /// <summary>
@@ -871,11 +1000,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Count))
             .Title("count")
             .Description("Specifies the number of records to be sent in the response after the skip index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _count;
         public ushort Count { get => _count; set => _count = value; }
         /// <summary>
@@ -886,11 +1013,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -901,11 +1026,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -970,10 +1093,10 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt16Type.Accept(visitor,ItemsCountField, ref _itemsCount);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt16Type.Accept(visitor,ItemsCountField, ItemsCountField.DataType, ref _itemsCount);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
 
         }
@@ -986,11 +1109,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -1001,11 +1122,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ItemsCount))
             .Title("items_count")
             .Description("Number of items ASV_SDR_RECORD for transmition after this request with success result code (depended from request).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _itemsCount;
         public ushort ItemsCount { get => _itemsCount; set => _itemsCount = value; }
         /// <summary>
@@ -1016,12 +1135,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Result))
             .Title("result")
             .Description("Result code.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Min(),AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvSdrRequestAckHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvSdrRequestAck _result;
+        private AsvSdrRequestAck _result;
         public AsvSdrRequestAck Result { get => _result; set => _result = value; } 
     }
     /// <summary>
@@ -1132,23 +1249,19 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,FrequencyField, ref _frequency);    
-            UInt64Type.Accept(visitor,CreatedUnixUsField, ref _createdUnixUs);    
+            UInt64Type.Accept(visitor,FrequencyField, FrequencyField.DataType, ref _frequency);    
+            UInt64Type.Accept(visitor,CreatedUnixUsField, CreatedUnixUsField.DataType, ref _createdUnixUs);    
             var tmpDataType = (uint)DataType;
-            UInt32Type.Accept(visitor,DataTypeField, ref tmpDataType);
+            UInt32Type.Accept(visitor,DataTypeField, DataTypeField.DataType, ref tmpDataType);
             DataType = (AsvSdrCustomMode)tmpDataType;
-            UInt32Type.Accept(visitor,DurationSecField, ref _durationSec);    
-            UInt32Type.Accept(visitor,DataCountField, ref _dataCount);    
-            UInt32Type.Accept(visitor,SizeField, ref _size);    
-            UInt16Type.Accept(visitor,TagCountField, ref _tagCount);    
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
-            ArrayType.Accept(visitor,RecordNameField, 28, (index,v) =>
-            {
-                var tmp = (byte)RecordName[index];
-                UInt8Type.Accept(v,RecordNameField, ref tmp);
-                RecordName[index] = (char)tmp;
-            });
+            UInt32Type.Accept(visitor,DurationSecField, DurationSecField.DataType, ref _durationSec);    
+            UInt32Type.Accept(visitor,DataCountField, DataCountField.DataType, ref _dataCount);    
+            UInt32Type.Accept(visitor,SizeField, SizeField.DataType, ref _size);    
+            UInt16Type.Accept(visitor,TagCountField, TagCountField.DataType, ref _tagCount);    
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
+            ArrayType.Accept(visitor,RecordNameField, RecordNameField.DataType, 28, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref RecordName[index]));
 
         }
 
@@ -1160,11 +1273,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Frequency))
             .Title("frequency")
             .Description("Reference frequency in Hz, specified by MAV_CMD_ASV_SDR_SET_MODE command.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
 
-            .Build();
+            .DataType(UInt64Type.Default)
+        .Build();
         private ulong _frequency;
         public ulong Frequency { get => _frequency; set => _frequency = value; }
         /// <summary>
@@ -1175,11 +1286,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CreatedUnixUs))
             .Title("created_unix_us")
             .Description("Created timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _createdUnixUs;
         public ulong CreatedUnixUs { get => _createdUnixUs; set => _createdUnixUs = value; }
         /// <summary>
@@ -1190,12 +1299,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(DataType))
             .Title("data_type")
             .Description("Record data type(it is also possible to know the type of data inside the record by cast enum to int).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
-
+            .DataType(new UInt32Type(AsvSdrCustomModeHelper.GetValues(x=>(uint)x).Min(),AsvSdrCustomModeHelper.GetValues(x=>(uint)x).Max()))
+            .Enum(AsvSdrCustomModeHelper.GetEnumValues(x=>(uint)x))
             .Build();
-        public AsvSdrCustomMode _dataType;
+        private AsvSdrCustomMode _dataType;
         public AsvSdrCustomMode DataType { get => _dataType; set => _dataType = value; } 
         /// <summary>
         /// Record duration in sec.
@@ -1205,11 +1312,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(DurationSec))
             .Title("duration_sec")
             .Description("Record duration in sec.")
-            .FormatString(string.Empty)
-            .Units(@"sec")
+.Units(@"sec")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _durationSec;
         public uint DurationSec { get => _durationSec; set => _durationSec = value; }
         /// <summary>
@@ -1220,11 +1325,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(DataCount))
             .Title("data_count")
             .Description("Data items count.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _dataCount;
         public uint DataCount { get => _dataCount; set => _dataCount = value; }
         /// <summary>
@@ -1235,11 +1338,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Size))
             .Title("size")
             .Description("Total data size of record with all data items and tags.")
-            .FormatString(string.Empty)
-            .Units(@"bytes")
+.Units(@"bytes")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _size;
         public uint Size { get => _size; set => _size = value; }
         /// <summary>
@@ -1250,11 +1351,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TagCount))
             .Title("tag_count")
             .Description("Tag items count.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _tagCount;
         public ushort TagCount { get => _tagCount; set => _tagCount = value; }
         /// <summary>
@@ -1265,11 +1364,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Record GUID. Generated by payload after the start of recording.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         /// <summary>
@@ -1280,11 +1377,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordName))
             .Title("record_name")
             .Description("Record name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,28))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,28))
+        .Build();
         public const int RecordNameMaxItemsCount = 28;
         public char[] RecordName { get; } = new char[28];
         [Obsolete("This method is deprecated. Use GetRecordNameMaxItemsCount instead.")]
@@ -1364,11 +1459,11 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
 
         }
 
@@ -1380,11 +1475,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies a unique number for this request. This allows the response packet to be identified.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -1395,11 +1488,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -1410,11 +1501,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -1425,11 +1514,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Specifies GUID of the record to be deleted.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetRecordGuidMaxItemsCount instead.")]
@@ -1506,12 +1593,12 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
 
         }
 
@@ -1523,11 +1610,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -1538,12 +1623,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Result))
             .Title("result")
             .Description("Result code.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Min(),AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvSdrRequestAckHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvSdrRequestAck _result;
+        private AsvSdrRequestAck _result;
         public AsvSdrRequestAck Result { get => _result; set => _result = value; } 
         /// <summary>
         /// Specifies the GUID of the record that was deleted.
@@ -1553,11 +1636,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Specifies the GUID of the record that was deleted.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetRecordGuidMaxItemsCount instead.")]
@@ -1643,13 +1724,13 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt16Type.Accept(visitor,SkipField, ref _skip);    
-            UInt16Type.Accept(visitor,CountField, ref _count);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt16Type.Accept(visitor,SkipField, SkipField.DataType, ref _skip);    
+            UInt16Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
 
         }
 
@@ -1661,11 +1742,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Request unique number. This is to allow the response packet to be detected.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -1676,11 +1755,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Skip))
             .Title("skip")
             .Description("Specifies the start index of the tag to be sent in the response.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _skip;
         public ushort Skip { get => _skip; set => _skip = value; }
         /// <summary>
@@ -1691,11 +1768,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Count))
             .Title("count")
             .Description("Specifies the number of tag to be sent in the response after the skip index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _count;
         public ushort Count { get => _count; set => _count = value; }
         /// <summary>
@@ -1706,11 +1781,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -1721,11 +1794,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -1736,11 +1807,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Specifies the GUID of the record.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetRecordGuidMaxItemsCount instead.")]
@@ -1807,10 +1876,10 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt16Type.Accept(visitor,ItemsCountField, ref _itemsCount);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt16Type.Accept(visitor,ItemsCountField, ItemsCountField.DataType, ref _itemsCount);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
 
         }
@@ -1823,11 +1892,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -1838,11 +1905,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ItemsCount))
             .Title("items_count")
             .Description("Number of items ASV_SDR_RECORD_TAG for transmition after this request with success result code (depended from request).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _itemsCount;
         public ushort ItemsCount { get => _itemsCount; set => _itemsCount = value; }
         /// <summary>
@@ -1853,12 +1918,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Result))
             .Title("result")
             .Description("Result code.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Min(),AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvSdrRequestAckHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvSdrRequestAck _result;
+        private AsvSdrRequestAck _result;
         public AsvSdrRequestAck Result { get => _result; set => _result = value; } 
     }
     /// <summary>
@@ -1971,21 +2034,17 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
-            ArrayType.Accept(visitor,TagGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, TagGuidField, ref TagGuid[index]));    
-            ArrayType.Accept(visitor,TagNameField, 16, (index,v) =>
-            {
-                var tmp = (byte)TagName[index];
-                UInt8Type.Accept(v,TagNameField, ref tmp);
-                TagName[index] = (char)tmp;
-            });
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
+            ArrayType.Accept(visitor,TagGuidField, TagGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref TagGuid[index]));    
+            ArrayType.Accept(visitor,TagNameField, TagNameField.DataType, 16, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref TagName[index]));
             var tmpTagType = (byte)TagType;
-            UInt8Type.Accept(visitor,TagTypeField, ref tmpTagType);
+            UInt8Type.Accept(visitor,TagTypeField, TagTypeField.DataType, ref tmpTagType);
             TagType = (AsvSdrRecordTagType)tmpTagType;
-            ArrayType.Accept(visitor,TagValueField, 8,
-                (index,v) => UInt8Type.Accept(v, TagValueField, ref TagValue[index]));    
+            ArrayType.Accept(visitor,TagValueField, TagValueField.DataType, 8,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref TagValue[index]));    
 
         }
 
@@ -1997,11 +2056,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Record GUID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetRecordGuidMaxItemsCount instead.")]
@@ -2014,11 +2071,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TagGuid))
             .Title("tag_guid")
             .Description("Tag GUID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int TagGuidMaxItemsCount = 16;
         public byte[] TagGuid { get; } = new byte[16];
         /// <summary>
@@ -2029,11 +2084,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TagName))
             .Title("tag_name")
             .Description("Tag name, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,16))
+        .Build();
         public const int TagNameMaxItemsCount = 16;
         public char[] TagName { get; } = new char[16];
         /// <summary>
@@ -2044,12 +2097,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TagType))
             .Title("tag_type")
             .Description("Tag type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvSdrRecordTagTypeHelper.GetValues(x=>(byte)x).Min(),AsvSdrRecordTagTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvSdrRecordTagTypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvSdrRecordTagType _tagType;
+        private AsvSdrRecordTagType _tagType;
         public AsvSdrRecordTagType TagType { get => _tagType; set => _tagType = value; } 
         /// <summary>
         /// Tag value, depends on the type of tag.
@@ -2059,11 +2110,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TagValue))
             .Title("tag_value")
             .Description("Tag value, depends on the type of tag.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,8))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,8))
+        .Build();
         public const int TagValueMaxItemsCount = 8;
         public byte[] TagValue { get; } = new byte[8];
     }
@@ -2151,13 +2200,13 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
-            ArrayType.Accept(visitor,TagGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, TagGuidField, ref TagGuid[index]));    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
+            ArrayType.Accept(visitor,TagGuidField, TagGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref TagGuid[index]));    
 
         }
 
@@ -2169,11 +2218,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -2184,11 +2231,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -2199,11 +2244,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -2214,11 +2257,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Record GUID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetRecordGuidMaxItemsCount instead.")]
@@ -2231,11 +2272,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TagGuid))
             .Title("tag_guid")
             .Description("Tag GUID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int TagGuidMaxItemsCount = 16;
         public byte[] TagGuid { get; } = new byte[16];
     }
@@ -2320,14 +2359,14 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
-            ArrayType.Accept(visitor,TagGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, TagGuidField, ref TagGuid[index]));    
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
+            ArrayType.Accept(visitor,TagGuidField, TagGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref TagGuid[index]));    
 
         }
 
@@ -2339,11 +2378,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -2354,12 +2391,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Result))
             .Title("result")
             .Description("Result code.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Min(),AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvSdrRequestAckHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvSdrRequestAck _result;
+        private AsvSdrRequestAck _result;
         public AsvSdrRequestAck Result { get => _result; set => _result = value; } 
         /// <summary>
         /// Record GUID.
@@ -2369,11 +2404,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Record GUID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetRecordGuidMaxItemsCount instead.")]
@@ -2386,11 +2419,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TagGuid))
             .Title("tag_guid")
             .Description("Tag GUID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int TagGuidMaxItemsCount = 16;
         public byte[] TagGuid { get; } = new byte[16];
     }
@@ -2474,13 +2505,13 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,SkipField, ref _skip);    
-            UInt32Type.Accept(visitor,CountField, ref _count);    
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
+            UInt32Type.Accept(visitor,SkipField, SkipField.DataType, ref _skip);    
+            UInt32Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
 
         }
 
@@ -2492,11 +2523,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Skip))
             .Title("skip")
             .Description("Specifies the start index of the tag to be sent in the response.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _skip;
         public uint Skip { get => _skip; set => _skip = value; }
         /// <summary>
@@ -2507,11 +2536,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Count))
             .Title("count")
             .Description("Specifies the number of tag to be sent in the response after the skip index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _count;
         public uint Count { get => _count; set => _count = value; }
         /// <summary>
@@ -2522,11 +2549,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -2537,11 +2562,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -2552,11 +2575,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -2567,11 +2588,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Record GUID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetRecordGuidMaxItemsCount instead.")]
@@ -2655,15 +2674,15 @@ namespace Asv.Mavlink.AsvSdr
         public void Accept(IVisitor visitor)
         {
             var tmpDataType = (uint)DataType;
-            UInt32Type.Accept(visitor,DataTypeField, ref tmpDataType);
+            UInt32Type.Accept(visitor,DataTypeField, DataTypeField.DataType, ref tmpDataType);
             DataType = (AsvSdrCustomMode)tmpDataType;
-            UInt32Type.Accept(visitor,ItemsCountField, ref _itemsCount);    
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt32Type.Accept(visitor,ItemsCountField, ItemsCountField.DataType, ref _itemsCount);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
 
         }
 
@@ -2675,12 +2694,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(DataType))
             .Title("data_type")
             .Description("Record data type(it is also possible to know the type of data inside the record by cast enum to int).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
-
+            .DataType(new UInt32Type(AsvSdrCustomModeHelper.GetValues(x=>(uint)x).Min(),AsvSdrCustomModeHelper.GetValues(x=>(uint)x).Max()))
+            .Enum(AsvSdrCustomModeHelper.GetEnumValues(x=>(uint)x))
             .Build();
-        public AsvSdrCustomMode _dataType;
+        private AsvSdrCustomMode _dataType;
         public AsvSdrCustomMode DataType { get => _dataType; set => _dataType = value; } 
         /// <summary>
         /// Number of items ASV_SDR_RECORD_DATA_* for transmition after this request with success result code (depended from request).
@@ -2690,11 +2707,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ItemsCount))
             .Title("items_count")
             .Description("Number of items ASV_SDR_RECORD_DATA_* for transmition after this request with success result code (depended from request).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _itemsCount;
         public uint ItemsCount { get => _itemsCount; set => _itemsCount = value; }
         /// <summary>
@@ -2705,11 +2720,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -2720,12 +2733,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Result))
             .Title("result")
             .Description("Result code.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Min(),AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvSdrRequestAckHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvSdrRequestAck _result;
+        private AsvSdrRequestAck _result;
         public AsvSdrRequestAck Result { get => _result; set => _result = value; } 
         /// <summary>
         /// Record GUID.
@@ -2735,11 +2746,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Record GUID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetRecordGuidMaxItemsCount instead.")]
@@ -2803,9 +2812,9 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
 
         }
@@ -2818,11 +2827,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -2833,12 +2840,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Result))
             .Title("result")
             .Description("Result code.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Min(),AsvSdrRequestAckHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvSdrRequestAckHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvSdrRequestAck _result;
+        private AsvSdrRequestAck _result;
         public AsvSdrRequestAck Result { get => _result; set => _result = value; } 
     }
     /// <summary>
@@ -2905,10 +2910,10 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -2920,11 +2925,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TableIndex))
             .Title("table_index")
             .Description("Table index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _tableIndex;
         public ushort TableIndex { get => _tableIndex; set => _tableIndex = value; }
         /// <summary>
@@ -2935,11 +2938,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -2950,11 +2951,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -2965,11 +2964,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -3059,15 +3056,11 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,CreatedUnixUsField, ref _createdUnixUs);    
-            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RowCountField, ref _rowCount);    
-            ArrayType.Accept(visitor,TableNameField, 28, (index,v) =>
-            {
-                var tmp = (byte)TableName[index];
-                UInt8Type.Accept(v,TableNameField, ref tmp);
-                TableName[index] = (char)tmp;
-            });
+            UInt64Type.Accept(visitor,CreatedUnixUsField, CreatedUnixUsField.DataType, ref _createdUnixUs);    
+            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RowCountField, RowCountField.DataType, ref _rowCount);    
+            ArrayType.Accept(visitor,TableNameField, TableNameField.DataType, 28, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref TableName[index]));
 
         }
 
@@ -3079,11 +3072,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CreatedUnixUs))
             .Title("created_unix_us")
             .Description("Updated timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _createdUnixUs;
         public ulong CreatedUnixUs { get => _createdUnixUs; set => _createdUnixUs = value; }
         /// <summary>
@@ -3094,11 +3085,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TableIndex))
             .Title("table_index")
             .Description("Table index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _tableIndex;
         public ushort TableIndex { get => _tableIndex; set => _tableIndex = value; }
         /// <summary>
@@ -3109,11 +3098,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RowCount))
             .Title("row_count")
             .Description("Specifies the number of ROWs in the table.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _rowCount;
         public ushort RowCount { get => _rowCount; set => _rowCount = value; }
         /// <summary>
@@ -3124,11 +3111,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TableName))
             .Title("table_name")
             .Description("Table name, terminated by NULL if the length is less than 28 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 28 chars - applications have to provide 28+1 bytes storage if the name is stored as string.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,28))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,28))
+        .Build();
         public const int TableNameMaxItemsCount = 28;
         public char[] TableName { get; } = new char[28];
         [Obsolete("This method is deprecated. Use GetTableNameMaxItemsCount instead.")]
@@ -3201,11 +3186,11 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RowIndexField, ref _rowIndex);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RowIndexField, RowIndexField.DataType, ref _rowIndex);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -3217,11 +3202,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -3232,11 +3215,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TableIndex))
             .Title("table_index")
             .Description("Table index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _tableIndex;
         public ushort TableIndex { get => _tableIndex; set => _tableIndex = value; }
         /// <summary>
@@ -3247,11 +3228,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RowIndex))
             .Title("row_index")
             .Description("ROW index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _rowIndex;
         public ushort RowIndex { get => _rowIndex; set => _rowIndex = value; }
         /// <summary>
@@ -3262,11 +3241,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -3277,11 +3254,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -3361,14 +3336,14 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,RefFreqField, ref _refFreq);    
-            FloatType.Accept(visitor,RefPowerField, ref _refPower);    
-            FloatType.Accept(visitor,RefValueField, ref _refValue);    
-            FloatType.Accept(visitor,AdjustmentField, ref _adjustment);    
-            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RowIndexField, ref _rowIndex);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt64Type.Accept(visitor,RefFreqField, RefFreqField.DataType, ref _refFreq);    
+            FloatType.Accept(visitor,RefPowerField, RefPowerField.DataType, ref _refPower);    
+            FloatType.Accept(visitor,RefValueField, RefValueField.DataType, ref _refValue);    
+            FloatType.Accept(visitor,AdjustmentField, AdjustmentField.DataType, ref _adjustment);    
+            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RowIndexField, RowIndexField.DataType, ref _rowIndex);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -3380,11 +3355,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RefFreq))
             .Title("ref_freq")
             .Description("Reference frequency in Hz.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
 
-            .Build();
+            .DataType(UInt64Type.Default)
+        .Build();
         private ulong _refFreq;
         public ulong RefFreq { get => _refFreq; set => _refFreq = value; }
         /// <summary>
@@ -3395,11 +3368,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RefPower))
             .Title("ref_power")
             .Description("Reference power in dBm.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _refPower;
         public float RefPower { get => _refPower; set => _refPower = value; }
         /// <summary>
@@ -3410,11 +3381,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RefValue))
             .Title("ref_value")
             .Description("Reference value.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _refValue;
         public float RefValue { get => _refValue; set => _refValue = value; }
         /// <summary>
@@ -3425,11 +3394,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Adjustment))
             .Title("adjustment")
             .Description("Adjustment for measured value (ref_value = measured_value + adjustment)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _adjustment;
         public float Adjustment { get => _adjustment; set => _adjustment = value; }
         /// <summary>
@@ -3440,11 +3407,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TableIndex))
             .Title("table_index")
             .Description("Table index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _tableIndex;
         public ushort TableIndex { get => _tableIndex; set => _tableIndex = value; }
         /// <summary>
@@ -3455,11 +3420,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RowIndex))
             .Title("row_index")
             .Description("ROW index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _rowIndex;
         public ushort RowIndex { get => _rowIndex; set => _rowIndex = value; }
         /// <summary>
@@ -3470,11 +3433,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -3485,11 +3446,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -3563,12 +3522,12 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,CreatedUnixUsField, ref _createdUnixUs);    
-            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt16Type.Accept(visitor,RowCountField, ref _rowCount);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt64Type.Accept(visitor,CreatedUnixUsField, CreatedUnixUsField.DataType, ref _createdUnixUs);    
+            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt16Type.Accept(visitor,RowCountField, RowCountField.DataType, ref _rowCount);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -3580,11 +3539,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CreatedUnixUs))
             .Title("created_unix_us")
             .Description("Current timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _createdUnixUs;
         public ulong CreatedUnixUs { get => _createdUnixUs; set => _createdUnixUs = value; }
         /// <summary>
@@ -3595,11 +3552,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TableIndex))
             .Title("table_index")
             .Description("Table index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _tableIndex;
         public ushort TableIndex { get => _tableIndex; set => _tableIndex = value; }
         /// <summary>
@@ -3610,11 +3565,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -3625,11 +3578,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RowCount))
             .Title("row_count")
             .Description("Specifies the number of ROWs in the table.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _rowCount;
         public ushort RowCount { get => _rowCount; set => _rowCount = value; }
         /// <summary>
@@ -3640,11 +3591,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -3655,11 +3604,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -3730,11 +3677,11 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RowIndexField, ref _rowIndex);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RowIndexField, RowIndexField.DataType, ref _rowIndex);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -3746,11 +3693,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request from ASV_SDR_CALIB_TABLE_UPLOAD_START. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -3761,11 +3706,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TableIndex))
             .Title("table_index")
             .Description("Table index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _tableIndex;
         public ushort TableIndex { get => _tableIndex; set => _tableIndex = value; }
         /// <summary>
@@ -3776,11 +3719,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RowIndex))
             .Title("row_index")
             .Description("ROW index.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _rowIndex;
         public ushort RowIndex { get => _rowIndex; set => _rowIndex = value; }
         /// <summary>
@@ -3791,11 +3732,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -3806,11 +3745,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -3922,23 +3859,19 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
-            FloatType.Accept(visitor,MinField, ref _min);    
-            FloatType.Accept(visitor,MaxField, ref _max);    
-            UInt16Type.Accept(visitor,StartField, ref _start);    
-            UInt16Type.Accept(visitor,TotalField, ref _total);    
-            ArrayType.Accept(visitor,SignalNameField, 8, (index,v) =>
-            {
-                var tmp = (byte)SignalName[index];
-                UInt8Type.Accept(v,SignalNameField, ref tmp);
-                SignalName[index] = (char)tmp;
-            });
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            FloatType.Accept(visitor,MinField, MinField.DataType, ref _min);    
+            FloatType.Accept(visitor,MaxField, MaxField.DataType, ref _max);    
+            UInt16Type.Accept(visitor,StartField, StartField.DataType, ref _start);    
+            UInt16Type.Accept(visitor,TotalField, TotalField.DataType, ref _total);    
+            ArrayType.Accept(visitor,SignalNameField, SignalNameField.DataType, 8, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref SignalName[index]));
             var tmpFormat = (byte)Format;
-            UInt8Type.Accept(visitor,FormatField, ref tmpFormat);
+            UInt8Type.Accept(visitor,FormatField, FormatField.DataType, ref tmpFormat);
             Format = (AsvSdrSignalFormat)tmpFormat;
-            UInt8Type.Accept(visitor,CountField, ref _count);    
-            ArrayType.Accept(visitor,DataField, 200,
-                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 200,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
 
@@ -3950,11 +3883,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time) for current set of measures.")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -3965,11 +3896,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Min))
             .Title("min")
             .Description("Min value of set.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _min;
         public float Min { get => _min; set => _min = value; }
         /// <summary>
@@ -3980,11 +3909,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Max))
             .Title("max")
             .Description("Max value of set.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _max;
         public float Max { get => _max; set => _max = value; }
         /// <summary>
@@ -3995,11 +3922,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Start))
             .Title("start")
             .Description("Start index of measure set.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _start;
         public ushort Start { get => _start; set => _start = value; }
         /// <summary>
@@ -4010,11 +3935,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Total))
             .Title("total")
             .Description("Total points in set.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _total;
         public ushort Total { get => _total; set => _total = value; }
         /// <summary>
@@ -4025,11 +3948,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(SignalName))
             .Title("signal_name")
             .Description("Signal name, terminated by NULL if the length is less than 8 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 8+1 bytes storage if the ID is stored as string")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,8))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,8))
+        .Build();
         public const int SignalNameMaxItemsCount = 8;
         public char[] SignalName { get; } = new char[8];
         /// <summary>
@@ -4040,12 +3961,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Format))
             .Title("format")
             .Description("Format of one measure.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvSdrSignalFormatHelper.GetValues(x=>(byte)x).Min(),AsvSdrSignalFormatHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvSdrSignalFormatHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvSdrSignalFormat _format;
+        private AsvSdrSignalFormat _format;
         public AsvSdrSignalFormat Format { get => _format; set => _format = value; } 
         /// <summary>
         /// Measures count in this packet.
@@ -4055,11 +3974,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Count))
             .Title("count")
             .Description("Measures count in this packet.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _count;
         public byte Count { get => _count; set => _count = value; }
         /// <summary>
@@ -4070,11 +3987,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Data))
             .Title("data")
             .Description("Data set of points.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,200))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,200))
+        .Build();
         public const int DataMaxItemsCount = 200;
         public byte[] Data { get; } = new byte[200];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
@@ -4317,66 +4232,62 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
-            UInt64Type.Accept(visitor,TotalFreqField, ref _totalFreq);    
-            UInt32Type.Accept(visitor,DataIndexField, ref _dataIndex);    
-            Int32Type.Accept(visitor,GnssLatField, ref _gnssLat);    
-            Int32Type.Accept(visitor,GnssLonField, ref _gnssLon);    
-            Int32Type.Accept(visitor,GnssAltField, ref _gnssAlt);    
-            Int32Type.Accept(visitor,GnssAltEllipsoidField, ref _gnssAltEllipsoid);    
-            UInt32Type.Accept(visitor,GnssHAccField, ref _gnssHAcc);    
-            UInt32Type.Accept(visitor,GnssVAccField, ref _gnssVAcc);    
-            UInt32Type.Accept(visitor,GnssVelAccField, ref _gnssVelAcc);    
-            Int32Type.Accept(visitor,LatField, ref _lat);    
-            Int32Type.Accept(visitor,LonField, ref _lon);    
-            Int32Type.Accept(visitor,AltField, ref _alt);    
-            Int32Type.Accept(visitor,RelativeAltField, ref _relativeAlt);    
-            FloatType.Accept(visitor,RollField, ref _roll);    
-            FloatType.Accept(visitor,PitchField, ref _pitch);    
-            FloatType.Accept(visitor,YawField, ref _yaw);    
-            FloatType.Accept(visitor,CrsPowerField, ref _crsPower);    
-            FloatType.Accept(visitor,CrsAm90Field, ref _crsAm90);    
-            FloatType.Accept(visitor,CrsAm150Field, ref _crsAm150);    
-            FloatType.Accept(visitor,ClrPowerField, ref _clrPower);    
-            FloatType.Accept(visitor,ClrAm90Field, ref _clrAm90);    
-            FloatType.Accept(visitor,ClrAm150Field, ref _clrAm150);    
-            FloatType.Accept(visitor,TotalPowerField, ref _totalPower);    
-            FloatType.Accept(visitor,TotalFieldStrengthField, ref _totalFieldStrength);    
-            FloatType.Accept(visitor,TotalAm90Field, ref _totalAm90);    
-            FloatType.Accept(visitor,TotalAm150Field, ref _totalAm150);    
-            FloatType.Accept(visitor,Phi90CrsVsClrField, ref _phi90CrsVsClr);    
-            FloatType.Accept(visitor,Phi150CrsVsClrField, ref _phi150CrsVsClr);    
-            FloatType.Accept(visitor,CodeIdAm1020Field, ref _codeIdAm1020);    
-            UInt16Type.Accept(visitor,GnssEphField, ref _gnssEph);    
-            UInt16Type.Accept(visitor,GnssEpvField, ref _gnssEpv);    
-            UInt16Type.Accept(visitor,GnssVelField, ref _gnssVel);    
-            Int16Type.Accept(visitor,VxField, ref _vx);
-            Int16Type.Accept(visitor,VyField, ref _vy);
-            Int16Type.Accept(visitor,VzField, ref _vz);
-            UInt16Type.Accept(visitor,HdgField, ref _hdg);    
-            Int16Type.Accept(visitor,CrsCarrierOffsetField, ref _crsCarrierOffset);
-            Int16Type.Accept(visitor,CrsFreq90Field, ref _crsFreq90);
-            Int16Type.Accept(visitor,CrsFreq150Field, ref _crsFreq150);
-            Int16Type.Accept(visitor,ClrCarrierOffsetField, ref _clrCarrierOffset);
-            Int16Type.Accept(visitor,ClrFreq90Field, ref _clrFreq90);
-            Int16Type.Accept(visitor,ClrFreq150Field, ref _clrFreq150);
-            Int16Type.Accept(visitor,TotalCarrierOffsetField, ref _totalCarrierOffset);
-            Int16Type.Accept(visitor,TotalFreq90Field, ref _totalFreq90);
-            Int16Type.Accept(visitor,TotalFreq150Field, ref _totalFreq150);
-            Int16Type.Accept(visitor,CodeIdFreq1020Field, ref _codeIdFreq1020);
-            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
+            UInt32Type.Accept(visitor,DataIndexField, DataIndexField.DataType, ref _dataIndex);    
+            Int32Type.Accept(visitor,GnssLatField, GnssLatField.DataType, ref _gnssLat);    
+            Int32Type.Accept(visitor,GnssLonField, GnssLonField.DataType, ref _gnssLon);    
+            Int32Type.Accept(visitor,GnssAltField, GnssAltField.DataType, ref _gnssAlt);    
+            Int32Type.Accept(visitor,GnssAltEllipsoidField, GnssAltEllipsoidField.DataType, ref _gnssAltEllipsoid);    
+            UInt32Type.Accept(visitor,GnssHAccField, GnssHAccField.DataType, ref _gnssHAcc);    
+            UInt32Type.Accept(visitor,GnssVAccField, GnssVAccField.DataType, ref _gnssVAcc);    
+            UInt32Type.Accept(visitor,GnssVelAccField, GnssVelAccField.DataType, ref _gnssVelAcc);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LonField, LonField.DataType, ref _lon);    
+            Int32Type.Accept(visitor,AltField, AltField.DataType, ref _alt);    
+            Int32Type.Accept(visitor,RelativeAltField, RelativeAltField.DataType, ref _relativeAlt);    
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,CrsPowerField, CrsPowerField.DataType, ref _crsPower);    
+            FloatType.Accept(visitor,CrsAm90Field, CrsAm90Field.DataType, ref _crsAm90);    
+            FloatType.Accept(visitor,CrsAm150Field, CrsAm150Field.DataType, ref _crsAm150);    
+            FloatType.Accept(visitor,ClrPowerField, ClrPowerField.DataType, ref _clrPower);    
+            FloatType.Accept(visitor,ClrAm90Field, ClrAm90Field.DataType, ref _clrAm90);    
+            FloatType.Accept(visitor,ClrAm150Field, ClrAm150Field.DataType, ref _clrAm150);    
+            FloatType.Accept(visitor,TotalPowerField, TotalPowerField.DataType, ref _totalPower);    
+            FloatType.Accept(visitor,TotalFieldStrengthField, TotalFieldStrengthField.DataType, ref _totalFieldStrength);    
+            FloatType.Accept(visitor,TotalAm90Field, TotalAm90Field.DataType, ref _totalAm90);    
+            FloatType.Accept(visitor,TotalAm150Field, TotalAm150Field.DataType, ref _totalAm150);    
+            FloatType.Accept(visitor,Phi90CrsVsClrField, Phi90CrsVsClrField.DataType, ref _phi90CrsVsClr);    
+            FloatType.Accept(visitor,Phi150CrsVsClrField, Phi150CrsVsClrField.DataType, ref _phi150CrsVsClr);    
+            FloatType.Accept(visitor,CodeIdAm1020Field, CodeIdAm1020Field.DataType, ref _codeIdAm1020);    
+            UInt16Type.Accept(visitor,GnssEphField, GnssEphField.DataType, ref _gnssEph);    
+            UInt16Type.Accept(visitor,GnssEpvField, GnssEpvField.DataType, ref _gnssEpv);    
+            UInt16Type.Accept(visitor,GnssVelField, GnssVelField.DataType, ref _gnssVel);    
+            Int16Type.Accept(visitor,VxField, VxField.DataType, ref _vx);
+            Int16Type.Accept(visitor,VyField, VyField.DataType, ref _vy);
+            Int16Type.Accept(visitor,VzField, VzField.DataType, ref _vz);
+            UInt16Type.Accept(visitor,HdgField, HdgField.DataType, ref _hdg);    
+            Int16Type.Accept(visitor,CrsCarrierOffsetField, CrsCarrierOffsetField.DataType, ref _crsCarrierOffset);
+            Int16Type.Accept(visitor,CrsFreq90Field, CrsFreq90Field.DataType, ref _crsFreq90);
+            Int16Type.Accept(visitor,CrsFreq150Field, CrsFreq150Field.DataType, ref _crsFreq150);
+            Int16Type.Accept(visitor,ClrCarrierOffsetField, ClrCarrierOffsetField.DataType, ref _clrCarrierOffset);
+            Int16Type.Accept(visitor,ClrFreq90Field, ClrFreq90Field.DataType, ref _clrFreq90);
+            Int16Type.Accept(visitor,ClrFreq150Field, ClrFreq150Field.DataType, ref _clrFreq150);
+            Int16Type.Accept(visitor,TotalCarrierOffsetField, TotalCarrierOffsetField.DataType, ref _totalCarrierOffset);
+            Int16Type.Accept(visitor,TotalFreq90Field, TotalFreq90Field.DataType, ref _totalFreq90);
+            Int16Type.Accept(visitor,TotalFreq150Field, TotalFreq150Field.DataType, ref _totalFreq150);
+            Int16Type.Accept(visitor,CodeIdFreq1020Field, CodeIdFreq1020Field.DataType, ref _codeIdFreq1020);
+            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
             var tmpGnssFixType = (byte)GnssFixType;
-            UInt8Type.Accept(visitor,GnssFixTypeField, ref tmpGnssFixType);
+            UInt8Type.Accept(visitor,GnssFixTypeField, GnssFixTypeField.DataType, ref tmpGnssFixType);
             GnssFixType = (GpsFixType)tmpGnssFixType;
-            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, ref _gnssSatellitesVisible);    
-            ArrayType.Accept(visitor,CodeIdField, 4, (index,v) =>
-            {
-                var tmp = (byte)CodeId[index];
-                UInt8Type.Accept(v,CodeIdField, ref tmp);
-                CodeId[index] = (char)tmp;
-            });
+            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, GnssSatellitesVisibleField.DataType, ref _gnssSatellitesVisible);    
+            ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
         }
 
@@ -4388,11 +4299,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -4403,11 +4312,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalFreq))
             .Title("total_freq")
             .Description("Measured frequency.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _totalFreq;
         public ulong TotalFreq { get => _totalFreq; set => _totalFreq = value; }
         /// <summary>
@@ -4418,11 +4325,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(DataIndex))
             .Title("data_index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _dataIndex;
         public uint DataIndex { get => _dataIndex; set => _dataIndex = value; }
         /// <summary>
@@ -4433,11 +4338,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssLat))
             .Title("gnss_lat")
             .Description("Latitude (WGS84, EGM96 ellipsoid)")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssLat;
         public int GnssLat { get => _gnssLat; set => _gnssLat = value; }
         /// <summary>
@@ -4448,11 +4351,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssLon))
             .Title("gnss_lon")
             .Description("Longitude (WGS84, EGM96 ellipsoid)")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssLon;
         public int GnssLon { get => _gnssLon; set => _gnssLon = value; }
         /// <summary>
@@ -4463,11 +4364,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssAlt))
             .Title("gnss_alt")
             .Description("Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssAlt;
         public int GnssAlt { get => _gnssAlt; set => _gnssAlt = value; }
         /// <summary>
@@ -4478,11 +4377,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssAltEllipsoid))
             .Title("gnss_alt_ellipsoid")
             .Description("Altitude (above WGS84, EGM96 ellipsoid). Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssAltEllipsoid;
         public int GnssAltEllipsoid { get => _gnssAltEllipsoid; set => _gnssAltEllipsoid = value; }
         /// <summary>
@@ -4493,11 +4390,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssHAcc))
             .Title("gnss_h_acc")
             .Description("Position uncertainty. Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _gnssHAcc;
         public uint GnssHAcc { get => _gnssHAcc; set => _gnssHAcc = value; }
         /// <summary>
@@ -4508,11 +4403,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssVAcc))
             .Title("gnss_v_acc")
             .Description("Altitude uncertainty. Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _gnssVAcc;
         public uint GnssVAcc { get => _gnssVAcc; set => _gnssVAcc = value; }
         /// <summary>
@@ -4523,11 +4416,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssVelAcc))
             .Title("gnss_vel_acc")
             .Description("Speed uncertainty. Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _gnssVelAcc;
         public uint GnssVelAcc { get => _gnssVelAcc; set => _gnssVelAcc = value; }
         /// <summary>
@@ -4538,11 +4429,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Filtered global position latitude, expressed")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lat;
         public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -4553,11 +4442,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Lon))
             .Title("lon")
             .Description("Filtered global position longitude, expressed")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lon;
         public int Lon { get => _lon; set => _lon = value; }
         /// <summary>
@@ -4568,11 +4455,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Alt))
             .Title("alt")
             .Description("Filtered global position altitude (MSL).")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _alt;
         public int Alt { get => _alt; set => _alt = value; }
         /// <summary>
@@ -4583,11 +4468,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RelativeAlt))
             .Title("relative_alt")
             .Description("Altitude above ground")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _relativeAlt;
         public int RelativeAlt { get => _relativeAlt; set => _relativeAlt = value; }
         /// <summary>
@@ -4598,11 +4481,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Roll))
             .Title("roll")
             .Description("Roll angle (-pi..+pi)")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _roll;
         public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
@@ -4613,11 +4494,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Pitch))
             .Title("pitch")
             .Description("Pitch angle (-pi..+pi)")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitch;
         public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
@@ -4628,11 +4507,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Yaw))
             .Title("yaw")
             .Description("Yaw angle (-pi..+pi)")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yaw;
         public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
@@ -4643,11 +4520,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsPower))
             .Title("crs_power")
             .Description("Input power of course.")
-            .FormatString(string.Empty)
-            .Units(@"dBm")
+.Units(@"dBm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _crsPower;
         public float CrsPower { get => _crsPower; set => _crsPower = value; }
         /// <summary>
@@ -4658,11 +4533,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsAm90))
             .Title("crs_am_90")
             .Description("Aplitude modulation of 90Hz of course.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _crsAm90;
         public float CrsAm90 { get => _crsAm90; set => _crsAm90 = value; }
         /// <summary>
@@ -4673,11 +4546,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsAm150))
             .Title("crs_am_150")
             .Description("Aplitude modulation of 150Hz of course.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _crsAm150;
         public float CrsAm150 { get => _crsAm150; set => _crsAm150 = value; }
         /// <summary>
@@ -4688,11 +4559,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrPower))
             .Title("clr_power")
             .Description("Input power of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"dBm")
+.Units(@"dBm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _clrPower;
         public float ClrPower { get => _clrPower; set => _clrPower = value; }
         /// <summary>
@@ -4703,11 +4572,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrAm90))
             .Title("clr_am_90")
             .Description("Aplitude modulation of 90Hz of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _clrAm90;
         public float ClrAm90 { get => _clrAm90; set => _clrAm90 = value; }
         /// <summary>
@@ -4718,11 +4585,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrAm150))
             .Title("clr_am_150")
             .Description("Aplitude modulation of 150Hz of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"% E2")
+.Units(@"% E2")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _clrAm150;
         public float ClrAm150 { get => _clrAm150; set => _clrAm150 = value; }
         /// <summary>
@@ -4733,11 +4598,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalPower))
             .Title("total_power")
             .Description("Total input power.")
-            .FormatString(string.Empty)
-            .Units(@"dBm")
+.Units(@"dBm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _totalPower;
         public float TotalPower { get => _totalPower; set => _totalPower = value; }
         /// <summary>
@@ -4748,11 +4611,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalFieldStrength))
             .Title("total_field_strength")
             .Description("Total field strength.")
-            .FormatString(string.Empty)
-            .Units(@"uV/m")
+.Units(@"uV/m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _totalFieldStrength;
         public float TotalFieldStrength { get => _totalFieldStrength; set => _totalFieldStrength = value; }
         /// <summary>
@@ -4763,11 +4624,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalAm90))
             .Title("total_am_90")
             .Description("Total aplitude modulation of 90Hz.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _totalAm90;
         public float TotalAm90 { get => _totalAm90; set => _totalAm90 = value; }
         /// <summary>
@@ -4778,11 +4637,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalAm150))
             .Title("total_am_150")
             .Description("Total aplitude modulation of 150Hz.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _totalAm150;
         public float TotalAm150 { get => _totalAm150; set => _totalAm150 = value; }
         /// <summary>
@@ -4793,11 +4650,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Phi90CrsVsClr))
             .Title("phi_90_crs_vs_clr")
             .Description(" Phase difference 90 Hz clearance and cource")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _phi90CrsVsClr;
         public float Phi90CrsVsClr { get => _phi90CrsVsClr; set => _phi90CrsVsClr = value; }
         /// <summary>
@@ -4808,11 +4663,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Phi150CrsVsClr))
             .Title("phi_150_crs_vs_clr")
             .Description("Phase difference 150 Hz clearance and cource.")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _phi150CrsVsClr;
         public float Phi150CrsVsClr { get => _phi150CrsVsClr; set => _phi150CrsVsClr = value; }
         /// <summary>
@@ -4823,11 +4676,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CodeIdAm1020))
             .Title("code_id_am_1020")
             .Description("Total aplitude modulation of 90Hz.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _codeIdAm1020;
         public float CodeIdAm1020 { get => _codeIdAm1020; set => _codeIdAm1020 = value; }
         /// <summary>
@@ -4838,11 +4689,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssEph))
             .Title("gnss_eph")
             .Description("GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _gnssEph;
         public ushort GnssEph { get => _gnssEph; set => _gnssEph = value; }
         /// <summary>
@@ -4853,11 +4702,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssEpv))
             .Title("gnss_epv")
             .Description("GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _gnssEpv;
         public ushort GnssEpv { get => _gnssEpv; set => _gnssEpv = value; }
         /// <summary>
@@ -4868,11 +4715,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssVel))
             .Title("gnss_vel")
             .Description("GPS ground speed. If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _gnssVel;
         public ushort GnssVel { get => _gnssVel; set => _gnssVel = value; }
         /// <summary>
@@ -4883,11 +4728,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Vx))
             .Title("vx")
             .Description("Ground X Speed (Latitude, positive north)")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _vx;
         public short Vx { get => _vx; set => _vx = value; }
         /// <summary>
@@ -4898,11 +4741,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Vy))
             .Title("vy")
             .Description("Ground Y Speed (Longitude, positive east)")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _vy;
         public short Vy { get => _vy; set => _vy = value; }
         /// <summary>
@@ -4913,11 +4754,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Vz))
             .Title("vz")
             .Description("Ground Z Speed (Altitude, positive down)")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _vz;
         public short Vz { get => _vz; set => _vz = value; }
         /// <summary>
@@ -4928,11 +4767,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Hdg))
             .Title("hdg")
             .Description("Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(@"cdeg")
+.Units(@"cdeg")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _hdg;
         public ushort Hdg { get => _hdg; set => _hdg = value; }
         /// <summary>
@@ -4943,11 +4780,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsCarrierOffset))
             .Title("crs_carrier_offset")
             .Description("Carrier frequency offset of course.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _crsCarrierOffset;
         public short CrsCarrierOffset { get => _crsCarrierOffset; set => _crsCarrierOffset = value; }
         /// <summary>
@@ -4958,11 +4793,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsFreq90))
             .Title("crs_freq_90")
             .Description("Frequency offset of signal 90 Hz of course.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _crsFreq90;
         public short CrsFreq90 { get => _crsFreq90; set => _crsFreq90 = value; }
         /// <summary>
@@ -4973,11 +4806,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsFreq150))
             .Title("crs_freq_150")
             .Description("Frequency offset of signal 150 Hz of course.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _crsFreq150;
         public short CrsFreq150 { get => _crsFreq150; set => _crsFreq150 = value; }
         /// <summary>
@@ -4988,11 +4819,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrCarrierOffset))
             .Title("clr_carrier_offset")
             .Description("Carrier frequency offset of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _clrCarrierOffset;
         public short ClrCarrierOffset { get => _clrCarrierOffset; set => _clrCarrierOffset = value; }
         /// <summary>
@@ -5003,11 +4832,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrFreq90))
             .Title("clr_freq_90")
             .Description("Frequency offset of signal 90 Hz of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _clrFreq90;
         public short ClrFreq90 { get => _clrFreq90; set => _clrFreq90 = value; }
         /// <summary>
@@ -5018,11 +4845,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrFreq150))
             .Title("clr_freq_150")
             .Description("Frequency offset of signal 150 Hz of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _clrFreq150;
         public short ClrFreq150 { get => _clrFreq150; set => _clrFreq150 = value; }
         /// <summary>
@@ -5033,11 +4858,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalCarrierOffset))
             .Title("total_carrier_offset")
             .Description("Total carrier frequency offset.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _totalCarrierOffset;
         public short TotalCarrierOffset { get => _totalCarrierOffset; set => _totalCarrierOffset = value; }
         /// <summary>
@@ -5048,11 +4871,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalFreq90))
             .Title("total_freq_90")
             .Description("Total frequency offset of signal 90 Hz.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _totalFreq90;
         public short TotalFreq90 { get => _totalFreq90; set => _totalFreq90 = value; }
         /// <summary>
@@ -5063,11 +4884,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalFreq150))
             .Title("total_freq_150")
             .Description("Total frequency offset of signal 150 Hz.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _totalFreq150;
         public short TotalFreq150 { get => _totalFreq150; set => _totalFreq150 = value; }
         /// <summary>
@@ -5078,11 +4897,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CodeIdFreq1020))
             .Title("code_id_freq_1020")
             .Description("Total frequency offset of signal 90 Hz.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _codeIdFreq1020;
         public short CodeIdFreq1020 { get => _codeIdFreq1020; set => _codeIdFreq1020 = value; }
         /// <summary>
@@ -5093,11 +4910,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(MeasureTime))
             .Title("measure_time")
             .Description("Measure time.")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _measureTime;
         public short MeasureTime { get => _measureTime; set => _measureTime = value; }
         /// <summary>
@@ -5108,11 +4923,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Record GUID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetRecordGuidMaxItemsCount instead.")]
@@ -5125,12 +4938,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssFixType))
             .Title("gnss_fix_type")
             .Description("GPS fix type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GpsFixTypeHelper.GetValues(x=>(byte)x).Min(),GpsFixTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GpsFixTypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GpsFixType _gnssFixType;
+        private GpsFixType _gnssFixType;
         public GpsFixType GnssFixType { get => _gnssFixType; set => _gnssFixType = value; } 
         /// <summary>
         /// Number of satellites visible. If unknown, set to 255
@@ -5140,11 +4951,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssSatellitesVisible))
             .Title("gnss_satellites_visible")
             .Description("Number of satellites visible. If unknown, set to 255")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _gnssSatellitesVisible;
         public byte GnssSatellitesVisible { get => _gnssSatellitesVisible; set => _gnssSatellitesVisible = value; }
         /// <summary>
@@ -5155,11 +4964,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CodeId))
             .Title("code_id")
             .Description("Code identification")
-            .FormatString(string.Empty)
-            .Units(@"Letters")
-            .DataType(new ArrayType(UInt8Type.Default,4))
-
-            .Build();
+.Units(@"Letters")
+            .DataType(new ArrayType(CharType.Ascii,4))
+        .Build();
         public const int CodeIdMaxItemsCount = 4;
         public char[] CodeId { get; } = new char[4];
     }
@@ -5372,58 +5179,58 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
-            UInt64Type.Accept(visitor,TotalFreqField, ref _totalFreq);    
-            UInt32Type.Accept(visitor,DataIndexField, ref _dataIndex);    
-            Int32Type.Accept(visitor,GnssLatField, ref _gnssLat);    
-            Int32Type.Accept(visitor,GnssLonField, ref _gnssLon);    
-            Int32Type.Accept(visitor,GnssAltField, ref _gnssAlt);    
-            Int32Type.Accept(visitor,GnssAltEllipsoidField, ref _gnssAltEllipsoid);    
-            UInt32Type.Accept(visitor,GnssHAccField, ref _gnssHAcc);    
-            UInt32Type.Accept(visitor,GnssVAccField, ref _gnssVAcc);    
-            UInt32Type.Accept(visitor,GnssVelAccField, ref _gnssVelAcc);    
-            Int32Type.Accept(visitor,LatField, ref _lat);    
-            Int32Type.Accept(visitor,LonField, ref _lon);    
-            Int32Type.Accept(visitor,AltField, ref _alt);    
-            Int32Type.Accept(visitor,RelativeAltField, ref _relativeAlt);    
-            FloatType.Accept(visitor,RollField, ref _roll);    
-            FloatType.Accept(visitor,PitchField, ref _pitch);    
-            FloatType.Accept(visitor,YawField, ref _yaw);    
-            FloatType.Accept(visitor,CrsPowerField, ref _crsPower);    
-            FloatType.Accept(visitor,CrsAm90Field, ref _crsAm90);    
-            FloatType.Accept(visitor,CrsAm150Field, ref _crsAm150);    
-            FloatType.Accept(visitor,ClrPowerField, ref _clrPower);    
-            FloatType.Accept(visitor,ClrAm90Field, ref _clrAm90);    
-            FloatType.Accept(visitor,ClrAm150Field, ref _clrAm150);    
-            FloatType.Accept(visitor,TotalPowerField, ref _totalPower);    
-            FloatType.Accept(visitor,TotalFieldStrengthField, ref _totalFieldStrength);    
-            FloatType.Accept(visitor,TotalAm90Field, ref _totalAm90);    
-            FloatType.Accept(visitor,TotalAm150Field, ref _totalAm150);    
-            FloatType.Accept(visitor,Phi90CrsVsClrField, ref _phi90CrsVsClr);    
-            FloatType.Accept(visitor,Phi150CrsVsClrField, ref _phi150CrsVsClr);    
-            UInt16Type.Accept(visitor,GnssEphField, ref _gnssEph);    
-            UInt16Type.Accept(visitor,GnssEpvField, ref _gnssEpv);    
-            UInt16Type.Accept(visitor,GnssVelField, ref _gnssVel);    
-            Int16Type.Accept(visitor,VxField, ref _vx);
-            Int16Type.Accept(visitor,VyField, ref _vy);
-            Int16Type.Accept(visitor,VzField, ref _vz);
-            UInt16Type.Accept(visitor,HdgField, ref _hdg);    
-            Int16Type.Accept(visitor,CrsCarrierOffsetField, ref _crsCarrierOffset);
-            Int16Type.Accept(visitor,CrsFreq90Field, ref _crsFreq90);
-            Int16Type.Accept(visitor,CrsFreq150Field, ref _crsFreq150);
-            Int16Type.Accept(visitor,ClrCarrierOffsetField, ref _clrCarrierOffset);
-            Int16Type.Accept(visitor,ClrFreq90Field, ref _clrFreq90);
-            Int16Type.Accept(visitor,ClrFreq150Field, ref _clrFreq150);
-            Int16Type.Accept(visitor,TotalCarrierOffsetField, ref _totalCarrierOffset);
-            Int16Type.Accept(visitor,TotalFreq90Field, ref _totalFreq90);
-            Int16Type.Accept(visitor,TotalFreq150Field, ref _totalFreq150);
-            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
+            UInt32Type.Accept(visitor,DataIndexField, DataIndexField.DataType, ref _dataIndex);    
+            Int32Type.Accept(visitor,GnssLatField, GnssLatField.DataType, ref _gnssLat);    
+            Int32Type.Accept(visitor,GnssLonField, GnssLonField.DataType, ref _gnssLon);    
+            Int32Type.Accept(visitor,GnssAltField, GnssAltField.DataType, ref _gnssAlt);    
+            Int32Type.Accept(visitor,GnssAltEllipsoidField, GnssAltEllipsoidField.DataType, ref _gnssAltEllipsoid);    
+            UInt32Type.Accept(visitor,GnssHAccField, GnssHAccField.DataType, ref _gnssHAcc);    
+            UInt32Type.Accept(visitor,GnssVAccField, GnssVAccField.DataType, ref _gnssVAcc);    
+            UInt32Type.Accept(visitor,GnssVelAccField, GnssVelAccField.DataType, ref _gnssVelAcc);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LonField, LonField.DataType, ref _lon);    
+            Int32Type.Accept(visitor,AltField, AltField.DataType, ref _alt);    
+            Int32Type.Accept(visitor,RelativeAltField, RelativeAltField.DataType, ref _relativeAlt);    
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,CrsPowerField, CrsPowerField.DataType, ref _crsPower);    
+            FloatType.Accept(visitor,CrsAm90Field, CrsAm90Field.DataType, ref _crsAm90);    
+            FloatType.Accept(visitor,CrsAm150Field, CrsAm150Field.DataType, ref _crsAm150);    
+            FloatType.Accept(visitor,ClrPowerField, ClrPowerField.DataType, ref _clrPower);    
+            FloatType.Accept(visitor,ClrAm90Field, ClrAm90Field.DataType, ref _clrAm90);    
+            FloatType.Accept(visitor,ClrAm150Field, ClrAm150Field.DataType, ref _clrAm150);    
+            FloatType.Accept(visitor,TotalPowerField, TotalPowerField.DataType, ref _totalPower);    
+            FloatType.Accept(visitor,TotalFieldStrengthField, TotalFieldStrengthField.DataType, ref _totalFieldStrength);    
+            FloatType.Accept(visitor,TotalAm90Field, TotalAm90Field.DataType, ref _totalAm90);    
+            FloatType.Accept(visitor,TotalAm150Field, TotalAm150Field.DataType, ref _totalAm150);    
+            FloatType.Accept(visitor,Phi90CrsVsClrField, Phi90CrsVsClrField.DataType, ref _phi90CrsVsClr);    
+            FloatType.Accept(visitor,Phi150CrsVsClrField, Phi150CrsVsClrField.DataType, ref _phi150CrsVsClr);    
+            UInt16Type.Accept(visitor,GnssEphField, GnssEphField.DataType, ref _gnssEph);    
+            UInt16Type.Accept(visitor,GnssEpvField, GnssEpvField.DataType, ref _gnssEpv);    
+            UInt16Type.Accept(visitor,GnssVelField, GnssVelField.DataType, ref _gnssVel);    
+            Int16Type.Accept(visitor,VxField, VxField.DataType, ref _vx);
+            Int16Type.Accept(visitor,VyField, VyField.DataType, ref _vy);
+            Int16Type.Accept(visitor,VzField, VzField.DataType, ref _vz);
+            UInt16Type.Accept(visitor,HdgField, HdgField.DataType, ref _hdg);    
+            Int16Type.Accept(visitor,CrsCarrierOffsetField, CrsCarrierOffsetField.DataType, ref _crsCarrierOffset);
+            Int16Type.Accept(visitor,CrsFreq90Field, CrsFreq90Field.DataType, ref _crsFreq90);
+            Int16Type.Accept(visitor,CrsFreq150Field, CrsFreq150Field.DataType, ref _crsFreq150);
+            Int16Type.Accept(visitor,ClrCarrierOffsetField, ClrCarrierOffsetField.DataType, ref _clrCarrierOffset);
+            Int16Type.Accept(visitor,ClrFreq90Field, ClrFreq90Field.DataType, ref _clrFreq90);
+            Int16Type.Accept(visitor,ClrFreq150Field, ClrFreq150Field.DataType, ref _clrFreq150);
+            Int16Type.Accept(visitor,TotalCarrierOffsetField, TotalCarrierOffsetField.DataType, ref _totalCarrierOffset);
+            Int16Type.Accept(visitor,TotalFreq90Field, TotalFreq90Field.DataType, ref _totalFreq90);
+            Int16Type.Accept(visitor,TotalFreq150Field, TotalFreq150Field.DataType, ref _totalFreq150);
+            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
             var tmpGnssFixType = (byte)GnssFixType;
-            UInt8Type.Accept(visitor,GnssFixTypeField, ref tmpGnssFixType);
+            UInt8Type.Accept(visitor,GnssFixTypeField, GnssFixTypeField.DataType, ref tmpGnssFixType);
             GnssFixType = (GpsFixType)tmpGnssFixType;
-            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, ref _gnssSatellitesVisible);    
+            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, GnssSatellitesVisibleField.DataType, ref _gnssSatellitesVisible);    
 
         }
 
@@ -5435,11 +5242,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -5450,11 +5255,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalFreq))
             .Title("total_freq")
             .Description("Measured frequency.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _totalFreq;
         public ulong TotalFreq { get => _totalFreq; set => _totalFreq = value; }
         /// <summary>
@@ -5465,11 +5268,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(DataIndex))
             .Title("data_index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _dataIndex;
         public uint DataIndex { get => _dataIndex; set => _dataIndex = value; }
         /// <summary>
@@ -5480,11 +5281,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssLat))
             .Title("gnss_lat")
             .Description("Latitude (WGS84, EGM96 ellipsoid)")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssLat;
         public int GnssLat { get => _gnssLat; set => _gnssLat = value; }
         /// <summary>
@@ -5495,11 +5294,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssLon))
             .Title("gnss_lon")
             .Description("Longitude (WGS84, EGM96 ellipsoid)")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssLon;
         public int GnssLon { get => _gnssLon; set => _gnssLon = value; }
         /// <summary>
@@ -5510,11 +5307,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssAlt))
             .Title("gnss_alt")
             .Description("Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssAlt;
         public int GnssAlt { get => _gnssAlt; set => _gnssAlt = value; }
         /// <summary>
@@ -5525,11 +5320,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssAltEllipsoid))
             .Title("gnss_alt_ellipsoid")
             .Description("Altitude (above WGS84, EGM96 ellipsoid). Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssAltEllipsoid;
         public int GnssAltEllipsoid { get => _gnssAltEllipsoid; set => _gnssAltEllipsoid = value; }
         /// <summary>
@@ -5540,11 +5333,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssHAcc))
             .Title("gnss_h_acc")
             .Description("Position uncertainty. Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _gnssHAcc;
         public uint GnssHAcc { get => _gnssHAcc; set => _gnssHAcc = value; }
         /// <summary>
@@ -5555,11 +5346,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssVAcc))
             .Title("gnss_v_acc")
             .Description("Altitude uncertainty. Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _gnssVAcc;
         public uint GnssVAcc { get => _gnssVAcc; set => _gnssVAcc = value; }
         /// <summary>
@@ -5570,11 +5359,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssVelAcc))
             .Title("gnss_vel_acc")
             .Description("Speed uncertainty. Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _gnssVelAcc;
         public uint GnssVelAcc { get => _gnssVelAcc; set => _gnssVelAcc = value; }
         /// <summary>
@@ -5585,11 +5372,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Filtered global position latitude, expressed")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lat;
         public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -5600,11 +5385,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Lon))
             .Title("lon")
             .Description("Filtered global position longitude, expressed")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lon;
         public int Lon { get => _lon; set => _lon = value; }
         /// <summary>
@@ -5615,11 +5398,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Alt))
             .Title("alt")
             .Description("Filtered global position altitude (MSL).")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _alt;
         public int Alt { get => _alt; set => _alt = value; }
         /// <summary>
@@ -5630,11 +5411,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RelativeAlt))
             .Title("relative_alt")
             .Description("Altitude above ground")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _relativeAlt;
         public int RelativeAlt { get => _relativeAlt; set => _relativeAlt = value; }
         /// <summary>
@@ -5645,11 +5424,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Roll))
             .Title("roll")
             .Description("Roll angle (-pi..+pi)")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _roll;
         public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
@@ -5660,11 +5437,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Pitch))
             .Title("pitch")
             .Description("Pitch angle (-pi..+pi)")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitch;
         public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
@@ -5675,11 +5450,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Yaw))
             .Title("yaw")
             .Description("Yaw angle (-pi..+pi)")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yaw;
         public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
@@ -5690,11 +5463,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsPower))
             .Title("crs_power")
             .Description("Input power of course.")
-            .FormatString(string.Empty)
-            .Units(@"dBm")
+.Units(@"dBm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _crsPower;
         public float CrsPower { get => _crsPower; set => _crsPower = value; }
         /// <summary>
@@ -5705,11 +5476,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsAm90))
             .Title("crs_am_90")
             .Description("Aplitude modulation of 90Hz of course.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _crsAm90;
         public float CrsAm90 { get => _crsAm90; set => _crsAm90 = value; }
         /// <summary>
@@ -5720,11 +5489,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsAm150))
             .Title("crs_am_150")
             .Description("Aplitude modulation of 150Hz of course.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _crsAm150;
         public float CrsAm150 { get => _crsAm150; set => _crsAm150 = value; }
         /// <summary>
@@ -5735,11 +5502,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrPower))
             .Title("clr_power")
             .Description("Input power of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"dBm")
+.Units(@"dBm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _clrPower;
         public float ClrPower { get => _clrPower; set => _clrPower = value; }
         /// <summary>
@@ -5750,11 +5515,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrAm90))
             .Title("clr_am_90")
             .Description("Aplitude modulation of 90Hz of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _clrAm90;
         public float ClrAm90 { get => _clrAm90; set => _clrAm90 = value; }
         /// <summary>
@@ -5765,11 +5528,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrAm150))
             .Title("clr_am_150")
             .Description("Aplitude modulation of 150Hz of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"% E2")
+.Units(@"% E2")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _clrAm150;
         public float ClrAm150 { get => _clrAm150; set => _clrAm150 = value; }
         /// <summary>
@@ -5780,11 +5541,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalPower))
             .Title("total_power")
             .Description("Total input power.")
-            .FormatString(string.Empty)
-            .Units(@"dBm")
+.Units(@"dBm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _totalPower;
         public float TotalPower { get => _totalPower; set => _totalPower = value; }
         /// <summary>
@@ -5795,11 +5554,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalFieldStrength))
             .Title("total_field_strength")
             .Description("Total field strength.")
-            .FormatString(string.Empty)
-            .Units(@"uV/m")
+.Units(@"uV/m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _totalFieldStrength;
         public float TotalFieldStrength { get => _totalFieldStrength; set => _totalFieldStrength = value; }
         /// <summary>
@@ -5810,11 +5567,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalAm90))
             .Title("total_am_90")
             .Description("Total aplitude modulation of 90Hz.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _totalAm90;
         public float TotalAm90 { get => _totalAm90; set => _totalAm90 = value; }
         /// <summary>
@@ -5825,11 +5580,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalAm150))
             .Title("total_am_150")
             .Description("Total aplitude modulation of 150Hz.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _totalAm150;
         public float TotalAm150 { get => _totalAm150; set => _totalAm150 = value; }
         /// <summary>
@@ -5840,11 +5593,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Phi90CrsVsClr))
             .Title("phi_90_crs_vs_clr")
             .Description(" Phase difference 90 Hz clearance and cource")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _phi90CrsVsClr;
         public float Phi90CrsVsClr { get => _phi90CrsVsClr; set => _phi90CrsVsClr = value; }
         /// <summary>
@@ -5855,11 +5606,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Phi150CrsVsClr))
             .Title("phi_150_crs_vs_clr")
             .Description("Phase difference 150 Hz clearance and cource.")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _phi150CrsVsClr;
         public float Phi150CrsVsClr { get => _phi150CrsVsClr; set => _phi150CrsVsClr = value; }
         /// <summary>
@@ -5870,11 +5619,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssEph))
             .Title("gnss_eph")
             .Description("GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _gnssEph;
         public ushort GnssEph { get => _gnssEph; set => _gnssEph = value; }
         /// <summary>
@@ -5885,11 +5632,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssEpv))
             .Title("gnss_epv")
             .Description("GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _gnssEpv;
         public ushort GnssEpv { get => _gnssEpv; set => _gnssEpv = value; }
         /// <summary>
@@ -5900,11 +5645,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssVel))
             .Title("gnss_vel")
             .Description("GPS ground speed. If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _gnssVel;
         public ushort GnssVel { get => _gnssVel; set => _gnssVel = value; }
         /// <summary>
@@ -5915,11 +5658,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Vx))
             .Title("vx")
             .Description("Ground X Speed (Latitude, positive north)")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _vx;
         public short Vx { get => _vx; set => _vx = value; }
         /// <summary>
@@ -5930,11 +5671,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Vy))
             .Title("vy")
             .Description("Ground Y Speed (Longitude, positive east)")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _vy;
         public short Vy { get => _vy; set => _vy = value; }
         /// <summary>
@@ -5945,11 +5684,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Vz))
             .Title("vz")
             .Description("Ground Z Speed (Altitude, positive down)")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _vz;
         public short Vz { get => _vz; set => _vz = value; }
         /// <summary>
@@ -5960,11 +5697,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Hdg))
             .Title("hdg")
             .Description("Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(@"cdeg")
+.Units(@"cdeg")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _hdg;
         public ushort Hdg { get => _hdg; set => _hdg = value; }
         /// <summary>
@@ -5975,11 +5710,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsCarrierOffset))
             .Title("crs_carrier_offset")
             .Description("Carrier frequency offset of course.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _crsCarrierOffset;
         public short CrsCarrierOffset { get => _crsCarrierOffset; set => _crsCarrierOffset = value; }
         /// <summary>
@@ -5990,11 +5723,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsFreq90))
             .Title("crs_freq_90")
             .Description("Frequency offset of signal 90 Hz of course.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _crsFreq90;
         public short CrsFreq90 { get => _crsFreq90; set => _crsFreq90 = value; }
         /// <summary>
@@ -6005,11 +5736,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CrsFreq150))
             .Title("crs_freq_150")
             .Description("Frequency offset of signal 150 Hz of course.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _crsFreq150;
         public short CrsFreq150 { get => _crsFreq150; set => _crsFreq150 = value; }
         /// <summary>
@@ -6020,11 +5749,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrCarrierOffset))
             .Title("clr_carrier_offset")
             .Description("Carrier frequency offset of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _clrCarrierOffset;
         public short ClrCarrierOffset { get => _clrCarrierOffset; set => _clrCarrierOffset = value; }
         /// <summary>
@@ -6035,11 +5762,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrFreq90))
             .Title("clr_freq_90")
             .Description("Frequency offset of signal 90 Hz of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _clrFreq90;
         public short ClrFreq90 { get => _clrFreq90; set => _clrFreq90 = value; }
         /// <summary>
@@ -6050,11 +5775,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(ClrFreq150))
             .Title("clr_freq_150")
             .Description("Frequency offset of signal 150 Hz of clearance.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _clrFreq150;
         public short ClrFreq150 { get => _clrFreq150; set => _clrFreq150 = value; }
         /// <summary>
@@ -6065,11 +5788,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalCarrierOffset))
             .Title("total_carrier_offset")
             .Description("Total carrier frequency offset.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _totalCarrierOffset;
         public short TotalCarrierOffset { get => _totalCarrierOffset; set => _totalCarrierOffset = value; }
         /// <summary>
@@ -6080,11 +5801,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalFreq90))
             .Title("total_freq_90")
             .Description("Total frequency offset of signal 90 Hz.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _totalFreq90;
         public short TotalFreq90 { get => _totalFreq90; set => _totalFreq90 = value; }
         /// <summary>
@@ -6095,11 +5814,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalFreq150))
             .Title("total_freq_150")
             .Description("Total frequency offset of signal 150 Hz.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _totalFreq150;
         public short TotalFreq150 { get => _totalFreq150; set => _totalFreq150 = value; }
         /// <summary>
@@ -6110,11 +5827,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(MeasureTime))
             .Title("measure_time")
             .Description("Measure time.")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _measureTime;
         public short MeasureTime { get => _measureTime; set => _measureTime = value; }
         /// <summary>
@@ -6125,11 +5840,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Record GUID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetRecordGuidMaxItemsCount instead.")]
@@ -6142,12 +5855,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssFixType))
             .Title("gnss_fix_type")
             .Description("GPS fix type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GpsFixTypeHelper.GetValues(x=>(byte)x).Min(),GpsFixTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GpsFixTypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GpsFixType _gnssFixType;
+        private GpsFixType _gnssFixType;
         public GpsFixType GnssFixType { get => _gnssFixType; set => _gnssFixType = value; } 
         /// <summary>
         /// Number of satellites visible. If unknown, set to 255
@@ -6157,11 +5868,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssSatellitesVisible))
             .Title("gnss_satellites_visible")
             .Description("Number of satellites visible. If unknown, set to 255")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _gnssSatellitesVisible;
         public byte GnssSatellitesVisible { get => _gnssSatellitesVisible; set => _gnssSatellitesVisible = value; }
     }
@@ -6366,54 +6075,50 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
-            UInt64Type.Accept(visitor,TotalFreqField, ref _totalFreq);    
-            UInt32Type.Accept(visitor,DataIndexField, ref _dataIndex);    
-            Int32Type.Accept(visitor,GnssLatField, ref _gnssLat);    
-            Int32Type.Accept(visitor,GnssLonField, ref _gnssLon);    
-            Int32Type.Accept(visitor,GnssAltField, ref _gnssAlt);    
-            Int32Type.Accept(visitor,GnssAltEllipsoidField, ref _gnssAltEllipsoid);    
-            UInt32Type.Accept(visitor,GnssHAccField, ref _gnssHAcc);    
-            UInt32Type.Accept(visitor,GnssVAccField, ref _gnssVAcc);    
-            UInt32Type.Accept(visitor,GnssVelAccField, ref _gnssVelAcc);    
-            Int32Type.Accept(visitor,LatField, ref _lat);    
-            Int32Type.Accept(visitor,LonField, ref _lon);    
-            Int32Type.Accept(visitor,AltField, ref _alt);    
-            Int32Type.Accept(visitor,RelativeAltField, ref _relativeAlt);    
-            FloatType.Accept(visitor,RollField, ref _roll);    
-            FloatType.Accept(visitor,PitchField, ref _pitch);    
-            FloatType.Accept(visitor,YawField, ref _yaw);    
-            FloatType.Accept(visitor,AzimuthField, ref _azimuth);    
-            FloatType.Accept(visitor,PowerField, ref _power);    
-            FloatType.Accept(visitor,FieldStrengthField, ref _fieldStrength);    
-            FloatType.Accept(visitor,Am30Field, ref _am30);    
-            FloatType.Accept(visitor,Am9960Field, ref _am9960);    
-            FloatType.Accept(visitor,DeviationField, ref _deviation);    
-            FloatType.Accept(visitor,CodeIdAm1020Field, ref _codeIdAm1020);    
-            UInt16Type.Accept(visitor,GnssEphField, ref _gnssEph);    
-            UInt16Type.Accept(visitor,GnssEpvField, ref _gnssEpv);    
-            UInt16Type.Accept(visitor,GnssVelField, ref _gnssVel);    
-            Int16Type.Accept(visitor,VxField, ref _vx);
-            Int16Type.Accept(visitor,VyField, ref _vy);
-            Int16Type.Accept(visitor,VzField, ref _vz);
-            UInt16Type.Accept(visitor,HdgField, ref _hdg);    
-            Int16Type.Accept(visitor,CarrierOffsetField, ref _carrierOffset);
-            Int16Type.Accept(visitor,Freq30Field, ref _freq30);
-            Int16Type.Accept(visitor,Freq9960Field, ref _freq9960);
-            Int16Type.Accept(visitor,CodeIdFreq1020Field, ref _codeIdFreq1020);
-            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
-            ArrayType.Accept(visitor,RecordGuidField, 16,
-                (index,v) => UInt8Type.Accept(v, RecordGuidField, ref RecordGuid[index]));    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
+            UInt32Type.Accept(visitor,DataIndexField, DataIndexField.DataType, ref _dataIndex);    
+            Int32Type.Accept(visitor,GnssLatField, GnssLatField.DataType, ref _gnssLat);    
+            Int32Type.Accept(visitor,GnssLonField, GnssLonField.DataType, ref _gnssLon);    
+            Int32Type.Accept(visitor,GnssAltField, GnssAltField.DataType, ref _gnssAlt);    
+            Int32Type.Accept(visitor,GnssAltEllipsoidField, GnssAltEllipsoidField.DataType, ref _gnssAltEllipsoid);    
+            UInt32Type.Accept(visitor,GnssHAccField, GnssHAccField.DataType, ref _gnssHAcc);    
+            UInt32Type.Accept(visitor,GnssVAccField, GnssVAccField.DataType, ref _gnssVAcc);    
+            UInt32Type.Accept(visitor,GnssVelAccField, GnssVelAccField.DataType, ref _gnssVelAcc);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LonField, LonField.DataType, ref _lon);    
+            Int32Type.Accept(visitor,AltField, AltField.DataType, ref _alt);    
+            Int32Type.Accept(visitor,RelativeAltField, RelativeAltField.DataType, ref _relativeAlt);    
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,AzimuthField, AzimuthField.DataType, ref _azimuth);    
+            FloatType.Accept(visitor,PowerField, PowerField.DataType, ref _power);    
+            FloatType.Accept(visitor,FieldStrengthField, FieldStrengthField.DataType, ref _fieldStrength);    
+            FloatType.Accept(visitor,Am30Field, Am30Field.DataType, ref _am30);    
+            FloatType.Accept(visitor,Am9960Field, Am9960Field.DataType, ref _am9960);    
+            FloatType.Accept(visitor,DeviationField, DeviationField.DataType, ref _deviation);    
+            FloatType.Accept(visitor,CodeIdAm1020Field, CodeIdAm1020Field.DataType, ref _codeIdAm1020);    
+            UInt16Type.Accept(visitor,GnssEphField, GnssEphField.DataType, ref _gnssEph);    
+            UInt16Type.Accept(visitor,GnssEpvField, GnssEpvField.DataType, ref _gnssEpv);    
+            UInt16Type.Accept(visitor,GnssVelField, GnssVelField.DataType, ref _gnssVel);    
+            Int16Type.Accept(visitor,VxField, VxField.DataType, ref _vx);
+            Int16Type.Accept(visitor,VyField, VyField.DataType, ref _vy);
+            Int16Type.Accept(visitor,VzField, VzField.DataType, ref _vz);
+            UInt16Type.Accept(visitor,HdgField, HdgField.DataType, ref _hdg);    
+            Int16Type.Accept(visitor,CarrierOffsetField, CarrierOffsetField.DataType, ref _carrierOffset);
+            Int16Type.Accept(visitor,Freq30Field, Freq30Field.DataType, ref _freq30);
+            Int16Type.Accept(visitor,Freq9960Field, Freq9960Field.DataType, ref _freq9960);
+            Int16Type.Accept(visitor,CodeIdFreq1020Field, CodeIdFreq1020Field.DataType, ref _codeIdFreq1020);
+            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
+            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
             var tmpGnssFixType = (byte)GnssFixType;
-            UInt8Type.Accept(visitor,GnssFixTypeField, ref tmpGnssFixType);
+            UInt8Type.Accept(visitor,GnssFixTypeField, GnssFixTypeField.DataType, ref tmpGnssFixType);
             GnssFixType = (GpsFixType)tmpGnssFixType;
-            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, ref _gnssSatellitesVisible);    
-            ArrayType.Accept(visitor,CodeIdField, 4, (index,v) =>
-            {
-                var tmp = (byte)CodeId[index];
-                UInt8Type.Accept(v,CodeIdField, ref tmp);
-                CodeId[index] = (char)tmp;
-            });
+            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, GnssSatellitesVisibleField.DataType, ref _gnssSatellitesVisible);    
+            ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
         }
 
@@ -6425,11 +6130,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -6440,11 +6143,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(TotalFreq))
             .Title("total_freq")
             .Description("Measured frequency.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _totalFreq;
         public ulong TotalFreq { get => _totalFreq; set => _totalFreq = value; }
         /// <summary>
@@ -6455,11 +6156,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(DataIndex))
             .Title("data_index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _dataIndex;
         public uint DataIndex { get => _dataIndex; set => _dataIndex = value; }
         /// <summary>
@@ -6470,11 +6169,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssLat))
             .Title("gnss_lat")
             .Description("Latitude (WGS84, EGM96 ellipsoid)")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssLat;
         public int GnssLat { get => _gnssLat; set => _gnssLat = value; }
         /// <summary>
@@ -6485,11 +6182,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssLon))
             .Title("gnss_lon")
             .Description("Longitude (WGS84, EGM96 ellipsoid)")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssLon;
         public int GnssLon { get => _gnssLon; set => _gnssLon = value; }
         /// <summary>
@@ -6500,11 +6195,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssAlt))
             .Title("gnss_alt")
             .Description("Altitude (MSL). Positive for up. Note that virtually all GPS modules provide the MSL altitude in addition to the WGS84 altitude.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssAlt;
         public int GnssAlt { get => _gnssAlt; set => _gnssAlt = value; }
         /// <summary>
@@ -6515,11 +6208,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssAltEllipsoid))
             .Title("gnss_alt_ellipsoid")
             .Description("Altitude (above WGS84, EGM96 ellipsoid). Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _gnssAltEllipsoid;
         public int GnssAltEllipsoid { get => _gnssAltEllipsoid; set => _gnssAltEllipsoid = value; }
         /// <summary>
@@ -6530,11 +6221,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssHAcc))
             .Title("gnss_h_acc")
             .Description("Position uncertainty. Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _gnssHAcc;
         public uint GnssHAcc { get => _gnssHAcc; set => _gnssHAcc = value; }
         /// <summary>
@@ -6545,11 +6234,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssVAcc))
             .Title("gnss_v_acc")
             .Description("Altitude uncertainty. Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _gnssVAcc;
         public uint GnssVAcc { get => _gnssVAcc; set => _gnssVAcc = value; }
         /// <summary>
@@ -6560,11 +6247,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssVelAcc))
             .Title("gnss_vel_acc")
             .Description("Speed uncertainty. Positive for up.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _gnssVelAcc;
         public uint GnssVelAcc { get => _gnssVelAcc; set => _gnssVelAcc = value; }
         /// <summary>
@@ -6575,11 +6260,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Filtered global position latitude, expressed")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lat;
         public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -6590,11 +6273,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Lon))
             .Title("lon")
             .Description("Filtered global position longitude, expressed")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lon;
         public int Lon { get => _lon; set => _lon = value; }
         /// <summary>
@@ -6605,11 +6286,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Alt))
             .Title("alt")
             .Description("Filtered global position altitude (MSL).")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _alt;
         public int Alt { get => _alt; set => _alt = value; }
         /// <summary>
@@ -6620,11 +6299,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RelativeAlt))
             .Title("relative_alt")
             .Description("Altitude above ground")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _relativeAlt;
         public int RelativeAlt { get => _relativeAlt; set => _relativeAlt = value; }
         /// <summary>
@@ -6635,11 +6312,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Roll))
             .Title("roll")
             .Description("Roll angle (-pi..+pi)")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _roll;
         public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
@@ -6650,11 +6325,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Pitch))
             .Title("pitch")
             .Description("Pitch angle (-pi..+pi)")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitch;
         public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
@@ -6665,11 +6338,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Yaw))
             .Title("yaw")
             .Description("Yaw angle (-pi..+pi)")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yaw;
         public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
@@ -6680,11 +6351,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Azimuth))
             .Title("azimuth")
             .Description("Measured azimuth.")
-            .FormatString(string.Empty)
-            .Units(@"deg")
+.Units(@"deg")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _azimuth;
         public float Azimuth { get => _azimuth; set => _azimuth = value; }
         /// <summary>
@@ -6695,11 +6364,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Power))
             .Title("power")
             .Description("Total input power.")
-            .FormatString(string.Empty)
-            .Units(@"dBm")
+.Units(@"dBm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _power;
         public float Power { get => _power; set => _power = value; }
         /// <summary>
@@ -6710,11 +6377,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(FieldStrength))
             .Title("field_strength")
             .Description("Total field strength.")
-            .FormatString(string.Empty)
-            .Units(@"uV/m")
+.Units(@"uV/m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _fieldStrength;
         public float FieldStrength { get => _fieldStrength; set => _fieldStrength = value; }
         /// <summary>
@@ -6725,11 +6390,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Am30))
             .Title("am_30")
             .Description("Total aplitude modulation of 30 Hz.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _am30;
         public float Am30 { get => _am30; set => _am30 = value; }
         /// <summary>
@@ -6740,11 +6403,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Am9960))
             .Title("am_9960")
             .Description("Total aplitude modulation of 9960 Hz.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _am9960;
         public float Am9960 { get => _am9960; set => _am9960 = value; }
         /// <summary>
@@ -6755,11 +6416,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Deviation))
             .Title("deviation")
             .Description("Deviation.")
-            .FormatString(string.Empty)
-            .Units(@"")
+.Units(@"")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _deviation;
         public float Deviation { get => _deviation; set => _deviation = value; }
         /// <summary>
@@ -6770,11 +6429,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CodeIdAm1020))
             .Title("code_id_am_1020")
             .Description("Total aplitude modulation of 90Hz.")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _codeIdAm1020;
         public float CodeIdAm1020 { get => _codeIdAm1020; set => _codeIdAm1020 = value; }
         /// <summary>
@@ -6785,11 +6442,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssEph))
             .Title("gnss_eph")
             .Description("GPS HDOP horizontal dilution of position (unitless). If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _gnssEph;
         public ushort GnssEph { get => _gnssEph; set => _gnssEph = value; }
         /// <summary>
@@ -6800,11 +6455,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssEpv))
             .Title("gnss_epv")
             .Description("GPS VDOP vertical dilution of position (unitless). If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _gnssEpv;
         public ushort GnssEpv { get => _gnssEpv; set => _gnssEpv = value; }
         /// <summary>
@@ -6815,11 +6468,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssVel))
             .Title("gnss_vel")
             .Description("GPS ground speed. If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _gnssVel;
         public ushort GnssVel { get => _gnssVel; set => _gnssVel = value; }
         /// <summary>
@@ -6830,11 +6481,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Vx))
             .Title("vx")
             .Description("Ground X Speed (Latitude, positive north)")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _vx;
         public short Vx { get => _vx; set => _vx = value; }
         /// <summary>
@@ -6845,11 +6494,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Vy))
             .Title("vy")
             .Description("Ground Y Speed (Longitude, positive east)")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _vy;
         public short Vy { get => _vy; set => _vy = value; }
         /// <summary>
@@ -6860,11 +6507,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Vz))
             .Title("vz")
             .Description("Ground Z Speed (Altitude, positive down)")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _vz;
         public short Vz { get => _vz; set => _vz = value; }
         /// <summary>
@@ -6875,11 +6520,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Hdg))
             .Title("hdg")
             .Description("Vehicle heading (yaw angle), 0.0..359.99 degrees. If unknown, set to: UINT16_MAX")
-            .FormatString(string.Empty)
-            .Units(@"cdeg")
+.Units(@"cdeg")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _hdg;
         public ushort Hdg { get => _hdg; set => _hdg = value; }
         /// <summary>
@@ -6890,11 +6533,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CarrierOffset))
             .Title("carrier_offset")
             .Description("Total carrier frequency offset.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _carrierOffset;
         public short CarrierOffset { get => _carrierOffset; set => _carrierOffset = value; }
         /// <summary>
@@ -6905,11 +6546,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Freq30))
             .Title("freq_30")
             .Description("Total frequency offset of signal 30 Hz.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _freq30;
         public short Freq30 { get => _freq30; set => _freq30 = value; }
         /// <summary>
@@ -6920,11 +6559,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(Freq9960))
             .Title("freq_9960")
             .Description("Total frequency offset of signal 9960 Hz.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _freq9960;
         public short Freq9960 { get => _freq9960; set => _freq9960 = value; }
         /// <summary>
@@ -6935,11 +6572,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CodeIdFreq1020))
             .Title("code_id_freq_1020")
             .Description("Total frequency offset of signal 90 Hz.")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _codeIdFreq1020;
         public short CodeIdFreq1020 { get => _codeIdFreq1020; set => _codeIdFreq1020 = value; }
         /// <summary>
@@ -6950,11 +6585,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(MeasureTime))
             .Title("measure_time")
             .Description("Measure time.")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _measureTime;
         public short MeasureTime { get => _measureTime; set => _measureTime = value; }
         /// <summary>
@@ -6965,11 +6598,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(RecordGuid))
             .Title("record_guid")
             .Description("Record GUID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int RecordGuidMaxItemsCount = 16;
         public byte[] RecordGuid { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetRecordGuidMaxItemsCount instead.")]
@@ -6982,12 +6613,10 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssFixType))
             .Title("gnss_fix_type")
             .Description("GPS fix type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GpsFixTypeHelper.GetValues(x=>(byte)x).Min(),GpsFixTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GpsFixTypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GpsFixType _gnssFixType;
+        private GpsFixType _gnssFixType;
         public GpsFixType GnssFixType { get => _gnssFixType; set => _gnssFixType = value; } 
         /// <summary>
         /// Number of satellites visible. If unknown, set to 255
@@ -6997,11 +6626,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(GnssSatellitesVisible))
             .Title("gnss_satellites_visible")
             .Description("Number of satellites visible. If unknown, set to 255")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _gnssSatellitesVisible;
         public byte GnssSatellitesVisible { get => _gnssSatellitesVisible; set => _gnssSatellitesVisible = value; }
         /// <summary>
@@ -7012,11 +6639,9 @@ namespace Asv.Mavlink.AsvSdr
             .Name(nameof(CodeId))
             .Title("code_id")
             .Description("Code identification")
-            .FormatString(string.Empty)
-            .Units(@"Letters")
-            .DataType(new ArrayType(UInt8Type.Default,4))
-
-            .Build();
+.Units(@"Letters")
+            .DataType(new ArrayType(CharType.Ascii,4))
+        .Build();
         public const int CodeIdMaxItemsCount = 4;
         public char[] CodeId { get; } = new char[4];
     }

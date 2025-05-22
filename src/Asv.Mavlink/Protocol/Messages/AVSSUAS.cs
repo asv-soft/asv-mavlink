@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Avssuas
@@ -44,6 +46,7 @@ namespace Asv.Mavlink.Avssuas
             src.Add(AvssDroneImuPacket.MessageId, ()=>new AvssDroneImuPacket());
             src.Add(AvssDroneOperationModePacket.MessageId, ()=>new AvssDroneOperationModePacket());
         }
+ 
     }
 
 #region Enums
@@ -51,7 +54,7 @@ namespace Asv.Mavlink.Avssuas
     /// <summary>
     ///  MAV_CMD
     /// </summary>
-    public enum MavCmd:uint
+    public enum MavCmd : ulong
     {
         /// <summary>
         /// AVSS defined command. Set PRS arm statuses.
@@ -138,11 +141,33 @@ namespace Asv.Mavlink.Avssuas
         /// </summary>
         MavCmdPrsShutdown = 60072,
     }
-
+    public static class MavCmdHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(60050);
+            yield return converter(60051);
+            yield return converter(60052);
+            yield return converter(60053);
+            yield return converter(60070);
+            yield return converter(60071);
+            yield return converter(60072);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(60050),"MAV_CMD_PRS_SET_ARM");
+            yield return new EnumValue<T>(converter(60051),"MAV_CMD_PRS_GET_ARM");
+            yield return new EnumValue<T>(converter(60052),"MAV_CMD_PRS_GET_BATTERY");
+            yield return new EnumValue<T>(converter(60053),"MAV_CMD_PRS_GET_ERR");
+            yield return new EnumValue<T>(converter(60070),"MAV_CMD_PRS_SET_ARM_ALTI");
+            yield return new EnumValue<T>(converter(60071),"MAV_CMD_PRS_GET_ARM_ALTI");
+            yield return new EnumValue<T>(converter(60072),"MAV_CMD_PRS_SHUTDOWN");
+        }
+    }
     /// <summary>
     ///  MAV_AVSS_COMMAND_FAILURE_REASON
     /// </summary>
-    public enum MavAvssCommandFailureReason:uint
+    public enum MavAvssCommandFailureReason : ulong
     {
         /// <summary>
         /// AVSS defined command failure reason. PRS not steady.
@@ -160,11 +185,25 @@ namespace Asv.Mavlink.Avssuas
         /// </summary>
         PrsOtmNotArmed = 3,
     }
-
+    public static class MavAvssCommandFailureReasonHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"PRS_NOT_STEADY");
+            yield return new EnumValue<T>(converter(2),"PRS_DTM_NOT_ARMED");
+            yield return new EnumValue<T>(converter(3),"PRS_OTM_NOT_ARMED");
+        }
+    }
     /// <summary>
     ///  AVSS_M300_OPERATION_MODE
     /// </summary>
-    public enum AvssM300OperationMode:uint
+    public enum AvssM300OperationMode : ulong
     {
         /// <summary>
         /// In manual control mode
@@ -237,11 +276,47 @@ namespace Asv.Mavlink.Avssuas
         /// </summary>
         ModeM300EngineStart = 41,
     }
-
+    public static class AvssM300OperationModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(6);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(15);
+            yield return converter(17);
+            yield return converter(31);
+            yield return converter(33);
+            yield return converter(38);
+            yield return converter(40);
+            yield return converter(41);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MODE_M300_MANUAL_CTRL");
+            yield return new EnumValue<T>(converter(1),"MODE_M300_ATTITUDE");
+            yield return new EnumValue<T>(converter(6),"MODE_M300_P_GPS");
+            yield return new EnumValue<T>(converter(9),"MODE_M300_HOTPOINT_MODE");
+            yield return new EnumValue<T>(converter(10),"MODE_M300_ASSISTED_TAKEOFF");
+            yield return new EnumValue<T>(converter(11),"MODE_M300_AUTO_TAKEOFF");
+            yield return new EnumValue<T>(converter(12),"MODE_M300_AUTO_LANDING");
+            yield return new EnumValue<T>(converter(15),"MODE_M300_NAVI_GO_HOME");
+            yield return new EnumValue<T>(converter(17),"MODE_M300_NAVI_SDK_CTRL");
+            yield return new EnumValue<T>(converter(31),"MODE_M300_S_SPORT");
+            yield return new EnumValue<T>(converter(33),"MODE_M300_FORCE_AUTO_LANDING");
+            yield return new EnumValue<T>(converter(38),"MODE_M300_T_TRIPOD");
+            yield return new EnumValue<T>(converter(40),"MODE_M300_SEARCH_MODE");
+            yield return new EnumValue<T>(converter(41),"MODE_M300_ENGINE_START");
+        }
+    }
     /// <summary>
     ///  AVSS_HORSEFLY_OPERATION_MODE
     /// </summary>
-    public enum AvssHorseflyOperationMode:uint
+    public enum AvssHorseflyOperationMode : ulong
     {
         /// <summary>
         /// In manual control mode
@@ -269,7 +344,25 @@ namespace Asv.Mavlink.Avssuas
         /// </summary>
         ModeHorseflyDrop = 4,
     }
-
+    public static class AvssHorseflyOperationModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MODE_HORSEFLY_MANUAL_CTRL");
+            yield return new EnumValue<T>(converter(1),"MODE_HORSEFLY_AUTO_TAKEOFF");
+            yield return new EnumValue<T>(converter(2),"MODE_HORSEFLY_AUTO_LANDING");
+            yield return new EnumValue<T>(converter(3),"MODE_HORSEFLY_NAVI_GO_HOME");
+            yield return new EnumValue<T>(converter(4),"MODE_HORSEFLY_DROP");
+        }
+    }
 
 #endregion
 
@@ -342,11 +435,11 @@ namespace Asv.Mavlink.Avssuas
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
-            UInt32Type.Accept(visitor,ErrorStatusField, ref _errorStatus);    
-            UInt32Type.Accept(visitor,BatteryStatusField, ref _batteryStatus);    
-            UInt8Type.Accept(visitor,ArmStatusField, ref _armStatus);    
-            UInt8Type.Accept(visitor,ChargeStatusField, ref _chargeStatus);    
+            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
+            UInt32Type.Accept(visitor,ErrorStatusField, ErrorStatusField.DataType, ref _errorStatus);    
+            UInt32Type.Accept(visitor,BatteryStatusField, BatteryStatusField.DataType, ref _batteryStatus);    
+            UInt8Type.Accept(visitor,ArmStatusField, ArmStatusField.DataType, ref _armStatus);    
+            UInt8Type.Accept(visitor,ChargeStatusField, ChargeStatusField.DataType, ref _chargeStatus);    
 
         }
 
@@ -358,11 +451,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(TimeBootMs))
             .Title("time_boot_ms")
             .Description("Timestamp (time since PRS boot).")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _timeBootMs;
         public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
@@ -373,11 +464,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(ErrorStatus))
             .Title("error_status")
             .Description("PRS error statuses")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _errorStatus;
         public uint ErrorStatus { get => _errorStatus; set => _errorStatus = value; }
         /// <summary>
@@ -388,11 +477,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(BatteryStatus))
             .Title("battery_status")
             .Description("Estimated battery run-time without a remote connection and PRS battery voltage")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _batteryStatus;
         public uint BatteryStatus { get => _batteryStatus; set => _batteryStatus = value; }
         /// <summary>
@@ -403,11 +490,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(ArmStatus))
             .Title("arm_status")
             .Description("PRS arm statuses")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _armStatus;
         public byte ArmStatus { get => _armStatus; set => _armStatus = value; }
         /// <summary>
@@ -418,11 +503,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(ChargeStatus))
             .Title("charge_status")
             .Description("PRS battery charge statuses")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _chargeStatus;
         public byte ChargeStatus { get => _chargeStatus; set => _chargeStatus = value; }
     }
@@ -496,12 +579,12 @@ namespace Asv.Mavlink.Avssuas
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
-            Int32Type.Accept(visitor,LatField, ref _lat);    
-            Int32Type.Accept(visitor,LonField, ref _lon);    
-            Int32Type.Accept(visitor,AltField, ref _alt);    
-            FloatType.Accept(visitor,GroundAltField, ref _groundAlt);    
-            FloatType.Accept(visitor,BarometerAltField, ref _barometerAlt);    
+            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LonField, LonField.DataType, ref _lon);    
+            Int32Type.Accept(visitor,AltField, AltField.DataType, ref _alt);    
+            FloatType.Accept(visitor,GroundAltField, GroundAltField.DataType, ref _groundAlt);    
+            FloatType.Accept(visitor,BarometerAltField, BarometerAltField.DataType, ref _barometerAlt);    
 
         }
 
@@ -513,11 +596,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(TimeBootMs))
             .Title("time_boot_ms")
             .Description("Timestamp (time since FC boot).")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _timeBootMs;
         public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
@@ -528,11 +609,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Latitude, expressed")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lat;
         public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -543,11 +622,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Lon))
             .Title("lon")
             .Description("Longitude, expressed")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lon;
         public int Lon { get => _lon; set => _lon = value; }
         /// <summary>
@@ -558,11 +635,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Alt))
             .Title("alt")
             .Description("Altitude (MSL). Note that virtually all GPS modules provide both WGS84 and MSL.")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _alt;
         public int Alt { get => _alt; set => _alt = value; }
         /// <summary>
@@ -573,11 +648,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(GroundAlt))
             .Title("ground_alt")
             .Description("Altitude above ground, This altitude is measured by a ultrasound, Laser rangefinder or millimeter-wave radar")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _groundAlt;
         public float GroundAlt { get => _groundAlt; set => _groundAlt = value; }
         /// <summary>
@@ -588,11 +661,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(BarometerAlt))
             .Title("barometer_alt")
             .Description("This altitude is measured by a barometer")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _barometerAlt;
         public float BarometerAlt { get => _barometerAlt; set => _barometerAlt = value; }
     }
@@ -681,17 +752,17 @@ namespace Asv.Mavlink.Avssuas
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
-            FloatType.Accept(visitor,Q1Field, ref _q1);    
-            FloatType.Accept(visitor,Q2Field, ref _q2);    
-            FloatType.Accept(visitor,Q3Field, ref _q3);    
-            FloatType.Accept(visitor,Q4Field, ref _q4);    
-            FloatType.Accept(visitor,XaccField, ref _xacc);    
-            FloatType.Accept(visitor,YaccField, ref _yacc);    
-            FloatType.Accept(visitor,ZaccField, ref _zacc);    
-            FloatType.Accept(visitor,XgyroField, ref _xgyro);    
-            FloatType.Accept(visitor,YgyroField, ref _ygyro);    
-            FloatType.Accept(visitor,ZgyroField, ref _zgyro);    
+            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
+            FloatType.Accept(visitor,Q1Field, Q1Field.DataType, ref _q1);    
+            FloatType.Accept(visitor,Q2Field, Q2Field.DataType, ref _q2);    
+            FloatType.Accept(visitor,Q3Field, Q3Field.DataType, ref _q3);    
+            FloatType.Accept(visitor,Q4Field, Q4Field.DataType, ref _q4);    
+            FloatType.Accept(visitor,XaccField, XaccField.DataType, ref _xacc);    
+            FloatType.Accept(visitor,YaccField, YaccField.DataType, ref _yacc);    
+            FloatType.Accept(visitor,ZaccField, ZaccField.DataType, ref _zacc);    
+            FloatType.Accept(visitor,XgyroField, XgyroField.DataType, ref _xgyro);    
+            FloatType.Accept(visitor,YgyroField, YgyroField.DataType, ref _ygyro);    
+            FloatType.Accept(visitor,ZgyroField, ZgyroField.DataType, ref _zgyro);    
 
         }
 
@@ -703,11 +774,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(TimeBootMs))
             .Title("time_boot_ms")
             .Description("Timestamp (time since FC boot).")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _timeBootMs;
         public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
@@ -718,11 +787,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Q1))
             .Title("q1")
             .Description("Quaternion component 1, w (1 in null-rotation)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _q1;
         public float Q1 { get => _q1; set => _q1 = value; }
         /// <summary>
@@ -733,11 +800,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Q2))
             .Title("q2")
             .Description("Quaternion component 2, x (0 in null-rotation)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _q2;
         public float Q2 { get => _q2; set => _q2 = value; }
         /// <summary>
@@ -748,11 +813,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Q3))
             .Title("q3")
             .Description("Quaternion component 3, y (0 in null-rotation)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _q3;
         public float Q3 { get => _q3; set => _q3 = value; }
         /// <summary>
@@ -763,11 +826,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Q4))
             .Title("q4")
             .Description("Quaternion component 4, z (0 in null-rotation)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(FloatType.Default)
 
-            .Build();
+            .DataType(FloatType.Default)
+        .Build();
         private float _q4;
         public float Q4 { get => _q4; set => _q4 = value; }
         /// <summary>
@@ -778,11 +839,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Xacc))
             .Title("xacc")
             .Description("X acceleration")
-            .FormatString(string.Empty)
-            .Units(@"m/s/s")
+.Units(@"m/s/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _xacc;
         public float Xacc { get => _xacc; set => _xacc = value; }
         /// <summary>
@@ -793,11 +852,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Yacc))
             .Title("yacc")
             .Description("Y acceleration")
-            .FormatString(string.Empty)
-            .Units(@"m/s/s")
+.Units(@"m/s/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yacc;
         public float Yacc { get => _yacc; set => _yacc = value; }
         /// <summary>
@@ -808,11 +865,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Zacc))
             .Title("zacc")
             .Description("Z acceleration")
-            .FormatString(string.Empty)
-            .Units(@"m/s/s")
+.Units(@"m/s/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _zacc;
         public float Zacc { get => _zacc; set => _zacc = value; }
         /// <summary>
@@ -823,11 +878,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Xgyro))
             .Title("xgyro")
             .Description("Angular speed around X axis")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _xgyro;
         public float Xgyro { get => _xgyro; set => _xgyro = value; }
         /// <summary>
@@ -838,11 +891,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Ygyro))
             .Title("ygyro")
             .Description("Angular speed around Y axis")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _ygyro;
         public float Ygyro { get => _ygyro; set => _ygyro = value; }
         /// <summary>
@@ -853,11 +904,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(Zgyro))
             .Title("zgyro")
             .Description("Angular speed around Z axis")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _zgyro;
         public float Zgyro { get => _zgyro; set => _zgyro = value; }
     }
@@ -922,9 +971,9 @@ namespace Asv.Mavlink.Avssuas
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
-            UInt8Type.Accept(visitor,M300OperationModeField, ref _m300OperationMode);    
-            UInt8Type.Accept(visitor,HorseflyOperationModeField, ref _horseflyOperationMode);    
+            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
+            UInt8Type.Accept(visitor,M300OperationModeField, M300OperationModeField.DataType, ref _m300OperationMode);    
+            UInt8Type.Accept(visitor,HorseflyOperationModeField, HorseflyOperationModeField.DataType, ref _horseflyOperationMode);    
 
         }
 
@@ -936,11 +985,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(TimeBootMs))
             .Title("time_boot_ms")
             .Description("Timestamp (time since FC boot).")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _timeBootMs;
         public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
@@ -951,11 +998,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(M300OperationMode))
             .Title("M300_operation_mode")
             .Description("DJI M300 operation mode")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _m300OperationMode;
         public byte M300OperationMode { get => _m300OperationMode; set => _m300OperationMode = value; }
         /// <summary>
@@ -966,11 +1011,9 @@ namespace Asv.Mavlink.Avssuas
             .Name(nameof(HorseflyOperationMode))
             .Title("horsefly_operation_mode")
             .Description("horsefly operation mode")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _horseflyOperationMode;
         public byte HorseflyOperationMode { get => _horseflyOperationMode; set => _horseflyOperationMode = value; }
     }

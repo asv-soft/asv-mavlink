@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -243,17 +244,20 @@ namespace Asv.Mavlink.Test
         {
             var seed = Random.Shared.Next();
             var random = new Random(seed);
-            var rVisitor = new RandomizeVisitor(random,RandomizeVisitor.AllowedChars,0,16,0,16);
             int count = 0;
             foreach (var id in MavlinkV2MessageFactory.Instance.GetSupportedIds())
             {
                 var origin = MavlinkV2MessageFactory.Instance.Create(id) as MavlinkV2Message;
-
                 try
                 {
                     Assert.NotNull(origin);
-                    origin.GetPayload().Accept(rVisitor);
-                    
+                    Debug.Assert(origin != null, nameof(origin) + " != null");
+                    origin.GetPayload().Randomize(random);
+
+                    if (origin is WifiConfigApPacket)
+                    {
+                        
+                    }
                     var maxSize = origin.GetByteSize();
                     var buff = new byte[maxSize];
                     var serializeSpan = new Span<byte>(buff);
@@ -261,27 +265,20 @@ namespace Asv.Mavlink.Test
                     var readBuffer = new ReadOnlySpan<byte>(buff,0, buff.Length - serializeSpan.Length);
                     var readPacket = MavlinkV2MessageFactory.Instance.Create(id) as MavlinkV2Message;
                     Assert.NotNull(readPacket);
+                    Debug.Assert(readPacket != null, nameof(readPacket) + " != null");
                     readPacket.Deserialize(ref readBuffer);
-                    Assert.Equal(readBuffer.Length, 0);
+                    Assert.Equal(0, readBuffer.Length);
                     Assert.Equal(origin.SystemId, readPacket.SystemId);
                     Assert.Equal(origin.ComponentId, readPacket.ComponentId);
                     Assert.Equal(origin.CompatFlags, readPacket.CompatFlags);
                     Assert.Equal(origin.IncompatFlags, readPacket.IncompatFlags);
                     Assert.Equal(origin.Sequence, readPacket.Sequence);
-
-                    try
-                    {
-                        origin.ShouldDeepEqual(readPacket);
-                    }
-                    catch (Exception e)
-                    {
-                        
-                    }
+                    origin.ShouldDeepEqual(readPacket);
                     
                 }
                 catch (Exception e)
                 {
-
+                    Debug.Assert(origin != null, nameof(origin) + " != null");
                     _output.WriteLine(
                         $"ERROR EQUALITY MESSAGE=[{id}]({origin.Name})  size:{origin.GetByteSize()}. {origin.GetType().Name}. Random seed: {seed}");
                     throw;
@@ -290,7 +287,7 @@ namespace Asv.Mavlink.Test
                 count++;
             }
             
-            _output.WriteLine($"OK ({count})");
+            _output.WriteLine($"OK ({count}) message passed serialization test. Random seed: {seed}");
             
         }
 

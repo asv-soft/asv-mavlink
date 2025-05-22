@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Minimal
@@ -42,6 +44,7 @@ namespace Asv.Mavlink.Minimal
             src.Add(HeartbeatPacket.MessageId, ()=>new HeartbeatPacket());
             src.Add(ProtocolVersionPacket.MessageId, ()=>new ProtocolVersionPacket());
         }
+ 
     }
 
 #region Enums
@@ -50,7 +53,7 @@ namespace Asv.Mavlink.Minimal
     /// Micro air vehicle / autopilot classes. This identifies the individual model.
     ///  MAV_AUTOPILOT
     /// </summary>
-    public enum MavAutopilot:uint
+    public enum MavAutopilot : ulong
     {
         /// <summary>
         /// Generic autopilot, full support for everything
@@ -158,12 +161,62 @@ namespace Asv.Mavlink.Minimal
         /// </summary>
         MavAutopilotReflex = 20,
     }
-
+    public static class MavAutopilotHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+            yield return converter(16);
+            yield return converter(17);
+            yield return converter(18);
+            yield return converter(19);
+            yield return converter(20);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_AUTOPILOT_GENERIC");
+            yield return new EnumValue<T>(converter(1),"MAV_AUTOPILOT_RESERVED");
+            yield return new EnumValue<T>(converter(2),"MAV_AUTOPILOT_SLUGS");
+            yield return new EnumValue<T>(converter(3),"MAV_AUTOPILOT_ARDUPILOTMEGA");
+            yield return new EnumValue<T>(converter(4),"MAV_AUTOPILOT_OPENPILOT");
+            yield return new EnumValue<T>(converter(5),"MAV_AUTOPILOT_GENERIC_WAYPOINTS_ONLY");
+            yield return new EnumValue<T>(converter(6),"MAV_AUTOPILOT_GENERIC_WAYPOINTS_AND_SIMPLE_NAVIGATION_ONLY");
+            yield return new EnumValue<T>(converter(7),"MAV_AUTOPILOT_GENERIC_MISSION_FULL");
+            yield return new EnumValue<T>(converter(8),"MAV_AUTOPILOT_INVALID");
+            yield return new EnumValue<T>(converter(9),"MAV_AUTOPILOT_PPZ");
+            yield return new EnumValue<T>(converter(10),"MAV_AUTOPILOT_UDB");
+            yield return new EnumValue<T>(converter(11),"MAV_AUTOPILOT_FP");
+            yield return new EnumValue<T>(converter(12),"MAV_AUTOPILOT_PX4");
+            yield return new EnumValue<T>(converter(13),"MAV_AUTOPILOT_SMACCMPILOT");
+            yield return new EnumValue<T>(converter(14),"MAV_AUTOPILOT_AUTOQUAD");
+            yield return new EnumValue<T>(converter(15),"MAV_AUTOPILOT_ARMAZILA");
+            yield return new EnumValue<T>(converter(16),"MAV_AUTOPILOT_AEROB");
+            yield return new EnumValue<T>(converter(17),"MAV_AUTOPILOT_ASLUAV");
+            yield return new EnumValue<T>(converter(18),"MAV_AUTOPILOT_SMARTAP");
+            yield return new EnumValue<T>(converter(19),"MAV_AUTOPILOT_AIRRAILS");
+            yield return new EnumValue<T>(converter(20),"MAV_AUTOPILOT_REFLEX");
+        }
+    }
     /// <summary>
     /// MAVLINK component type reported in HEARTBEAT message. Flight controllers must report the type of the vehicle on which they are mounted (e.g. MAV_TYPE_OCTOROTOR). All other components must report a value appropriate for their type (e.g. a camera must use MAV_TYPE_CAMERA).
     ///  MAV_TYPE
     /// </summary>
-    public enum MavType:uint
+    public enum MavType : ulong
     {
         /// <summary>
         /// Generic micro air vehicle
@@ -386,12 +439,108 @@ namespace Asv.Mavlink.Minimal
         /// </summary>
         MavTypeGenericMultirotor = 43,
     }
-
+    public static class MavTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+            yield return converter(16);
+            yield return converter(17);
+            yield return converter(18);
+            yield return converter(19);
+            yield return converter(20);
+            yield return converter(21);
+            yield return converter(22);
+            yield return converter(23);
+            yield return converter(24);
+            yield return converter(25);
+            yield return converter(26);
+            yield return converter(27);
+            yield return converter(28);
+            yield return converter(29);
+            yield return converter(30);
+            yield return converter(31);
+            yield return converter(32);
+            yield return converter(33);
+            yield return converter(34);
+            yield return converter(35);
+            yield return converter(36);
+            yield return converter(37);
+            yield return converter(38);
+            yield return converter(39);
+            yield return converter(40);
+            yield return converter(41);
+            yield return converter(42);
+            yield return converter(43);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_TYPE_GENERIC");
+            yield return new EnumValue<T>(converter(1),"MAV_TYPE_FIXED_WING");
+            yield return new EnumValue<T>(converter(2),"MAV_TYPE_QUADROTOR");
+            yield return new EnumValue<T>(converter(3),"MAV_TYPE_COAXIAL");
+            yield return new EnumValue<T>(converter(4),"MAV_TYPE_HELICOPTER");
+            yield return new EnumValue<T>(converter(5),"MAV_TYPE_ANTENNA_TRACKER");
+            yield return new EnumValue<T>(converter(6),"MAV_TYPE_GCS");
+            yield return new EnumValue<T>(converter(7),"MAV_TYPE_AIRSHIP");
+            yield return new EnumValue<T>(converter(8),"MAV_TYPE_FREE_BALLOON");
+            yield return new EnumValue<T>(converter(9),"MAV_TYPE_ROCKET");
+            yield return new EnumValue<T>(converter(10),"MAV_TYPE_GROUND_ROVER");
+            yield return new EnumValue<T>(converter(11),"MAV_TYPE_SURFACE_BOAT");
+            yield return new EnumValue<T>(converter(12),"MAV_TYPE_SUBMARINE");
+            yield return new EnumValue<T>(converter(13),"MAV_TYPE_HEXAROTOR");
+            yield return new EnumValue<T>(converter(14),"MAV_TYPE_OCTOROTOR");
+            yield return new EnumValue<T>(converter(15),"MAV_TYPE_TRICOPTER");
+            yield return new EnumValue<T>(converter(16),"MAV_TYPE_FLAPPING_WING");
+            yield return new EnumValue<T>(converter(17),"MAV_TYPE_KITE");
+            yield return new EnumValue<T>(converter(18),"MAV_TYPE_ONBOARD_CONTROLLER");
+            yield return new EnumValue<T>(converter(19),"MAV_TYPE_VTOL_TAILSITTER_DUOROTOR");
+            yield return new EnumValue<T>(converter(20),"MAV_TYPE_VTOL_TAILSITTER_QUADROTOR");
+            yield return new EnumValue<T>(converter(21),"MAV_TYPE_VTOL_TILTROTOR");
+            yield return new EnumValue<T>(converter(22),"MAV_TYPE_VTOL_FIXEDROTOR");
+            yield return new EnumValue<T>(converter(23),"MAV_TYPE_VTOL_TAILSITTER");
+            yield return new EnumValue<T>(converter(24),"MAV_TYPE_VTOL_TILTWING");
+            yield return new EnumValue<T>(converter(25),"MAV_TYPE_VTOL_RESERVED5");
+            yield return new EnumValue<T>(converter(26),"MAV_TYPE_GIMBAL");
+            yield return new EnumValue<T>(converter(27),"MAV_TYPE_ADSB");
+            yield return new EnumValue<T>(converter(28),"MAV_TYPE_PARAFOIL");
+            yield return new EnumValue<T>(converter(29),"MAV_TYPE_DODECAROTOR");
+            yield return new EnumValue<T>(converter(30),"MAV_TYPE_CAMERA");
+            yield return new EnumValue<T>(converter(31),"MAV_TYPE_CHARGING_STATION");
+            yield return new EnumValue<T>(converter(32),"MAV_TYPE_FLARM");
+            yield return new EnumValue<T>(converter(33),"MAV_TYPE_SERVO");
+            yield return new EnumValue<T>(converter(34),"MAV_TYPE_ODID");
+            yield return new EnumValue<T>(converter(35),"MAV_TYPE_DECAROTOR");
+            yield return new EnumValue<T>(converter(36),"MAV_TYPE_BATTERY");
+            yield return new EnumValue<T>(converter(37),"MAV_TYPE_PARACHUTE");
+            yield return new EnumValue<T>(converter(38),"MAV_TYPE_LOG");
+            yield return new EnumValue<T>(converter(39),"MAV_TYPE_OSD");
+            yield return new EnumValue<T>(converter(40),"MAV_TYPE_IMU");
+            yield return new EnumValue<T>(converter(41),"MAV_TYPE_GPS");
+            yield return new EnumValue<T>(converter(42),"MAV_TYPE_WINCH");
+            yield return new EnumValue<T>(converter(43),"MAV_TYPE_GENERIC_MULTIROTOR");
+        }
+    }
     /// <summary>
     /// These flags encode the MAV mode.
     ///  MAV_MODE_FLAG
     /// </summary>
-    public enum MavModeFlag:uint
+    public enum MavModeFlag : ulong
     {
         /// <summary>
         /// 0b10000000 MAV safety set to armed. Motors are enabled / running / can start. Ready to fly. Additional note: this flag is to be ignore when sent in the command MAV_CMD_DO_SET_MODE and MAV_CMD_COMPONENT_ARM_DISARM shall be used instead. The flag can still be used to report the armed state.
@@ -434,12 +583,36 @@ namespace Asv.Mavlink.Minimal
         /// </summary>
         MavModeFlagCustomModeEnabled = 1,
     }
-
+    public static class MavModeFlagHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(128);
+            yield return converter(64);
+            yield return converter(32);
+            yield return converter(16);
+            yield return converter(8);
+            yield return converter(4);
+            yield return converter(2);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(128),"MAV_MODE_FLAG_SAFETY_ARMED");
+            yield return new EnumValue<T>(converter(64),"MAV_MODE_FLAG_MANUAL_INPUT_ENABLED");
+            yield return new EnumValue<T>(converter(32),"MAV_MODE_FLAG_HIL_ENABLED");
+            yield return new EnumValue<T>(converter(16),"MAV_MODE_FLAG_STABILIZE_ENABLED");
+            yield return new EnumValue<T>(converter(8),"MAV_MODE_FLAG_GUIDED_ENABLED");
+            yield return new EnumValue<T>(converter(4),"MAV_MODE_FLAG_AUTO_ENABLED");
+            yield return new EnumValue<T>(converter(2),"MAV_MODE_FLAG_TEST_ENABLED");
+            yield return new EnumValue<T>(converter(1),"MAV_MODE_FLAG_CUSTOM_MODE_ENABLED");
+        }
+    }
     /// <summary>
     /// These values encode the bit positions of the decode position. These values can be used to read the value of a flag bit by combining the base_mode variable with AND with the flag position value. The result will be either 0 or 1, depending on if the flag is set or not.
     ///  MAV_MODE_FLAG_DECODE_POSITION
     /// </summary>
-    public enum MavModeFlagDecodePosition:uint
+    public enum MavModeFlagDecodePosition : ulong
     {
         /// <summary>
         /// First bit:  10000000
@@ -482,11 +655,35 @@ namespace Asv.Mavlink.Minimal
         /// </summary>
         MavModeFlagDecodePositionCustomMode = 1,
     }
-
+    public static class MavModeFlagDecodePositionHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(128);
+            yield return converter(64);
+            yield return converter(32);
+            yield return converter(16);
+            yield return converter(8);
+            yield return converter(4);
+            yield return converter(2);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(128),"MAV_MODE_FLAG_DECODE_POSITION_SAFETY");
+            yield return new EnumValue<T>(converter(64),"MAV_MODE_FLAG_DECODE_POSITION_MANUAL");
+            yield return new EnumValue<T>(converter(32),"MAV_MODE_FLAG_DECODE_POSITION_HIL");
+            yield return new EnumValue<T>(converter(16),"MAV_MODE_FLAG_DECODE_POSITION_STABILIZE");
+            yield return new EnumValue<T>(converter(8),"MAV_MODE_FLAG_DECODE_POSITION_GUIDED");
+            yield return new EnumValue<T>(converter(4),"MAV_MODE_FLAG_DECODE_POSITION_AUTO");
+            yield return new EnumValue<T>(converter(2),"MAV_MODE_FLAG_DECODE_POSITION_TEST");
+            yield return new EnumValue<T>(converter(1),"MAV_MODE_FLAG_DECODE_POSITION_CUSTOM_MODE");
+        }
+    }
     /// <summary>
     ///  MAV_STATE
     /// </summary>
-    public enum MavState:uint
+    public enum MavState : ulong
     {
         /// <summary>
         /// Uninitialized system, state is unknown.
@@ -534,14 +731,40 @@ namespace Asv.Mavlink.Minimal
         /// </summary>
         MavStateFlightTermination = 8,
     }
-
+    public static class MavStateHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_STATE_UNINIT");
+            yield return new EnumValue<T>(converter(1),"MAV_STATE_BOOT");
+            yield return new EnumValue<T>(converter(2),"MAV_STATE_CALIBRATING");
+            yield return new EnumValue<T>(converter(3),"MAV_STATE_STANDBY");
+            yield return new EnumValue<T>(converter(4),"MAV_STATE_ACTIVE");
+            yield return new EnumValue<T>(converter(5),"MAV_STATE_CRITICAL");
+            yield return new EnumValue<T>(converter(6),"MAV_STATE_EMERGENCY");
+            yield return new EnumValue<T>(converter(7),"MAV_STATE_POWEROFF");
+            yield return new EnumValue<T>(converter(8),"MAV_STATE_FLIGHT_TERMINATION");
+        }
+    }
     /// <summary>
     /// Component ids (values) for the different types and instances of onboard hardware/software that might make up a MAVLink system (autopilot, cameras, servos, GPS systems, avoidance systems etc.).
     ///       Components must use the appropriate ID in their source address when sending messages. Components can also use IDs to determine if they are the intended recipient of an incoming message. The MAV_COMP_ID_ALL value is used to indicate messages that must be processed by all components.
     ///       When creating new entries, components that can have multiple instances (e.g. cameras, servos etc.) should be allocated sequential values. An appropriate number of values should be left free after these components to allow the number of instances to be expanded.
     ///  MAV_COMPONENT
     /// </summary>
-    public enum MavComponent:uint
+    public enum MavComponent : ulong
     {
         /// <summary>
         /// Target id (target_component) used to broadcast messages to all components of the receiving system. Components should attempt to process messages with this component ID and forward to components on any other interfaces. Note: This is not a valid *source* component id for a message.
@@ -1219,7 +1442,285 @@ namespace Asv.Mavlink.Minimal
         /// </summary>
         MavCompIdSystemControl = 250,
     }
-
+    public static class MavComponentHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(25);
+            yield return converter(26);
+            yield return converter(27);
+            yield return converter(28);
+            yield return converter(29);
+            yield return converter(30);
+            yield return converter(31);
+            yield return converter(32);
+            yield return converter(33);
+            yield return converter(34);
+            yield return converter(35);
+            yield return converter(36);
+            yield return converter(37);
+            yield return converter(38);
+            yield return converter(39);
+            yield return converter(40);
+            yield return converter(41);
+            yield return converter(42);
+            yield return converter(43);
+            yield return converter(44);
+            yield return converter(45);
+            yield return converter(46);
+            yield return converter(47);
+            yield return converter(48);
+            yield return converter(49);
+            yield return converter(50);
+            yield return converter(51);
+            yield return converter(52);
+            yield return converter(53);
+            yield return converter(54);
+            yield return converter(55);
+            yield return converter(56);
+            yield return converter(57);
+            yield return converter(58);
+            yield return converter(59);
+            yield return converter(60);
+            yield return converter(61);
+            yield return converter(62);
+            yield return converter(63);
+            yield return converter(64);
+            yield return converter(65);
+            yield return converter(66);
+            yield return converter(67);
+            yield return converter(68);
+            yield return converter(69);
+            yield return converter(70);
+            yield return converter(71);
+            yield return converter(72);
+            yield return converter(73);
+            yield return converter(74);
+            yield return converter(75);
+            yield return converter(76);
+            yield return converter(77);
+            yield return converter(78);
+            yield return converter(79);
+            yield return converter(80);
+            yield return converter(81);
+            yield return converter(82);
+            yield return converter(83);
+            yield return converter(84);
+            yield return converter(85);
+            yield return converter(86);
+            yield return converter(87);
+            yield return converter(88);
+            yield return converter(89);
+            yield return converter(90);
+            yield return converter(91);
+            yield return converter(92);
+            yield return converter(93);
+            yield return converter(94);
+            yield return converter(95);
+            yield return converter(96);
+            yield return converter(97);
+            yield return converter(98);
+            yield return converter(99);
+            yield return converter(100);
+            yield return converter(101);
+            yield return converter(102);
+            yield return converter(103);
+            yield return converter(104);
+            yield return converter(105);
+            yield return converter(140);
+            yield return converter(141);
+            yield return converter(142);
+            yield return converter(143);
+            yield return converter(144);
+            yield return converter(145);
+            yield return converter(146);
+            yield return converter(147);
+            yield return converter(148);
+            yield return converter(149);
+            yield return converter(150);
+            yield return converter(151);
+            yield return converter(152);
+            yield return converter(153);
+            yield return converter(154);
+            yield return converter(155);
+            yield return converter(156);
+            yield return converter(157);
+            yield return converter(158);
+            yield return converter(159);
+            yield return converter(160);
+            yield return converter(161);
+            yield return converter(169);
+            yield return converter(171);
+            yield return converter(172);
+            yield return converter(173);
+            yield return converter(174);
+            yield return converter(175);
+            yield return converter(180);
+            yield return converter(181);
+            yield return converter(189);
+            yield return converter(190);
+            yield return converter(191);
+            yield return converter(192);
+            yield return converter(193);
+            yield return converter(194);
+            yield return converter(195);
+            yield return converter(196);
+            yield return converter(197);
+            yield return converter(198);
+            yield return converter(200);
+            yield return converter(201);
+            yield return converter(202);
+            yield return converter(220);
+            yield return converter(221);
+            yield return converter(236);
+            yield return converter(237);
+            yield return converter(238);
+            yield return converter(240);
+            yield return converter(241);
+            yield return converter(242);
+            yield return converter(250);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_COMP_ID_ALL");
+            yield return new EnumValue<T>(converter(1),"MAV_COMP_ID_AUTOPILOT1");
+            yield return new EnumValue<T>(converter(25),"MAV_COMP_ID_USER1");
+            yield return new EnumValue<T>(converter(26),"MAV_COMP_ID_USER2");
+            yield return new EnumValue<T>(converter(27),"MAV_COMP_ID_USER3");
+            yield return new EnumValue<T>(converter(28),"MAV_COMP_ID_USER4");
+            yield return new EnumValue<T>(converter(29),"MAV_COMP_ID_USER5");
+            yield return new EnumValue<T>(converter(30),"MAV_COMP_ID_USER6");
+            yield return new EnumValue<T>(converter(31),"MAV_COMP_ID_USER7");
+            yield return new EnumValue<T>(converter(32),"MAV_COMP_ID_USER8");
+            yield return new EnumValue<T>(converter(33),"MAV_COMP_ID_USER9");
+            yield return new EnumValue<T>(converter(34),"MAV_COMP_ID_USER10");
+            yield return new EnumValue<T>(converter(35),"MAV_COMP_ID_USER11");
+            yield return new EnumValue<T>(converter(36),"MAV_COMP_ID_USER12");
+            yield return new EnumValue<T>(converter(37),"MAV_COMP_ID_USER13");
+            yield return new EnumValue<T>(converter(38),"MAV_COMP_ID_USER14");
+            yield return new EnumValue<T>(converter(39),"MAV_COMP_ID_USER15");
+            yield return new EnumValue<T>(converter(40),"MAV_COMP_ID_USER16");
+            yield return new EnumValue<T>(converter(41),"MAV_COMP_ID_USER17");
+            yield return new EnumValue<T>(converter(42),"MAV_COMP_ID_USER18");
+            yield return new EnumValue<T>(converter(43),"MAV_COMP_ID_USER19");
+            yield return new EnumValue<T>(converter(44),"MAV_COMP_ID_USER20");
+            yield return new EnumValue<T>(converter(45),"MAV_COMP_ID_USER21");
+            yield return new EnumValue<T>(converter(46),"MAV_COMP_ID_USER22");
+            yield return new EnumValue<T>(converter(47),"MAV_COMP_ID_USER23");
+            yield return new EnumValue<T>(converter(48),"MAV_COMP_ID_USER24");
+            yield return new EnumValue<T>(converter(49),"MAV_COMP_ID_USER25");
+            yield return new EnumValue<T>(converter(50),"MAV_COMP_ID_USER26");
+            yield return new EnumValue<T>(converter(51),"MAV_COMP_ID_USER27");
+            yield return new EnumValue<T>(converter(52),"MAV_COMP_ID_USER28");
+            yield return new EnumValue<T>(converter(53),"MAV_COMP_ID_USER29");
+            yield return new EnumValue<T>(converter(54),"MAV_COMP_ID_USER30");
+            yield return new EnumValue<T>(converter(55),"MAV_COMP_ID_USER31");
+            yield return new EnumValue<T>(converter(56),"MAV_COMP_ID_USER32");
+            yield return new EnumValue<T>(converter(57),"MAV_COMP_ID_USER33");
+            yield return new EnumValue<T>(converter(58),"MAV_COMP_ID_USER34");
+            yield return new EnumValue<T>(converter(59),"MAV_COMP_ID_USER35");
+            yield return new EnumValue<T>(converter(60),"MAV_COMP_ID_USER36");
+            yield return new EnumValue<T>(converter(61),"MAV_COMP_ID_USER37");
+            yield return new EnumValue<T>(converter(62),"MAV_COMP_ID_USER38");
+            yield return new EnumValue<T>(converter(63),"MAV_COMP_ID_USER39");
+            yield return new EnumValue<T>(converter(64),"MAV_COMP_ID_USER40");
+            yield return new EnumValue<T>(converter(65),"MAV_COMP_ID_USER41");
+            yield return new EnumValue<T>(converter(66),"MAV_COMP_ID_USER42");
+            yield return new EnumValue<T>(converter(67),"MAV_COMP_ID_USER43");
+            yield return new EnumValue<T>(converter(68),"MAV_COMP_ID_TELEMETRY_RADIO");
+            yield return new EnumValue<T>(converter(69),"MAV_COMP_ID_USER45");
+            yield return new EnumValue<T>(converter(70),"MAV_COMP_ID_USER46");
+            yield return new EnumValue<T>(converter(71),"MAV_COMP_ID_USER47");
+            yield return new EnumValue<T>(converter(72),"MAV_COMP_ID_USER48");
+            yield return new EnumValue<T>(converter(73),"MAV_COMP_ID_USER49");
+            yield return new EnumValue<T>(converter(74),"MAV_COMP_ID_USER50");
+            yield return new EnumValue<T>(converter(75),"MAV_COMP_ID_USER51");
+            yield return new EnumValue<T>(converter(76),"MAV_COMP_ID_USER52");
+            yield return new EnumValue<T>(converter(77),"MAV_COMP_ID_USER53");
+            yield return new EnumValue<T>(converter(78),"MAV_COMP_ID_USER54");
+            yield return new EnumValue<T>(converter(79),"MAV_COMP_ID_USER55");
+            yield return new EnumValue<T>(converter(80),"MAV_COMP_ID_USER56");
+            yield return new EnumValue<T>(converter(81),"MAV_COMP_ID_USER57");
+            yield return new EnumValue<T>(converter(82),"MAV_COMP_ID_USER58");
+            yield return new EnumValue<T>(converter(83),"MAV_COMP_ID_USER59");
+            yield return new EnumValue<T>(converter(84),"MAV_COMP_ID_USER60");
+            yield return new EnumValue<T>(converter(85),"MAV_COMP_ID_USER61");
+            yield return new EnumValue<T>(converter(86),"MAV_COMP_ID_USER62");
+            yield return new EnumValue<T>(converter(87),"MAV_COMP_ID_USER63");
+            yield return new EnumValue<T>(converter(88),"MAV_COMP_ID_USER64");
+            yield return new EnumValue<T>(converter(89),"MAV_COMP_ID_USER65");
+            yield return new EnumValue<T>(converter(90),"MAV_COMP_ID_USER66");
+            yield return new EnumValue<T>(converter(91),"MAV_COMP_ID_USER67");
+            yield return new EnumValue<T>(converter(92),"MAV_COMP_ID_USER68");
+            yield return new EnumValue<T>(converter(93),"MAV_COMP_ID_USER69");
+            yield return new EnumValue<T>(converter(94),"MAV_COMP_ID_USER70");
+            yield return new EnumValue<T>(converter(95),"MAV_COMP_ID_USER71");
+            yield return new EnumValue<T>(converter(96),"MAV_COMP_ID_USER72");
+            yield return new EnumValue<T>(converter(97),"MAV_COMP_ID_USER73");
+            yield return new EnumValue<T>(converter(98),"MAV_COMP_ID_USER74");
+            yield return new EnumValue<T>(converter(99),"MAV_COMP_ID_USER75");
+            yield return new EnumValue<T>(converter(100),"MAV_COMP_ID_CAMERA");
+            yield return new EnumValue<T>(converter(101),"MAV_COMP_ID_CAMERA2");
+            yield return new EnumValue<T>(converter(102),"MAV_COMP_ID_CAMERA3");
+            yield return new EnumValue<T>(converter(103),"MAV_COMP_ID_CAMERA4");
+            yield return new EnumValue<T>(converter(104),"MAV_COMP_ID_CAMERA5");
+            yield return new EnumValue<T>(converter(105),"MAV_COMP_ID_CAMERA6");
+            yield return new EnumValue<T>(converter(140),"MAV_COMP_ID_SERVO1");
+            yield return new EnumValue<T>(converter(141),"MAV_COMP_ID_SERVO2");
+            yield return new EnumValue<T>(converter(142),"MAV_COMP_ID_SERVO3");
+            yield return new EnumValue<T>(converter(143),"MAV_COMP_ID_SERVO4");
+            yield return new EnumValue<T>(converter(144),"MAV_COMP_ID_SERVO5");
+            yield return new EnumValue<T>(converter(145),"MAV_COMP_ID_SERVO6");
+            yield return new EnumValue<T>(converter(146),"MAV_COMP_ID_SERVO7");
+            yield return new EnumValue<T>(converter(147),"MAV_COMP_ID_SERVO8");
+            yield return new EnumValue<T>(converter(148),"MAV_COMP_ID_SERVO9");
+            yield return new EnumValue<T>(converter(149),"MAV_COMP_ID_SERVO10");
+            yield return new EnumValue<T>(converter(150),"MAV_COMP_ID_SERVO11");
+            yield return new EnumValue<T>(converter(151),"MAV_COMP_ID_SERVO12");
+            yield return new EnumValue<T>(converter(152),"MAV_COMP_ID_SERVO13");
+            yield return new EnumValue<T>(converter(153),"MAV_COMP_ID_SERVO14");
+            yield return new EnumValue<T>(converter(154),"MAV_COMP_ID_GIMBAL");
+            yield return new EnumValue<T>(converter(155),"MAV_COMP_ID_LOG");
+            yield return new EnumValue<T>(converter(156),"MAV_COMP_ID_ADSB");
+            yield return new EnumValue<T>(converter(157),"MAV_COMP_ID_OSD");
+            yield return new EnumValue<T>(converter(158),"MAV_COMP_ID_PERIPHERAL");
+            yield return new EnumValue<T>(converter(159),"MAV_COMP_ID_QX1_GIMBAL");
+            yield return new EnumValue<T>(converter(160),"MAV_COMP_ID_FLARM");
+            yield return new EnumValue<T>(converter(161),"MAV_COMP_ID_PARACHUTE");
+            yield return new EnumValue<T>(converter(169),"MAV_COMP_ID_WINCH");
+            yield return new EnumValue<T>(converter(171),"MAV_COMP_ID_GIMBAL2");
+            yield return new EnumValue<T>(converter(172),"MAV_COMP_ID_GIMBAL3");
+            yield return new EnumValue<T>(converter(173),"MAV_COMP_ID_GIMBAL4");
+            yield return new EnumValue<T>(converter(174),"MAV_COMP_ID_GIMBAL5");
+            yield return new EnumValue<T>(converter(175),"MAV_COMP_ID_GIMBAL6");
+            yield return new EnumValue<T>(converter(180),"MAV_COMP_ID_BATTERY");
+            yield return new EnumValue<T>(converter(181),"MAV_COMP_ID_BATTERY2");
+            yield return new EnumValue<T>(converter(189),"MAV_COMP_ID_MAVCAN");
+            yield return new EnumValue<T>(converter(190),"MAV_COMP_ID_MISSIONPLANNER");
+            yield return new EnumValue<T>(converter(191),"MAV_COMP_ID_ONBOARD_COMPUTER");
+            yield return new EnumValue<T>(converter(192),"MAV_COMP_ID_ONBOARD_COMPUTER2");
+            yield return new EnumValue<T>(converter(193),"MAV_COMP_ID_ONBOARD_COMPUTER3");
+            yield return new EnumValue<T>(converter(194),"MAV_COMP_ID_ONBOARD_COMPUTER4");
+            yield return new EnumValue<T>(converter(195),"MAV_COMP_ID_PATHPLANNER");
+            yield return new EnumValue<T>(converter(196),"MAV_COMP_ID_OBSTACLE_AVOIDANCE");
+            yield return new EnumValue<T>(converter(197),"MAV_COMP_ID_VISUAL_INERTIAL_ODOMETRY");
+            yield return new EnumValue<T>(converter(198),"MAV_COMP_ID_PAIRING_MANAGER");
+            yield return new EnumValue<T>(converter(200),"MAV_COMP_ID_IMU");
+            yield return new EnumValue<T>(converter(201),"MAV_COMP_ID_IMU_2");
+            yield return new EnumValue<T>(converter(202),"MAV_COMP_ID_IMU_3");
+            yield return new EnumValue<T>(converter(220),"MAV_COMP_ID_GPS");
+            yield return new EnumValue<T>(converter(221),"MAV_COMP_ID_GPS2");
+            yield return new EnumValue<T>(converter(236),"MAV_COMP_ID_ODID_TXRX_1");
+            yield return new EnumValue<T>(converter(237),"MAV_COMP_ID_ODID_TXRX_2");
+            yield return new EnumValue<T>(converter(238),"MAV_COMP_ID_ODID_TXRX_3");
+            yield return new EnumValue<T>(converter(240),"MAV_COMP_ID_UDP_BRIDGE");
+            yield return new EnumValue<T>(converter(241),"MAV_COMP_ID_UART_BRIDGE");
+            yield return new EnumValue<T>(converter(242),"MAV_COMP_ID_TUNNEL_NODE");
+            yield return new EnumValue<T>(converter(250),"MAV_COMP_ID_SYSTEM_CONTROL");
+        }
+    }
 
 #endregion
 
@@ -1295,20 +1796,20 @@ namespace Asv.Mavlink.Minimal
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,CustomModeField, ref _customMode);    
+            UInt32Type.Accept(visitor,CustomModeField, CustomModeField.DataType, ref _customMode);    
             var tmpType = (byte)Type;
-            UInt8Type.Accept(visitor,TypeField, ref tmpType);
+            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref tmpType);
             Type = (MavType)tmpType;
             var tmpAutopilot = (byte)Autopilot;
-            UInt8Type.Accept(visitor,AutopilotField, ref tmpAutopilot);
+            UInt8Type.Accept(visitor,AutopilotField, AutopilotField.DataType, ref tmpAutopilot);
             Autopilot = (MavAutopilot)tmpAutopilot;
             var tmpBaseMode = (byte)BaseMode;
-            UInt8Type.Accept(visitor,BaseModeField, ref tmpBaseMode);
+            UInt8Type.Accept(visitor,BaseModeField, BaseModeField.DataType, ref tmpBaseMode);
             BaseMode = (MavModeFlag)tmpBaseMode;
             var tmpSystemStatus = (byte)SystemStatus;
-            UInt8Type.Accept(visitor,SystemStatusField, ref tmpSystemStatus);
+            UInt8Type.Accept(visitor,SystemStatusField, SystemStatusField.DataType, ref tmpSystemStatus);
             SystemStatus = (MavState)tmpSystemStatus;
-            UInt8Type.Accept(visitor,MavlinkVersionField, ref _mavlinkVersion);    
+            UInt8Type.Accept(visitor,MavlinkVersionField, MavlinkVersionField.DataType, ref _mavlinkVersion);    
 
         }
 
@@ -1320,11 +1821,9 @@ namespace Asv.Mavlink.Minimal
             .Name(nameof(CustomMode))
             .Title("custom_mode")
             .Description("A bitfield for use for autopilot-specific flags")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _customMode;
         public uint CustomMode { get => _customMode; set => _customMode = value; }
         /// <summary>
@@ -1335,12 +1834,10 @@ namespace Asv.Mavlink.Minimal
             .Name(nameof(Type))
             .Title("type")
             .Description("Vehicle or component type. For a flight controller component the vehicle type (quadrotor, helicopter, etc.). For other components the component type (e.g. camera, gimbal, etc.). This should be used in preference to component id for identifying the component type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavTypeHelper.GetValues(x=>(byte)x).Min(),MavTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavTypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavType _type;
+        private MavType _type;
         public MavType Type { get => _type; set => _type = value; } 
         /// <summary>
         /// Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers.
@@ -1350,12 +1847,10 @@ namespace Asv.Mavlink.Minimal
             .Name(nameof(Autopilot))
             .Title("autopilot")
             .Description("Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavAutopilotHelper.GetValues(x=>(byte)x).Min(),MavAutopilotHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavAutopilotHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavAutopilot _autopilot;
+        private MavAutopilot _autopilot;
         public MavAutopilot Autopilot { get => _autopilot; set => _autopilot = value; } 
         /// <summary>
         /// System mode bitmap.
@@ -1365,12 +1860,10 @@ namespace Asv.Mavlink.Minimal
             .Name(nameof(BaseMode))
             .Title("bitmask")
             .Description("System mode bitmap.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavModeFlagHelper.GetValues(x=>(byte)x).Min(),MavModeFlagHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavModeFlagHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavModeFlag _baseMode;
+        private MavModeFlag _baseMode;
         public MavModeFlag BaseMode { get => _baseMode; set => _baseMode = value; } 
         /// <summary>
         /// System status flag.
@@ -1380,12 +1873,10 @@ namespace Asv.Mavlink.Minimal
             .Name(nameof(SystemStatus))
             .Title("system_status")
             .Description("System status flag.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavStateHelper.GetValues(x=>(byte)x).Min(),MavStateHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavStateHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavState _systemStatus;
+        private MavState _systemStatus;
         public MavState SystemStatus { get => _systemStatus; set => _systemStatus = value; } 
         /// <summary>
         /// MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version
@@ -1395,11 +1886,9 @@ namespace Asv.Mavlink.Minimal
             .Name(nameof(MavlinkVersion))
             .Title("mavlink_version")
             .Description("MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _mavlinkVersion;
         public byte MavlinkVersion { get => _mavlinkVersion; set => _mavlinkVersion = value; }
     }
@@ -1487,13 +1976,13 @@ namespace Asv.Mavlink.Minimal
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,VersionField, ref _version);    
-            UInt16Type.Accept(visitor,MinVersionField, ref _minVersion);    
-            UInt16Type.Accept(visitor,MaxVersionField, ref _maxVersion);    
-            ArrayType.Accept(visitor,SpecVersionHashField, 8,
-                (index,v) => UInt8Type.Accept(v, SpecVersionHashField, ref SpecVersionHash[index]));    
-            ArrayType.Accept(visitor,LibraryVersionHashField, 8,
-                (index,v) => UInt8Type.Accept(v, LibraryVersionHashField, ref LibraryVersionHash[index]));    
+            UInt16Type.Accept(visitor,VersionField, VersionField.DataType, ref _version);    
+            UInt16Type.Accept(visitor,MinVersionField, MinVersionField.DataType, ref _minVersion);    
+            UInt16Type.Accept(visitor,MaxVersionField, MaxVersionField.DataType, ref _maxVersion);    
+            ArrayType.Accept(visitor,SpecVersionHashField, SpecVersionHashField.DataType, 8,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref SpecVersionHash[index]));    
+            ArrayType.Accept(visitor,LibraryVersionHashField, LibraryVersionHashField.DataType, 8,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref LibraryVersionHash[index]));    
 
         }
 
@@ -1505,11 +1994,9 @@ namespace Asv.Mavlink.Minimal
             .Name(nameof(Version))
             .Title("version")
             .Description("Currently active MAVLink version number * 100: v1.0 is 100, v2.0 is 200, etc.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _version;
         public ushort Version { get => _version; set => _version = value; }
         /// <summary>
@@ -1520,11 +2007,9 @@ namespace Asv.Mavlink.Minimal
             .Name(nameof(MinVersion))
             .Title("min_version")
             .Description("Minimum MAVLink version supported")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _minVersion;
         public ushort MinVersion { get => _minVersion; set => _minVersion = value; }
         /// <summary>
@@ -1535,11 +2020,9 @@ namespace Asv.Mavlink.Minimal
             .Name(nameof(MaxVersion))
             .Title("max_version")
             .Description("Maximum MAVLink version supported (set to the same value as version by default)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _maxVersion;
         public ushort MaxVersion { get => _maxVersion; set => _maxVersion = value; }
         /// <summary>
@@ -1550,11 +2033,9 @@ namespace Asv.Mavlink.Minimal
             .Name(nameof(SpecVersionHash))
             .Title("spec_version_hash")
             .Description("The first 8 bytes (not characters printed in hex!) of the git hash.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,8))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,8))
+        .Build();
         public const int SpecVersionHashMaxItemsCount = 8;
         public byte[] SpecVersionHash { get; } = new byte[8];
         [Obsolete("This method is deprecated. Use GetSpecVersionHashMaxItemsCount instead.")]
@@ -1567,11 +2048,9 @@ namespace Asv.Mavlink.Minimal
             .Name(nameof(LibraryVersionHash))
             .Title("library_version_hash")
             .Description("The first 8 bytes (not characters printed in hex!) of the git hash.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,8))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,8))
+        .Build();
         public const int LibraryVersionHashMaxItemsCount = 8;
         public byte[] LibraryVersionHash { get; } = new byte[8];
     }

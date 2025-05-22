@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Csairlink
@@ -42,6 +44,7 @@ namespace Asv.Mavlink.Csairlink
             src.Add(AirlinkAuthPacket.MessageId, ()=>new AirlinkAuthPacket());
             src.Add(AirlinkAuthResponsePacket.MessageId, ()=>new AirlinkAuthResponsePacket());
         }
+ 
     }
 
 #region Enums
@@ -49,7 +52,7 @@ namespace Asv.Mavlink.Csairlink
     /// <summary>
     ///  AIRLINK_AUTH_RESPONSE_TYPE
     /// </summary>
-    public enum AirlinkAuthResponseType:uint
+    public enum AirlinkAuthResponseType : ulong
     {
         /// <summary>
         /// Login or password error
@@ -62,7 +65,19 @@ namespace Asv.Mavlink.Csairlink
         /// </summary>
         AirlinkAuthOk = 1,
     }
-
+    public static class AirlinkAuthResponseTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"AIRLINK_ERROR_LOGIN_OR_PASS");
+            yield return new EnumValue<T>(converter(1),"AIRLINK_AUTH_OK");
+        }
+    }
 
 #endregion
 
@@ -167,18 +182,10 @@ namespace Asv.Mavlink.Csairlink
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,LoginField, 50, (index,v) =>
-            {
-                var tmp = (byte)Login[index];
-                UInt8Type.Accept(v,LoginField, ref tmp);
-                Login[index] = (char)tmp;
-            });
-            ArrayType.Accept(visitor,PasswordField, 50, (index,v) =>
-            {
-                var tmp = (byte)Password[index];
-                UInt8Type.Accept(v,PasswordField, ref tmp);
-                Password[index] = (char)tmp;
-            });
+            ArrayType.Accept(visitor,LoginField, LoginField.DataType, 50, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Login[index]));
+            ArrayType.Accept(visitor,PasswordField, PasswordField.DataType, 50, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Password[index]));
 
         }
 
@@ -190,11 +197,9 @@ namespace Asv.Mavlink.Csairlink
             .Name(nameof(Login))
             .Title("login")
             .Description("Login")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,50))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,50))
+        .Build();
         public const int LoginMaxItemsCount = 50;
         public char[] Login { get; } = new char[50];
         [Obsolete("This method is deprecated. Use GetLoginMaxItemsCount instead.")]
@@ -207,11 +212,9 @@ namespace Asv.Mavlink.Csairlink
             .Name(nameof(Password))
             .Title("password")
             .Description("Password")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,50))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,50))
+        .Build();
         public const int PasswordMaxItemsCount = 50;
         public char[] Password { get; } = new char[50];
     }
@@ -271,7 +274,7 @@ namespace Asv.Mavlink.Csairlink
         public void Accept(IVisitor visitor)
         {
             var tmpRespType = (byte)RespType;
-            UInt8Type.Accept(visitor,RespTypeField, ref tmpRespType);
+            UInt8Type.Accept(visitor,RespTypeField, RespTypeField.DataType, ref tmpRespType);
             RespType = (AirlinkAuthResponseType)tmpRespType;
 
         }
@@ -284,12 +287,10 @@ namespace Asv.Mavlink.Csairlink
             .Name(nameof(RespType))
             .Title("resp_type")
             .Description("Response type")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AirlinkAuthResponseTypeHelper.GetValues(x=>(byte)x).Min(),AirlinkAuthResponseTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AirlinkAuthResponseTypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AirlinkAuthResponseType _respType;
+        private AirlinkAuthResponseType _respType;
         public AirlinkAuthResponseType RespType { get => _respType; set => _respType = value; } 
     }
 

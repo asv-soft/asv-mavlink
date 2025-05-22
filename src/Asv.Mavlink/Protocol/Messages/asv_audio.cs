@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvAudio
@@ -42,6 +44,7 @@ namespace Asv.Mavlink.AsvAudio
             src.Add(AsvAudioOnlinePacket.MessageId, ()=>new AsvAudioOnlinePacket());
             src.Add(AsvAudioStreamPacket.MessageId, ()=>new AsvAudioStreamPacket());
         }
+ 
     }
 
 #region Enums
@@ -51,7 +54,7 @@ namespace Asv.Mavlink.AsvAudio
     ///  ASV_AUDIO_MODE_FLAG
     /// </summary>
     [Flags]
-    public enum AsvAudioModeFlag:uint
+    public enum AsvAudioModeFlag : ulong
     {
         /// <summary>
         /// The device can play input audio stream (e.g., speaker is on).
@@ -64,12 +67,24 @@ namespace Asv.Mavlink.AsvAudio
         /// </summary>
         AsvAudioModeFlagMicOn = 2,
     }
-
+    public static class AsvAudioModeFlagHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_AUDIO_MODE_FLAG_SPEAKER_ON");
+            yield return new EnumValue<T>(converter(2),"ASV_AUDIO_MODE_FLAG_MIC_ON");
+        }
+    }
     /// <summary>
     /// Audio codec and audio format (uint8_t).
     ///  ASV_AUDIO_CODEC
     /// </summary>
-    public enum AsvAudioCodec:uint
+    public enum AsvAudioCodec : ulong
     {
         /// <summary>
         /// Unknown codec[!METADATA!]
@@ -136,7 +151,39 @@ namespace Asv.Mavlink.AsvAudio
         /// </summary>
         AsvAudioCodecReserved = 65535,
     }
-
+    public static class AsvAudioCodecHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(255);
+            yield return converter(256);
+            yield return converter(512);
+            yield return converter(768);
+            yield return converter(1024);
+            yield return converter(1280);
+            yield return converter(1536);
+            yield return converter(1792);
+            yield return converter(2048);
+            yield return converter(2304);
+            yield return converter(65535);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_AUDIO_CODEC_UNKNOWN");
+            yield return new EnumValue<T>(converter(255),"ASV_AUDIO_CODEC_RESERVED_255");
+            yield return new EnumValue<T>(converter(256),"ASV_AUDIO_CODEC_RAW_8000_MONO");
+            yield return new EnumValue<T>(converter(512),"ASV_AUDIO_CODEC_OPUS_8000_MONO");
+            yield return new EnumValue<T>(converter(768),"ASV_AUDIO_CODEC_AAC");
+            yield return new EnumValue<T>(converter(1024),"ASV_AUDIO_CODEC_PCMU");
+            yield return new EnumValue<T>(converter(1280),"ASV_AUDIO_CODEC_PCMA");
+            yield return new EnumValue<T>(converter(1536),"ASV_AUDIO_CODEC_SPEEX");
+            yield return new EnumValue<T>(converter(1792),"ASV_AUDIO_CODEC_ILBC");
+            yield return new EnumValue<T>(converter(2048),"ASV_AUDIO_CODEC_G722");
+            yield return new EnumValue<T>(converter(2304),"ASV_AUDIO_CODEC_L16");
+            yield return new EnumValue<T>(converter(65535),"ASV_AUDIO_CODEC_RESERVED");
+        }
+    }
 
 #endregion
 
@@ -226,17 +273,13 @@ namespace Asv.Mavlink.AsvAudio
         public void Accept(IVisitor visitor)
         {
             var tmpCodec = (ushort)Codec;
-            UInt16Type.Accept(visitor,CodecField, ref tmpCodec);
+            UInt16Type.Accept(visitor,CodecField, CodecField.DataType, ref tmpCodec);
             Codec = (AsvAudioCodec)tmpCodec;
             var tmpMode = (byte)Mode;
-            UInt8Type.Accept(visitor,ModeField, ref tmpMode);
+            UInt8Type.Accept(visitor,ModeField, ModeField.DataType, ref tmpMode);
             Mode = (AsvAudioModeFlag)tmpMode;
-            ArrayType.Accept(visitor,NameField, 16, (index,v) =>
-            {
-                var tmp = (byte)Name[index];
-                UInt8Type.Accept(v,NameField, ref tmp);
-                Name[index] = (char)tmp;
-            });
+            ArrayType.Accept(visitor,NameField, NameField.DataType, 16, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Name[index]));
 
         }
 
@@ -248,12 +291,10 @@ namespace Asv.Mavlink.AsvAudio
             .Name(nameof(Codec))
             .Title("codec")
             .Description("Audio codec used by this device.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
-
+            .DataType(new UInt16Type(AsvAudioCodecHelper.GetValues(x=>(ushort)x).Min(),AsvAudioCodecHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(AsvAudioCodecHelper.GetEnumValues(x=>(ushort)x))
             .Build();
-        public AsvAudioCodec _codec;
+        private AsvAudioCodec _codec;
         public AsvAudioCodec Codec { get => _codec; set => _codec = value; } 
         /// <summary>
         /// Device current work mode.
@@ -263,12 +304,10 @@ namespace Asv.Mavlink.AsvAudio
             .Name(nameof(Mode))
             .Title("mode")
             .Description("Device current work mode.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvAudioModeFlagHelper.GetValues(x=>(byte)x).Min(),AsvAudioModeFlagHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvAudioModeFlagHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvAudioModeFlag _mode;
+        private AsvAudioModeFlag _mode;
         public AsvAudioModeFlag Mode { get => _mode; set => _mode = value; } 
         /// <summary>
         /// Audio device name in voice chat.
@@ -278,11 +317,9 @@ namespace Asv.Mavlink.AsvAudio
             .Name(nameof(Name))
             .Title("name")
             .Description("Audio device name in voice chat.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,16))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,16))
+        .Build();
         public const int NameMaxItemsCount = 16;
         public char[] Name { get; } = new char[16];
         [Obsolete("This method is deprecated. Use GetNameMaxItemsCount instead.")]
@@ -371,14 +408,14 @@ namespace Asv.Mavlink.AsvAudio
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,FrameSeqField, ref _frameSeq);    
-            UInt8Type.Accept(visitor,PktInFrameField, ref _pktInFrame);    
-            UInt8Type.Accept(visitor,PktSeqField, ref _pktSeq);    
-            UInt8Type.Accept(visitor,DataSizeField, ref _dataSize);    
-            ArrayType.Accept(visitor,DataField, 230,
-                (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,FrameSeqField, FrameSeqField.DataType, ref _frameSeq);    
+            UInt8Type.Accept(visitor,PktInFrameField, PktInFrameField.DataType, ref _pktInFrame);    
+            UInt8Type.Accept(visitor,PktSeqField, PktSeqField.DataType, ref _pktSeq);    
+            UInt8Type.Accept(visitor,DataSizeField, DataSizeField.DataType, ref _dataSize);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 230,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
 
@@ -390,11 +427,9 @@ namespace Asv.Mavlink.AsvAudio
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -405,11 +440,9 @@ namespace Asv.Mavlink.AsvAudio
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -420,11 +453,9 @@ namespace Asv.Mavlink.AsvAudio
             .Name(nameof(FrameSeq))
             .Title("frame_seq")
             .Description("Frame sequence number.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _frameSeq;
         public byte FrameSeq { get => _frameSeq; set => _frameSeq = value; }
         /// <summary>
@@ -435,11 +466,9 @@ namespace Asv.Mavlink.AsvAudio
             .Name(nameof(PktInFrame))
             .Title("pkt_in_frame")
             .Description("Number of packets for one encoded audio frame.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _pktInFrame;
         public byte PktInFrame { get => _pktInFrame; set => _pktInFrame = value; }
         /// <summary>
@@ -450,11 +479,9 @@ namespace Asv.Mavlink.AsvAudio
             .Name(nameof(PktSeq))
             .Title("pkt_seq")
             .Description("Packet sequence number (starting with 0 on every encoded frame).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _pktSeq;
         public byte PktSeq { get => _pktSeq; set => _pktSeq = value; }
         /// <summary>
@@ -465,11 +492,9 @@ namespace Asv.Mavlink.AsvAudio
             .Name(nameof(DataSize))
             .Title("data_size")
             .Description("Size of data array.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _dataSize;
         public byte DataSize { get => _dataSize; set => _dataSize = value; }
         /// <summary>
@@ -480,11 +505,9 @@ namespace Asv.Mavlink.AsvAudio
             .Name(nameof(Data))
             .Title("data")
             .Description("Audio data.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,230))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,230))
+        .Build();
         public const int DataMaxItemsCount = 230;
         public byte[] Data { get; } = new byte[230];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Storm32
@@ -50,6 +52,7 @@ namespace Asv.Mavlink.Storm32
             src.Add(FrskyPassthroughArrayPacket.MessageId, ()=>new FrskyPassthroughArrayPacket());
             src.Add(ParamValueArrayPacket.MessageId, ()=>new ParamValueArrayPacket());
         }
+ 
     }
 
 #region Enums
@@ -57,7 +60,7 @@ namespace Asv.Mavlink.Storm32
     /// <summary>
     ///  MAV_STORM32_TUNNEL_PAYLOAD_TYPE
     /// </summary>
-    public enum MavStorm32TunnelPayloadType:uint
+    public enum MavStorm32TunnelPayloadType : ulong
     {
         /// <summary>
         /// Registered for STorM32 gimbal controller. For communication with gimbal or camera.
@@ -90,12 +93,32 @@ namespace Asv.Mavlink.Storm32
         /// </summary>
         MavStorm32TunnelPayloadTypeStorm32Ch3Out = 205,
     }
-
+    public static class MavStorm32TunnelPayloadTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(200);
+            yield return converter(201);
+            yield return converter(202);
+            yield return converter(203);
+            yield return converter(204);
+            yield return converter(205);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(200),"MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH1_IN");
+            yield return new EnumValue<T>(converter(201),"MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH1_OUT");
+            yield return new EnumValue<T>(converter(202),"MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH2_IN");
+            yield return new EnumValue<T>(converter(203),"MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH2_OUT");
+            yield return new EnumValue<T>(converter(204),"MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH3_IN");
+            yield return new EnumValue<T>(converter(205),"MAV_STORM32_TUNNEL_PAYLOAD_TYPE_STORM32_CH3_OUT");
+        }
+    }
     /// <summary>
     /// STorM32 gimbal prearm check flags.
     ///  MAV_STORM32_GIMBAL_PREARM_FLAGS
     /// </summary>
-    public enum MavStorm32GimbalPrearmFlags:uint
+    public enum MavStorm32GimbalPrearmFlags : ulong
     {
         /// <summary>
         /// STorM32 gimbal is in normal state.
@@ -163,12 +186,46 @@ namespace Asv.Mavlink.Storm32
         /// </summary>
         MavStorm32GimbalPrearmFlagsNtloggerWorking = 4096,
     }
-
+    public static class MavStorm32GimbalPrearmFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+            yield return converter(256);
+            yield return converter(512);
+            yield return converter(1024);
+            yield return converter(2048);
+            yield return converter(4096);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"MAV_STORM32_GIMBAL_PREARM_FLAGS_IS_NORMAL");
+            yield return new EnumValue<T>(converter(2),"MAV_STORM32_GIMBAL_PREARM_FLAGS_IMUS_WORKING");
+            yield return new EnumValue<T>(converter(4),"MAV_STORM32_GIMBAL_PREARM_FLAGS_MOTORS_WORKING");
+            yield return new EnumValue<T>(converter(8),"MAV_STORM32_GIMBAL_PREARM_FLAGS_ENCODERS_WORKING");
+            yield return new EnumValue<T>(converter(16),"MAV_STORM32_GIMBAL_PREARM_FLAGS_VOLTAGE_OK");
+            yield return new EnumValue<T>(converter(32),"MAV_STORM32_GIMBAL_PREARM_FLAGS_VIRTUALCHANNELS_RECEIVING");
+            yield return new EnumValue<T>(converter(64),"MAV_STORM32_GIMBAL_PREARM_FLAGS_MAVLINK_RECEIVING");
+            yield return new EnumValue<T>(converter(128),"MAV_STORM32_GIMBAL_PREARM_FLAGS_STORM32LINK_QFIX");
+            yield return new EnumValue<T>(converter(256),"MAV_STORM32_GIMBAL_PREARM_FLAGS_STORM32LINK_WORKING");
+            yield return new EnumValue<T>(converter(512),"MAV_STORM32_GIMBAL_PREARM_FLAGS_CAMERA_CONNECTED");
+            yield return new EnumValue<T>(converter(1024),"MAV_STORM32_GIMBAL_PREARM_FLAGS_AUX0_LOW");
+            yield return new EnumValue<T>(converter(2048),"MAV_STORM32_GIMBAL_PREARM_FLAGS_AUX1_LOW");
+            yield return new EnumValue<T>(converter(4096),"MAV_STORM32_GIMBAL_PREARM_FLAGS_NTLOGGER_WORKING");
+        }
+    }
     /// <summary>
     /// STorM32 camera prearm check flags.
     ///  MAV_STORM32_CAMERA_PREARM_FLAGS
     /// </summary>
-    public enum MavStorm32CameraPrearmFlags:uint
+    public enum MavStorm32CameraPrearmFlags : ulong
     {
         /// <summary>
         /// The camera has been found and is connected.
@@ -176,12 +233,22 @@ namespace Asv.Mavlink.Storm32
         /// </summary>
         MavStorm32CameraPrearmFlagsConnected = 1,
     }
-
+    public static class MavStorm32CameraPrearmFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"MAV_STORM32_CAMERA_PREARM_FLAGS_CONNECTED");
+        }
+    }
     /// <summary>
     /// Gimbal manager capability flags.
     ///  MAV_STORM32_GIMBAL_MANAGER_CAP_FLAGS
     /// </summary>
-    public enum MavStorm32GimbalManagerCapFlags:uint
+    public enum MavStorm32GimbalManagerCapFlags : ulong
     {
         /// <summary>
         /// The gimbal manager supports several profiles.
@@ -189,12 +256,22 @@ namespace Asv.Mavlink.Storm32
         /// </summary>
         MavStorm32GimbalManagerCapFlagsHasProfiles = 1,
     }
-
+    public static class MavStorm32GimbalManagerCapFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"MAV_STORM32_GIMBAL_MANAGER_CAP_FLAGS_HAS_PROFILES");
+        }
+    }
     /// <summary>
     /// Flags for gimbal manager operation. Used for setting and reporting, unless specified otherwise. If a setting has been accepted by the gimbal manager is reported in the STORM32_GIMBAL_MANAGER_STATUS message.
     ///  MAV_STORM32_GIMBAL_MANAGER_FLAGS
     /// </summary>
-    public enum MavStorm32GimbalManagerFlags:uint
+    public enum MavStorm32GimbalManagerFlags : ulong
     {
         /// <summary>
         /// 0 = ignore.
@@ -257,12 +334,44 @@ namespace Asv.Mavlink.Storm32
         /// </summary>
         MavStorm32GimbalManagerFlagsSetRelease = 1024,
     }
-
+    public static class MavStorm32GimbalManagerFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+            yield return converter(256);
+            yield return converter(512);
+            yield return converter(1024);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_NONE");
+            yield return new EnumValue<T>(converter(1),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_RC_ACTIVE");
+            yield return new EnumValue<T>(converter(2),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_ONBOARD_ACTIVE");
+            yield return new EnumValue<T>(converter(4),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_AUTOPILOT_ACTIVE");
+            yield return new EnumValue<T>(converter(8),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_GCS_ACTIVE");
+            yield return new EnumValue<T>(converter(16),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CAMERA_ACTIVE");
+            yield return new EnumValue<T>(converter(32),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_GCS2_ACTIVE");
+            yield return new EnumValue<T>(converter(64),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CAMERA2_ACTIVE");
+            yield return new EnumValue<T>(converter(128),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CUSTOM_ACTIVE");
+            yield return new EnumValue<T>(converter(256),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CUSTOM2_ACTIVE");
+            yield return new EnumValue<T>(converter(512),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_SET_SUPERVISON");
+            yield return new EnumValue<T>(converter(1024),"MAV_STORM32_GIMBAL_MANAGER_FLAGS_SET_RELEASE");
+        }
+    }
     /// <summary>
     /// Gimbal manager client ID. In a prioritizing profile, the priorities are determined by the implementation; they could e.g. be custom1 > onboard > GCS > autopilot/camera > GCS2 > custom2.
     ///  MAV_STORM32_GIMBAL_MANAGER_CLIENT
     /// </summary>
-    public enum MavStorm32GimbalManagerClient:uint
+    public enum MavStorm32GimbalManagerClient : ulong
     {
         /// <summary>
         /// For convenience.
@@ -310,12 +419,38 @@ namespace Asv.Mavlink.Storm32
         /// </summary>
         MavStorm32GimbalManagerClientCustom2 = 8,
     }
-
+    public static class MavStorm32GimbalManagerClientHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_STORM32_GIMBAL_MANAGER_CLIENT_NONE");
+            yield return new EnumValue<T>(converter(1),"MAV_STORM32_GIMBAL_MANAGER_CLIENT_ONBOARD");
+            yield return new EnumValue<T>(converter(2),"MAV_STORM32_GIMBAL_MANAGER_CLIENT_AUTOPILOT");
+            yield return new EnumValue<T>(converter(3),"MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS");
+            yield return new EnumValue<T>(converter(4),"MAV_STORM32_GIMBAL_MANAGER_CLIENT_CAMERA");
+            yield return new EnumValue<T>(converter(5),"MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS2");
+            yield return new EnumValue<T>(converter(6),"MAV_STORM32_GIMBAL_MANAGER_CLIENT_CAMERA2");
+            yield return new EnumValue<T>(converter(7),"MAV_STORM32_GIMBAL_MANAGER_CLIENT_CUSTOM");
+            yield return new EnumValue<T>(converter(8),"MAV_STORM32_GIMBAL_MANAGER_CLIENT_CUSTOM2");
+        }
+    }
     /// <summary>
     /// Gimbal manager profiles. Only standard profiles are defined. Any implementation can define its own profile(s) in addition, and should use enum values > 16.
     ///  MAV_STORM32_GIMBAL_MANAGER_PROFILE
     /// </summary>
-    public enum MavStorm32GimbalManagerProfile:uint
+    public enum MavStorm32GimbalManagerProfile : ulong
     {
         /// <summary>
         /// Default profile. Implementation specific.
@@ -348,12 +483,32 @@ namespace Asv.Mavlink.Storm32
         /// </summary>
         MavStorm32GimbalManagerProfilePriorityExclusive = 5,
     }
-
+    public static class MavStorm32GimbalManagerProfileHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_STORM32_GIMBAL_MANAGER_PROFILE_DEFAULT");
+            yield return new EnumValue<T>(converter(1),"MAV_STORM32_GIMBAL_MANAGER_PROFILE_CUSTOM");
+            yield return new EnumValue<T>(converter(2),"MAV_STORM32_GIMBAL_MANAGER_PROFILE_COOPERATIVE");
+            yield return new EnumValue<T>(converter(3),"MAV_STORM32_GIMBAL_MANAGER_PROFILE_EXCLUSIVE");
+            yield return new EnumValue<T>(converter(4),"MAV_STORM32_GIMBAL_MANAGER_PROFILE_PRIORITY_COOPERATIVE");
+            yield return new EnumValue<T>(converter(5),"MAV_STORM32_GIMBAL_MANAGER_PROFILE_PRIORITY_EXCLUSIVE");
+        }
+    }
     /// <summary>
     /// Enumeration of possible shot modes.
     ///  MAV_QSHOT_MODE
     /// </summary>
-    public enum MavQshotMode:uint
+    public enum MavQshotMode : ulong
     {
         /// <summary>
         /// Undefined shot mode. Can be used to determine if qshots should be used or not.
@@ -406,11 +561,39 @@ namespace Asv.Mavlink.Storm32
         /// </summary>
         MavQshotModeHomeTargeting = 9,
     }
-
+    public static class MavQshotModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_QSHOT_MODE_UNDEFINED");
+            yield return new EnumValue<T>(converter(1),"MAV_QSHOT_MODE_DEFAULT");
+            yield return new EnumValue<T>(converter(2),"MAV_QSHOT_MODE_GIMBAL_RETRACT");
+            yield return new EnumValue<T>(converter(3),"MAV_QSHOT_MODE_GIMBAL_NEUTRAL");
+            yield return new EnumValue<T>(converter(4),"MAV_QSHOT_MODE_GIMBAL_MISSION");
+            yield return new EnumValue<T>(converter(5),"MAV_QSHOT_MODE_GIMBAL_RC_CONTROL");
+            yield return new EnumValue<T>(converter(6),"MAV_QSHOT_MODE_POI_TARGETING");
+            yield return new EnumValue<T>(converter(7),"MAV_QSHOT_MODE_SYSID_TARGETING");
+            yield return new EnumValue<T>(converter(8),"MAV_QSHOT_MODE_CABLECAM_2POINT");
+            yield return new EnumValue<T>(converter(9),"MAV_QSHOT_MODE_HOME_TARGETING");
+        }
+    }
     /// <summary>
     ///  MAV_CMD
     /// </summary>
-    public enum MavCmd:uint
+    public enum MavCmd : ulong
     {
         /// <summary>
         /// Command to a gimbal manager to control the gimbal tilt and pan angles. It is possible to set combinations of the values below. E.g. an angle as well as a desired angular rate can be used to get to this angle at a certain angular rate, or an angular rate only will result in continuous turning. NaN is to be used to signal unset. A gimbal device is never to react to this command.
@@ -439,12 +622,26 @@ namespace Asv.Mavlink.Storm32
         /// </summary>
         MavCmdQshotDoConfigure = 60020,
     }
-
+    public static class MavCmdHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(60002);
+            yield return converter(60010);
+            yield return converter(60020);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(60002),"MAV_CMD_STORM32_DO_GIMBAL_MANAGER_CONTROL_PITCHYAW");
+            yield return new EnumValue<T>(converter(60010),"MAV_CMD_STORM32_DO_GIMBAL_MANAGER_SETUP");
+            yield return new EnumValue<T>(converter(60020),"MAV_CMD_QSHOT_DO_CONFIGURE");
+        }
+    }
     /// <summary>
     /// RADIO_RC_CHANNELS flags (bitmask).
     ///  RADIO_RC_CHANNELS_FLAGS
     /// </summary>
-    public enum RadioRcChannelsFlags:uint
+    public enum RadioRcChannelsFlags : ulong
     {
         /// <summary>
         /// Failsafe is active.
@@ -457,12 +654,24 @@ namespace Asv.Mavlink.Storm32
         /// </summary>
         RadioRcChannelsFlagsFrameMissed = 2,
     }
-
+    public static class RadioRcChannelsFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"RADIO_RC_CHANNELS_FLAGS_FAILSAFE");
+            yield return new EnumValue<T>(converter(2),"RADIO_RC_CHANNELS_FLAGS_FRAME_MISSED");
+        }
+    }
     /// <summary>
     /// RADIO_LINK_STATS flags (bitmask).
     ///  RADIO_LINK_STATS_FLAGS
     /// </summary>
-    public enum RadioLinkStatsFlags:uint
+    public enum RadioLinkStatsFlags : ulong
     {
         /// <summary>
         /// Rssi are in negative dBm. Values 0..254 corresponds to 0..-254 dBm.
@@ -470,7 +679,17 @@ namespace Asv.Mavlink.Storm32
         /// </summary>
         RadioLinkStatsFlagsRssiDbm = 1,
     }
-
+    public static class RadioLinkStatsFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"RADIO_LINK_STATS_FLAGS_RSSI_DBM");
+        }
+    }
 
 #endregion
 
@@ -556,18 +775,18 @@ namespace Asv.Mavlink.Storm32
         public void Accept(IVisitor visitor)
         {
             var tmpDeviceCapFlags = (uint)DeviceCapFlags;
-            UInt32Type.Accept(visitor,DeviceCapFlagsField, ref tmpDeviceCapFlags);
+            UInt32Type.Accept(visitor,DeviceCapFlagsField, DeviceCapFlagsField.DataType, ref tmpDeviceCapFlags);
             DeviceCapFlags = (GimbalDeviceCapFlags)tmpDeviceCapFlags;
             var tmpManagerCapFlags = (uint)ManagerCapFlags;
-            UInt32Type.Accept(visitor,ManagerCapFlagsField, ref tmpManagerCapFlags);
+            UInt32Type.Accept(visitor,ManagerCapFlagsField, ManagerCapFlagsField.DataType, ref tmpManagerCapFlags);
             ManagerCapFlags = (MavStorm32GimbalManagerCapFlags)tmpManagerCapFlags;
-            FloatType.Accept(visitor,RollMinField, ref _rollMin);    
-            FloatType.Accept(visitor,RollMaxField, ref _rollMax);    
-            FloatType.Accept(visitor,PitchMinField, ref _pitchMin);    
-            FloatType.Accept(visitor,PitchMaxField, ref _pitchMax);    
-            FloatType.Accept(visitor,YawMinField, ref _yawMin);    
-            FloatType.Accept(visitor,YawMaxField, ref _yawMax);    
-            UInt8Type.Accept(visitor,GimbalIdField, ref _gimbalId);    
+            FloatType.Accept(visitor,RollMinField, RollMinField.DataType, ref _rollMin);    
+            FloatType.Accept(visitor,RollMaxField, RollMaxField.DataType, ref _rollMax);    
+            FloatType.Accept(visitor,PitchMinField, PitchMinField.DataType, ref _pitchMin);    
+            FloatType.Accept(visitor,PitchMaxField, PitchMaxField.DataType, ref _pitchMax);    
+            FloatType.Accept(visitor,YawMinField, YawMinField.DataType, ref _yawMin);    
+            FloatType.Accept(visitor,YawMaxField, YawMaxField.DataType, ref _yawMax);    
+            UInt8Type.Accept(visitor,GimbalIdField, GimbalIdField.DataType, ref _gimbalId);    
 
         }
 
@@ -579,12 +798,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(DeviceCapFlags))
             .Title("bitmask")
             .Description("Gimbal device capability flags. Same flags as reported by GIMBAL_DEVICE_INFORMATION. The flag is only 16 bit wide, but stored in 32 bit, for backwards compatibility (high word is zero).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
-
+            .DataType(new UInt32Type(GimbalDeviceCapFlagsHelper.GetValues(x=>(uint)x).Min(),GimbalDeviceCapFlagsHelper.GetValues(x=>(uint)x).Max()))
+            .Enum(GimbalDeviceCapFlagsHelper.GetEnumValues(x=>(uint)x))
             .Build();
-        public GimbalDeviceCapFlags _deviceCapFlags;
+        private GimbalDeviceCapFlags _deviceCapFlags;
         public GimbalDeviceCapFlags DeviceCapFlags { get => _deviceCapFlags; set => _deviceCapFlags = value; } 
         /// <summary>
         /// Gimbal manager capability flags.
@@ -594,12 +811,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(ManagerCapFlags))
             .Title("bitmask")
             .Description("Gimbal manager capability flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
-
+            .DataType(new UInt32Type(MavStorm32GimbalManagerCapFlagsHelper.GetValues(x=>(uint)x).Min(),MavStorm32GimbalManagerCapFlagsHelper.GetValues(x=>(uint)x).Max()))
+            .Enum(MavStorm32GimbalManagerCapFlagsHelper.GetEnumValues(x=>(uint)x))
             .Build();
-        public MavStorm32GimbalManagerCapFlags _managerCapFlags;
+        private MavStorm32GimbalManagerCapFlags _managerCapFlags;
         public MavStorm32GimbalManagerCapFlags ManagerCapFlags { get => _managerCapFlags; set => _managerCapFlags = value; } 
         /// <summary>
         /// Hardware minimum roll angle (positive: roll to the right). NaN if unknown.
@@ -609,11 +824,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(RollMin))
             .Title("roll_min")
             .Description("Hardware minimum roll angle (positive: roll to the right). NaN if unknown.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _rollMin;
         public float RollMin { get => _rollMin; set => _rollMin = value; }
         /// <summary>
@@ -624,11 +837,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(RollMax))
             .Title("roll_max")
             .Description("Hardware maximum roll angle (positive: roll to the right). NaN if unknown.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _rollMax;
         public float RollMax { get => _rollMax; set => _rollMax = value; }
         /// <summary>
@@ -639,11 +850,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(PitchMin))
             .Title("pitch_min")
             .Description("Hardware minimum pitch/tilt angle (positive: tilt up). NaN if unknown.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitchMin;
         public float PitchMin { get => _pitchMin; set => _pitchMin = value; }
         /// <summary>
@@ -654,11 +863,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(PitchMax))
             .Title("pitch_max")
             .Description("Hardware maximum pitch/tilt angle (positive: tilt up). NaN if unknown.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitchMax;
         public float PitchMax { get => _pitchMax; set => _pitchMax = value; }
         /// <summary>
@@ -669,11 +876,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(YawMin))
             .Title("yaw_min")
             .Description("Hardware minimum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yawMin;
         public float YawMin { get => _yawMin; set => _yawMin = value; }
         /// <summary>
@@ -684,11 +889,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(YawMax))
             .Title("yaw_max")
             .Description("Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base). NaN if unknown.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yawMax;
         public float YawMax { get => _yawMax; set => _yawMax = value; }
         /// <summary>
@@ -699,11 +902,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(GimbalId))
             .Title("gimbal_id")
             .Description("Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _gimbalId;
         public byte GimbalId { get => _gimbalId; set => _gimbalId = value; }
     }
@@ -775,17 +976,17 @@ namespace Asv.Mavlink.Storm32
         public void Accept(IVisitor visitor)
         {
             var tmpDeviceFlags = (ushort)DeviceFlags;
-            UInt16Type.Accept(visitor,DeviceFlagsField, ref tmpDeviceFlags);
+            UInt16Type.Accept(visitor,DeviceFlagsField, DeviceFlagsField.DataType, ref tmpDeviceFlags);
             DeviceFlags = (GimbalDeviceFlags)tmpDeviceFlags;
             var tmpManagerFlags = (ushort)ManagerFlags;
-            UInt16Type.Accept(visitor,ManagerFlagsField, ref tmpManagerFlags);
+            UInt16Type.Accept(visitor,ManagerFlagsField, ManagerFlagsField.DataType, ref tmpManagerFlags);
             ManagerFlags = (MavStorm32GimbalManagerFlags)tmpManagerFlags;
-            UInt8Type.Accept(visitor,GimbalIdField, ref _gimbalId);    
+            UInt8Type.Accept(visitor,GimbalIdField, GimbalIdField.DataType, ref _gimbalId);    
             var tmpSupervisor = (byte)Supervisor;
-            UInt8Type.Accept(visitor,SupervisorField, ref tmpSupervisor);
+            UInt8Type.Accept(visitor,SupervisorField, SupervisorField.DataType, ref tmpSupervisor);
             Supervisor = (MavStorm32GimbalManagerClient)tmpSupervisor;
             var tmpProfile = (byte)Profile;
-            UInt8Type.Accept(visitor,ProfileField, ref tmpProfile);
+            UInt8Type.Accept(visitor,ProfileField, ProfileField.DataType, ref tmpProfile);
             Profile = (MavStorm32GimbalManagerProfile)tmpProfile;
 
         }
@@ -798,12 +999,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(DeviceFlags))
             .Title("device_flags")
             .Description("Gimbal device flags currently applied. Same flags as reported by GIMBAL_DEVICE_ATTITUDE_STATUS.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
-
+            .DataType(new UInt16Type(GimbalDeviceFlagsHelper.GetValues(x=>(ushort)x).Min(),GimbalDeviceFlagsHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(GimbalDeviceFlagsHelper.GetEnumValues(x=>(ushort)x))
             .Build();
-        public GimbalDeviceFlags _deviceFlags;
+        private GimbalDeviceFlags _deviceFlags;
         public GimbalDeviceFlags DeviceFlags { get => _deviceFlags; set => _deviceFlags = value; } 
         /// <summary>
         /// Gimbal manager flags currently applied.
@@ -813,12 +1012,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(ManagerFlags))
             .Title("manager_flags")
             .Description("Gimbal manager flags currently applied.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
-
+            .DataType(new UInt16Type(MavStorm32GimbalManagerFlagsHelper.GetValues(x=>(ushort)x).Min(),MavStorm32GimbalManagerFlagsHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(MavStorm32GimbalManagerFlagsHelper.GetEnumValues(x=>(ushort)x))
             .Build();
-        public MavStorm32GimbalManagerFlags _managerFlags;
+        private MavStorm32GimbalManagerFlags _managerFlags;
         public MavStorm32GimbalManagerFlags ManagerFlags { get => _managerFlags; set => _managerFlags = value; } 
         /// <summary>
         /// Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.
@@ -828,11 +1025,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(GimbalId))
             .Title("gimbal_id")
             .Description("Gimbal ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _gimbalId;
         public byte GimbalId { get => _gimbalId; set => _gimbalId = value; }
         /// <summary>
@@ -843,12 +1038,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Supervisor))
             .Title("supervisor")
             .Description("Client who is currently supervisor (0 = none).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavStorm32GimbalManagerClientHelper.GetValues(x=>(byte)x).Min(),MavStorm32GimbalManagerClientHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavStorm32GimbalManagerClientHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavStorm32GimbalManagerClient _supervisor;
+        private MavStorm32GimbalManagerClient _supervisor;
         public MavStorm32GimbalManagerClient Supervisor { get => _supervisor; set => _supervisor = value; } 
         /// <summary>
         /// Profile currently applied (0 = default).
@@ -858,12 +1051,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Profile))
             .Title("profile")
             .Description("Profile currently applied (0 = default).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavStorm32GimbalManagerProfileHelper.GetValues(x=>(byte)x).Min(),MavStorm32GimbalManagerProfileHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavStorm32GimbalManagerProfileHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavStorm32GimbalManagerProfile _profile;
+        private MavStorm32GimbalManagerProfile _profile;
         public MavStorm32GimbalManagerProfile Profile { get => _profile; set => _profile = value; } 
     }
     /// <summary>
@@ -958,22 +1149,22 @@ namespace Asv.Mavlink.Storm32
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,QField, 4,
-                (index,v) => FloatType.Accept(v, QField, ref Q[index]));
-            FloatType.Accept(visitor,AngularVelocityXField, ref _angularVelocityX);    
-            FloatType.Accept(visitor,AngularVelocityYField, ref _angularVelocityY);    
-            FloatType.Accept(visitor,AngularVelocityZField, ref _angularVelocityZ);    
+            ArrayType.Accept(visitor,QField, QField.DataType, 4,
+                (index, v, f, t) => FloatType.Accept(v, f, t, ref Q[index]));
+            FloatType.Accept(visitor,AngularVelocityXField, AngularVelocityXField.DataType, ref _angularVelocityX);    
+            FloatType.Accept(visitor,AngularVelocityYField, AngularVelocityYField.DataType, ref _angularVelocityY);    
+            FloatType.Accept(visitor,AngularVelocityZField, AngularVelocityZField.DataType, ref _angularVelocityZ);    
             var tmpDeviceFlags = (ushort)DeviceFlags;
-            UInt16Type.Accept(visitor,DeviceFlagsField, ref tmpDeviceFlags);
+            UInt16Type.Accept(visitor,DeviceFlagsField, DeviceFlagsField.DataType, ref tmpDeviceFlags);
             DeviceFlags = (GimbalDeviceFlags)tmpDeviceFlags;
             var tmpManagerFlags = (ushort)ManagerFlags;
-            UInt16Type.Accept(visitor,ManagerFlagsField, ref tmpManagerFlags);
+            UInt16Type.Accept(visitor,ManagerFlagsField, ManagerFlagsField.DataType, ref tmpManagerFlags);
             ManagerFlags = (MavStorm32GimbalManagerFlags)tmpManagerFlags;
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,GimbalIdField, ref _gimbalId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,GimbalIdField, GimbalIdField.DataType, ref _gimbalId);    
             var tmpClient = (byte)Client;
-            UInt8Type.Accept(visitor,ClientField, ref tmpClient);
+            UInt8Type.Accept(visitor,ClientField, ClientField.DataType, ref tmpClient);
             Client = (MavStorm32GimbalManagerClient)tmpClient;
 
         }
@@ -986,11 +1177,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Q))
             .Title("q")
             .Description("Quaternion components, w, x, y, z (1 0 0 0 is the null-rotation). Set first element to NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(FloatType.Default,4))        
 
-            .Build();
+            .DataType(new ArrayType(FloatType.Default,4))        
+        .Build();
         public const int QMaxItemsCount = 4;
         public float[] Q { get; } = new float[4];
         [Obsolete("This method is deprecated. Use GetQMaxItemsCount instead.")]
@@ -1003,11 +1192,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(AngularVelocityX))
             .Title("angular_velocity_x")
             .Description("X component of angular velocity (positive: roll to the right). NaN to be ignored.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _angularVelocityX;
         public float AngularVelocityX { get => _angularVelocityX; set => _angularVelocityX = value; }
         /// <summary>
@@ -1018,11 +1205,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(AngularVelocityY))
             .Title("angular_velocity_y")
             .Description("Y component of angular velocity (positive: tilt up). NaN to be ignored.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _angularVelocityY;
         public float AngularVelocityY { get => _angularVelocityY; set => _angularVelocityY = value; }
         /// <summary>
@@ -1033,11 +1218,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(AngularVelocityZ))
             .Title("angular_velocity_z")
             .Description("Z component of angular velocity (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _angularVelocityZ;
         public float AngularVelocityZ { get => _angularVelocityZ; set => _angularVelocityZ = value; }
         /// <summary>
@@ -1048,12 +1231,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(DeviceFlags))
             .Title("device_flags")
             .Description("Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
-
+            .DataType(new UInt16Type(GimbalDeviceFlagsHelper.GetValues(x=>(ushort)x).Min(),GimbalDeviceFlagsHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(GimbalDeviceFlagsHelper.GetEnumValues(x=>(ushort)x))
             .Build();
-        public GimbalDeviceFlags _deviceFlags;
+        private GimbalDeviceFlags _deviceFlags;
         public GimbalDeviceFlags DeviceFlags { get => _deviceFlags; set => _deviceFlags = value; } 
         /// <summary>
         /// Gimbal manager flags to be applied (0 to be ignored).
@@ -1063,12 +1244,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(ManagerFlags))
             .Title("manager_flags")
             .Description("Gimbal manager flags to be applied (0 to be ignored).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
-
+            .DataType(new UInt16Type(MavStorm32GimbalManagerFlagsHelper.GetValues(x=>(ushort)x).Min(),MavStorm32GimbalManagerFlagsHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(MavStorm32GimbalManagerFlagsHelper.GetEnumValues(x=>(ushort)x))
             .Build();
-        public MavStorm32GimbalManagerFlags _managerFlags;
+        private MavStorm32GimbalManagerFlags _managerFlags;
         public MavStorm32GimbalManagerFlags ManagerFlags { get => _managerFlags; set => _managerFlags = value; } 
         /// <summary>
         /// System ID
@@ -1078,11 +1257,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -1093,11 +1270,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -1108,11 +1283,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(GimbalId))
             .Title("gimbal_id")
             .Description("Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _gimbalId;
         public byte GimbalId { get => _gimbalId; set => _gimbalId = value; }
         /// <summary>
@@ -1123,12 +1296,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Client))
             .Title("client")
             .Description("Client which is contacting the gimbal manager (must be set).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavStorm32GimbalManagerClientHelper.GetValues(x=>(byte)x).Min(),MavStorm32GimbalManagerClientHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavStorm32GimbalManagerClientHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavStorm32GimbalManagerClient _client;
+        private MavStorm32GimbalManagerClient _client;
         public MavStorm32GimbalManagerClient Client { get => _client; set => _client = value; } 
     }
     /// <summary>
@@ -1213,21 +1384,21 @@ namespace Asv.Mavlink.Storm32
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,PitchField, ref _pitch);    
-            FloatType.Accept(visitor,YawField, ref _yaw);    
-            FloatType.Accept(visitor,PitchRateField, ref _pitchRate);    
-            FloatType.Accept(visitor,YawRateField, ref _yawRate);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,PitchRateField, PitchRateField.DataType, ref _pitchRate);    
+            FloatType.Accept(visitor,YawRateField, YawRateField.DataType, ref _yawRate);    
             var tmpDeviceFlags = (ushort)DeviceFlags;
-            UInt16Type.Accept(visitor,DeviceFlagsField, ref tmpDeviceFlags);
+            UInt16Type.Accept(visitor,DeviceFlagsField, DeviceFlagsField.DataType, ref tmpDeviceFlags);
             DeviceFlags = (GimbalDeviceFlags)tmpDeviceFlags;
             var tmpManagerFlags = (ushort)ManagerFlags;
-            UInt16Type.Accept(visitor,ManagerFlagsField, ref tmpManagerFlags);
+            UInt16Type.Accept(visitor,ManagerFlagsField, ManagerFlagsField.DataType, ref tmpManagerFlags);
             ManagerFlags = (MavStorm32GimbalManagerFlags)tmpManagerFlags;
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,GimbalIdField, ref _gimbalId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,GimbalIdField, GimbalIdField.DataType, ref _gimbalId);    
             var tmpClient = (byte)Client;
-            UInt8Type.Accept(visitor,ClientField, ref tmpClient);
+            UInt8Type.Accept(visitor,ClientField, ClientField.DataType, ref tmpClient);
             Client = (MavStorm32GimbalManagerClient)tmpClient;
 
         }
@@ -1240,11 +1411,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Pitch))
             .Title("pitch")
             .Description("Pitch/tilt angle (positive: tilt up). NaN to be ignored.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitch;
         public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
@@ -1255,11 +1424,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Yaw))
             .Title("yaw")
             .Description("Yaw/pan angle (positive: pan the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yaw;
         public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
@@ -1270,11 +1437,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(PitchRate))
             .Title("pitch_rate")
             .Description("Pitch/tilt angular rate (positive: tilt up). NaN to be ignored.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _pitchRate;
         public float PitchRate { get => _pitchRate; set => _pitchRate = value; }
         /// <summary>
@@ -1285,11 +1450,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(YawRate))
             .Title("yaw_rate")
             .Description("Yaw/pan angular rate (positive: pan to the right). NaN to be ignored. The frame is determined by the GIMBAL_DEVICE_FLAGS_YAW_IN_xxx_FRAME flags.")
-            .FormatString(string.Empty)
-            .Units(@"rad/s")
+.Units(@"rad/s")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _yawRate;
         public float YawRate { get => _yawRate; set => _yawRate = value; }
         /// <summary>
@@ -1300,12 +1463,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(DeviceFlags))
             .Title("device_flags")
             .Description("Gimbal device flags to be applied (UINT16_MAX to be ignored). Same flags as used in GIMBAL_DEVICE_SET_ATTITUDE.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
-
+            .DataType(new UInt16Type(GimbalDeviceFlagsHelper.GetValues(x=>(ushort)x).Min(),GimbalDeviceFlagsHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(GimbalDeviceFlagsHelper.GetEnumValues(x=>(ushort)x))
             .Build();
-        public GimbalDeviceFlags _deviceFlags;
+        private GimbalDeviceFlags _deviceFlags;
         public GimbalDeviceFlags DeviceFlags { get => _deviceFlags; set => _deviceFlags = value; } 
         /// <summary>
         /// Gimbal manager flags to be applied (0 to be ignored).
@@ -1315,12 +1476,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(ManagerFlags))
             .Title("manager_flags")
             .Description("Gimbal manager flags to be applied (0 to be ignored).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
-
+            .DataType(new UInt16Type(MavStorm32GimbalManagerFlagsHelper.GetValues(x=>(ushort)x).Min(),MavStorm32GimbalManagerFlagsHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(MavStorm32GimbalManagerFlagsHelper.GetEnumValues(x=>(ushort)x))
             .Build();
-        public MavStorm32GimbalManagerFlags _managerFlags;
+        private MavStorm32GimbalManagerFlags _managerFlags;
         public MavStorm32GimbalManagerFlags ManagerFlags { get => _managerFlags; set => _managerFlags = value; } 
         /// <summary>
         /// System ID
@@ -1330,11 +1489,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -1345,11 +1502,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -1360,11 +1515,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(GimbalId))
             .Title("gimbal_id")
             .Description("Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _gimbalId;
         public byte GimbalId { get => _gimbalId; set => _gimbalId = value; }
         /// <summary>
@@ -1375,12 +1528,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Client))
             .Title("client")
             .Description("Client which is contacting the gimbal manager (must be set).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavStorm32GimbalManagerClientHelper.GetValues(x=>(byte)x).Min(),MavStorm32GimbalManagerClientHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavStorm32GimbalManagerClientHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavStorm32GimbalManagerClient _client;
+        private MavStorm32GimbalManagerClient _client;
         public MavStorm32GimbalManagerClient Client { get => _client; set => _client = value; } 
     }
     /// <summary>
@@ -1450,12 +1601,12 @@ namespace Asv.Mavlink.Storm32
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,RollField, ref _roll);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
-            UInt8Type.Accept(visitor,GimbalIdField, ref _gimbalId);    
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,GimbalIdField, GimbalIdField.DataType, ref _gimbalId);    
             var tmpClient = (byte)Client;
-            UInt8Type.Accept(visitor,ClientField, ref tmpClient);
+            UInt8Type.Accept(visitor,ClientField, ClientField.DataType, ref tmpClient);
             Client = (MavStorm32GimbalManagerClient)tmpClient;
 
         }
@@ -1468,11 +1619,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Roll))
             .Title("roll")
             .Description("Roll angle (positive to roll to the right).")
-            .FormatString(string.Empty)
-            .Units(@"rad")
+.Units(@"rad")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _roll;
         public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
@@ -1483,11 +1632,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -1498,11 +1645,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
@@ -1513,11 +1658,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(GimbalId))
             .Title("gimbal_id")
             .Description("Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _gimbalId;
         public byte GimbalId { get => _gimbalId; set => _gimbalId = value; }
         /// <summary>
@@ -1528,12 +1671,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Client))
             .Title("client")
             .Description("Client which is contacting the gimbal manager (must be set).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(MavStorm32GimbalManagerClientHelper.GetValues(x=>(byte)x).Min(),MavStorm32GimbalManagerClientHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavStorm32GimbalManagerClientHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public MavStorm32GimbalManagerClient _client;
+        private MavStorm32GimbalManagerClient _client;
         public MavStorm32GimbalManagerClient Client { get => _client; set => _client = value; } 
     }
     /// <summary>
@@ -1595,9 +1736,9 @@ namespace Asv.Mavlink.Storm32
         public void Accept(IVisitor visitor)
         {
             var tmpMode = (ushort)Mode;
-            UInt16Type.Accept(visitor,ModeField, ref tmpMode);
+            UInt16Type.Accept(visitor,ModeField, ModeField.DataType, ref tmpMode);
             Mode = (MavQshotMode)tmpMode;
-            UInt16Type.Accept(visitor,ShotStateField, ref _shotState);    
+            UInt16Type.Accept(visitor,ShotStateField, ShotStateField.DataType, ref _shotState);    
 
         }
 
@@ -1609,12 +1750,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Mode))
             .Title("mode")
             .Description("Current shot mode.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
-
+            .DataType(new UInt16Type(MavQshotModeHelper.GetValues(x=>(ushort)x).Min(),MavQshotModeHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(MavQshotModeHelper.GetEnumValues(x=>(ushort)x))
             .Build();
-        public MavQshotMode _mode;
+        private MavQshotMode _mode;
         public MavQshotMode Mode { get => _mode; set => _mode = value; } 
         /// <summary>
         /// Current state in the shot. States are specific to the selected shot mode.
@@ -1624,11 +1763,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(ShotState))
             .Title("shot_state")
             .Description("Current state in the shot. States are specific to the selected shot mode.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _shotState;
         public ushort ShotState { get => _shotState; set => _shotState = value; }
     }
@@ -1704,12 +1841,12 @@ namespace Asv.Mavlink.Storm32
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,CountField, ref _count);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
             var tmpFlags = (byte)Flags;
-            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt8Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (RadioRcChannelsFlags)tmpFlags;
-            ArrayType.Accept(visitor,ChannelsField, 24,
-                (index,v) => Int16Type.Accept(v, ChannelsField, ref Channels[index]));    
+            ArrayType.Accept(visitor,ChannelsField, ChannelsField.DataType, 24,
+                (index, v, f, t) => Int16Type.Accept(v, f, t, ref Channels[index]));    
 
         }
 
@@ -1721,11 +1858,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Count))
             .Title("count")
             .Description("Total number of RC channels being received. This can be larger than 24, indicating that more channels are available but not given in this message.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _count;
         public byte Count { get => _count; set => _count = value; }
         /// <summary>
@@ -1736,12 +1871,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Flags))
             .Title("bitmask")
             .Description("Radio channels status flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(RadioRcChannelsFlagsHelper.GetValues(x=>(byte)x).Min(),RadioRcChannelsFlagsHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(RadioRcChannelsFlagsHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public RadioRcChannelsFlags _flags;
+        private RadioRcChannelsFlags _flags;
         public RadioRcChannelsFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// RC channels. Channels above count should be set to 0, to benefit from MAVLink's zero padding.
@@ -1751,11 +1884,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Channels))
             .Title("channels")
             .Description("RC channels. Channels above count should be set to 0, to benefit from MAVLink's zero padding.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(Int16Type.Default,24))
 
-            .Build();
+            .DataType(new ArrayType(Int16Type.Default,24))
+        .Build();
         public const int ChannelsMaxItemsCount = 24;
         public short[] Channels { get; } = new short[24];
     }
@@ -1857,22 +1988,22 @@ namespace Asv.Mavlink.Storm32
         public void Accept(IVisitor visitor)
         {
             var tmpFlags = (byte)Flags;
-            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt8Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (RadioLinkStatsFlags)tmpFlags;
-            UInt8Type.Accept(visitor,RxLqField, ref _rxLq);    
-            UInt8Type.Accept(visitor,RxRssi1Field, ref _rxRssi1);    
-            Int8Type.Accept(visitor,RxSnr1Field, ref _rxSnr1);                
-            UInt8Type.Accept(visitor,RxRssi2Field, ref _rxRssi2);    
-            Int8Type.Accept(visitor,RxSnr2Field, ref _rxSnr2);                
-            UInt8Type.Accept(visitor,RxReceiveAntennaField, ref _rxReceiveAntenna);    
-            UInt8Type.Accept(visitor,RxTransmitAntennaField, ref _rxTransmitAntenna);    
-            UInt8Type.Accept(visitor,TxLqField, ref _txLq);    
-            UInt8Type.Accept(visitor,TxRssi1Field, ref _txRssi1);    
-            Int8Type.Accept(visitor,TxSnr1Field, ref _txSnr1);                
-            UInt8Type.Accept(visitor,TxRssi2Field, ref _txRssi2);    
-            Int8Type.Accept(visitor,TxSnr2Field, ref _txSnr2);                
-            UInt8Type.Accept(visitor,TxReceiveAntennaField, ref _txReceiveAntenna);    
-            UInt8Type.Accept(visitor,TxTransmitAntennaField, ref _txTransmitAntenna);    
+            UInt8Type.Accept(visitor,RxLqField, RxLqField.DataType, ref _rxLq);    
+            UInt8Type.Accept(visitor,RxRssi1Field, RxRssi1Field.DataType, ref _rxRssi1);    
+            Int8Type.Accept(visitor,RxSnr1Field, RxSnr1Field.DataType, ref _rxSnr1);                
+            UInt8Type.Accept(visitor,RxRssi2Field, RxRssi2Field.DataType, ref _rxRssi2);    
+            Int8Type.Accept(visitor,RxSnr2Field, RxSnr2Field.DataType, ref _rxSnr2);                
+            UInt8Type.Accept(visitor,RxReceiveAntennaField, RxReceiveAntennaField.DataType, ref _rxReceiveAntenna);    
+            UInt8Type.Accept(visitor,RxTransmitAntennaField, RxTransmitAntennaField.DataType, ref _rxTransmitAntenna);    
+            UInt8Type.Accept(visitor,TxLqField, TxLqField.DataType, ref _txLq);    
+            UInt8Type.Accept(visitor,TxRssi1Field, TxRssi1Field.DataType, ref _txRssi1);    
+            Int8Type.Accept(visitor,TxSnr1Field, TxSnr1Field.DataType, ref _txSnr1);                
+            UInt8Type.Accept(visitor,TxRssi2Field, TxRssi2Field.DataType, ref _txRssi2);    
+            Int8Type.Accept(visitor,TxSnr2Field, TxSnr2Field.DataType, ref _txSnr2);                
+            UInt8Type.Accept(visitor,TxReceiveAntennaField, TxReceiveAntennaField.DataType, ref _txReceiveAntenna);    
+            UInt8Type.Accept(visitor,TxTransmitAntennaField, TxTransmitAntennaField.DataType, ref _txTransmitAntenna);    
 
         }
 
@@ -1884,12 +2015,10 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Flags))
             .Title("bitmask")
             .Description("Radio link statistics flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(RadioLinkStatsFlagsHelper.GetValues(x=>(byte)x).Min(),RadioLinkStatsFlagsHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(RadioLinkStatsFlagsHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public RadioLinkStatsFlags _flags;
+        private RadioLinkStatsFlags _flags;
         public RadioLinkStatsFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Values: 0..100. UINT8_MAX: invalid/unknown.
@@ -1899,11 +2028,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(RxLq))
             .Title("rx_LQ")
             .Description("Values: 0..100. UINT8_MAX: invalid/unknown.")
-            .FormatString(string.Empty)
-            .Units(@"c%")
+.Units(@"c%")
             .DataType(UInt8Type.Default)
-
-            .Build();
+        .Build();
         private byte _rxLq;
         public byte RxLq { get => _rxLq; set => _rxLq = value; }
         /// <summary>
@@ -1914,11 +2041,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(RxRssi1))
             .Title("rx_rssi1")
             .Description("Rssi of antenna1. UINT8_MAX: invalid/unknown.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _rxRssi1;
         public byte RxRssi1 { get => _rxRssi1; set => _rxRssi1 = value; }
         /// <summary>
@@ -1929,11 +2054,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(RxSnr1))
             .Title("rx_snr1")
             .Description("Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int8Type.Default)
 
-            .Build();
+            .DataType(Int8Type.Default)
+        .Build();
         private sbyte _rxSnr1;
         public sbyte RxSnr1 { get => _rxSnr1; set => _rxSnr1 = value; }
         /// <summary>
@@ -1944,11 +2067,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(RxRssi2))
             .Title("rx_rssi2")
             .Description("Rssi of antenna2. UINT8_MAX: ignore/unknown, use rx_rssi1.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _rxRssi2;
         public byte RxRssi2 { get => _rxRssi2; set => _rxRssi2 = value; }
         /// <summary>
@@ -1959,11 +2080,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(RxSnr2))
             .Title("rx_snr2")
             .Description("Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use rx_snr1.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int8Type.Default)
 
-            .Build();
+            .DataType(Int8Type.Default)
+        .Build();
         private sbyte _rxSnr2;
         public sbyte RxSnr2 { get => _rxSnr2; set => _rxSnr2 = value; }
         /// <summary>
@@ -1974,11 +2093,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(RxReceiveAntenna))
             .Title("rx_receive_antenna")
             .Description("0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx receive diversity, use rx_rssi1, rx_snr1.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _rxReceiveAntenna;
         public byte RxReceiveAntenna { get => _rxReceiveAntenna; set => _rxReceiveAntenna = value; }
         /// <summary>
@@ -1989,11 +2106,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(RxTransmitAntenna))
             .Title("rx_transmit_antenna")
             .Description("0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Rx transmit diversity.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _rxTransmitAntenna;
         public byte RxTransmitAntenna { get => _rxTransmitAntenna; set => _rxTransmitAntenna = value; }
         /// <summary>
@@ -2004,11 +2119,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TxLq))
             .Title("tx_LQ")
             .Description("Values: 0..100. UINT8_MAX: invalid/unknown.")
-            .FormatString(string.Empty)
-            .Units(@"c%")
+.Units(@"c%")
             .DataType(UInt8Type.Default)
-
-            .Build();
+        .Build();
         private byte _txLq;
         public byte TxLq { get => _txLq; set => _txLq = value; }
         /// <summary>
@@ -2019,11 +2132,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TxRssi1))
             .Title("tx_rssi1")
             .Description("Rssi of antenna1. UINT8_MAX: invalid/unknown.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _txRssi1;
         public byte TxRssi1 { get => _txRssi1; set => _txRssi1 = value; }
         /// <summary>
@@ -2034,11 +2145,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TxSnr1))
             .Title("tx_snr1")
             .Description("Noise on antenna1. Radio dependent. INT8_MAX: invalid/unknown.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int8Type.Default)
 
-            .Build();
+            .DataType(Int8Type.Default)
+        .Build();
         private sbyte _txSnr1;
         public sbyte TxSnr1 { get => _txSnr1; set => _txSnr1 = value; }
         /// <summary>
@@ -2049,11 +2158,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TxRssi2))
             .Title("tx_rssi2")
             .Description("Rssi of antenna2. UINT8_MAX: ignore/unknown, use tx_rssi1.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _txRssi2;
         public byte TxRssi2 { get => _txRssi2; set => _txRssi2 = value; }
         /// <summary>
@@ -2064,11 +2171,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TxSnr2))
             .Title("tx_snr2")
             .Description("Noise on antenna2. Radio dependent. INT8_MAX: ignore/unknown, use tx_snr1.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(Int8Type.Default)
 
-            .Build();
+            .DataType(Int8Type.Default)
+        .Build();
         private sbyte _txSnr2;
         public sbyte TxSnr2 { get => _txSnr2; set => _txSnr2 = value; }
         /// <summary>
@@ -2079,11 +2184,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TxReceiveAntenna))
             .Title("tx_receive_antenna")
             .Description("0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx receive diversity, use tx_rssi1, tx_snr1.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _txReceiveAntenna;
         public byte TxReceiveAntenna { get => _txReceiveAntenna; set => _txReceiveAntenna = value; }
         /// <summary>
@@ -2094,11 +2197,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TxTransmitAntenna))
             .Title("tx_transmit_antenna")
             .Description("0: antenna1, 1: antenna2, UINT8_MAX: ignore, no Tx transmit diversity.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _txTransmitAntenna;
         public byte TxTransmitAntenna { get => _txTransmitAntenna; set => _txTransmitAntenna = value; }
     }
@@ -2173,10 +2274,10 @@ namespace Asv.Mavlink.Storm32
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
-            UInt8Type.Accept(visitor,CountField, ref _count);    
-            ArrayType.Accept(visitor,PacketBufField, 240,
-                (index,v) => UInt8Type.Accept(v, PacketBufField, ref PacketBuf[index]));    
+            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            ArrayType.Accept(visitor,PacketBufField, PacketBufField.DataType, 240,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref PacketBuf[index]));    
 
         }
 
@@ -2188,11 +2289,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(TimeBootMs))
             .Title("time_boot_ms")
             .Description("Timestamp (time since system boot).")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(UInt32Type.Default)
-
-            .Build();
+        .Build();
         private uint _timeBootMs;
         public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
@@ -2203,11 +2302,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Count))
             .Title("count")
             .Description("Number of passthrough packets in this message.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _count;
         public byte Count { get => _count; set => _count = value; }
         /// <summary>
@@ -2218,11 +2315,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(PacketBuf))
             .Title("packet_buf")
             .Description("Passthrough packet buffer. A packet has 6 bytes: uint16_t id + uint32_t data. The array has space for 40 packets.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,240))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,240))
+        .Build();
         public const int PacketBufMaxItemsCount = 240;
         public byte[] PacketBuf { get; } = new byte[240];
         [Obsolete("This method is deprecated. Use GetPacketBufMaxItemsCount instead.")]
@@ -2305,12 +2400,12 @@ namespace Asv.Mavlink.Storm32
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,ParamCountField, ref _paramCount);    
-            UInt16Type.Accept(visitor,ParamIndexFirstField, ref _paramIndexFirst);    
-            UInt16Type.Accept(visitor,FlagsField, ref _flags);    
-            UInt8Type.Accept(visitor,ParamArrayLenField, ref _paramArrayLen);    
-            ArrayType.Accept(visitor,PacketBufField, 248,
-                (index,v) => UInt8Type.Accept(v, PacketBufField, ref PacketBuf[index]));    
+            UInt16Type.Accept(visitor,ParamCountField, ParamCountField.DataType, ref _paramCount);    
+            UInt16Type.Accept(visitor,ParamIndexFirstField, ParamIndexFirstField.DataType, ref _paramIndexFirst);    
+            UInt16Type.Accept(visitor,FlagsField, FlagsField.DataType, ref _flags);    
+            UInt8Type.Accept(visitor,ParamArrayLenField, ParamArrayLenField.DataType, ref _paramArrayLen);    
+            ArrayType.Accept(visitor,PacketBufField, PacketBufField.DataType, 248,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref PacketBuf[index]));    
 
         }
 
@@ -2322,11 +2417,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(ParamCount))
             .Title("param_count")
             .Description("Total number of onboard parameters.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _paramCount;
         public ushort ParamCount { get => _paramCount; set => _paramCount = value; }
         /// <summary>
@@ -2337,11 +2430,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(ParamIndexFirst))
             .Title("param_index_first")
             .Description("Index of the first onboard parameter in this array.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _paramIndexFirst;
         public ushort ParamIndexFirst { get => _paramIndexFirst; set => _paramIndexFirst = value; }
         /// <summary>
@@ -2352,11 +2443,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _flags;
         public ushort Flags { get => _flags; set => _flags = value; }
         /// <summary>
@@ -2367,11 +2456,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(ParamArrayLen))
             .Title("param_array_len")
             .Description("Number of onboard parameters in this array.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _paramArrayLen;
         public byte ParamArrayLen { get => _paramArrayLen; set => _paramArrayLen = value; }
         /// <summary>
@@ -2382,11 +2469,9 @@ namespace Asv.Mavlink.Storm32
             .Name(nameof(PacketBuf))
             .Title("packet_buf")
             .Description("Parameters buffer. Contains a series of variable length parameter blocks, one per parameter, with format as specifed elsewhere.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,248))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,248))
+        .Build();
         public const int PacketBufMaxItemsCount = 248;
         public byte[] PacketBuf { get; } = new byte[248];
         [Obsolete("This method is deprecated. Use GetPacketBufMaxItemsCount instead.")]

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -30,6 +30,8 @@ using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
 using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvRsga
@@ -60,6 +62,7 @@ namespace Asv.Mavlink.AsvRsga
             src.Add(AsvRsgaRttAdsbRepPacket.MessageId, ()=>new AsvRsgaRttAdsbRepPacket());
             src.Add(AsvRsgaRttRxGnssPacket.MessageId, ()=>new AsvRsgaRttRxGnssPacket());
         }
+ 
     }
 
 #region Enums
@@ -67,7 +70,7 @@ namespace Asv.Mavlink.AsvRsga
     /// <summary>
     ///  MAV_TYPE
     /// </summary>
-    public enum MavType:uint
+    public enum MavType : ulong
     {
         /// <summary>
         /// Identifies the Radio Signal Generator and Analyzer (RSGA) payload in the HEARTBEAT message.
@@ -75,12 +78,22 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         MavTypeAsvRsga = 254,
     }
-
+    public static class MavTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(254);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(254),"MAV_TYPE_ASV_RSGA");
+        }
+    }
     /// <summary>
     /// Defines RSGA modes mapped to the custom_mode[0–7] bit field of the HEARTBEAT message. Maximum 255 values.
     ///  ASV_RSGA_CUSTOM_MODE
     /// </summary>
-    public enum AsvRsgaCustomMode:uint
+    public enum AsvRsgaCustomMode : ulong
     {
         /// <summary>
         /// Default mode. No operation performed.
@@ -183,13 +196,61 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaCustomModeReserved = 255,
     }
-
+    public static class AsvRsgaCustomModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(25);
+            yield return converter(50);
+            yield return converter(51);
+            yield return converter(52);
+            yield return converter(53);
+            yield return converter(54);
+            yield return converter(55);
+            yield return converter(56);
+            yield return converter(57);
+            yield return converter(74);
+            yield return converter(75);
+            yield return converter(76);
+            yield return converter(77);
+            yield return converter(78);
+            yield return converter(79);
+            yield return converter(80);
+            yield return converter(81);
+            yield return converter(100);
+            yield return converter(255);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_RSGA_CUSTOM_MODE_IDLE");
+            yield return new EnumValue<T>(converter(25),"ASV_RSGA_CUSTOM_MODE_SPECTRUM");
+            yield return new EnumValue<T>(converter(50),"ASV_RSGA_CUSTOM_MODE_TX_LLZ");
+            yield return new EnumValue<T>(converter(51),"ASV_RSGA_CUSTOM_MODE_TX_GP");
+            yield return new EnumValue<T>(converter(52),"ASV_RSGA_CUSTOM_MODE_TX_VOR");
+            yield return new EnumValue<T>(converter(53),"ASV_RSGA_CUSTOM_MODE_TX_MARKER");
+            yield return new EnumValue<T>(converter(54),"ASV_RSGA_CUSTOM_MODE_DME_REP");
+            yield return new EnumValue<T>(converter(55),"ASV_RSGA_CUSTOM_MODE_TX_GBAS");
+            yield return new EnumValue<T>(converter(56),"ASV_RSGA_CUSTOM_MODE_ADSB_REQ");
+            yield return new EnumValue<T>(converter(57),"ASV_RSGA_CUSTOM_MODE_TX_GNSS");
+            yield return new EnumValue<T>(converter(74),"ASV_RSGA_CUSTOM_MODE_DME_REQ");
+            yield return new EnumValue<T>(converter(75),"ASV_RSGA_CUSTOM_MODE_RX_LLZ");
+            yield return new EnumValue<T>(converter(76),"ASV_RSGA_CUSTOM_MODE_RX_GP");
+            yield return new EnumValue<T>(converter(77),"ASV_RSGA_CUSTOM_MODE_RX_VOR");
+            yield return new EnumValue<T>(converter(78),"ASV_RSGA_CUSTOM_MODE_RX_MARKER");
+            yield return new EnumValue<T>(converter(79),"ASV_RSGA_CUSTOM_MODE_RX_GBAS");
+            yield return new EnumValue<T>(converter(80),"ASV_RSGA_CUSTOM_MODE_ADSB_REP");
+            yield return new EnumValue<T>(converter(81),"ASV_RSGA_CUSTOM_MODE_RX_GNSS");
+            yield return new EnumValue<T>(converter(100),"ASV_RSGA_CUSTOM_MODE_RADIO");
+            yield return new EnumValue<T>(converter(255),"ASV_RSGA_CUSTOM_MODE_RESERVED");
+        }
+    }
     /// <summary>
     /// A mapping of RSGA special sub modes for custom_mode[8-15] bits field of heartbeat.[!THIS_IS_ENUM_FLAG!]
     ///  ASV_RSGA_CUSTOM_SUB_MODE
     /// </summary>
     [Flags]
-    public enum AsvRsgaCustomSubMode:uint
+    public enum AsvRsgaCustomSubMode : ulong
     {
         /// <summary>
         /// Recording enabled.
@@ -232,12 +293,36 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaCustomSubModeReserved7 = 128,
     }
-
+    public static class AsvRsgaCustomSubModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_CUSTOM_SUB_MODE_RECORD");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_CUSTOM_SUB_MODE_MISSION");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED2");
+            yield return new EnumValue<T>(converter(8),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED3");
+            yield return new EnumValue<T>(converter(16),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED4");
+            yield return new EnumValue<T>(converter(32),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED5");
+            yield return new EnumValue<T>(converter(64),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED6");
+            yield return new EnumValue<T>(converter(128),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED7");
+        }
+    }
     /// <summary>
     /// ACK / NACK / ERROR values as a result of ASV_RSGA_*_REQUEST commands.
     ///  ASV_RSGA_REQUEST_ACK
     /// </summary>
-    public enum AsvRsgaRequestAck:uint
+    public enum AsvRsgaRequestAck : ulong
     {
         /// <summary>
         /// Request is ok.
@@ -265,13 +350,31 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaRequestAckNotFound = 4,
     }
-
+    public static class AsvRsgaRequestAckHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_RSGA_REQUEST_ACK_OK");
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_REQUEST_ACK_IN_PROGRESS");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_REQUEST_ACK_FAIL");
+            yield return new EnumValue<T>(converter(3),"ASV_RSGA_REQUEST_ACK_NOT_SUPPORTED");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_REQUEST_ACK_NOT_FOUND");
+        }
+    }
     /// <summary>
     /// Common status flags for all ASV_RSGA_RTT_* data.[!THIS_IS_ENUM_FLAG!]
     ///  ASV_RSGA_DATA_FLAGS
     /// </summary>
     [Flags]
-    public enum AsvRsgaDataFlags:uint
+    public enum AsvRsgaDataFlags : ulong
     {
         /// <summary>
         /// Is data valid.
@@ -279,13 +382,23 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaDataFlagsValid = 1,
     }
-
+    public static class AsvRsgaDataFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_DATA_FLAGS_VALID");
+        }
+    }
     /// <summary>
     /// Common status flags for all ASV_RSGA_RTT_GNSS message.[!THIS_IS_ENUM_FLAG!]
     ///  ASV_RSGA_RTT_GNSS_FLAGS
     /// </summary>
     [Flags]
-    public enum AsvRsgaRttGnssFlags:uint
+    public enum AsvRsgaRttGnssFlags : ulong
     {
         /// <summary>
         /// This flag is set when the vehicle is known to be on the ground.
@@ -328,12 +441,36 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaRttGnssFlagsReserved7 = 128,
     }
-
+    public static class AsvRsgaRttGnssFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_GNSS_FLAGS_ON_THE_GROUND");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED1");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED2");
+            yield return new EnumValue<T>(converter(8),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED3");
+            yield return new EnumValue<T>(converter(16),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED4");
+            yield return new EnumValue<T>(converter(32),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED5");
+            yield return new EnumValue<T>(converter(64),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED6");
+            yield return new EnumValue<T>(converter(128),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED7");
+        }
+    }
     /// <summary>
     /// Type of GNSS receiver
     ///  ASV_RSGA_RTT_GNSS_TYPE
     /// </summary>
-    public enum AsvRsgaRttGnssType:uint
+    public enum AsvRsgaRttGnssType : ulong
     {
         /// <summary>
         /// Virtual GNSS data.
@@ -351,13 +488,27 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaRttGnssTypeUav = 2,
     }
-
+    public static class AsvRsgaRttGnssTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_RSGA_RTT_GNSS_TYPE_VIRTUAL");
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_GNSS_TYPE_NMEA");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_GNSS_TYPE_UAV");
+        }
+    }
     /// <summary>
     /// Mode S interrogation or uplink formats.[!THIS_IS_ENUM_FLAG!]
     ///  ASV_RSGA_RTT_ADSB_MSG_UF
     /// </summary>
     [Flags]
-    public enum AsvRsgaRttAdsbMsgUf:uint
+    public enum AsvRsgaRttAdsbMsgUf : ulong
     {
         /// <summary>
         /// [UF00] Short air-air surveillance (ACAS).
@@ -485,13 +636,71 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaRttAdsbMsgUf24 = 16777216,
     }
-
+    public static class AsvRsgaRttAdsbMsgUfHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+            yield return converter(256);
+            yield return converter(512);
+            yield return converter(1024);
+            yield return converter(2048);
+            yield return converter(4096);
+            yield return converter(8192);
+            yield return converter(16384);
+            yield return converter(32768);
+            yield return converter(65536);
+            yield return converter(131072);
+            yield return converter(262144);
+            yield return converter(524288);
+            yield return converter(1048576);
+            yield return converter(2097152);
+            yield return converter(4194304);
+            yield return converter(8388608);
+            yield return converter(16777216);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_ADSB_MSG_UF_00");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_ADSB_MSG_UF_01");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_RTT_ADSB_MSG_UF_02");
+            yield return new EnumValue<T>(converter(8),"ASV_RSGA_RTT_ADSB_MSG_UF_03");
+            yield return new EnumValue<T>(converter(16),"ASV_RSGA_RTT_ADSB_MSG_UF_04");
+            yield return new EnumValue<T>(converter(32),"ASV_RSGA_RTT_ADSB_MSG_UF_05");
+            yield return new EnumValue<T>(converter(64),"ASV_RSGA_RTT_ADSB_MSG_UF_06");
+            yield return new EnumValue<T>(converter(128),"ASV_RSGA_RTT_ADSB_MSG_UF_07");
+            yield return new EnumValue<T>(converter(256),"ASV_RSGA_RTT_ADSB_MSG_UF_08");
+            yield return new EnumValue<T>(converter(512),"ASV_RSGA_RTT_ADSB_MSG_UF_09");
+            yield return new EnumValue<T>(converter(1024),"ASV_RSGA_RTT_ADSB_MSG_UF_10");
+            yield return new EnumValue<T>(converter(2048),"ASV_RSGA_RTT_ADSB_MSG_UF_11");
+            yield return new EnumValue<T>(converter(4096),"ASV_RSGA_RTT_ADSB_MSG_UF_12");
+            yield return new EnumValue<T>(converter(8192),"ASV_RSGA_RTT_ADSB_MSG_UF_13");
+            yield return new EnumValue<T>(converter(16384),"ASV_RSGA_RTT_ADSB_MSG_UF_14");
+            yield return new EnumValue<T>(converter(32768),"ASV_RSGA_RTT_ADSB_MSG_UF_15");
+            yield return new EnumValue<T>(converter(65536),"ASV_RSGA_RTT_ADSB_MSG_UF_16");
+            yield return new EnumValue<T>(converter(131072),"ASV_RSGA_RTT_ADSB_MSG_UF_17");
+            yield return new EnumValue<T>(converter(262144),"ASV_RSGA_RTT_ADSB_MSG_UF_18");
+            yield return new EnumValue<T>(converter(524288),"ASV_RSGA_RTT_ADSB_MSG_UF_19");
+            yield return new EnumValue<T>(converter(1048576),"ASV_RSGA_RTT_ADSB_MSG_UF_20");
+            yield return new EnumValue<T>(converter(2097152),"ASV_RSGA_RTT_ADSB_MSG_UF_21");
+            yield return new EnumValue<T>(converter(4194304),"ASV_RSGA_RTT_ADSB_MSG_UF_22");
+            yield return new EnumValue<T>(converter(8388608),"ASV_RSGA_RTT_ADSB_MSG_UF_23");
+            yield return new EnumValue<T>(converter(16777216),"ASV_RSGA_RTT_ADSB_MSG_UF_24");
+        }
+    }
     /// <summary>
     /// Mode S reply or downlink formats.[!THIS_IS_ENUM_FLAG!]
     ///  ASV_RSGA_RTT_ADSB_MSG_DF
     /// </summary>
     [Flags]
-    public enum AsvRsgaRttAdsbMsgDf:uint
+    public enum AsvRsgaRttAdsbMsgDf : ulong
     {
         /// <summary>
         /// [DF00] Short air-air surveillance (ACAS).
@@ -619,11 +828,69 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaRttAdsbMsgDf24 = 16777216,
     }
-
+    public static class AsvRsgaRttAdsbMsgDfHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+            yield return converter(256);
+            yield return converter(512);
+            yield return converter(1024);
+            yield return converter(2048);
+            yield return converter(4096);
+            yield return converter(8192);
+            yield return converter(16384);
+            yield return converter(32768);
+            yield return converter(65536);
+            yield return converter(131072);
+            yield return converter(262144);
+            yield return converter(524288);
+            yield return converter(1048576);
+            yield return converter(2097152);
+            yield return converter(4194304);
+            yield return converter(8388608);
+            yield return converter(16777216);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_ADSB_MSG_DF_00");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_ADSB_MSG_DF_01");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_RTT_ADSB_MSG_DF_02");
+            yield return new EnumValue<T>(converter(8),"ASV_RSGA_RTT_ADSB_MSG_DF_03");
+            yield return new EnumValue<T>(converter(16),"ASV_RSGA_RTT_ADSB_MSG_DF_04");
+            yield return new EnumValue<T>(converter(32),"ASV_RSGA_RTT_ADSB_MSG_DF_05");
+            yield return new EnumValue<T>(converter(64),"ASV_RSGA_RTT_ADSB_MSG_DF_06");
+            yield return new EnumValue<T>(converter(128),"ASV_RSGA_RTT_ADSB_MSG_DF_07");
+            yield return new EnumValue<T>(converter(256),"ASV_RSGA_RTT_ADSB_MSG_DF_08");
+            yield return new EnumValue<T>(converter(512),"ASV_RSGA_RTT_ADSB_MSG_DF_09");
+            yield return new EnumValue<T>(converter(1024),"ASV_RSGA_RTT_ADSB_MSG_DF_10");
+            yield return new EnumValue<T>(converter(2048),"ASV_RSGA_RTT_ADSB_MSG_DF_11");
+            yield return new EnumValue<T>(converter(4096),"ASV_RSGA_RTT_ADSB_MSG_DF_12");
+            yield return new EnumValue<T>(converter(8192),"ASV_RSGA_RTT_ADSB_MSG_DF_13");
+            yield return new EnumValue<T>(converter(16384),"ASV_RSGA_RTT_ADSB_MSG_DF_14");
+            yield return new EnumValue<T>(converter(32768),"ASV_RSGA_RTT_ADSB_MSG_DF_15");
+            yield return new EnumValue<T>(converter(65536),"ASV_RSGA_RTT_ADSB_MSG_DF_16");
+            yield return new EnumValue<T>(converter(131072),"ASV_RSGA_RTT_ADSB_MSG_DF_17");
+            yield return new EnumValue<T>(converter(262144),"ASV_RSGA_RTT_ADSB_MSG_DF_18");
+            yield return new EnumValue<T>(converter(524288),"ASV_RSGA_RTT_ADSB_MSG_DF_19");
+            yield return new EnumValue<T>(converter(1048576),"ASV_RSGA_RTT_ADSB_MSG_DF_20");
+            yield return new EnumValue<T>(converter(2097152),"ASV_RSGA_RTT_ADSB_MSG_DF_21");
+            yield return new EnumValue<T>(converter(4194304),"ASV_RSGA_RTT_ADSB_MSG_DF_22");
+            yield return new EnumValue<T>(converter(8388608),"ASV_RSGA_RTT_ADSB_MSG_DF_23");
+            yield return new EnumValue<T>(converter(16777216),"ASV_RSGA_RTT_ADSB_MSG_DF_24");
+        }
+    }
     /// <summary>
     ///  MAV_CMD
     /// </summary>
-    public enum MavCmd:uint
+    public enum MavCmd : ulong
     {
         /// <summary>
         /// Set the operational mode.
@@ -662,7 +929,21 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         MavCmdAsvRsgaStopRecord = 13402,
     }
-
+    public static class MavCmdHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(13400);
+            yield return converter(13401);
+            yield return converter(13402);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(13400),"MAV_CMD_ASV_RSGA_SET_MODE");
+            yield return new EnumValue<T>(converter(13401),"MAV_CMD_ASV_RSGA_START_RECORD");
+            yield return new EnumValue<T>(converter(13402),"MAV_CMD_ASV_RSGA_STOP_RECORD");
+        }
+    }
 
 #endregion
 
@@ -729,9 +1010,9 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
         }
 
@@ -743,11 +1024,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies a unique number for this request. This allows the response packet to be identified.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -758,11 +1037,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TargetSystem))
             .Title("target_system")
             .Description("System ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetSystem;
         public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
@@ -773,11 +1050,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TargetComponent))
             .Title("target_component")
             .Description("Component ID.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _targetComponent;
         public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
@@ -852,12 +1127,12 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
             Result = (AsvRsgaRequestAck)tmpResult;
-            ArrayType.Accept(visitor,SupportedModesField, 32,
-                (index,v) => UInt8Type.Accept(v, SupportedModesField, ref SupportedModes[index]));    
+            ArrayType.Accept(visitor,SupportedModesField, SupportedModesField.DataType, 32,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref SupportedModes[index]));    
 
         }
 
@@ -869,11 +1144,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RequestId))
             .Title("request_id")
             .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _requestId;
         public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
@@ -884,12 +1157,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Result))
             .Title("result")
             .Description("Result code.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvRsgaRequestAckHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRequestAckHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvRsgaRequestAckHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvRsgaRequestAck _result;
+        private AsvRsgaRequestAck _result;
         public AsvRsgaRequestAck Result { get => _result; set => _result = value; } 
         /// <summary>
         /// Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true.
@@ -899,11 +1170,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(SupportedModes))
             .Title("supported_modes")
             .Description("Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,32))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,32))
+        .Build();
         public const int SupportedModesMaxItemsCount = 32;
         public byte[] SupportedModes { get; } = new byte[32];
         [Obsolete("This method is deprecated. Use GetSupportedModesMaxItemsCount instead.")]
@@ -1021,33 +1290,33 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,DataIndexField, ref _dataIndex);    
-            Int32Type.Accept(visitor,LatField, ref _lat);    
-            Int32Type.Accept(visitor,LatErrField, ref _latErr);    
-            Int32Type.Accept(visitor,LonField, ref _lon);    
-            Int32Type.Accept(visitor,LonErrField, ref _lonErr);    
-            Int32Type.Accept(visitor,AltMslField, ref _altMsl);    
-            Int32Type.Accept(visitor,AltWgsField, ref _altWgs);    
-            Int32Type.Accept(visitor,AltErrField, ref _altErr);    
-            UInt16Type.Accept(visitor,RefIdField, ref _refId);    
-            UInt16Type.Accept(visitor,HdopField, ref _hdop);    
-            UInt16Type.Accept(visitor,VdopField, ref _vdop);    
-            UInt16Type.Accept(visitor,SogField, ref _sog);    
-            UInt16Type.Accept(visitor,CogTrueField, ref _cogTrue);    
-            UInt16Type.Accept(visitor,CogMagField, ref _cogMag);    
+            UInt32Type.Accept(visitor,DataIndexField, DataIndexField.DataType, ref _dataIndex);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LatErrField, LatErrField.DataType, ref _latErr);    
+            Int32Type.Accept(visitor,LonField, LonField.DataType, ref _lon);    
+            Int32Type.Accept(visitor,LonErrField, LonErrField.DataType, ref _lonErr);    
+            Int32Type.Accept(visitor,AltMslField, AltMslField.DataType, ref _altMsl);    
+            Int32Type.Accept(visitor,AltWgsField, AltWgsField.DataType, ref _altWgs);    
+            Int32Type.Accept(visitor,AltErrField, AltErrField.DataType, ref _altErr);    
+            UInt16Type.Accept(visitor,RefIdField, RefIdField.DataType, ref _refId);    
+            UInt16Type.Accept(visitor,HdopField, HdopField.DataType, ref _hdop);    
+            UInt16Type.Accept(visitor,VdopField, VdopField.DataType, ref _vdop);    
+            UInt16Type.Accept(visitor,SogField, SogField.DataType, ref _sog);    
+            UInt16Type.Accept(visitor,CogTrueField, CogTrueField.DataType, ref _cogTrue);    
+            UInt16Type.Accept(visitor,CogMagField, CogMagField.DataType, ref _cogMag);    
             var tmpReceiverType = (byte)ReceiverType;
-            UInt8Type.Accept(visitor,ReceiverTypeField, ref tmpReceiverType);
+            UInt8Type.Accept(visitor,ReceiverTypeField, ReceiverTypeField.DataType, ref tmpReceiverType);
             ReceiverType = (AsvRsgaRttGnssType)tmpReceiverType;
             var tmpGnssFlags = (byte)GnssFlags;
-            UInt8Type.Accept(visitor,GnssFlagsField, ref tmpGnssFlags);
+            UInt8Type.Accept(visitor,GnssFlagsField, GnssFlagsField.DataType, ref tmpGnssFlags);
             GnssFlags = (AsvRsgaRttGnssFlags)tmpGnssFlags;
-            UInt8Type.Accept(visitor,SatCntField, ref _satCnt);    
+            UInt8Type.Accept(visitor,SatCntField, SatCntField.DataType, ref _satCnt);    
             var tmpFixType = (byte)FixType;
-            UInt8Type.Accept(visitor,FixTypeField, ref tmpFixType);
+            UInt8Type.Accept(visitor,FixTypeField, FixTypeField.DataType, ref tmpFixType);
             FixType = (GpsFixType)tmpFixType;
 
         }
@@ -1060,11 +1329,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -1075,12 +1342,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -1090,11 +1355,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(DataIndex))
             .Title("data_index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _dataIndex;
         public uint DataIndex { get => _dataIndex; set => _dataIndex = value; }
         /// <summary>
@@ -1105,11 +1368,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Lat))
             .Title("lat")
             .Description("Latitude (WGS84, EGM96 ellipsoid)")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lat;
         public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
@@ -1120,11 +1381,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(LatErr))
             .Title("lat_err")
             .Description("Expected Error in Latitude (North) Direction")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _latErr;
         public int LatErr { get => _latErr; set => _latErr = value; }
         /// <summary>
@@ -1135,11 +1394,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Lon))
             .Title("lon")
             .Description("Longitude (WGS84, EGM96 ellipsoid)")
-            .FormatString(string.Empty)
-            .Units(@"degE7")
+.Units(@"degE7")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lon;
         public int Lon { get => _lon; set => _lon = value; }
         /// <summary>
@@ -1150,11 +1407,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(LonErr))
             .Title("lon_err")
             .Description("Expected Error in Longitude (East) Direction")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _lonErr;
         public int LonErr { get => _lonErr; set => _lonErr = value; }
         /// <summary>
@@ -1165,11 +1420,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(AltMsl))
             .Title("alt_msl")
             .Description("Antenna altitude above/below mean sea level (geoid)")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _altMsl;
         public int AltMsl { get => _altMsl; set => _altMsl = value; }
         /// <summary>
@@ -1180,11 +1433,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(AltWgs))
             .Title("alt_wgs")
             .Description("Antenna altitude WGS-84 earth ellipsoid")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _altWgs;
         public int AltWgs { get => _altWgs; set => _altWgs = value; }
         /// <summary>
@@ -1195,11 +1446,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(AltErr))
             .Title("alt_err")
             .Description("Expected Error in Altitude")
-            .FormatString(string.Empty)
-            .Units(@"mm")
+.Units(@"mm")
             .DataType(Int32Type.Default)
-
-            .Build();
+        .Build();
         private int _altErr;
         public int AltErr { get => _altErr; set => _altErr = value; }
         /// <summary>
@@ -1210,11 +1459,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RefId))
             .Title("ref_id")
             .Description("GNSS reference station ID (used when GNSS is received from multiple sources).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _refId;
         public ushort RefId { get => _refId; set => _refId = value; }
         /// <summary>
@@ -1225,11 +1472,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Hdop))
             .Title("hdop")
             .Description("HDOP horizontal dilution of position")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _hdop;
         public ushort Hdop { get => _hdop; set => _hdop = value; }
         /// <summary>
@@ -1240,11 +1485,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Vdop))
             .Title("vdop")
             .Description("VDOP vertical dilution of position")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _vdop;
         public ushort Vdop { get => _vdop; set => _vdop = value; }
         /// <summary>
@@ -1255,11 +1498,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Sog))
             .Title("sog")
             .Description("Speed over ground")
-            .FormatString(string.Empty)
-            .Units(@"cm/s")
+.Units(@"cm/s")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _sog;
         public ushort Sog { get => _sog; set => _sog = value; }
         /// <summary>
@@ -1270,11 +1511,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(CogTrue))
             .Title("cog_true")
             .Description("Course over ground (true) (yaw angle). 0.0..359.99 degrees")
-            .FormatString(string.Empty)
-            .Units(@"cdeg")
+.Units(@"cdeg")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _cogTrue;
         public ushort CogTrue { get => _cogTrue; set => _cogTrue = value; }
         /// <summary>
@@ -1285,11 +1524,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(CogMag))
             .Title("cog_mag")
             .Description("Course over ground (magnetic) (yaw angle). 0.0..359.99 degrees")
-            .FormatString(string.Empty)
-            .Units(@"cdeg")
+.Units(@"cdeg")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _cogMag;
         public ushort CogMag { get => _cogMag; set => _cogMag = value; }
         /// <summary>
@@ -1300,12 +1537,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(ReceiverType))
             .Title("receiver_type")
             .Description("GNSS receiver type.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvRsgaRttGnssTypeHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRttGnssTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvRsgaRttGnssTypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvRsgaRttGnssType _receiverType;
+        private AsvRsgaRttGnssType _receiverType;
         public AsvRsgaRttGnssType ReceiverType { get => _receiverType; set => _receiverType = value; } 
         /// <summary>
         /// GNSS special flags.
@@ -1315,12 +1550,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(GnssFlags))
             .Title("gnss_flags")
             .Description("GNSS special flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(AsvRsgaRttGnssFlagsHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRttGnssFlagsHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvRsgaRttGnssFlagsHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public AsvRsgaRttGnssFlags _gnssFlags;
+        private AsvRsgaRttGnssFlags _gnssFlags;
         public AsvRsgaRttGnssFlags GnssFlags { get => _gnssFlags; set => _gnssFlags = value; } 
         /// <summary>
         /// Number of satellites in view
@@ -1330,11 +1563,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(SatCnt))
             .Title("sat_cnt")
             .Description("Number of satellites in view")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
 
-            .Build();
+            .DataType(UInt8Type.Default)
+        .Build();
         private byte _satCnt;
         public byte SatCnt { get => _satCnt; set => _satCnt = value; }
         /// <summary>
@@ -1345,12 +1576,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(FixType))
             .Title("fix_type")
             .Description("GNSS fix type")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt8Type.Default)
-
+            .DataType(new UInt8Type(GpsFixTypeHelper.GetValues(x=>(byte)x).Min(),GpsFixTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GpsFixTypeHelper.GetEnumValues(x=>(byte)x))
             .Build();
-        public GpsFixType _fixType;
+        private GpsFixType _fixType;
         public GpsFixType FixType { get => _fixType; set => _fixType = value; } 
     }
     /// <summary>
@@ -1414,11 +1643,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -1430,11 +1659,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -1445,12 +1672,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -1460,11 +1685,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -1529,11 +1752,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -1545,11 +1768,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -1560,12 +1781,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -1575,11 +1794,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -1644,11 +1861,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -1660,11 +1877,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -1675,12 +1890,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -1690,11 +1903,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -1759,11 +1970,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -1775,11 +1986,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -1790,12 +1999,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -1805,11 +2012,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -1874,11 +2079,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -1890,11 +2095,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -1905,12 +2108,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -1920,11 +2121,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -1989,11 +2188,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -2005,11 +2204,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -2020,12 +2217,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -2035,11 +2230,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -2104,11 +2297,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -2120,11 +2313,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -2135,12 +2326,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -2150,11 +2339,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -2219,11 +2406,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -2235,11 +2422,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -2250,12 +2435,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -2265,11 +2448,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -2334,11 +2515,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -2350,11 +2531,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -2365,12 +2544,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -2380,11 +2557,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -2531,36 +2706,32 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,TxFreqField, ref _txFreq);    
-            UInt64Type.Accept(visitor,RxFreqField, ref _rxFreq);    
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
-            FloatType.Accept(visitor,TxPowerField, ref _txPower);    
-            FloatType.Accept(visitor,TxGainField, ref _txGain);    
-            FloatType.Accept(visitor,RxPowerField, ref _rxPower);    
-            FloatType.Accept(visitor,RxFieldStrengthField, ref _rxFieldStrength);    
-            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
-            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
-            FloatType.Accept(visitor,DistanceField, ref _distance);    
-            FloatType.Accept(visitor,ReplyEfficiencyField, ref _replyEfficiency);    
-            Int16Type.Accept(visitor,RxFreqOffsetField, ref _rxFreqOffset);
-            UInt16Type.Accept(visitor,PulseShapeRiseField, ref _pulseShapeRise);    
-            UInt16Type.Accept(visitor,PulseShapeDurationField, ref _pulseShapeDuration);    
-            UInt16Type.Accept(visitor,PulseShapeDecayField, ref _pulseShapeDecay);    
-            UInt16Type.Accept(visitor,PulseSpacingField, ref _pulseSpacing);    
-            UInt16Type.Accept(visitor,ReqFreqField, ref _reqFreq);    
-            UInt16Type.Accept(visitor,HipFreqField, ref _hipFreq);    
-            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
-            Int8Type.Accept(visitor,PulseShapeAmplitudeField, ref _pulseShapeAmplitude);                
-            ArrayType.Accept(visitor,CodeIdField, 4, (index,v) =>
-            {
-                var tmp = (byte)CodeId[index];
-                UInt8Type.Accept(v,CodeIdField, ref tmp);
-                CodeId[index] = (char)tmp;
-            });
+            UInt64Type.Accept(visitor,TxFreqField, TxFreqField.DataType, ref _txFreq);    
+            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            FloatType.Accept(visitor,TxPowerField, TxPowerField.DataType, ref _txPower);    
+            FloatType.Accept(visitor,TxGainField, TxGainField.DataType, ref _txGain);    
+            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
+            FloatType.Accept(visitor,DistanceField, DistanceField.DataType, ref _distance);    
+            FloatType.Accept(visitor,ReplyEfficiencyField, ReplyEfficiencyField.DataType, ref _replyEfficiency);    
+            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
+            UInt16Type.Accept(visitor,PulseShapeRiseField, PulseShapeRiseField.DataType, ref _pulseShapeRise);    
+            UInt16Type.Accept(visitor,PulseShapeDurationField, PulseShapeDurationField.DataType, ref _pulseShapeDuration);    
+            UInt16Type.Accept(visitor,PulseShapeDecayField, PulseShapeDecayField.DataType, ref _pulseShapeDecay);    
+            UInt16Type.Accept(visitor,PulseSpacingField, PulseSpacingField.DataType, ref _pulseSpacing);    
+            UInt16Type.Accept(visitor,ReqFreqField, ReqFreqField.DataType, ref _reqFreq);    
+            UInt16Type.Accept(visitor,HipFreqField, HipFreqField.DataType, ref _hipFreq);    
+            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
+            Int8Type.Accept(visitor,PulseShapeAmplitudeField, PulseShapeAmplitudeField.DataType, ref _pulseShapeAmplitude);                
+            ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
         }
 
@@ -2572,11 +2743,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -2587,12 +2756,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// TX frequency
@@ -2602,11 +2769,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TxFreq))
             .Title("tx_freq")
             .Description("TX frequency")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _txFreq;
         public ulong TxFreq { get => _txFreq; set => _txFreq = value; }
         /// <summary>
@@ -2617,11 +2782,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxFreq))
             .Title("rx_freq")
             .Description("RX frequency")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _rxFreq;
         public ulong RxFreq { get => _rxFreq; set => _rxFreq = value; }
         /// <summary>
@@ -2632,11 +2795,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
         /// <summary>
@@ -2647,11 +2808,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TxPower))
             .Title("tx_power")
             .Description("Output power")
-            .FormatString(string.Empty)
-            .Units(@"dBm")
+.Units(@"dBm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _txPower;
         public float TxPower { get => _txPower; set => _txPower = value; }
         /// <summary>
@@ -2662,11 +2821,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TxGain))
             .Title("tx_gain")
             .Description("Percent of total TX gain level (0.0 - 1.0)")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _txGain;
         public float TxGain { get => _txGain; set => _txGain = value; }
         /// <summary>
@@ -2677,11 +2834,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxPower))
             .Title("rx_power")
             .Description("Receive power (peak)")
-            .FormatString(string.Empty)
-            .Units(@"dBm")
+.Units(@"dBm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _rxPower;
         public float RxPower { get => _rxPower; set => _rxPower = value; }
         /// <summary>
@@ -2692,11 +2847,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxFieldStrength))
             .Title("rx_field_strength")
             .Description("Receive power field strength.")
-            .FormatString(string.Empty)
-            .Units(@"uV/m")
+.Units(@"uV/m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _rxFieldStrength;
         public float RxFieldStrength { get => _rxFieldStrength; set => _rxFieldStrength = value; }
         /// <summary>
@@ -2707,11 +2860,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxSignalOverflow))
             .Title("rx_signal_overflow")
             .Description("Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _rxSignalOverflow;
         public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
         /// <summary>
@@ -2722,11 +2873,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxGain))
             .Title("rx_gain")
             .Description("Percent of total RX gain level (0.0 - 1.0)")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _rxGain;
         public float RxGain { get => _rxGain; set => _rxGain = value; }
         /// <summary>
@@ -2737,11 +2886,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Distance))
             .Title("distance")
             .Description("Measured distance")
-            .FormatString(string.Empty)
-            .Units(@"m")
+.Units(@"m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _distance;
         public float Distance { get => _distance; set => _distance = value; }
         /// <summary>
@@ -2752,11 +2899,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(ReplyEfficiency))
             .Title("reply_efficiency")
             .Description("Reply efficiency request\\response (between 0% - 100%)")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _replyEfficiency;
         public float ReplyEfficiency { get => _replyEfficiency; set => _replyEfficiency = value; }
         /// <summary>
@@ -2767,11 +2912,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxFreqOffset))
             .Title("rx_freq_offset")
             .Description("RX frequency offset")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _rxFreqOffset;
         public short RxFreqOffset { get => _rxFreqOffset; set => _rxFreqOffset = value; }
         /// <summary>
@@ -2782,11 +2925,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(PulseShapeRise))
             .Title("pulse_shape_rise")
             .Description("Pulse shape: rise time (\u22643 \u03BCs)")
-            .FormatString(string.Empty)
-            .Units(@"ns")
+.Units(@"ns")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _pulseShapeRise;
         public ushort PulseShapeRise { get => _pulseShapeRise; set => _pulseShapeRise = value; }
         /// <summary>
@@ -2797,11 +2938,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(PulseShapeDuration))
             .Title("pulse_shape_duration")
             .Description("Pulse shape: rise time (3.5 \u03BCs, \u00B10.5 \u03BCs)")
-            .FormatString(string.Empty)
-            .Units(@"ns")
+.Units(@"ns")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _pulseShapeDuration;
         public ushort PulseShapeDuration { get => _pulseShapeDuration; set => _pulseShapeDuration = value; }
         /// <summary>
@@ -2812,11 +2951,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(PulseShapeDecay))
             .Title("pulse_shape_decay")
             .Description("Pulse shape: rise time (\u22643.5 \u03BCs)")
-            .FormatString(string.Empty)
-            .Units(@"ns")
+.Units(@"ns")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _pulseShapeDecay;
         public ushort PulseShapeDecay { get => _pulseShapeDecay; set => _pulseShapeDecay = value; }
         /// <summary>
@@ -2827,11 +2964,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(PulseSpacing))
             .Title("pulse_spacing")
             .Description("Pulse spacing (X channel 12 \u00B10.25 us, Y channel: 30 \u00B10.25 us)")
-            .FormatString(string.Empty)
-            .Units(@"ns")
+.Units(@"ns")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _pulseSpacing;
         public ushort PulseSpacing { get => _pulseSpacing; set => _pulseSpacing = value; }
         /// <summary>
@@ -2842,11 +2977,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(ReqFreq))
             .Title("req_freq")
             .Description("Number of our request")
-            .FormatString(string.Empty)
-            .Units(@"pps")
+.Units(@"pps")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _reqFreq;
         public ushort ReqFreq { get => _reqFreq; set => _reqFreq = value; }
         /// <summary>
@@ -2857,11 +2990,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(HipFreq))
             .Title("hip_freq")
             .Description("Measured number of all replies, that was recognised as beacon HIP")
-            .FormatString(string.Empty)
-            .Units(@"pps")
+.Units(@"pps")
             .DataType(UInt16Type.Default)
-
-            .Build();
+        .Build();
         private ushort _hipFreq;
         public ushort HipFreq { get => _hipFreq; set => _hipFreq = value; }
         /// <summary>
@@ -2872,11 +3003,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(MeasureTime))
             .Title("measure_time")
             .Description("Measure time.")
-            .FormatString(string.Empty)
-            .Units(@"ms")
+.Units(@"ms")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _measureTime;
         public short MeasureTime { get => _measureTime; set => _measureTime = value; }
         /// <summary>
@@ -2887,11 +3016,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(PulseShapeAmplitude))
             .Title("pulse_shape_amplitude")
             .Description("Pulse shape: amplitude (between 95% rise/fall amplitudes, \u226595% of maximum amplitude)")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(Int8Type.Default)
-
-            .Build();
+        .Build();
         private sbyte _pulseShapeAmplitude;
         public sbyte PulseShapeAmplitude { get => _pulseShapeAmplitude; set => _pulseShapeAmplitude = value; }
         /// <summary>
@@ -2902,11 +3029,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(CodeId))
             .Title("code_id")
             .Description("Code identification")
-            .FormatString(string.Empty)
-            .Units(@"Letters")
-            .DataType(new ArrayType(UInt8Type.Default,4))
-
-            .Build();
+.Units(@"Letters")
+            .DataType(new ArrayType(CharType.Ascii,4))
+        .Build();
         public const int CodeIdMaxItemsCount = 4;
         public char[] CodeId { get; } = new char[4];
         [Obsolete("This method is deprecated. Use GetCodeIdMaxItemsCount instead.")]
@@ -2973,11 +3098,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -2989,11 +3114,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -3004,12 +3127,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -3019,11 +3140,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -3088,11 +3207,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -3104,11 +3223,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -3119,12 +3236,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -3134,11 +3249,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -3203,11 +3316,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -3219,11 +3332,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -3234,12 +3345,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -3249,11 +3358,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -3318,11 +3425,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -3334,11 +3441,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -3349,12 +3454,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -3364,11 +3467,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -3433,11 +3534,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -3449,11 +3550,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -3464,12 +3563,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -3479,11 +3576,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
@@ -3635,39 +3730,35 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,TxFreqField, ref _txFreq);    
-            UInt64Type.Accept(visitor,RxFreqField, ref _rxFreq);    
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
-            FloatType.Accept(visitor,TxPowerField, ref _txPower);    
-            FloatType.Accept(visitor,TxGainField, ref _txGain);    
-            FloatType.Accept(visitor,RxPowerField, ref _rxPower);    
-            FloatType.Accept(visitor,RxFieldStrengthField, ref _rxFieldStrength);    
-            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
-            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
-            UInt32Type.Accept(visitor,IcaoAddressField, ref _icaoAddress);    
+            UInt64Type.Accept(visitor,TxFreqField, TxFreqField.DataType, ref _txFreq);    
+            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            FloatType.Accept(visitor,TxPowerField, TxPowerField.DataType, ref _txPower);    
+            FloatType.Accept(visitor,TxGainField, TxGainField.DataType, ref _txGain);    
+            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
+            UInt32Type.Accept(visitor,IcaoAddressField, IcaoAddressField.DataType, ref _icaoAddress);    
             var tmpUfCounterFlag = (uint)UfCounterFlag;
-            UInt32Type.Accept(visitor,UfCounterFlagField, ref tmpUfCounterFlag);
+            UInt32Type.Accept(visitor,UfCounterFlagField, UfCounterFlagField.DataType, ref tmpUfCounterFlag);
             UfCounterFlag = (AsvRsgaRttAdsbMsgUf)tmpUfCounterFlag;
             var tmpDfCounterPresent = (uint)DfCounterPresent;
-            UInt32Type.Accept(visitor,DfCounterPresentField, ref tmpDfCounterPresent);
+            UInt32Type.Accept(visitor,DfCounterPresentField, DfCounterPresentField.DataType, ref tmpDfCounterPresent);
             DfCounterPresent = (AsvRsgaRttAdsbMsgDf)tmpDfCounterPresent;
-            Int16Type.Accept(visitor,RxFreqOffsetField, ref _rxFreqOffset);
-            UInt16Type.Accept(visitor,RefIdField, ref _refId);    
-            UInt16Type.Accept(visitor,SquawkField, ref _squawk);    
-            ArrayType.Accept(visitor,CallSignField, 8, (index,v) =>
-            {
-                var tmp = (byte)CallSign[index];
-                UInt8Type.Accept(v,CallSignField, ref tmp);
-                CallSign[index] = (char)tmp;
-            });
-            ArrayType.Accept(visitor,UfCounterField, 25,
-                (index,v) => UInt8Type.Accept(v, UfCounterField, ref UfCounter[index]));    
-            ArrayType.Accept(visitor,DfCounterField, 25,
-                (index,v) => UInt8Type.Accept(v, DfCounterField, ref DfCounter[index]));    
+            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
+            UInt16Type.Accept(visitor,RefIdField, RefIdField.DataType, ref _refId);    
+            UInt16Type.Accept(visitor,SquawkField, SquawkField.DataType, ref _squawk);    
+            ArrayType.Accept(visitor,CallSignField, CallSignField.DataType, 8, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref CallSign[index]));
+            ArrayType.Accept(visitor,UfCounterField, UfCounterField.DataType, 25,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref UfCounter[index]));    
+            ArrayType.Accept(visitor,DfCounterField, DfCounterField.DataType, 25,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref DfCounter[index]));    
 
         }
 
@@ -3679,11 +3770,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -3694,12 +3783,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// TX frequency
@@ -3709,11 +3796,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TxFreq))
             .Title("tx_freq")
             .Description("TX frequency")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _txFreq;
         public ulong TxFreq { get => _txFreq; set => _txFreq = value; }
         /// <summary>
@@ -3724,11 +3809,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxFreq))
             .Title("rx_freq")
             .Description("RX frequency")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _rxFreq;
         public ulong RxFreq { get => _rxFreq; set => _rxFreq = value; }
         /// <summary>
@@ -3739,11 +3822,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
         /// <summary>
@@ -3754,11 +3835,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TxPower))
             .Title("tx_power")
             .Description("Output power")
-            .FormatString(string.Empty)
-            .Units(@"dBm")
+.Units(@"dBm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _txPower;
         public float TxPower { get => _txPower; set => _txPower = value; }
         /// <summary>
@@ -3769,11 +3848,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TxGain))
             .Title("tx_gain")
             .Description("Percent of total TX gain level (0.0 - 1.0)")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _txGain;
         public float TxGain { get => _txGain; set => _txGain = value; }
         /// <summary>
@@ -3784,11 +3861,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxPower))
             .Title("rx_power")
             .Description("Receive power (peak)")
-            .FormatString(string.Empty)
-            .Units(@"dBm")
+.Units(@"dBm")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _rxPower;
         public float RxPower { get => _rxPower; set => _rxPower = value; }
         /// <summary>
@@ -3799,11 +3874,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxFieldStrength))
             .Title("rx_field_strength")
             .Description("Receive power field strength.")
-            .FormatString(string.Empty)
-            .Units(@"uV/m")
+.Units(@"uV/m")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _rxFieldStrength;
         public float RxFieldStrength { get => _rxFieldStrength; set => _rxFieldStrength = value; }
         /// <summary>
@@ -3814,11 +3887,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxSignalOverflow))
             .Title("rx_signal_overflow")
             .Description("Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _rxSignalOverflow;
         public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
         /// <summary>
@@ -3829,11 +3900,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxGain))
             .Title("rx_gain")
             .Description("Percent of total RX gain level (0.0 - 1.0)")
-            .FormatString(string.Empty)
-            .Units(@"%")
+.Units(@"%")
             .DataType(FloatType.Default)
-
-            .Build();
+        .Build();
         private float _rxGain;
         public float RxGain { get => _rxGain; set => _rxGain = value; }
         /// <summary>
@@ -3844,11 +3913,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(IcaoAddress))
             .Title("icao_address")
             .Description("Vehicle ICAO address (24 bit)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _icaoAddress;
         public uint IcaoAddress { get => _icaoAddress; set => _icaoAddress = value; }
         /// <summary>
@@ -3859,12 +3926,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(UfCounterFlag))
             .Title("uf_counter_flag")
             .Description("UF counters present flag ")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
-
+            .DataType(new UInt32Type(AsvRsgaRttAdsbMsgUfHelper.GetValues(x=>(uint)x).Min(),AsvRsgaRttAdsbMsgUfHelper.GetValues(x=>(uint)x).Max()))
+            .Enum(AsvRsgaRttAdsbMsgUfHelper.GetEnumValues(x=>(uint)x))
             .Build();
-        public AsvRsgaRttAdsbMsgUf _ufCounterFlag;
+        private AsvRsgaRttAdsbMsgUf _ufCounterFlag;
         public AsvRsgaRttAdsbMsgUf UfCounterFlag { get => _ufCounterFlag; set => _ufCounterFlag = value; } 
         /// <summary>
         /// UF counters present 
@@ -3874,12 +3939,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(DfCounterPresent))
             .Title("df_counter_present")
             .Description("UF counters present ")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
-
+            .DataType(new UInt32Type(AsvRsgaRttAdsbMsgDfHelper.GetValues(x=>(uint)x).Min(),AsvRsgaRttAdsbMsgDfHelper.GetValues(x=>(uint)x).Max()))
+            .Enum(AsvRsgaRttAdsbMsgDfHelper.GetEnumValues(x=>(uint)x))
             .Build();
-        public AsvRsgaRttAdsbMsgDf _dfCounterPresent;
+        private AsvRsgaRttAdsbMsgDf _dfCounterPresent;
         public AsvRsgaRttAdsbMsgDf DfCounterPresent { get => _dfCounterPresent; set => _dfCounterPresent = value; } 
         /// <summary>
         /// RX frequency offset
@@ -3889,11 +3952,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RxFreqOffset))
             .Title("rx_freq_offset")
             .Description("RX frequency offset")
-            .FormatString(string.Empty)
-            .Units(@"Hz")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
-
-            .Build();
+        .Build();
         private short _rxFreqOffset;
         public short RxFreqOffset { get => _rxFreqOffset; set => _rxFreqOffset = value; }
         /// <summary>
@@ -3904,11 +3965,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(RefId))
             .Title("ref_id")
             .Description("GNSS reference station ID (used when GNSS is received from multiple sources).")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _refId;
         public ushort RefId { get => _refId; set => _refId = value; }
         /// <summary>
@@ -3919,11 +3978,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Squawk))
             .Title("squawk")
             .Description("Mode A code (typically 1200 [0x04B0] for VFR)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt16Type.Default)
 
-            .Build();
+            .DataType(UInt16Type.Default)
+        .Build();
         private ushort _squawk;
         public ushort Squawk { get => _squawk; set => _squawk = value; }
         /// <summary>
@@ -3934,11 +3991,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(CallSign))
             .Title("call_sign")
             .Description("Vehicle identifier (8 characters, valid characters are A-Z, 0-9, \" \" only)")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,8))
 
-            .Build();
+            .DataType(new ArrayType(CharType.Ascii,8))
+        .Build();
         public const int CallSignMaxItemsCount = 8;
         public char[] CallSign { get; } = new char[8];
         /// <summary>
@@ -3949,11 +4004,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(UfCounter))
             .Title("uf_counter")
             .Description("UF incremental counters for every 25 message ")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,25))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,25))
+        .Build();
         public const int UfCounterMaxItemsCount = 25;
         public byte[] UfCounter { get; } = new byte[25];
         [Obsolete("This method is deprecated. Use GetUfCounterMaxItemsCount instead.")]
@@ -3966,11 +4019,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(DfCounter))
             .Title("df_counter")
             .Description("DF incremental counters for every 25 message ")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(new ArrayType(UInt8Type.Default,25))
 
-            .Build();
+            .DataType(new ArrayType(UInt8Type.Default,25))
+        .Build();
         public const int DfCounterMaxItemsCount = 25;
         public byte[] DfCounter { get; } = new byte[25];
     }
@@ -4035,11 +4086,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
         }
 
@@ -4051,11 +4102,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
             .Description("Timestamp (UNIX epoch time).")
-            .FormatString(string.Empty)
-            .Units(@"us")
+.Units(@"us")
             .DataType(UInt64Type.Default)
-
-            .Build();
+        .Build();
         private ulong _timeUnixUsec;
         public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
@@ -4066,12 +4115,10 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Flags))
             .Title("flags")
             .Description("Data flags.")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt64Type.Default)
-
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
             .Build();
-        public AsvRsgaDataFlags _flags;
+        private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
@@ -4081,11 +4128,9 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(Index))
             .Title("index")
             .Description("Data index in record")
-            .FormatString(string.Empty)
-            .Units(string.Empty)
-            .DataType(UInt32Type.Default)
 
-            .Build();
+            .DataType(UInt32Type.Default)
+        .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
     }
