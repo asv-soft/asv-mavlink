@@ -97,7 +97,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         {
             throw new ArgumentOutOfRangeException(nameof(request.Take), $"Max data size is {MavlinkFtpHelper.MaxDataSize}");
         }
-        var totalRead = 0U;
+        const uint totalRead = 0U;
         _logger.ZLogInformation($"{Id} {FtpOpcode.BurstReadFile:G} {request}");
         
         var tcs = new TaskCompletionSource();

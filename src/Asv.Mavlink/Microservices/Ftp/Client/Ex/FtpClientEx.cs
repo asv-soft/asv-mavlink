@@ -37,6 +37,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         CancellationToken cancel = default
     )
     {
+        cancel.ThrowIfCancellationRequested();
         if (partSize > MavlinkFtpHelper.MaxDataSize)
         {
             throw new ArgumentOutOfRangeException(
@@ -64,6 +65,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
                     new ReadRequest(file.Session, 0, partSize),
                     p =>
                     {
+                        cancel.ThrowIfCancellationRequested();
                         var offset = p.ReadOffset();
                         offsetsToRead.Remove(offset);
                         var size = p.ReadSize();
@@ -88,6 +90,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
                 );
                 foreach (var offset in offsetsToRead)
                 {
+                    cancel.ThrowIfCancellationRequested();
                     var request = new ReadRequest(file.Session, offset, partSize);
                     try
                     {
@@ -126,6 +129,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         CancellationToken cancel = default
     )
     {
+        cancel.ThrowIfCancellationRequested();
         if (partSize > MavlinkFtpHelper.MaxDataSize)
         {
             throw new ArgumentOutOfRangeException(
@@ -152,6 +156,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
                     new ReadRequest(file.Session, 0, partSize),
                     p =>
                     {
+                        cancel.ThrowIfCancellationRequested();
                         var offset = p.ReadOffset();
                         offsetsToRead.Remove(offset);
                         var size = p.ReadSize();
@@ -171,6 +176,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
                 );
                 foreach (var offset in offsetsToRead)
                 {
+                    cancel.ThrowIfCancellationRequested();
                     var request = new ReadRequest(file.Session, offset, partSize);
                     try
                     {
@@ -202,6 +208,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         CancellationToken cancel = default
     )
     {
+        cancel.ThrowIfCancellationRequested();
         var existingEntries = _entryCache
             .Where(entry => entry.Value.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase))
             .Select(entry => entry.Value.Path)
@@ -223,6 +230,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         {
             while (true)
             {
+                cancel.ThrowIfCancellationRequested();
                 try
                 {
                     byte charSize;
@@ -292,6 +300,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         CancellationToken cancel = default
     )
     {
+        cancel.ThrowIfCancellationRequested();
         progress ??= new Progress<double>();
         var file = await Base.OpenFileRead(filePath, cancel).ConfigureAwait(false);
         var skip = 0;
@@ -315,6 +324,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         {
             while (file.Size > skip)
             {
+                cancel.ThrowIfCancellationRequested();
                 if (file.Size - skip < take)
                 {
                     take = (byte)(file.Size - skip);
@@ -348,6 +358,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         CancellationToken cancel = default
     )
     {
+        cancel.ThrowIfCancellationRequested();
         progress ??= new Progress<double>();
         var file = await Base.OpenFileRead(filePath, cancel).ConfigureAwait(false);
 
@@ -373,6 +384,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         {
             while (file.Size > skip)
             {
+                cancel.ThrowIfCancellationRequested();
                 if (file.Size - skip < take)
                 {
                     take = (byte)(file.Size - skip);
@@ -409,6 +421,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         CancellationToken cancel = default
     )
     {
+        cancel.ThrowIfCancellationRequested();
         progress ??= new Progress<double>();
         var file = await Base.CreateFile(filePath, cancel).ConfigureAwait(false);
         var session = file.ReadSession();
@@ -419,6 +432,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         {
             while (true)
             {
+                cancel.ThrowIfCancellationRequested();
                 var bytesRead = (uint)
                     await streamToUpload
                         .ReadAsync(buffer.AsMemory(0, MavlinkFtpHelper.MaxDataSize), cancel)
