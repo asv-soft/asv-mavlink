@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -260,28 +260,28 @@ namespace Asv.Mavlink.Test
             /* PayloadByteSize = 179 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,U64Field, ref _U64);    
-            Int64Type.Accept(visitor,S64Field, ref _S64);    
-            DoubleType.Accept(visitor,DField, ref _D);
+            UInt64Type.Accept(visitor,U64Field, ref _u64);    
+            Int64Type.Accept(visitor,S64Field, ref _s64);    
+            DoubleType.Accept(visitor,DField, ref _d);
             ArrayType.Accept(visitor,U64ArrayField, 3,
                 (index,v) => UInt64Type.Accept(v, U64ArrayField, ref U64Array[index]));    
             ArrayType.Accept(visitor,S64ArrayField, 3,
                 (index,v) => Int64Type.Accept(v, S64ArrayField, ref S64Array[index]));    
             ArrayType.Accept(visitor,DArrayField, 3,
                 (index,v) => DoubleType.Accept(v, DArrayField, ref DArray[index]));    
-            UInt32Type.Accept(visitor,U32Field, ref _U32);    
-            Int32Type.Accept(visitor,S32Field, ref _S32);    
-            FloatType.Accept(visitor,FField, ref _F);    
+            UInt32Type.Accept(visitor,U32Field, ref _u32);    
+            Int32Type.Accept(visitor,S32Field, ref _s32);    
+            FloatType.Accept(visitor,FField, ref _f);    
             ArrayType.Accept(visitor,U32ArrayField, 3,
                 (index,v) => UInt32Type.Accept(v, U32ArrayField, ref U32Array[index]));    
             ArrayType.Accept(visitor,S32ArrayField, 3,
                 (index,v) => Int32Type.Accept(v, S32ArrayField, ref S32Array[index]));
             ArrayType.Accept(visitor,FArrayField, 3,
                 (index,v) => FloatType.Accept(v, FArrayField, ref FArray[index]));
-            UInt16Type.Accept(visitor,U16Field, ref _U16);    
-            Int16Type.Accept(visitor,S16Field, ref _S16);
+            UInt16Type.Accept(visitor,U16Field, ref _u16);    
+            Int16Type.Accept(visitor,S16Field, ref _s16);
             ArrayType.Accept(visitor,U16ArrayField, 3,
                 (index,v) => UInt16Type.Accept(v, U16ArrayField, ref U16Array[index]));    
             ArrayType.Accept(visitor,S16ArrayField, 3,
@@ -295,8 +295,8 @@ namespace Asv.Mavlink.Test
                 UInt8Type.Accept(v,SField, ref tmp);
                 S[index] = (char)tmp;
             });
-            UInt8Type.Accept(visitor,U8Field, ref _U8);    
-            Int8Type.Accept(visitor,S8Field, ref _S8);                
+            UInt8Type.Accept(visitor,U8Field, ref _u8);    
+            Int8Type.Accept(visitor,S8Field, ref _s8);                
             ArrayType.Accept(visitor,U8ArrayField, 3,
                 (index,v) => UInt8Type.Accept(v, U8ArrayField, ref U8Array[index]));    
             ArrayType.Accept(visitor,S8ArrayField, 3, 
@@ -317,8 +317,8 @@ namespace Asv.Mavlink.Test
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _U64;
-        public ulong U64 { get => _U64; set { _U64 = value; } }
+        private ulong _u64;
+        public ulong U64 { get => _u64; set => _u64 = value; }
         /// <summary>
         /// int64_t
         /// OriginName: s64, Units: , IsExtended: false
@@ -332,8 +332,8 @@ namespace Asv.Mavlink.Test
             .DataType(Int64Type.Default)
 
             .Build();
-        private long _S64;
-        public long S64 { get => _S64; set { _S64 = value; } }
+        private long _s64;
+        public long S64 { get => _s64; set => _s64 = value; }
         /// <summary>
         /// double
         /// OriginName: d, Units: , IsExtended: false
@@ -347,8 +347,8 @@ namespace Asv.Mavlink.Test
             .DataType(DoubleType.Default)
 
             .Build();
-        private double _D;
-        public double D { get => _D; set { _D = value; } }
+        private double _d;
+        public double D { get => _d; set => _d = value; }
         /// <summary>
         /// uint64_t_array
         /// OriginName: u64_array, Units: , IsExtended: false
@@ -409,8 +409,8 @@ namespace Asv.Mavlink.Test
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _U32;
-        public uint U32 { get => _U32; set { _U32 = value; } }
+        private uint _u32;
+        public uint U32 { get => _u32; set => _u32 = value; }
         /// <summary>
         /// int32_t
         /// OriginName: s32, Units: , IsExtended: false
@@ -424,8 +424,8 @@ namespace Asv.Mavlink.Test
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _S32;
-        public int S32 { get => _S32; set { _S32 = value; } }
+        private int _s32;
+        public int S32 { get => _s32; set => _s32 = value; }
         /// <summary>
         /// float
         /// OriginName: f, Units: , IsExtended: false
@@ -439,8 +439,8 @@ namespace Asv.Mavlink.Test
             .DataType(FloatType.Default)
 
             .Build();
-        private float _F;
-        public float F { get => _F; set { _F = value; } }
+        private float _f;
+        public float F { get => _f; set => _f = value; }
         /// <summary>
         /// uint32_t_array
         /// OriginName: u32_array, Units: , IsExtended: false
@@ -499,8 +499,8 @@ namespace Asv.Mavlink.Test
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _U16;
-        public ushort U16 { get => _U16; set { _U16 = value; } }
+        private ushort _u16;
+        public ushort U16 { get => _u16; set => _u16 = value; }
         /// <summary>
         /// int16_t
         /// OriginName: s16, Units: , IsExtended: false
@@ -514,8 +514,8 @@ namespace Asv.Mavlink.Test
             .DataType(Int16Type.Default)
 
             .Build();
-        private short _S16;
-        public short S16 { get => _S16; set { _S16 = value; } }
+        private short _s16;
+        public short S16 { get => _s16; set => _s16 = value; }
         /// <summary>
         /// uint16_t_array
         /// OriginName: u16_array, Units: , IsExtended: false
@@ -559,8 +559,8 @@ namespace Asv.Mavlink.Test
             .DataType(UInt8Type.Default)
 
             .Build();
-        private char _C;
-        public char C { get => _C; set { _C = value; } }
+        private char _c;
+        public char C { get => _c; set => _c = value; }
         /// <summary>
         /// string
         /// OriginName: s, Units: , IsExtended: false
@@ -589,8 +589,8 @@ namespace Asv.Mavlink.Test
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _U8;
-        public byte U8 { get => _U8; set { _U8 = value; } }
+        private byte _u8;
+        public byte U8 { get => _u8; set => _u8 = value; }
         /// <summary>
         /// int8_t
         /// OriginName: s8, Units: , IsExtended: false
@@ -604,8 +604,8 @@ namespace Asv.Mavlink.Test
             .DataType(Int8Type.Default)
 
             .Build();
-        private sbyte _S8;
-        public sbyte S8 { get => _S8; set { _S8 = value; } }
+        private sbyte _s8;
+        public sbyte S8 { get => _s8; set => _s8 = value; }
         /// <summary>
         /// uint8_t_array
         /// OriginName: u8_array, Units: , IsExtended: false

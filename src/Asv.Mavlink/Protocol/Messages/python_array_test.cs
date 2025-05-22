@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -153,13 +153,13 @@ namespace Asv.Mavlink.PythonArrayTest
             /* PayloadByteSize = 33 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             ArrayType.Accept(visitor,ArU32Field, 4,
                 (index,v) => UInt32Type.Accept(v, ArU32Field, ref ArU32[index]));    
             ArrayType.Accept(visitor,ArU16Field, 4,
                 (index,v) => UInt16Type.Accept(v, ArU16Field, ref ArU16[index]));    
-            UInt8Type.Accept(visitor,V1Field, ref _V1);    
+            UInt8Type.Accept(visitor,V1Field, ref _v1);    
             ArrayType.Accept(visitor,ArI8Field, 4, 
                 (index,v) => Int8Type.Accept(v, ArI8Field, ref ArI8[index]));
             ArrayType.Accept(visitor,ArU8Field, 4,
@@ -212,8 +212,8 @@ namespace Asv.Mavlink.PythonArrayTest
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _V1;
-        public byte V1 { get => _V1; set { _V1 = value; } }
+        private byte _v1;
+        public byte V1 { get => _v1; set => _v1 = value; }
         /// <summary>
         /// Value array
         /// OriginName: ar_i8, Units: , IsExtended: false
@@ -308,7 +308,7 @@ namespace Asv.Mavlink.PythonArrayTest
             /* PayloadByteSize = 16 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             ArrayType.Accept(visitor,ArU32Field, 4,
                 (index,v) => UInt32Type.Accept(v, ArU32Field, ref ArU32[index]));    
@@ -399,11 +399,11 @@ namespace Asv.Mavlink.PythonArrayTest
             /* PayloadByteSize = 17 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             ArrayType.Accept(visitor,ArU32Field, 4,
                 (index,v) => UInt32Type.Accept(v, ArU32Field, ref ArU32[index]));    
-            UInt8Type.Accept(visitor,VField, ref _V);    
+            UInt8Type.Accept(visitor,VField, ref _v);    
 
         }
 
@@ -437,8 +437,8 @@ namespace Asv.Mavlink.PythonArrayTest
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _V;
-        public byte V { get => _V; set { _V = value; } }
+        private byte _v;
+        public byte V { get => _v; set => _v = value; }
     }
     /// <summary>
     /// Array test #4.
@@ -506,11 +506,11 @@ namespace Asv.Mavlink.PythonArrayTest
             /* PayloadByteSize = 17 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             ArrayType.Accept(visitor,ArU32Field, 4,
                 (index,v) => UInt32Type.Accept(v, ArU32Field, ref ArU32[index]));    
-            UInt8Type.Accept(visitor,VField, ref _V);    
+            UInt8Type.Accept(visitor,VField, ref _v);    
 
         }
 
@@ -544,8 +544,8 @@ namespace Asv.Mavlink.PythonArrayTest
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _V;
-        public byte V { get => _V; set { _V = value; } }
+        private byte _v;
+        public byte V { get => _v; set => _v = value; }
     }
     /// <summary>
     /// Array test #5.
@@ -644,7 +644,7 @@ namespace Asv.Mavlink.PythonArrayTest
             /* PayloadByteSize = 10 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             ArrayType.Accept(visitor,C1Field, 5, (index,v) =>
             {
@@ -858,23 +858,23 @@ namespace Asv.Mavlink.PythonArrayTest
             /* PayloadByteSize = 91 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             ArrayType.Accept(visitor,ArDField, 2,
                 (index,v) => DoubleType.Accept(v, ArDField, ref ArD[index]));    
-            UInt32Type.Accept(visitor,V3Field, ref _V3);    
+            UInt32Type.Accept(visitor,V3Field, ref _v3);    
             ArrayType.Accept(visitor,ArU32Field, 2,
                 (index,v) => UInt32Type.Accept(v, ArU32Field, ref ArU32[index]));    
             ArrayType.Accept(visitor,ArI32Field, 2,
                 (index,v) => Int32Type.Accept(v, ArI32Field, ref ArI32[index]));
             ArrayType.Accept(visitor,ArFField, 2,
                 (index,v) => FloatType.Accept(v, ArFField, ref ArF[index]));
-            UInt16Type.Accept(visitor,V2Field, ref _V2);    
+            UInt16Type.Accept(visitor,V2Field, ref _v2);    
             ArrayType.Accept(visitor,ArU16Field, 2,
                 (index,v) => UInt16Type.Accept(v, ArU16Field, ref ArU16[index]));    
             ArrayType.Accept(visitor,ArI16Field, 2,
                 (index,v) => Int16Type.Accept(v, ArI16Field, ref ArI16[index]));    
-            UInt8Type.Accept(visitor,V1Field, ref _V1);    
+            UInt8Type.Accept(visitor,V1Field, ref _v1);    
             ArrayType.Accept(visitor,ArU8Field, 2,
                 (index,v) => UInt8Type.Accept(v, ArU8Field, ref ArU8[index]));    
             ArrayType.Accept(visitor,ArI8Field, 2, 
@@ -916,8 +916,8 @@ namespace Asv.Mavlink.PythonArrayTest
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _V3;
-        public uint V3 { get => _V3; set { _V3 = value; } }
+        private uint _v3;
+        public uint V3 { get => _v3; set => _v3 = value; }
         /// <summary>
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
@@ -976,8 +976,8 @@ namespace Asv.Mavlink.PythonArrayTest
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _V2;
-        public ushort V2 { get => _V2; set { _V2 = value; } }
+        private ushort _v2;
+        public ushort V2 { get => _v2; set => _v2 = value; }
         /// <summary>
         /// Value array
         /// OriginName: ar_u16, Units: , IsExtended: false
@@ -1021,8 +1021,8 @@ namespace Asv.Mavlink.PythonArrayTest
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _V1;
-        public byte V1 { get => _V1; set { _V1 = value; } }
+        private byte _v1;
+        public byte V1 { get => _v1; set => _v1 = value; }
         /// <summary>
         /// Value array
         /// OriginName: ar_u8, Units: , IsExtended: false
@@ -1226,7 +1226,7 @@ namespace Asv.Mavlink.PythonArrayTest
             /* PayloadByteSize = 84 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             ArrayType.Accept(visitor,ArDField, 2,
                 (index,v) => DoubleType.Accept(v, ArDField, ref ArD[index]));    
@@ -1467,11 +1467,11 @@ namespace Asv.Mavlink.PythonArrayTest
             /* PayloadByteSize = 24 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             ArrayType.Accept(visitor,ArDField, 2,
                 (index,v) => DoubleType.Accept(v, ArDField, ref ArD[index]));    
-            UInt32Type.Accept(visitor,V3Field, ref _V3);    
+            UInt32Type.Accept(visitor,V3Field, ref _v3);    
             ArrayType.Accept(visitor,ArU16Field, 2,
                 (index,v) => UInt16Type.Accept(v, ArU16Field, ref ArU16[index]));    
 
@@ -1507,8 +1507,8 @@ namespace Asv.Mavlink.PythonArrayTest
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _V3;
-        public uint V3 { get => _V3; set { _V3 = value; } }
+        private uint _v3;
+        public uint V3 { get => _v3; set => _v3 = value; }
         /// <summary>
         /// Value array
         /// OriginName: ar_u16, Units: , IsExtended: false

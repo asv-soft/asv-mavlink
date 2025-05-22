@@ -487,7 +487,7 @@ namespace Asv.Mavlink.{{ Namespace }}
             /* PayloadByteSize = {{ msg.PayloadByteSize }} */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
 {%- for field in msg.Fields -%}
 {%- if field.IsEnum -%}
@@ -552,7 +552,7 @@ namespace Asv.Mavlink.{{ Namespace }}
             {%- when 'char' -%}
             {%- when 'float' -%}
             {%- when 'double' -%}
-            ERROR => ENUM as 'float' or 'double' ???????
+            ERROR => ENUM as 'float' or 'char' or 'double' ???????
             
         {%- endcase -%}
     {%- else -%}
@@ -643,25 +643,25 @@ namespace Asv.Mavlink.{{ Namespace }}
             UInt8Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref tmp);
             {{ field.CamelCaseName }} = (char)tmp;   
             {%- when 'sbyte' -%}
-            Int8Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref _{{ field.CamelCaseName }});                
+            Int8Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});                
             {%- when 'byte' -%}
-            UInt8Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref _{{ field.CamelCaseName }});    
+            UInt8Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'short' -%}
-            Int16Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref _{{ field.CamelCaseName }});
+            Int16Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});
             {%- when 'ushort' -%}
-            UInt16Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref _{{ field.CamelCaseName }});    
+            UInt16Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'int' -%}
-            Int32Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref _{{ field.CamelCaseName }});    
+            Int32Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'uint' -%}
-            UInt32Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref _{{ field.CamelCaseName }});    
+            UInt32Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'long' -%}
-            Int64Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref _{{ field.CamelCaseName }});    
+            Int64Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'ulong' -%}
-            UInt64Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref _{{ field.CamelCaseName }});    
+            UInt64Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'float' -%}
-            FloatType.Accept(visitor,{{ field.CamelCaseName }}Field, ref _{{ field.CamelCaseName }});    
+            FloatType.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'double' -%}
-            DoubleType.Accept(visitor,{{ field.CamelCaseName }}Field, ref _{{ field.CamelCaseName }});
+            DoubleType.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});
         {%- endcase -%}
     {%- endif -%}
 {%- endif -%}
@@ -743,8 +743,8 @@ namespace Asv.Mavlink.{{ Namespace }}
         public {{ field.EnumCamelCaseName }}[] {{ field.CamelCaseName }} { get; } = new {{ field.EnumCamelCaseName }}[{{ field.ArrayLength }}];
             {%- endif -%}
         {%- else -%}
-        public {{ field.EnumCamelCaseName }} _{{ field.CamelCaseName }};
-        public {{ field.EnumCamelCaseName }} {{ field.CamelCaseName }} { get => _{{ field.CamelCaseName }}; set => _{{ field.CamelCaseName }} = value; } 
+        public {{ field.EnumCamelCaseName }} {{ field.FieldCaseName }};
+        public {{ field.EnumCamelCaseName }} {{ field.CamelCaseName }} { get => {{ field.FieldCaseName }}; set => {{ field.FieldCaseName }} = value; } 
        {%- endif -%}
     {%- else -%}
         {%- if field.IsArray -%}
@@ -758,8 +758,8 @@ namespace Asv.Mavlink.{{ Namespace }}
         public {{ field.Type }}[] {{ field.CamelCaseName }} { get; } = new {{ field.Type }}[{{ field.ArrayLength }}];
             {%- endif -%}
         {%- else -%}
-        private {{ field.Type }} _{{ field.CamelCaseName }};
-        public {{ field.Type }} {{ field.CamelCaseName }} { get => _{{ field.CamelCaseName }}; set { _{{ field.CamelCaseName }} = value; } }
+        private {{ field.Type }} {{ field.FieldCaseName }};
+        public {{ field.Type }} {{ field.CamelCaseName }} { get => {{ field.FieldCaseName }}; set => {{ field.FieldCaseName }} = value; }
         {%- endif -%}
     {%- endif -%}
     {%- endfor -%}

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -420,10 +420,10 @@ namespace Asv.Mavlink.Uavionix
             /* PayloadByteSize = 20 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,IcaoField, ref _Icao);    
-            UInt16Type.Accept(visitor,StallspeedField, ref _Stallspeed);    
+            UInt32Type.Accept(visitor,IcaoField, ref _icao);    
+            UInt16Type.Accept(visitor,StallspeedField, ref _stallspeed);    
             ArrayType.Accept(visitor,CallsignField, 9, (index,v) =>
             {
                 var tmp = (byte)Callsign[index];
@@ -461,8 +461,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _Icao;
-        public uint Icao { get => _Icao; set { _Icao = value; } }
+        private uint _icao;
+        public uint Icao { get => _icao; set => _icao = value; }
         /// <summary>
         /// Aircraft stall speed in cm/s
         /// OriginName: stallSpeed, Units: cm/s, IsExtended: false
@@ -476,8 +476,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Stallspeed;
-        public ushort Stallspeed { get => _Stallspeed; set { _Stallspeed = value; } }
+        private ushort _stallspeed;
+        public ushort Stallspeed { get => _stallspeed; set => _stallspeed = value; }
         /// <summary>
         /// Vehicle identifier (8 characters, null terminated, valid characters are A-Z, 0-9, " " only)
         /// OriginName: callsign, Units: , IsExtended: false
@@ -508,8 +508,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt8Type.Default)
 
             .Build();
-        public AdsbEmitterType _Emittertype;
-        public AdsbEmitterType Emittertype { get => _Emittertype; set => _Emittertype = value; } 
+        public AdsbEmitterType _emittertype;
+        public AdsbEmitterType Emittertype { get => _emittertype; set => _emittertype = value; } 
         /// <summary>
         /// Aircraft length and width encoding (table 2-35 of DO-282B)
         /// OriginName: aircraftSize, Units: , IsExtended: false
@@ -523,8 +523,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt8Type.Default)
 
             .Build();
-        public UavionixAdsbOutCfgAircraftSize _Aircraftsize;
-        public UavionixAdsbOutCfgAircraftSize Aircraftsize { get => _Aircraftsize; set => _Aircraftsize = value; } 
+        public UavionixAdsbOutCfgAircraftSize _aircraftsize;
+        public UavionixAdsbOutCfgAircraftSize Aircraftsize { get => _aircraftsize; set => _aircraftsize = value; } 
         /// <summary>
         /// GPS antenna lateral offset (table 2-36 of DO-282B)
         /// OriginName: gpsOffsetLat, Units: , IsExtended: false
@@ -538,8 +538,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt8Type.Default)
 
             .Build();
-        public UavionixAdsbOutCfgGpsOffsetLat _Gpsoffsetlat;
-        public UavionixAdsbOutCfgGpsOffsetLat Gpsoffsetlat { get => _Gpsoffsetlat; set => _Gpsoffsetlat = value; } 
+        public UavionixAdsbOutCfgGpsOffsetLat _gpsoffsetlat;
+        public UavionixAdsbOutCfgGpsOffsetLat Gpsoffsetlat { get => _gpsoffsetlat; set => _gpsoffsetlat = value; } 
         /// <summary>
         /// GPS antenna longitudinal offset from nose [if non-zero, take position (in meters) divide by 2 and add one] (table 2-37 DO-282B)
         /// OriginName: gpsOffsetLon, Units: , IsExtended: false
@@ -553,8 +553,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt8Type.Default)
 
             .Build();
-        public UavionixAdsbOutCfgGpsOffsetLon _Gpsoffsetlon;
-        public UavionixAdsbOutCfgGpsOffsetLon Gpsoffsetlon { get => _Gpsoffsetlon; set => _Gpsoffsetlon = value; } 
+        public UavionixAdsbOutCfgGpsOffsetLon _gpsoffsetlon;
+        public UavionixAdsbOutCfgGpsOffsetLon Gpsoffsetlon { get => _gpsoffsetlon; set => _gpsoffsetlon = value; } 
         /// <summary>
         /// ADS-B transponder receiver and transmit enable flags
         /// OriginName: rfSelect, Units: , IsExtended: false
@@ -568,8 +568,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt8Type.Default)
 
             .Build();
-        public UavionixAdsbOutRfSelect _Rfselect;
-        public UavionixAdsbOutRfSelect Rfselect { get => _Rfselect; set => _Rfselect = value; } 
+        public UavionixAdsbOutRfSelect _rfselect;
+        public UavionixAdsbOutRfSelect Rfselect { get => _rfselect; set => _rfselect = value; } 
     }
     /// <summary>
     /// Dynamic data used to generate ADS-B out transponder data (send at 5Hz)
@@ -669,27 +669,27 @@ namespace Asv.Mavlink.Uavionix
             /* PayloadByteSize = 41 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,UtctimeField, ref _Utctime);    
-            Int32Type.Accept(visitor,GpslatField, ref _Gpslat);    
-            Int32Type.Accept(visitor,GpslonField, ref _Gpslon);    
-            Int32Type.Accept(visitor,GpsaltField, ref _Gpsalt);    
-            Int32Type.Accept(visitor,BaroaltmslField, ref _Baroaltmsl);    
-            UInt32Type.Accept(visitor,AccuracyhorField, ref _Accuracyhor);    
-            UInt16Type.Accept(visitor,AccuracyvertField, ref _Accuracyvert);    
-            UInt16Type.Accept(visitor,AccuracyvelField, ref _Accuracyvel);    
-            Int16Type.Accept(visitor,VelvertField, ref _Velvert);
-            Int16Type.Accept(visitor,VelnsField, ref _Velns);
-            Int16Type.Accept(visitor,VelewField, ref _Velew);
+            UInt32Type.Accept(visitor,UtctimeField, ref _utctime);    
+            Int32Type.Accept(visitor,GpslatField, ref _gpslat);    
+            Int32Type.Accept(visitor,GpslonField, ref _gpslon);    
+            Int32Type.Accept(visitor,GpsaltField, ref _gpsalt);    
+            Int32Type.Accept(visitor,BaroaltmslField, ref _baroaltmsl);    
+            UInt32Type.Accept(visitor,AccuracyhorField, ref _accuracyhor);    
+            UInt16Type.Accept(visitor,AccuracyvertField, ref _accuracyvert);    
+            UInt16Type.Accept(visitor,AccuracyvelField, ref _accuracyvel);    
+            Int16Type.Accept(visitor,VelvertField, ref _velvert);
+            Int16Type.Accept(visitor,VelnsField, ref _velns);
+            Int16Type.Accept(visitor,VelewField, ref _velew);
             var tmpState = (ushort)State;
             UInt16Type.Accept(visitor,StateField, ref tmpState);
             State = (UavionixAdsbOutDynamicState)tmpState;
-            UInt16Type.Accept(visitor,SquawkField, ref _Squawk);    
+            UInt16Type.Accept(visitor,SquawkField, ref _squawk);    
             var tmpGpsfix = (byte)Gpsfix;
             UInt8Type.Accept(visitor,GpsfixField, ref tmpGpsfix);
             Gpsfix = (UavionixAdsbOutDynamicGpsFix)tmpGpsfix;
-            UInt8Type.Accept(visitor,NumsatsField, ref _Numsats);    
+            UInt8Type.Accept(visitor,NumsatsField, ref _numsats);    
             var tmpEmergencystatus = (byte)Emergencystatus;
             UInt8Type.Accept(visitor,EmergencystatusField, ref tmpEmergencystatus);
             Emergencystatus = (UavionixAdsbEmergencyStatus)tmpEmergencystatus;
@@ -709,8 +709,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _Utctime;
-        public uint Utctime { get => _Utctime; set { _Utctime = value; } }
+        private uint _utctime;
+        public uint Utctime { get => _utctime; set => _utctime = value; }
         /// <summary>
         /// Latitude WGS84 (deg * 1E7). If unknown set to INT32_MAX
         /// OriginName: gpsLat, Units: degE7, IsExtended: false
@@ -724,8 +724,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _Gpslat;
-        public int Gpslat { get => _Gpslat; set { _Gpslat = value; } }
+        private int _gpslat;
+        public int Gpslat { get => _gpslat; set => _gpslat = value; }
         /// <summary>
         /// Longitude WGS84 (deg * 1E7). If unknown set to INT32_MAX
         /// OriginName: gpsLon, Units: degE7, IsExtended: false
@@ -739,8 +739,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _Gpslon;
-        public int Gpslon { get => _Gpslon; set { _Gpslon = value; } }
+        private int _gpslon;
+        public int Gpslon { get => _gpslon; set => _gpslon = value; }
         /// <summary>
         /// Altitude (WGS84). UP +ve. If unknown set to INT32_MAX
         /// OriginName: gpsAlt, Units: mm, IsExtended: false
@@ -754,8 +754,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _Gpsalt;
-        public int Gpsalt { get => _Gpsalt; set { _Gpsalt = value; } }
+        private int _gpsalt;
+        public int Gpsalt { get => _gpsalt; set => _gpsalt = value; }
         /// <summary>
         /// Barometric pressure altitude (MSL) relative to a standard atmosphere of 1013.2 mBar and NOT bar corrected altitude (m * 1E-3). (up +ve). If unknown set to INT32_MAX
         /// OriginName: baroAltMSL, Units: mbar, IsExtended: false
@@ -769,8 +769,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _Baroaltmsl;
-        public int Baroaltmsl { get => _Baroaltmsl; set { _Baroaltmsl = value; } }
+        private int _baroaltmsl;
+        public int Baroaltmsl { get => _baroaltmsl; set => _baroaltmsl = value; }
         /// <summary>
         /// Horizontal accuracy in mm (m * 1E-3). If unknown set to UINT32_MAX
         /// OriginName: accuracyHor, Units: mm, IsExtended: false
@@ -784,8 +784,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _Accuracyhor;
-        public uint Accuracyhor { get => _Accuracyhor; set { _Accuracyhor = value; } }
+        private uint _accuracyhor;
+        public uint Accuracyhor { get => _accuracyhor; set => _accuracyhor = value; }
         /// <summary>
         /// Vertical accuracy in cm. If unknown set to UINT16_MAX
         /// OriginName: accuracyVert, Units: cm, IsExtended: false
@@ -799,8 +799,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Accuracyvert;
-        public ushort Accuracyvert { get => _Accuracyvert; set { _Accuracyvert = value; } }
+        private ushort _accuracyvert;
+        public ushort Accuracyvert { get => _accuracyvert; set => _accuracyvert = value; }
         /// <summary>
         /// Velocity accuracy in mm/s (m * 1E-3). If unknown set to UINT16_MAX
         /// OriginName: accuracyVel, Units: mm/s, IsExtended: false
@@ -814,8 +814,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Accuracyvel;
-        public ushort Accuracyvel { get => _Accuracyvel; set { _Accuracyvel = value; } }
+        private ushort _accuracyvel;
+        public ushort Accuracyvel { get => _accuracyvel; set => _accuracyvel = value; }
         /// <summary>
         /// GPS vertical speed in cm/s. If unknown set to INT16_MAX
         /// OriginName: velVert, Units: cm/s, IsExtended: false
@@ -829,8 +829,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(Int16Type.Default)
 
             .Build();
-        private short _Velvert;
-        public short Velvert { get => _Velvert; set { _Velvert = value; } }
+        private short _velvert;
+        public short Velvert { get => _velvert; set => _velvert = value; }
         /// <summary>
         /// North-South velocity over ground in cm/s North +ve. If unknown set to INT16_MAX
         /// OriginName: velNS, Units: cm/s, IsExtended: false
@@ -844,8 +844,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(Int16Type.Default)
 
             .Build();
-        private short _Velns;
-        public short Velns { get => _Velns; set { _Velns = value; } }
+        private short _velns;
+        public short Velns { get => _velns; set => _velns = value; }
         /// <summary>
         /// East-West velocity over ground in cm/s East +ve. If unknown set to INT16_MAX
         /// OriginName: VelEW, Units: cm/s, IsExtended: false
@@ -859,8 +859,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(Int16Type.Default)
 
             .Build();
-        private short _Velew;
-        public short Velew { get => _Velew; set { _Velew = value; } }
+        private short _velew;
+        public short Velew { get => _velew; set => _velew = value; }
         /// <summary>
         /// ADS-B transponder dynamic input state flags
         /// OriginName: state, Units: , IsExtended: false
@@ -874,8 +874,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt16Type.Default)
 
             .Build();
-        public UavionixAdsbOutDynamicState _State;
-        public UavionixAdsbOutDynamicState State { get => _State; set => _State = value; } 
+        public UavionixAdsbOutDynamicState _state;
+        public UavionixAdsbOutDynamicState State { get => _state; set => _state = value; } 
         /// <summary>
         /// Mode A code (typically 1200 [0x04B0] for VFR)
         /// OriginName: squawk, Units: , IsExtended: false
@@ -889,8 +889,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Squawk;
-        public ushort Squawk { get => _Squawk; set { _Squawk = value; } }
+        private ushort _squawk;
+        public ushort Squawk { get => _squawk; set => _squawk = value; }
         /// <summary>
         /// 0-1: no fix, 2: 2D fix, 3: 3D fix, 4: DGPS, 5: RTK
         /// OriginName: gpsFix, Units: , IsExtended: false
@@ -904,8 +904,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt8Type.Default)
 
             .Build();
-        public UavionixAdsbOutDynamicGpsFix _Gpsfix;
-        public UavionixAdsbOutDynamicGpsFix Gpsfix { get => _Gpsfix; set => _Gpsfix = value; } 
+        public UavionixAdsbOutDynamicGpsFix _gpsfix;
+        public UavionixAdsbOutDynamicGpsFix Gpsfix { get => _gpsfix; set => _gpsfix = value; } 
         /// <summary>
         /// Number of satellites visible. If unknown set to UINT8_MAX
         /// OriginName: numSats, Units: , IsExtended: false
@@ -919,8 +919,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Numsats;
-        public byte Numsats { get => _Numsats; set { _Numsats = value; } }
+        private byte _numsats;
+        public byte Numsats { get => _numsats; set => _numsats = value; }
         /// <summary>
         /// Emergency status
         /// OriginName: emergencyStatus, Units: , IsExtended: false
@@ -934,8 +934,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt8Type.Default)
 
             .Build();
-        public UavionixAdsbEmergencyStatus _Emergencystatus;
-        public UavionixAdsbEmergencyStatus Emergencystatus { get => _Emergencystatus; set => _Emergencystatus = value; } 
+        public UavionixAdsbEmergencyStatus _emergencystatus;
+        public UavionixAdsbEmergencyStatus Emergencystatus { get => _emergencystatus; set => _emergencystatus = value; } 
     }
     /// <summary>
     /// Transceiver heartbeat with health report (updated every 10s)
@@ -990,7 +990,7 @@ namespace Asv.Mavlink.Uavionix
             /* PayloadByteSize = 1 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             var tmpRfhealth = (byte)Rfhealth;
             UInt8Type.Accept(visitor,RfhealthField, ref tmpRfhealth);
@@ -1011,8 +1011,8 @@ namespace Asv.Mavlink.Uavionix
             .DataType(UInt8Type.Default)
 
             .Build();
-        public UavionixAdsbRfHealth _Rfhealth;
-        public UavionixAdsbRfHealth Rfhealth { get => _Rfhealth; set => _Rfhealth = value; } 
+        public UavionixAdsbRfHealth _rfhealth;
+        public UavionixAdsbRfHealth Rfhealth { get => _rfhealth; set => _rfhealth = value; } 
     }
 
 

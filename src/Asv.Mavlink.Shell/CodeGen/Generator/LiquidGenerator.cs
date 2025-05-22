@@ -70,6 +70,7 @@ namespace Asv.Mavlink.Shell
                                                                                                 Index = i,
                                                                                                 Name = field.Name,
                                                                                                 CamelCaseName = NameConverter(field.Name ?? throw new InvalidOperationException()),
+                                                                                                FieldCaseName = FieldNameConverter(field.Name),
                                                                                                 Units = field.Units,
                                                                                                 IsExtended = field.IsExtended,
                                                                                                 FieldTypeByteSize = field.FieldTypeByteSize,
@@ -176,6 +177,19 @@ namespace Asv.Mavlink.Shell
             var a = Regex.Replace(name.ToLower(), "_([a-z0-9])", _=>_.Value.Substring(1).ToUpper(), RegexOptions.Compiled);
             a = a.Substring(0, 1).ToUpper() + a.Substring(1);
             return a;
+        }
+        
+        private string? FieldNameConverter(string name)
+        {
+            var cname = NameConverter(name);
+            // Проверка на null или пустую строку
+            if (string.IsNullOrEmpty(cname))
+            {
+                return cname; // Возвращаем как есть или можно выбросить исключение
+            }
+
+            // Преобразуем первый символ в нижний регистр и добавляем '_'
+            return "_" + char.ToLower(cname[0]) + cname[1..];
         }
 
         private string ConvertTypeName(MessageFieldType fieldType)

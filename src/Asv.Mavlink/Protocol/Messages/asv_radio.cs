@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -223,12 +223,12 @@ namespace Asv.Mavlink.AsvRadio
             /* PayloadByteSize = 21 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,FreqField, ref _Freq);    
-            FloatType.Accept(visitor,TxLevelField, ref _TxLevel);    
-            FloatType.Accept(visitor,RxLevelField, ref _RxLevel);    
-            FloatType.Accept(visitor,RxEstimatedLevelField, ref _RxEstimatedLevel);    
+            FloatType.Accept(visitor,FreqField, ref _freq);    
+            FloatType.Accept(visitor,TxLevelField, ref _txLevel);    
+            FloatType.Accept(visitor,RxLevelField, ref _rxLevel);    
+            FloatType.Accept(visitor,RxEstimatedLevelField, ref _rxEstimatedLevel);    
             var tmpRfMode = (uint)RfMode;
             UInt32Type.Accept(visitor,RfModeField, ref tmpRfMode);
             RfMode = (AsvRadioRfModeFlag)tmpRfMode;
@@ -251,8 +251,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Freq;
-        public float Freq { get => _Freq; set { _Freq = value; } }
+        private float _freq;
+        public float Freq { get => _freq; set => _freq = value; }
         /// <summary>
         /// Current TX power in dBm.
         /// OriginName: tx_level, Units: , IsExtended: false
@@ -266,8 +266,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(FloatType.Default)
 
             .Build();
-        private float _TxLevel;
-        public float TxLevel { get => _TxLevel; set { _TxLevel = value; } }
+        private float _txLevel;
+        public float TxLevel { get => _txLevel; set => _txLevel = value; }
         /// <summary>
         /// Measured RX power in dBm.
         /// OriginName: rx_level, Units: , IsExtended: false
@@ -281,8 +281,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(FloatType.Default)
 
             .Build();
-        private float _RxLevel;
-        public float RxLevel { get => _RxLevel; set { _RxLevel = value; } }
+        private float _rxLevel;
+        public float RxLevel { get => _rxLevel; set => _rxLevel = value; }
         /// <summary>
         /// Estimated RX reference power in dBm.
         /// OriginName: rx_estimated_level, Units: , IsExtended: false
@@ -296,8 +296,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(FloatType.Default)
 
             .Build();
-        private float _RxEstimatedLevel;
-        public float RxEstimatedLevel { get => _RxEstimatedLevel; set { _RxEstimatedLevel = value; } }
+        private float _rxEstimatedLevel;
+        public float RxEstimatedLevel { get => _rxEstimatedLevel; set => _rxEstimatedLevel = value; }
         /// <summary>
         /// RF mode.
         /// OriginName: rf_mode, Units: , IsExtended: false
@@ -311,8 +311,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt32Type.Default)
 
             .Build();
-        public AsvRadioRfModeFlag _RfMode;
-        public AsvRadioRfModeFlag RfMode { get => _RfMode; set => _RfMode = value; } 
+        public AsvRadioRfModeFlag _rfMode;
+        public AsvRadioRfModeFlag RfMode { get => _rfMode; set => _rfMode = value; } 
         /// <summary>
         /// Current RF modulation.
         /// OriginName: modulation, Units: , IsExtended: false
@@ -326,8 +326,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt8Type.Default)
 
             .Build();
-        public AsvRadioModulation _Modulation;
-        public AsvRadioModulation Modulation { get => _Modulation; set => _Modulation = value; } 
+        public AsvRadioModulation _modulation;
+        public AsvRadioModulation Modulation { get => _modulation; set => _modulation = value; } 
     }
     /// <summary>
     /// Request for device capabilities. Devices must reply ASV_RADIO_CAPABILITIES_RESPONSE message.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -385,10 +385,10 @@ namespace Asv.Mavlink.AsvRadio
             /* PayloadByteSize = 2 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -405,8 +405,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetSystem;
-        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID
         /// OriginName: target_component, Units: , IsExtended: false
@@ -420,8 +420,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetComponent;
-        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
     /// <summary>
     /// Device capabilities. This is response for ASV_RADIO_CAPABILITIES_REQUEST message.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -504,14 +504,14 @@ namespace Asv.Mavlink.AsvRadio
             /* PayloadByteSize = 56 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,MaxRfFreqField, ref _MaxRfFreq);    
-            UInt32Type.Accept(visitor,MinRfFreqField, ref _MinRfFreq);    
-            FloatType.Accept(visitor,MaxTxPowerField, ref _MaxTxPower);    
-            FloatType.Accept(visitor,MinTxPowerField, ref _MinTxPower);    
-            FloatType.Accept(visitor,MaxRxPowerField, ref _MaxRxPower);    
-            FloatType.Accept(visitor,MinRxPowerField, ref _MinRxPower);    
+            UInt32Type.Accept(visitor,MaxRfFreqField, ref _maxRfFreq);    
+            UInt32Type.Accept(visitor,MinRfFreqField, ref _minRfFreq);    
+            FloatType.Accept(visitor,MaxTxPowerField, ref _maxTxPower);    
+            FloatType.Accept(visitor,MinTxPowerField, ref _minTxPower);    
+            FloatType.Accept(visitor,MaxRxPowerField, ref _maxRxPower);    
+            FloatType.Accept(visitor,MinRxPowerField, ref _minRxPower);    
             ArrayType.Accept(visitor,SupportedModulationField, 32,
                 (index,v) => UInt8Type.Accept(v, SupportedModulationField, ref SupportedModulation[index]));    
 
@@ -530,8 +530,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _MaxRfFreq;
-        public uint MaxRfFreq { get => _MaxRfFreq; set { _MaxRfFreq = value; } }
+        private uint _maxRfFreq;
+        public uint MaxRfFreq { get => _maxRfFreq; set => _maxRfFreq = value; }
         /// <summary>
         /// Min RF frequency in Hz.
         /// OriginName: min_rf_freq, Units: , IsExtended: false
@@ -545,8 +545,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _MinRfFreq;
-        public uint MinRfFreq { get => _MinRfFreq; set { _MinRfFreq = value; } }
+        private uint _minRfFreq;
+        public uint MinRfFreq { get => _minRfFreq; set => _minRfFreq = value; }
         /// <summary>
         /// Max TX power in dBm.
         /// OriginName: max_tx_power, Units: , IsExtended: false
@@ -560,8 +560,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(FloatType.Default)
 
             .Build();
-        private float _MaxTxPower;
-        public float MaxTxPower { get => _MaxTxPower; set { _MaxTxPower = value; } }
+        private float _maxTxPower;
+        public float MaxTxPower { get => _maxTxPower; set => _maxTxPower = value; }
         /// <summary>
         /// Min TX power in dBm.
         /// OriginName: min_tx_power, Units: , IsExtended: false
@@ -575,8 +575,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(FloatType.Default)
 
             .Build();
-        private float _MinTxPower;
-        public float MinTxPower { get => _MinTxPower; set { _MinTxPower = value; } }
+        private float _minTxPower;
+        public float MinTxPower { get => _minTxPower; set => _minTxPower = value; }
         /// <summary>
         /// Max estimated RX power in dBm.
         /// OriginName: max_rx_power, Units: , IsExtended: false
@@ -590,8 +590,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(FloatType.Default)
 
             .Build();
-        private float _MaxRxPower;
-        public float MaxRxPower { get => _MaxRxPower; set { _MaxRxPower = value; } }
+        private float _maxRxPower;
+        public float MaxRxPower { get => _maxRxPower; set => _maxRxPower = value; }
         /// <summary>
         /// Min estimated RX power in dBm.
         /// OriginName: min_rx_power, Units: , IsExtended: false
@@ -605,8 +605,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(FloatType.Default)
 
             .Build();
-        private float _MinRxPower;
-        public float MinRxPower { get => _MinRxPower; set { _MinRxPower = value; } }
+        private float _minRxPower;
+        public float MinRxPower { get => _minRxPower; set => _minRxPower = value; }
         /// <summary>
         /// Supported RF modulations. Each bit of array is flag from ASV_RADIO_MODULATION(max 255 items) enum.
         /// OriginName: supported_modulation, Units: , IsExtended: false
@@ -687,12 +687,12 @@ namespace Asv.Mavlink.AsvRadio
             /* PayloadByteSize = 5 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,SkipField, ref _Skip);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
-            UInt8Type.Accept(visitor,CountField, ref _Count);    
+            UInt16Type.Accept(visitor,SkipField, ref _skip);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,CountField, ref _count);    
 
         }
 
@@ -709,8 +709,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Skip;
-        public ushort Skip { get => _Skip; set { _Skip = value; } }
+        private ushort _skip;
+        public ushort Skip { get => _skip; set => _skip = value; }
         /// <summary>
         /// System ID
         /// OriginName: target_system, Units: , IsExtended: false
@@ -724,8 +724,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetSystem;
-        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID
         /// OriginName: target_component, Units: , IsExtended: false
@@ -739,8 +739,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetComponent;
-        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Codec count at ASV_RADIO_CODEC_CAPABILITIES_RESPONSE.
         /// OriginName: count, Units: , IsExtended: false
@@ -754,8 +754,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Count;
-        public byte Count { get => _Count; set { _Count = value; } }
+        private byte _count;
+        public byte Count { get => _count; set => _count = value; }
     }
     /// <summary>
     /// Request supported additional params for target codec. Devices must reply ASV_RADIO_CODEC_CAPABILITIES_REQUEST message.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -831,17 +831,17 @@ namespace Asv.Mavlink.AsvRadio
             /* PayloadByteSize = 205 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,AllField, ref _All);    
-            UInt16Type.Accept(visitor,SkipField, ref _Skip);    
+            UInt16Type.Accept(visitor,AllField, ref _all);    
+            UInt16Type.Accept(visitor,SkipField, ref _skip);    
             ArrayType.Accept(visitor,CodecsField, 100, (index,v) =>
             {
                 var tmp = (ushort)Codecs[index];
                 UInt16Type.Accept(v, CodecsField, ref tmp);
                 Codecs[index] = (AsvAudioCodec)tmp;
             });
-            UInt8Type.Accept(visitor,CountField, ref _Count);    
+            UInt8Type.Accept(visitor,CountField, ref _count);    
 
         }
 
@@ -858,8 +858,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _All;
-        public ushort All { get => _All; set { _All = value; } }
+        private ushort _all;
+        public ushort All { get => _all; set => _all = value; }
         /// <summary>
         /// Skip index codec.
         /// OriginName: skip, Units: , IsExtended: false
@@ -873,8 +873,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Skip;
-        public ushort Skip { get => _Skip; set { _Skip = value; } }
+        private ushort _skip;
+        public ushort Skip { get => _skip; set => _skip = value; }
         /// <summary>
         /// Supported codec array.
         /// OriginName: codecs, Units: , IsExtended: false
@@ -903,8 +903,8 @@ namespace Asv.Mavlink.AsvRadio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Count;
-        public byte Count { get => _Count; set { _Count = value; } }
+        private byte _count;
+        public byte Count { get => _count; set => _count = value; }
     }
 
 

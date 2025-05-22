@@ -1,7 +1,6 @@
 using System;
-using DotNext;
 
-namespace Asv.Mavlink;
+namespace Asv.Mavlink.Shell;
 
 public enum MessageFieldType
 {

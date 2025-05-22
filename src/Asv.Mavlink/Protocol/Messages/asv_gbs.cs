@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -233,22 +233,22 @@ namespace Asv.Mavlink.AsvGbs
             /* PayloadByteSize = 26 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            Int32Type.Accept(visitor,LatField, ref _Lat);    
-            Int32Type.Accept(visitor,LngField, ref _Lng);    
-            Int32Type.Accept(visitor,AltField, ref _Alt);    
-            UInt16Type.Accept(visitor,AccuracyField, ref _Accuracy);    
-            UInt16Type.Accept(visitor,ObservationField, ref _Observation);    
-            UInt16Type.Accept(visitor,DgpsRateField, ref _DgpsRate);    
-            UInt8Type.Accept(visitor,SatAllField, ref _SatAll);    
-            UInt8Type.Accept(visitor,SatGpsField, ref _SatGps);    
-            UInt8Type.Accept(visitor,SatGloField, ref _SatGlo);    
-            UInt8Type.Accept(visitor,SatBduField, ref _SatBdu);    
-            UInt8Type.Accept(visitor,SatGalField, ref _SatGal);    
-            UInt8Type.Accept(visitor,SatQzsField, ref _SatQzs);    
-            UInt8Type.Accept(visitor,SatImeField, ref _SatIme);    
-            UInt8Type.Accept(visitor,SatSbsField, ref _SatSbs);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LngField, ref _lng);    
+            Int32Type.Accept(visitor,AltField, ref _alt);    
+            UInt16Type.Accept(visitor,AccuracyField, ref _accuracy);    
+            UInt16Type.Accept(visitor,ObservationField, ref _observation);    
+            UInt16Type.Accept(visitor,DgpsRateField, ref _dgpsRate);    
+            UInt8Type.Accept(visitor,SatAllField, ref _satAll);    
+            UInt8Type.Accept(visitor,SatGpsField, ref _satGps);    
+            UInt8Type.Accept(visitor,SatGloField, ref _satGlo);    
+            UInt8Type.Accept(visitor,SatBduField, ref _satBdu);    
+            UInt8Type.Accept(visitor,SatGalField, ref _satGal);    
+            UInt8Type.Accept(visitor,SatQzsField, ref _satQzs);    
+            UInt8Type.Accept(visitor,SatImeField, ref _satIme);    
+            UInt8Type.Accept(visitor,SatSbsField, ref _satSbs);    
 
         }
 
@@ -265,8 +265,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _Lat;
-        public int Lat { get => _Lat; set { _Lat = value; } }
+        private int _lat;
+        public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
         /// Longitude of GBS (value / 10000000D).
         /// OriginName: lng, Units: degE7, IsExtended: false
@@ -280,8 +280,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _Lng;
-        public int Lng { get => _Lng; set { _Lng = value; } }
+        private int _lng;
+        public int Lng { get => _lng; set => _lng = value; }
         /// <summary>
         /// Altitude of GBS.
         /// OriginName: alt, Units: mm, IsExtended: false
@@ -295,8 +295,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _Alt;
-        public int Alt { get => _Alt; set { _Alt = value; } }
+        private int _alt;
+        public int Alt { get => _alt; set => _alt = value; }
         /// <summary>
         /// Current position accuracy (cm).
         /// OriginName: accuracy, Units: cm, IsExtended: false
@@ -310,8 +310,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Accuracy;
-        public ushort Accuracy { get => _Accuracy; set { _Accuracy = value; } }
+        private ushort _accuracy;
+        public ushort Accuracy { get => _accuracy; set => _accuracy = value; }
         /// <summary>
         /// Observation time (seconds).
         /// OriginName: observation, Units: s, IsExtended: false
@@ -325,8 +325,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Observation;
-        public ushort Observation { get => _Observation; set { _Observation = value; } }
+        private ushort _observation;
+        public ushort Observation { get => _observation; set => _observation = value; }
         /// <summary>
         /// Rate of GPS_RTCM_DATA data.
         /// OriginName: dgps_rate, Units: bytes\seconds, IsExtended: false
@@ -340,8 +340,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _DgpsRate;
-        public ushort DgpsRate { get => _DgpsRate; set { _DgpsRate = value; } }
+        private ushort _dgpsRate;
+        public ushort DgpsRate { get => _dgpsRate; set => _dgpsRate = value; }
         /// <summary>
         /// All GNSS satellite count.
         /// OriginName: sat_all, Units: , IsExtended: false
@@ -355,8 +355,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SatAll;
-        public byte SatAll { get => _SatAll; set { _SatAll = value; } }
+        private byte _satAll;
+        public byte SatAll { get => _satAll; set => _satAll = value; }
         /// <summary>
         /// GPS satellite count.
         /// OriginName: sat_gps, Units: , IsExtended: false
@@ -370,8 +370,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SatGps;
-        public byte SatGps { get => _SatGps; set { _SatGps = value; } }
+        private byte _satGps;
+        public byte SatGps { get => _satGps; set => _satGps = value; }
         /// <summary>
         /// GLONASS satellite count.
         /// OriginName: sat_glo, Units: , IsExtended: false
@@ -385,8 +385,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SatGlo;
-        public byte SatGlo { get => _SatGlo; set { _SatGlo = value; } }
+        private byte _satGlo;
+        public byte SatGlo { get => _satGlo; set => _satGlo = value; }
         /// <summary>
         /// BeiDou satellite count.
         /// OriginName: sat_bdu, Units: , IsExtended: false
@@ -400,8 +400,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SatBdu;
-        public byte SatBdu { get => _SatBdu; set { _SatBdu = value; } }
+        private byte _satBdu;
+        public byte SatBdu { get => _satBdu; set => _satBdu = value; }
         /// <summary>
         /// Galileo satellite count.
         /// OriginName: sat_gal, Units: , IsExtended: false
@@ -415,8 +415,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SatGal;
-        public byte SatGal { get => _SatGal; set { _SatGal = value; } }
+        private byte _satGal;
+        public byte SatGal { get => _satGal; set => _satGal = value; }
         /// <summary>
         /// QZSS satellite count.
         /// OriginName: sat_qzs, Units: , IsExtended: false
@@ -430,8 +430,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SatQzs;
-        public byte SatQzs { get => _SatQzs; set { _SatQzs = value; } }
+        private byte _satQzs;
+        public byte SatQzs { get => _satQzs; set => _satQzs = value; }
         /// <summary>
         /// IMES satellite count.
         /// OriginName: sat_ime, Units: , IsExtended: false
@@ -445,8 +445,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SatIme;
-        public byte SatIme { get => _SatIme; set { _SatIme = value; } }
+        private byte _satIme;
+        public byte SatIme { get => _satIme; set => _satIme = value; }
         /// <summary>
         /// SBAS satellite count.
         /// OriginName: sat_sbs, Units: , IsExtended: false
@@ -460,8 +460,8 @@ namespace Asv.Mavlink.AsvGbs
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SatSbs;
-        public byte SatSbs { get => _SatSbs; set { _SatSbs = value; } }
+        private byte _satSbs;
+        public byte SatSbs { get => _satSbs; set => _satSbs = value; }
     }
 
 

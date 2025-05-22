@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -223,7 +223,7 @@ namespace Asv.Mavlink.AsvAudio
             /* PayloadByteSize = 19 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             var tmpCodec = (ushort)Codec;
             UInt16Type.Accept(visitor,CodecField, ref tmpCodec);
@@ -253,8 +253,8 @@ namespace Asv.Mavlink.AsvAudio
             .DataType(UInt16Type.Default)
 
             .Build();
-        public AsvAudioCodec _Codec;
-        public AsvAudioCodec Codec { get => _Codec; set => _Codec = value; } 
+        public AsvAudioCodec _codec;
+        public AsvAudioCodec Codec { get => _codec; set => _codec = value; } 
         /// <summary>
         /// Device current work mode.
         /// OriginName: mode, Units: , IsExtended: false
@@ -268,8 +268,8 @@ namespace Asv.Mavlink.AsvAudio
             .DataType(UInt8Type.Default)
 
             .Build();
-        public AsvAudioModeFlag _Mode;
-        public AsvAudioModeFlag Mode { get => _Mode; set => _Mode = value; } 
+        public AsvAudioModeFlag _mode;
+        public AsvAudioModeFlag Mode { get => _mode; set => _mode = value; } 
         /// <summary>
         /// Audio device name in voice chat.
         /// OriginName: name, Units: , IsExtended: false
@@ -369,14 +369,14 @@ namespace Asv.Mavlink.AsvAudio
             /* PayloadByteSize = 236 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
-            UInt8Type.Accept(visitor,FrameSeqField, ref _FrameSeq);    
-            UInt8Type.Accept(visitor,PktInFrameField, ref _PktInFrame);    
-            UInt8Type.Accept(visitor,PktSeqField, ref _PktSeq);    
-            UInt8Type.Accept(visitor,DataSizeField, ref _DataSize);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,FrameSeqField, ref _frameSeq);    
+            UInt8Type.Accept(visitor,PktInFrameField, ref _pktInFrame);    
+            UInt8Type.Accept(visitor,PktSeqField, ref _pktSeq);    
+            UInt8Type.Accept(visitor,DataSizeField, ref _dataSize);    
             ArrayType.Accept(visitor,DataField, 230,
                 (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
 
@@ -395,8 +395,8 @@ namespace Asv.Mavlink.AsvAudio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetSystem;
-        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
@@ -410,8 +410,8 @@ namespace Asv.Mavlink.AsvAudio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetComponent;
-        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Frame sequence number.
         /// OriginName: frame_seq, Units: , IsExtended: false
@@ -425,8 +425,8 @@ namespace Asv.Mavlink.AsvAudio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _FrameSeq;
-        public byte FrameSeq { get => _FrameSeq; set { _FrameSeq = value; } }
+        private byte _frameSeq;
+        public byte FrameSeq { get => _frameSeq; set => _frameSeq = value; }
         /// <summary>
         /// Number of packets for one encoded audio frame.
         /// OriginName: pkt_in_frame, Units: , IsExtended: false
@@ -440,8 +440,8 @@ namespace Asv.Mavlink.AsvAudio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _PktInFrame;
-        public byte PktInFrame { get => _PktInFrame; set { _PktInFrame = value; } }
+        private byte _pktInFrame;
+        public byte PktInFrame { get => _pktInFrame; set => _pktInFrame = value; }
         /// <summary>
         /// Packet sequence number (starting with 0 on every encoded frame).
         /// OriginName: pkt_seq, Units: , IsExtended: false
@@ -455,8 +455,8 @@ namespace Asv.Mavlink.AsvAudio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _PktSeq;
-        public byte PktSeq { get => _PktSeq; set { _PktSeq = value; } }
+        private byte _pktSeq;
+        public byte PktSeq { get => _pktSeq; set => _pktSeq = value; }
         /// <summary>
         /// Size of data array.
         /// OriginName: data_size, Units: , IsExtended: false
@@ -470,8 +470,8 @@ namespace Asv.Mavlink.AsvAudio
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _DataSize;
-        public byte DataSize { get => _DataSize; set { _DataSize = value; } }
+        private byte _dataSize;
+        public byte DataSize { get => _dataSize; set => _dataSize = value; }
         /// <summary>
         /// Audio data.
         /// OriginName: data, Units: , IsExtended: false

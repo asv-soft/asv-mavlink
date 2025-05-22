@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -241,27 +241,27 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 47 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,VehicleTimestampField, ref _VehicleTimestamp);    
-            UInt32Type.Accept(visitor,UtcTimeField, ref _UtcTime);    
-            FloatType.Accept(visitor,Param1Field, ref _Param1);    
-            FloatType.Accept(visitor,Param2Field, ref _Param2);    
-            FloatType.Accept(visitor,Param3Field, ref _Param3);    
-            FloatType.Accept(visitor,Param4Field, ref _Param4);    
-            Int32Type.Accept(visitor,XField, ref _X);    
-            Int32Type.Accept(visitor,YField, ref _Y);    
-            FloatType.Accept(visitor,ZField, ref _Z);    
+            UInt64Type.Accept(visitor,VehicleTimestampField, ref _vehicleTimestamp);    
+            UInt32Type.Accept(visitor,UtcTimeField, ref _utcTime);    
+            FloatType.Accept(visitor,Param1Field, ref _param1);    
+            FloatType.Accept(visitor,Param2Field, ref _param2);    
+            FloatType.Accept(visitor,Param3Field, ref _param3);    
+            FloatType.Accept(visitor,Param4Field, ref _param4);    
+            Int32Type.Accept(visitor,XField, ref _x);    
+            Int32Type.Accept(visitor,YField, ref _y);    
+            FloatType.Accept(visitor,ZField, ref _z);    
             var tmpCommand = (ushort)Command;
             UInt16Type.Accept(visitor,CommandField, ref tmpCommand);
             Command = (MavCmd)tmpCommand;
-            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
             var tmpFrame = (byte)Frame;
             UInt8Type.Accept(visitor,FrameField, ref tmpFrame);
             Frame = (MavFrame)tmpFrame;
-            UInt8Type.Accept(visitor,CurrentField, ref _Current);    
-            UInt8Type.Accept(visitor,AutocontinueField, ref _Autocontinue);    
+            UInt8Type.Accept(visitor,CurrentField, ref _current);    
+            UInt8Type.Accept(visitor,AutocontinueField, ref _autocontinue);    
 
         }
 
@@ -278,8 +278,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _VehicleTimestamp;
-        public ulong VehicleTimestamp { get => _VehicleTimestamp; set { _VehicleTimestamp = value; } }
+        private ulong _vehicleTimestamp;
+        public ulong VehicleTimestamp { get => _vehicleTimestamp; set => _vehicleTimestamp = value; }
         /// <summary>
         /// UTC time, seconds elapsed since 01.01.1970
         /// OriginName: utc_time, Units: , IsExtended: false
@@ -293,8 +293,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _UtcTime;
-        public uint UtcTime { get => _UtcTime; set { _UtcTime = value; } }
+        private uint _utcTime;
+        public uint UtcTime { get => _utcTime; set => _utcTime = value; }
         /// <summary>
         /// PARAM1, see MAV_CMD enum
         /// OriginName: param1, Units: , IsExtended: false
@@ -308,8 +308,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Param1;
-        public float Param1 { get => _Param1; set { _Param1 = value; } }
+        private float _param1;
+        public float Param1 { get => _param1; set => _param1 = value; }
         /// <summary>
         /// PARAM2, see MAV_CMD enum
         /// OriginName: param2, Units: , IsExtended: false
@@ -323,8 +323,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Param2;
-        public float Param2 { get => _Param2; set { _Param2 = value; } }
+        private float _param2;
+        public float Param2 { get => _param2; set => _param2 = value; }
         /// <summary>
         /// PARAM3, see MAV_CMD enum
         /// OriginName: param3, Units: , IsExtended: false
@@ -338,8 +338,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Param3;
-        public float Param3 { get => _Param3; set { _Param3 = value; } }
+        private float _param3;
+        public float Param3 { get => _param3; set => _param3 = value; }
         /// <summary>
         /// PARAM4, see MAV_CMD enum
         /// OriginName: param4, Units: , IsExtended: false
@@ -353,8 +353,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Param4;
-        public float Param4 { get => _Param4; set { _Param4 = value; } }
+        private float _param4;
+        public float Param4 { get => _param4; set => _param4 = value; }
         /// <summary>
         /// PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7
         /// OriginName: x, Units: , IsExtended: false
@@ -368,8 +368,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _X;
-        public int X { get => _X; set { _X = value; } }
+        private int _x;
+        public int X { get => _x; set => _x = value; }
         /// <summary>
         /// PARAM6 / local: y position in meters * 1e4, global: longitude in degrees * 10^7
         /// OriginName: y, Units: , IsExtended: false
@@ -383,8 +383,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _Y;
-        public int Y { get => _Y; set { _Y = value; } }
+        private int _y;
+        public int Y { get => _y; set => _y = value; }
         /// <summary>
         /// PARAM7 / z position: global: altitude in meters (MSL, WGS84, AGL or relative to home - depending on frame).
         /// OriginName: z, Units: , IsExtended: false
@@ -398,8 +398,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Z;
-        public float Z { get => _Z; set { _Z = value; } }
+        private float _z;
+        public float Z { get => _z; set => _z = value; }
         /// <summary>
         /// The scheduled action for the mission item, as defined by MAV_CMD enum
         /// OriginName: command, Units: , IsExtended: false
@@ -413,8 +413,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        public MavCmd _Command;
-        public MavCmd Command { get => _Command; set => _Command = value; } 
+        public MavCmd _command;
+        public MavCmd Command { get => _command; set => _command = value; } 
         /// <summary>
         /// System ID
         /// OriginName: target_system, Units: , IsExtended: false
@@ -428,8 +428,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetSystem;
-        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID
         /// OriginName: target_component, Units: , IsExtended: false
@@ -443,8 +443,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetComponent;
-        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// The coordinate system of the COMMAND, as defined by MAV_FRAME enum
         /// OriginName: frame, Units: , IsExtended: false
@@ -458,8 +458,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        public MavFrame _Frame;
-        public MavFrame Frame { get => _Frame; set => _Frame = value; } 
+        public MavFrame _frame;
+        public MavFrame Frame { get => _frame; set => _frame = value; } 
         /// <summary>
         /// false:0, true:1
         /// OriginName: current, Units: , IsExtended: false
@@ -473,8 +473,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Current;
-        public byte Current { get => _Current; set { _Current = value; } }
+        private byte _current;
+        public byte Current { get => _current; set => _current = value; }
         /// <summary>
         /// autocontinue to next wp
         /// OriginName: autocontinue, Units: , IsExtended: false
@@ -488,8 +488,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Autocontinue;
-        public byte Autocontinue { get => _Autocontinue; set { _Autocontinue = value; } }
+        private byte _autocontinue;
+        public byte Autocontinue { get => _autocontinue; set => _autocontinue = value; }
     }
     /// <summary>
     /// Send a command with up to seven parameters to the MAV and additional metadata
@@ -580,23 +580,23 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 45 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,VehicleTimestampField, ref _VehicleTimestamp);    
-            UInt32Type.Accept(visitor,UtcTimeField, ref _UtcTime);    
-            FloatType.Accept(visitor,Param1Field, ref _Param1);    
-            FloatType.Accept(visitor,Param2Field, ref _Param2);    
-            FloatType.Accept(visitor,Param3Field, ref _Param3);    
-            FloatType.Accept(visitor,Param4Field, ref _Param4);    
-            FloatType.Accept(visitor,Param5Field, ref _Param5);    
-            FloatType.Accept(visitor,Param6Field, ref _Param6);    
-            FloatType.Accept(visitor,Param7Field, ref _Param7);    
+            UInt64Type.Accept(visitor,VehicleTimestampField, ref _vehicleTimestamp);    
+            UInt32Type.Accept(visitor,UtcTimeField, ref _utcTime);    
+            FloatType.Accept(visitor,Param1Field, ref _param1);    
+            FloatType.Accept(visitor,Param2Field, ref _param2);    
+            FloatType.Accept(visitor,Param3Field, ref _param3);    
+            FloatType.Accept(visitor,Param4Field, ref _param4);    
+            FloatType.Accept(visitor,Param5Field, ref _param5);    
+            FloatType.Accept(visitor,Param6Field, ref _param6);    
+            FloatType.Accept(visitor,Param7Field, ref _param7);    
             var tmpCommand = (ushort)Command;
             UInt16Type.Accept(visitor,CommandField, ref tmpCommand);
             Command = (MavCmd)tmpCommand;
-            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
-            UInt8Type.Accept(visitor,ConfirmationField, ref _Confirmation);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,ConfirmationField, ref _confirmation);    
 
         }
 
@@ -613,8 +613,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _VehicleTimestamp;
-        public ulong VehicleTimestamp { get => _VehicleTimestamp; set { _VehicleTimestamp = value; } }
+        private ulong _vehicleTimestamp;
+        public ulong VehicleTimestamp { get => _vehicleTimestamp; set => _vehicleTimestamp = value; }
         /// <summary>
         /// UTC time, seconds elapsed since 01.01.1970
         /// OriginName: utc_time, Units: , IsExtended: false
@@ -628,8 +628,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _UtcTime;
-        public uint UtcTime { get => _UtcTime; set { _UtcTime = value; } }
+        private uint _utcTime;
+        public uint UtcTime { get => _utcTime; set => _utcTime = value; }
         /// <summary>
         /// Parameter 1, as defined by MAV_CMD enum.
         /// OriginName: param1, Units: , IsExtended: false
@@ -643,8 +643,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Param1;
-        public float Param1 { get => _Param1; set { _Param1 = value; } }
+        private float _param1;
+        public float Param1 { get => _param1; set => _param1 = value; }
         /// <summary>
         /// Parameter 2, as defined by MAV_CMD enum.
         /// OriginName: param2, Units: , IsExtended: false
@@ -658,8 +658,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Param2;
-        public float Param2 { get => _Param2; set { _Param2 = value; } }
+        private float _param2;
+        public float Param2 { get => _param2; set => _param2 = value; }
         /// <summary>
         /// Parameter 3, as defined by MAV_CMD enum.
         /// OriginName: param3, Units: , IsExtended: false
@@ -673,8 +673,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Param3;
-        public float Param3 { get => _Param3; set { _Param3 = value; } }
+        private float _param3;
+        public float Param3 { get => _param3; set => _param3 = value; }
         /// <summary>
         /// Parameter 4, as defined by MAV_CMD enum.
         /// OriginName: param4, Units: , IsExtended: false
@@ -688,8 +688,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Param4;
-        public float Param4 { get => _Param4; set { _Param4 = value; } }
+        private float _param4;
+        public float Param4 { get => _param4; set => _param4 = value; }
         /// <summary>
         /// Parameter 5, as defined by MAV_CMD enum.
         /// OriginName: param5, Units: , IsExtended: false
@@ -703,8 +703,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Param5;
-        public float Param5 { get => _Param5; set { _Param5 = value; } }
+        private float _param5;
+        public float Param5 { get => _param5; set => _param5 = value; }
         /// <summary>
         /// Parameter 6, as defined by MAV_CMD enum.
         /// OriginName: param6, Units: , IsExtended: false
@@ -718,8 +718,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Param6;
-        public float Param6 { get => _Param6; set { _Param6 = value; } }
+        private float _param6;
+        public float Param6 { get => _param6; set => _param6 = value; }
         /// <summary>
         /// Parameter 7, as defined by MAV_CMD enum.
         /// OriginName: param7, Units: , IsExtended: false
@@ -733,8 +733,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Param7;
-        public float Param7 { get => _Param7; set { _Param7 = value; } }
+        private float _param7;
+        public float Param7 { get => _param7; set => _param7 = value; }
         /// <summary>
         /// Command ID, as defined by MAV_CMD enum.
         /// OriginName: command, Units: , IsExtended: false
@@ -748,8 +748,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        public MavCmd _Command;
-        public MavCmd Command { get => _Command; set => _Command = value; } 
+        public MavCmd _command;
+        public MavCmd Command { get => _command; set => _command = value; } 
         /// <summary>
         /// System which should execute the command
         /// OriginName: target_system, Units: , IsExtended: false
@@ -763,8 +763,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetSystem;
-        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component which should execute the command, 0 for all components
         /// OriginName: target_component, Units: , IsExtended: false
@@ -778,8 +778,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetComponent;
-        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// 0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)
         /// OriginName: confirmation, Units: , IsExtended: false
@@ -793,8 +793,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Confirmation;
-        public byte Confirmation { get => _Confirmation; set { _Confirmation = value; } }
+        private byte _confirmation;
+        public byte Confirmation { get => _confirmation; set => _confirmation = value; }
     }
     /// <summary>
     /// Voltage and current sensor data
@@ -858,12 +858,12 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 16 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,Adc121VspbVoltField, ref _Adc121VspbVolt);    
-            FloatType.Accept(visitor,Adc121CspbAmpField, ref _Adc121CspbAmp);    
-            FloatType.Accept(visitor,Adc121Cs1AmpField, ref _Adc121Cs1Amp);    
-            FloatType.Accept(visitor,Adc121Cs2AmpField, ref _Adc121Cs2Amp);    
+            FloatType.Accept(visitor,Adc121VspbVoltField, ref _adc121VspbVolt);    
+            FloatType.Accept(visitor,Adc121CspbAmpField, ref _adc121CspbAmp);    
+            FloatType.Accept(visitor,Adc121Cs1AmpField, ref _adc121Cs1Amp);    
+            FloatType.Accept(visitor,Adc121Cs2AmpField, ref _adc121Cs2Amp);    
 
         }
 
@@ -880,8 +880,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Adc121VspbVolt;
-        public float Adc121VspbVolt { get => _Adc121VspbVolt; set { _Adc121VspbVolt = value; } }
+        private float _adc121VspbVolt;
+        public float Adc121VspbVolt { get => _adc121VspbVolt; set => _adc121VspbVolt = value; }
         /// <summary>
         ///  Power board current sensor reading
         /// OriginName: adc121_cspb_amp, Units: A, IsExtended: false
@@ -895,8 +895,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Adc121CspbAmp;
-        public float Adc121CspbAmp { get => _Adc121CspbAmp; set { _Adc121CspbAmp = value; } }
+        private float _adc121CspbAmp;
+        public float Adc121CspbAmp { get => _adc121CspbAmp; set => _adc121CspbAmp = value; }
         /// <summary>
         ///  Board current sensor 1 reading
         /// OriginName: adc121_cs1_amp, Units: A, IsExtended: false
@@ -910,8 +910,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Adc121Cs1Amp;
-        public float Adc121Cs1Amp { get => _Adc121Cs1Amp; set { _Adc121Cs1Amp = value; } }
+        private float _adc121Cs1Amp;
+        public float Adc121Cs1Amp { get => _adc121Cs1Amp; set => _adc121Cs1Amp = value; }
         /// <summary>
         ///  Board current sensor 2 reading
         /// OriginName: adc121_cs2_amp, Units: A, IsExtended: false
@@ -925,8 +925,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Adc121Cs2Amp;
-        public float Adc121Cs2Amp { get => _Adc121Cs2Amp; set { _Adc121Cs2Amp = value; } }
+        private float _adc121Cs2Amp;
+        public float Adc121Cs2Amp { get => _adc121Cs2Amp; set => _adc121Cs2Amp = value; }
     }
     /// <summary>
     /// Maximum Power Point Tracker (MPPT) sensor data for solar module power performance tracking
@@ -1017,21 +1017,21 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 41 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,MpptTimestampField, ref _MpptTimestamp);    
-            FloatType.Accept(visitor,Mppt1VoltField, ref _Mppt1Volt);    
-            FloatType.Accept(visitor,Mppt1AmpField, ref _Mppt1Amp);    
-            FloatType.Accept(visitor,Mppt2VoltField, ref _Mppt2Volt);    
-            FloatType.Accept(visitor,Mppt2AmpField, ref _Mppt2Amp);    
-            FloatType.Accept(visitor,Mppt3VoltField, ref _Mppt3Volt);    
-            FloatType.Accept(visitor,Mppt3AmpField, ref _Mppt3Amp);    
-            UInt16Type.Accept(visitor,Mppt1PwmField, ref _Mppt1Pwm);    
-            UInt16Type.Accept(visitor,Mppt2PwmField, ref _Mppt2Pwm);    
-            UInt16Type.Accept(visitor,Mppt3PwmField, ref _Mppt3Pwm);    
-            UInt8Type.Accept(visitor,Mppt1StatusField, ref _Mppt1Status);    
-            UInt8Type.Accept(visitor,Mppt2StatusField, ref _Mppt2Status);    
-            UInt8Type.Accept(visitor,Mppt3StatusField, ref _Mppt3Status);    
+            UInt64Type.Accept(visitor,MpptTimestampField, ref _mpptTimestamp);    
+            FloatType.Accept(visitor,Mppt1VoltField, ref _mppt1Volt);    
+            FloatType.Accept(visitor,Mppt1AmpField, ref _mppt1Amp);    
+            FloatType.Accept(visitor,Mppt2VoltField, ref _mppt2Volt);    
+            FloatType.Accept(visitor,Mppt2AmpField, ref _mppt2Amp);    
+            FloatType.Accept(visitor,Mppt3VoltField, ref _mppt3Volt);    
+            FloatType.Accept(visitor,Mppt3AmpField, ref _mppt3Amp);    
+            UInt16Type.Accept(visitor,Mppt1PwmField, ref _mppt1Pwm);    
+            UInt16Type.Accept(visitor,Mppt2PwmField, ref _mppt2Pwm);    
+            UInt16Type.Accept(visitor,Mppt3PwmField, ref _mppt3Pwm);    
+            UInt8Type.Accept(visitor,Mppt1StatusField, ref _mppt1Status);    
+            UInt8Type.Accept(visitor,Mppt2StatusField, ref _mppt2Status);    
+            UInt8Type.Accept(visitor,Mppt3StatusField, ref _mppt3Status);    
 
         }
 
@@ -1048,8 +1048,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _MpptTimestamp;
-        public ulong MpptTimestamp { get => _MpptTimestamp; set { _MpptTimestamp = value; } }
+        private ulong _mpptTimestamp;
+        public ulong MpptTimestamp { get => _mpptTimestamp; set => _mpptTimestamp = value; }
         /// <summary>
         ///  MPPT1 voltage 
         /// OriginName: mppt1_volt, Units: V, IsExtended: false
@@ -1063,8 +1063,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Mppt1Volt;
-        public float Mppt1Volt { get => _Mppt1Volt; set { _Mppt1Volt = value; } }
+        private float _mppt1Volt;
+        public float Mppt1Volt { get => _mppt1Volt; set => _mppt1Volt = value; }
         /// <summary>
         ///  MPPT1 current 
         /// OriginName: mppt1_amp, Units: A, IsExtended: false
@@ -1078,8 +1078,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Mppt1Amp;
-        public float Mppt1Amp { get => _Mppt1Amp; set { _Mppt1Amp = value; } }
+        private float _mppt1Amp;
+        public float Mppt1Amp { get => _mppt1Amp; set => _mppt1Amp = value; }
         /// <summary>
         ///  MPPT2 voltage 
         /// OriginName: mppt2_volt, Units: V, IsExtended: false
@@ -1093,8 +1093,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Mppt2Volt;
-        public float Mppt2Volt { get => _Mppt2Volt; set { _Mppt2Volt = value; } }
+        private float _mppt2Volt;
+        public float Mppt2Volt { get => _mppt2Volt; set => _mppt2Volt = value; }
         /// <summary>
         ///  MPPT2 current 
         /// OriginName: mppt2_amp, Units: A, IsExtended: false
@@ -1108,8 +1108,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Mppt2Amp;
-        public float Mppt2Amp { get => _Mppt2Amp; set { _Mppt2Amp = value; } }
+        private float _mppt2Amp;
+        public float Mppt2Amp { get => _mppt2Amp; set => _mppt2Amp = value; }
         /// <summary>
         /// MPPT3 voltage 
         /// OriginName: mppt3_volt, Units: V, IsExtended: false
@@ -1123,8 +1123,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Mppt3Volt;
-        public float Mppt3Volt { get => _Mppt3Volt; set { _Mppt3Volt = value; } }
+        private float _mppt3Volt;
+        public float Mppt3Volt { get => _mppt3Volt; set => _mppt3Volt = value; }
         /// <summary>
         ///  MPPT3 current 
         /// OriginName: mppt3_amp, Units: A, IsExtended: false
@@ -1138,8 +1138,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Mppt3Amp;
-        public float Mppt3Amp { get => _Mppt3Amp; set { _Mppt3Amp = value; } }
+        private float _mppt3Amp;
+        public float Mppt3Amp { get => _mppt3Amp; set => _mppt3Amp = value; }
         /// <summary>
         ///  MPPT1 pwm 
         /// OriginName: mppt1_pwm, Units: us, IsExtended: false
@@ -1153,8 +1153,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Mppt1Pwm;
-        public ushort Mppt1Pwm { get => _Mppt1Pwm; set { _Mppt1Pwm = value; } }
+        private ushort _mppt1Pwm;
+        public ushort Mppt1Pwm { get => _mppt1Pwm; set => _mppt1Pwm = value; }
         /// <summary>
         ///  MPPT2 pwm 
         /// OriginName: mppt2_pwm, Units: us, IsExtended: false
@@ -1168,8 +1168,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Mppt2Pwm;
-        public ushort Mppt2Pwm { get => _Mppt2Pwm; set { _Mppt2Pwm = value; } }
+        private ushort _mppt2Pwm;
+        public ushort Mppt2Pwm { get => _mppt2Pwm; set => _mppt2Pwm = value; }
         /// <summary>
         ///  MPPT3 pwm 
         /// OriginName: mppt3_pwm, Units: us, IsExtended: false
@@ -1183,8 +1183,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Mppt3Pwm;
-        public ushort Mppt3Pwm { get => _Mppt3Pwm; set { _Mppt3Pwm = value; } }
+        private ushort _mppt3Pwm;
+        public ushort Mppt3Pwm { get => _mppt3Pwm; set => _mppt3Pwm = value; }
         /// <summary>
         ///  MPPT1 status 
         /// OriginName: mppt1_status, Units: , IsExtended: false
@@ -1198,8 +1198,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Mppt1Status;
-        public byte Mppt1Status { get => _Mppt1Status; set { _Mppt1Status = value; } }
+        private byte _mppt1Status;
+        public byte Mppt1Status { get => _mppt1Status; set => _mppt1Status = value; }
         /// <summary>
         ///  MPPT2 status 
         /// OriginName: mppt2_status, Units: , IsExtended: false
@@ -1213,8 +1213,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Mppt2Status;
-        public byte Mppt2Status { get => _Mppt2Status; set { _Mppt2Status = value; } }
+        private byte _mppt2Status;
+        public byte Mppt2Status { get => _mppt2Status; set => _mppt2Status = value; }
         /// <summary>
         ///  MPPT3 status 
         /// OriginName: mppt3_status, Units: , IsExtended: false
@@ -1228,8 +1228,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Mppt3Status;
-        public byte Mppt3Status { get => _Mppt3Status; set { _Mppt3Status = value; } }
+        private byte _mppt3Status;
+        public byte Mppt3Status { get => _mppt3Status; set => _mppt3Status = value; }
     }
     /// <summary>
     /// ASL-fixed-wing controller data
@@ -1356,33 +1356,33 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 98 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, ref _Timestamp);    
-            FloatType.Accept(visitor,HField, ref _H);    
-            FloatType.Accept(visitor,HrefField, ref _Href);    
-            FloatType.Accept(visitor,HrefTField, ref _HrefT);    
-            FloatType.Accept(visitor,PitchangleField, ref _Pitchangle);    
-            FloatType.Accept(visitor,PitchanglerefField, ref _Pitchangleref);    
-            FloatType.Accept(visitor,QField, ref _Q);    
-            FloatType.Accept(visitor,QrefField, ref _Qref);    
-            FloatType.Accept(visitor,UelevField, ref _Uelev);    
-            FloatType.Accept(visitor,UthrotField, ref _Uthrot);    
-            FloatType.Accept(visitor,Uthrot2Field, ref _Uthrot2);    
-            FloatType.Accept(visitor,NzField, ref _Nz);    
-            FloatType.Accept(visitor,AirspeedrefField, ref _Airspeedref);    
-            FloatType.Accept(visitor,YawangleField, ref _Yawangle);    
-            FloatType.Accept(visitor,YawanglerefField, ref _Yawangleref);    
-            FloatType.Accept(visitor,RollangleField, ref _Rollangle);    
-            FloatType.Accept(visitor,RollanglerefField, ref _Rollangleref);    
-            FloatType.Accept(visitor,PField, ref _P);    
-            FloatType.Accept(visitor,PrefField, ref _Pref);    
-            FloatType.Accept(visitor,RField, ref _R);    
-            FloatType.Accept(visitor,RrefField, ref _Rref);    
-            FloatType.Accept(visitor,UailField, ref _Uail);    
-            FloatType.Accept(visitor,UrudField, ref _Urud);    
-            UInt8Type.Accept(visitor,AslctrlModeField, ref _AslctrlMode);    
-            UInt8Type.Accept(visitor,SpoilersengagedField, ref _Spoilersengaged);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,HField, ref _h);    
+            FloatType.Accept(visitor,HrefField, ref _href);    
+            FloatType.Accept(visitor,HrefTField, ref _hrefT);    
+            FloatType.Accept(visitor,PitchangleField, ref _pitchangle);    
+            FloatType.Accept(visitor,PitchanglerefField, ref _pitchangleref);    
+            FloatType.Accept(visitor,QField, ref _q);    
+            FloatType.Accept(visitor,QrefField, ref _qref);    
+            FloatType.Accept(visitor,UelevField, ref _uelev);    
+            FloatType.Accept(visitor,UthrotField, ref _uthrot);    
+            FloatType.Accept(visitor,Uthrot2Field, ref _uthrot2);    
+            FloatType.Accept(visitor,NzField, ref _nz);    
+            FloatType.Accept(visitor,AirspeedrefField, ref _airspeedref);    
+            FloatType.Accept(visitor,YawangleField, ref _yawangle);    
+            FloatType.Accept(visitor,YawanglerefField, ref _yawangleref);    
+            FloatType.Accept(visitor,RollangleField, ref _rollangle);    
+            FloatType.Accept(visitor,RollanglerefField, ref _rollangleref);    
+            FloatType.Accept(visitor,PField, ref _p);    
+            FloatType.Accept(visitor,PrefField, ref _pref);    
+            FloatType.Accept(visitor,RField, ref _r);    
+            FloatType.Accept(visitor,RrefField, ref _rref);    
+            FloatType.Accept(visitor,UailField, ref _uail);    
+            FloatType.Accept(visitor,UrudField, ref _urud);    
+            UInt8Type.Accept(visitor,AslctrlModeField, ref _aslctrlMode);    
+            UInt8Type.Accept(visitor,SpoilersengagedField, ref _spoilersengaged);    
 
         }
 
@@ -1399,8 +1399,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Timestamp;
-        public ulong Timestamp { get => _Timestamp; set { _Timestamp = value; } }
+        private ulong _timestamp;
+        public ulong Timestamp { get => _timestamp; set => _timestamp = value; }
         /// <summary>
         ///  See sourcecode for a description of these values... 
         /// OriginName: h, Units: , IsExtended: false
@@ -1414,8 +1414,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _H;
-        public float H { get => _H; set { _H = value; } }
+        private float _h;
+        public float H { get => _h; set => _h = value; }
         /// <summary>
         ///  
         /// OriginName: hRef, Units: , IsExtended: false
@@ -1429,8 +1429,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Href;
-        public float Href { get => _Href; set { _Href = value; } }
+        private float _href;
+        public float Href { get => _href; set => _href = value; }
         /// <summary>
         ///  
         /// OriginName: hRef_t, Units: , IsExtended: false
@@ -1444,8 +1444,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _HrefT;
-        public float HrefT { get => _HrefT; set { _HrefT = value; } }
+        private float _hrefT;
+        public float HrefT { get => _hrefT; set => _hrefT = value; }
         /// <summary>
         /// Pitch angle
         /// OriginName: PitchAngle, Units: deg, IsExtended: false
@@ -1459,8 +1459,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Pitchangle;
-        public float Pitchangle { get => _Pitchangle; set { _Pitchangle = value; } }
+        private float _pitchangle;
+        public float Pitchangle { get => _pitchangle; set => _pitchangle = value; }
         /// <summary>
         /// Pitch angle reference
         /// OriginName: PitchAngleRef, Units: deg, IsExtended: false
@@ -1474,8 +1474,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Pitchangleref;
-        public float Pitchangleref { get => _Pitchangleref; set { _Pitchangleref = value; } }
+        private float _pitchangleref;
+        public float Pitchangleref { get => _pitchangleref; set => _pitchangleref = value; }
         /// <summary>
         ///  
         /// OriginName: q, Units: , IsExtended: false
@@ -1489,8 +1489,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Q;
-        public float Q { get => _Q; set { _Q = value; } }
+        private float _q;
+        public float Q { get => _q; set => _q = value; }
         /// <summary>
         ///  
         /// OriginName: qRef, Units: , IsExtended: false
@@ -1504,8 +1504,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Qref;
-        public float Qref { get => _Qref; set { _Qref = value; } }
+        private float _qref;
+        public float Qref { get => _qref; set => _qref = value; }
         /// <summary>
         ///  
         /// OriginName: uElev, Units: , IsExtended: false
@@ -1519,8 +1519,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Uelev;
-        public float Uelev { get => _Uelev; set { _Uelev = value; } }
+        private float _uelev;
+        public float Uelev { get => _uelev; set => _uelev = value; }
         /// <summary>
         ///  
         /// OriginName: uThrot, Units: , IsExtended: false
@@ -1534,8 +1534,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Uthrot;
-        public float Uthrot { get => _Uthrot; set { _Uthrot = value; } }
+        private float _uthrot;
+        public float Uthrot { get => _uthrot; set => _uthrot = value; }
         /// <summary>
         ///  
         /// OriginName: uThrot2, Units: , IsExtended: false
@@ -1549,8 +1549,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Uthrot2;
-        public float Uthrot2 { get => _Uthrot2; set { _Uthrot2 = value; } }
+        private float _uthrot2;
+        public float Uthrot2 { get => _uthrot2; set => _uthrot2 = value; }
         /// <summary>
         ///  
         /// OriginName: nZ, Units: , IsExtended: false
@@ -1564,8 +1564,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Nz;
-        public float Nz { get => _Nz; set { _Nz = value; } }
+        private float _nz;
+        public float Nz { get => _nz; set => _nz = value; }
         /// <summary>
         /// Airspeed reference
         /// OriginName: AirspeedRef, Units: m/s, IsExtended: false
@@ -1579,8 +1579,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Airspeedref;
-        public float Airspeedref { get => _Airspeedref; set { _Airspeedref = value; } }
+        private float _airspeedref;
+        public float Airspeedref { get => _airspeedref; set => _airspeedref = value; }
         /// <summary>
         /// Yaw angle
         /// OriginName: YawAngle, Units: deg, IsExtended: false
@@ -1594,8 +1594,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Yawangle;
-        public float Yawangle { get => _Yawangle; set { _Yawangle = value; } }
+        private float _yawangle;
+        public float Yawangle { get => _yawangle; set => _yawangle = value; }
         /// <summary>
         /// Yaw angle reference
         /// OriginName: YawAngleRef, Units: deg, IsExtended: false
@@ -1609,8 +1609,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Yawangleref;
-        public float Yawangleref { get => _Yawangleref; set { _Yawangleref = value; } }
+        private float _yawangleref;
+        public float Yawangleref { get => _yawangleref; set => _yawangleref = value; }
         /// <summary>
         /// Roll angle
         /// OriginName: RollAngle, Units: deg, IsExtended: false
@@ -1624,8 +1624,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Rollangle;
-        public float Rollangle { get => _Rollangle; set { _Rollangle = value; } }
+        private float _rollangle;
+        public float Rollangle { get => _rollangle; set => _rollangle = value; }
         /// <summary>
         /// Roll angle reference
         /// OriginName: RollAngleRef, Units: deg, IsExtended: false
@@ -1639,8 +1639,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Rollangleref;
-        public float Rollangleref { get => _Rollangleref; set { _Rollangleref = value; } }
+        private float _rollangleref;
+        public float Rollangleref { get => _rollangleref; set => _rollangleref = value; }
         /// <summary>
         ///  
         /// OriginName: p, Units: , IsExtended: false
@@ -1654,8 +1654,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _P;
-        public float P { get => _P; set { _P = value; } }
+        private float _p;
+        public float P { get => _p; set => _p = value; }
         /// <summary>
         ///  
         /// OriginName: pRef, Units: , IsExtended: false
@@ -1669,8 +1669,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Pref;
-        public float Pref { get => _Pref; set { _Pref = value; } }
+        private float _pref;
+        public float Pref { get => _pref; set => _pref = value; }
         /// <summary>
         ///  
         /// OriginName: r, Units: , IsExtended: false
@@ -1684,8 +1684,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _R;
-        public float R { get => _R; set { _R = value; } }
+        private float _r;
+        public float R { get => _r; set => _r = value; }
         /// <summary>
         ///  
         /// OriginName: rRef, Units: , IsExtended: false
@@ -1699,8 +1699,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Rref;
-        public float Rref { get => _Rref; set { _Rref = value; } }
+        private float _rref;
+        public float Rref { get => _rref; set => _rref = value; }
         /// <summary>
         ///  
         /// OriginName: uAil, Units: , IsExtended: false
@@ -1714,8 +1714,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Uail;
-        public float Uail { get => _Uail; set { _Uail = value; } }
+        private float _uail;
+        public float Uail { get => _uail; set => _uail = value; }
         /// <summary>
         ///  
         /// OriginName: uRud, Units: , IsExtended: false
@@ -1729,8 +1729,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Urud;
-        public float Urud { get => _Urud; set { _Urud = value; } }
+        private float _urud;
+        public float Urud { get => _urud; set => _urud = value; }
         /// <summary>
         ///  ASLCTRL control-mode (manual, stabilized, auto, etc...)
         /// OriginName: aslctrl_mode, Units: , IsExtended: false
@@ -1744,8 +1744,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _AslctrlMode;
-        public byte AslctrlMode { get => _AslctrlMode; set { _AslctrlMode = value; } }
+        private byte _aslctrlMode;
+        public byte AslctrlMode { get => _aslctrlMode; set => _aslctrlMode = value; }
         /// <summary>
         ///  
         /// OriginName: SpoilersEngaged, Units: , IsExtended: false
@@ -1759,8 +1759,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Spoilersengaged;
-        public byte Spoilersengaged { get => _Spoilersengaged; set { _Spoilersengaged = value; } }
+        private byte _spoilersengaged;
+        public byte Spoilersengaged { get => _spoilersengaged; set => _spoilersengaged = value; }
     }
     /// <summary>
     /// ASL-fixed-wing controller debug data
@@ -1845,19 +1845,19 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 38 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,I321Field, ref _I321);    
-            FloatType.Accept(visitor,F1Field, ref _F1);    
-            FloatType.Accept(visitor,F2Field, ref _F2);    
-            FloatType.Accept(visitor,F3Field, ref _F3);    
-            FloatType.Accept(visitor,F4Field, ref _F4);    
-            FloatType.Accept(visitor,F5Field, ref _F5);    
-            FloatType.Accept(visitor,F6Field, ref _F6);    
-            FloatType.Accept(visitor,F7Field, ref _F7);    
-            FloatType.Accept(visitor,F8Field, ref _F8);    
-            UInt8Type.Accept(visitor,I81Field, ref _I81);    
-            UInt8Type.Accept(visitor,I82Field, ref _I82);    
+            UInt32Type.Accept(visitor,I321Field, ref _i321);    
+            FloatType.Accept(visitor,F1Field, ref _f1);    
+            FloatType.Accept(visitor,F2Field, ref _f2);    
+            FloatType.Accept(visitor,F3Field, ref _f3);    
+            FloatType.Accept(visitor,F4Field, ref _f4);    
+            FloatType.Accept(visitor,F5Field, ref _f5);    
+            FloatType.Accept(visitor,F6Field, ref _f6);    
+            FloatType.Accept(visitor,F7Field, ref _f7);    
+            FloatType.Accept(visitor,F8Field, ref _f8);    
+            UInt8Type.Accept(visitor,I81Field, ref _i81);    
+            UInt8Type.Accept(visitor,I82Field, ref _i82);    
 
         }
 
@@ -1874,8 +1874,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _I321;
-        public uint I321 { get => _I321; set { _I321 = value; } }
+        private uint _i321;
+        public uint I321 { get => _i321; set => _i321 = value; }
         /// <summary>
         ///  Debug data 
         /// OriginName: f_1, Units: , IsExtended: false
@@ -1889,8 +1889,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _F1;
-        public float F1 { get => _F1; set { _F1 = value; } }
+        private float _f1;
+        public float F1 { get => _f1; set => _f1 = value; }
         /// <summary>
         ///  Debug data
         /// OriginName: f_2, Units: , IsExtended: false
@@ -1904,8 +1904,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _F2;
-        public float F2 { get => _F2; set { _F2 = value; } }
+        private float _f2;
+        public float F2 { get => _f2; set => _f2 = value; }
         /// <summary>
         ///  Debug data
         /// OriginName: f_3, Units: , IsExtended: false
@@ -1919,8 +1919,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _F3;
-        public float F3 { get => _F3; set { _F3 = value; } }
+        private float _f3;
+        public float F3 { get => _f3; set => _f3 = value; }
         /// <summary>
         ///  Debug data
         /// OriginName: f_4, Units: , IsExtended: false
@@ -1934,8 +1934,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _F4;
-        public float F4 { get => _F4; set { _F4 = value; } }
+        private float _f4;
+        public float F4 { get => _f4; set => _f4 = value; }
         /// <summary>
         ///  Debug data
         /// OriginName: f_5, Units: , IsExtended: false
@@ -1949,8 +1949,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _F5;
-        public float F5 { get => _F5; set { _F5 = value; } }
+        private float _f5;
+        public float F5 { get => _f5; set => _f5 = value; }
         /// <summary>
         ///  Debug data
         /// OriginName: f_6, Units: , IsExtended: false
@@ -1964,8 +1964,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _F6;
-        public float F6 { get => _F6; set { _F6 = value; } }
+        private float _f6;
+        public float F6 { get => _f6; set => _f6 = value; }
         /// <summary>
         ///  Debug data
         /// OriginName: f_7, Units: , IsExtended: false
@@ -1979,8 +1979,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _F7;
-        public float F7 { get => _F7; set { _F7 = value; } }
+        private float _f7;
+        public float F7 { get => _f7; set => _f7 = value; }
         /// <summary>
         ///  Debug data
         /// OriginName: f_8, Units: , IsExtended: false
@@ -1994,8 +1994,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _F8;
-        public float F8 { get => _F8; set { _F8 = value; } }
+        private float _f8;
+        public float F8 { get => _f8; set => _f8 = value; }
         /// <summary>
         ///  Debug data
         /// OriginName: i8_1, Units: , IsExtended: false
@@ -2009,8 +2009,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _I81;
-        public byte I81 { get => _I81; set { _I81 = value; } }
+        private byte _i81;
+        public byte I81 { get => _i81; set => _i81 = value; }
         /// <summary>
         ///  Debug data
         /// OriginName: i8_2, Units: , IsExtended: false
@@ -2024,8 +2024,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _I82;
-        public byte I82 { get => _I82; set { _I82 = value; } }
+        private byte _i82;
+        public byte I82 { get => _i82; set => _i82 = value; }
     }
     /// <summary>
     /// Extended state information for ASLUAVs
@@ -2099,11 +2099,11 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 14 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,MotorRpmField, ref _MotorRpm);    
-            UInt8Type.Accept(visitor,LedStatusField, ref _LedStatus);    
-            UInt8Type.Accept(visitor,SatcomStatusField, ref _SatcomStatus);    
+            FloatType.Accept(visitor,MotorRpmField, ref _motorRpm);    
+            UInt8Type.Accept(visitor,LedStatusField, ref _ledStatus);    
+            UInt8Type.Accept(visitor,SatcomStatusField, ref _satcomStatus);    
             ArrayType.Accept(visitor,ServoStatusField, 8,
                 (index,v) => UInt8Type.Accept(v, ServoStatusField, ref ServoStatus[index]));    
 
@@ -2122,8 +2122,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _MotorRpm;
-        public float MotorRpm { get => _MotorRpm; set { _MotorRpm = value; } }
+        private float _motorRpm;
+        public float MotorRpm { get => _motorRpm; set => _motorRpm = value; }
         /// <summary>
         ///  Status of the position-indicator LEDs
         /// OriginName: LED_status, Units: , IsExtended: false
@@ -2137,8 +2137,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _LedStatus;
-        public byte LedStatus { get => _LedStatus; set { _LedStatus = value; } }
+        private byte _ledStatus;
+        public byte LedStatus { get => _ledStatus; set => _ledStatus = value; }
         /// <summary>
         ///  Status of the IRIDIUM satellite communication system
         /// OriginName: SATCOM_status, Units: , IsExtended: false
@@ -2152,8 +2152,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SatcomStatus;
-        public byte SatcomStatus { get => _SatcomStatus; set { _SatcomStatus = value; } }
+        private byte _satcomStatus;
+        public byte SatcomStatus { get => _satcomStatus; set => _satcomStatus = value; }
         /// <summary>
         ///  Status vector for up to 8 servos
         /// OriginName: Servo_status, Units: , IsExtended: false
@@ -2243,15 +2243,15 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 32 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, ref _Timestamp);    
-            FloatType.Accept(visitor,WindspeedField, ref _Windspeed);    
-            FloatType.Accept(visitor,WinddirField, ref _Winddir);    
-            FloatType.Accept(visitor,WindzField, ref _Windz);    
-            FloatType.Accept(visitor,AirspeedField, ref _Airspeed);    
-            FloatType.Accept(visitor,BetaField, ref _Beta);    
-            FloatType.Accept(visitor,AlphaField, ref _Alpha);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,WindspeedField, ref _windspeed);    
+            FloatType.Accept(visitor,WinddirField, ref _winddir);    
+            FloatType.Accept(visitor,WindzField, ref _windz);    
+            FloatType.Accept(visitor,AirspeedField, ref _airspeed);    
+            FloatType.Accept(visitor,BetaField, ref _beta);    
+            FloatType.Accept(visitor,AlphaField, ref _alpha);    
 
         }
 
@@ -2268,8 +2268,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Timestamp;
-        public ulong Timestamp { get => _Timestamp; set { _Timestamp = value; } }
+        private ulong _timestamp;
+        public ulong Timestamp { get => _timestamp; set => _timestamp = value; }
         /// <summary>
         ///  Magnitude of wind velocity (in lateral inertial plane)
         /// OriginName: Windspeed, Units: m/s, IsExtended: false
@@ -2283,8 +2283,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Windspeed;
-        public float Windspeed { get => _Windspeed; set { _Windspeed = value; } }
+        private float _windspeed;
+        public float Windspeed { get => _windspeed; set => _windspeed = value; }
         /// <summary>
         ///  Wind heading angle from North
         /// OriginName: WindDir, Units: rad, IsExtended: false
@@ -2298,8 +2298,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Winddir;
-        public float Winddir { get => _Winddir; set { _Winddir = value; } }
+        private float _winddir;
+        public float Winddir { get => _winddir; set => _winddir = value; }
         /// <summary>
         ///  Z (Down) component of inertial wind velocity
         /// OriginName: WindZ, Units: m/s, IsExtended: false
@@ -2313,8 +2313,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Windz;
-        public float Windz { get => _Windz; set { _Windz = value; } }
+        private float _windz;
+        public float Windz { get => _windz; set => _windz = value; }
         /// <summary>
         ///  Magnitude of air velocity
         /// OriginName: Airspeed, Units: m/s, IsExtended: false
@@ -2328,8 +2328,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Airspeed;
-        public float Airspeed { get => _Airspeed; set { _Airspeed = value; } }
+        private float _airspeed;
+        public float Airspeed { get => _airspeed; set => _airspeed = value; }
         /// <summary>
         ///  Sideslip angle
         /// OriginName: beta, Units: rad, IsExtended: false
@@ -2343,8 +2343,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Beta;
-        public float Beta { get => _Beta; set { _Beta = value; } }
+        private float _beta;
+        public float Beta { get => _beta; set => _beta = value; }
         /// <summary>
         ///  Angle of attack
         /// OriginName: alpha, Units: rad, IsExtended: false
@@ -2358,8 +2358,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Alpha;
-        public float Alpha { get => _Alpha; set { _Alpha = value; } }
+        private float _alpha;
+        public float Alpha { get => _alpha; set => _alpha = value; }
     }
     /// <summary>
     /// Off-board controls/commands for ASLUAVs
@@ -2435,16 +2435,16 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 33 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, ref _Timestamp);    
-            FloatType.Accept(visitor,UelevField, ref _Uelev);    
-            FloatType.Accept(visitor,UthrotField, ref _Uthrot);    
-            FloatType.Accept(visitor,Uthrot2Field, ref _Uthrot2);    
-            FloatType.Accept(visitor,UaillField, ref _Uaill);    
-            FloatType.Accept(visitor,UailrField, ref _Uailr);    
-            FloatType.Accept(visitor,UrudField, ref _Urud);    
-            UInt8Type.Accept(visitor,ObctrlStatusField, ref _ObctrlStatus);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,UelevField, ref _uelev);    
+            FloatType.Accept(visitor,UthrotField, ref _uthrot);    
+            FloatType.Accept(visitor,Uthrot2Field, ref _uthrot2);    
+            FloatType.Accept(visitor,UaillField, ref _uaill);    
+            FloatType.Accept(visitor,UailrField, ref _uailr);    
+            FloatType.Accept(visitor,UrudField, ref _urud);    
+            UInt8Type.Accept(visitor,ObctrlStatusField, ref _obctrlStatus);    
 
         }
 
@@ -2461,8 +2461,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Timestamp;
-        public ulong Timestamp { get => _Timestamp; set { _Timestamp = value; } }
+        private ulong _timestamp;
+        public ulong Timestamp { get => _timestamp; set => _timestamp = value; }
         /// <summary>
         ///  Elevator command [~]
         /// OriginName: uElev, Units: , IsExtended: false
@@ -2476,8 +2476,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Uelev;
-        public float Uelev { get => _Uelev; set { _Uelev = value; } }
+        private float _uelev;
+        public float Uelev { get => _uelev; set => _uelev = value; }
         /// <summary>
         ///  Throttle command [~]
         /// OriginName: uThrot, Units: , IsExtended: false
@@ -2491,8 +2491,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Uthrot;
-        public float Uthrot { get => _Uthrot; set { _Uthrot = value; } }
+        private float _uthrot;
+        public float Uthrot { get => _uthrot; set => _uthrot = value; }
         /// <summary>
         ///  Throttle 2 command [~]
         /// OriginName: uThrot2, Units: , IsExtended: false
@@ -2506,8 +2506,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Uthrot2;
-        public float Uthrot2 { get => _Uthrot2; set { _Uthrot2 = value; } }
+        private float _uthrot2;
+        public float Uthrot2 { get => _uthrot2; set => _uthrot2 = value; }
         /// <summary>
         ///  Left aileron command [~]
         /// OriginName: uAilL, Units: , IsExtended: false
@@ -2521,8 +2521,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Uaill;
-        public float Uaill { get => _Uaill; set { _Uaill = value; } }
+        private float _uaill;
+        public float Uaill { get => _uaill; set => _uaill = value; }
         /// <summary>
         ///  Right aileron command [~]
         /// OriginName: uAilR, Units: , IsExtended: false
@@ -2536,8 +2536,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Uailr;
-        public float Uailr { get => _Uailr; set { _Uailr = value; } }
+        private float _uailr;
+        public float Uailr { get => _uailr; set => _uailr = value; }
         /// <summary>
         ///  Rudder command [~]
         /// OriginName: uRud, Units: , IsExtended: false
@@ -2551,8 +2551,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Urud;
-        public float Urud { get => _Urud; set { _Urud = value; } }
+        private float _urud;
+        public float Urud { get => _urud; set => _urud = value; }
         /// <summary>
         ///  Off-board computer status
         /// OriginName: obctrl_status, Units: , IsExtended: false
@@ -2566,8 +2566,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _ObctrlStatus;
-        public byte ObctrlStatus { get => _ObctrlStatus; set { _ObctrlStatus = value; } }
+        private byte _obctrlStatus;
+        public byte ObctrlStatus { get => _obctrlStatus; set => _obctrlStatus = value; }
     }
     /// <summary>
     /// Atmospheric sensors (temperature, humidity, ...) 
@@ -2628,11 +2628,11 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 16 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, ref _Timestamp);    
-            FloatType.Accept(visitor,TempambientField, ref _Tempambient);    
-            FloatType.Accept(visitor,HumidityField, ref _Humidity);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,TempambientField, ref _tempambient);    
+            FloatType.Accept(visitor,HumidityField, ref _humidity);    
 
         }
 
@@ -2649,8 +2649,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Timestamp;
-        public ulong Timestamp { get => _Timestamp; set { _Timestamp = value; } }
+        private ulong _timestamp;
+        public ulong Timestamp { get => _timestamp; set => _timestamp = value; }
         /// <summary>
         ///  Ambient temperature
         /// OriginName: TempAmbient, Units: degC, IsExtended: false
@@ -2664,8 +2664,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Tempambient;
-        public float Tempambient { get => _Tempambient; set { _Tempambient = value; } }
+        private float _tempambient;
+        public float Tempambient { get => _tempambient; set => _tempambient = value; }
         /// <summary>
         ///  Relative humidity
         /// OriginName: Humidity, Units: %, IsExtended: false
@@ -2679,8 +2679,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Humidity;
-        public float Humidity { get => _Humidity; set { _Humidity = value; } }
+        private float _humidity;
+        public float Humidity { get => _humidity; set => _humidity = value; }
     }
     /// <summary>
     /// Battery pack monitoring data for Li-Ion batteries
@@ -2777,23 +2777,23 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 41 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,BatmonTimestampField, ref _BatmonTimestamp);    
-            FloatType.Accept(visitor,TemperatureField, ref _Temperature);    
-            UInt32Type.Accept(visitor,SafetystatusField, ref _Safetystatus);    
-            UInt32Type.Accept(visitor,OperationstatusField, ref _Operationstatus);    
-            UInt16Type.Accept(visitor,VoltageField, ref _Voltage);    
-            Int16Type.Accept(visitor,CurrentField, ref _Current);
-            UInt16Type.Accept(visitor,BatterystatusField, ref _Batterystatus);    
-            UInt16Type.Accept(visitor,SerialnumberField, ref _Serialnumber);    
-            UInt16Type.Accept(visitor,Cellvoltage1Field, ref _Cellvoltage1);    
-            UInt16Type.Accept(visitor,Cellvoltage2Field, ref _Cellvoltage2);    
-            UInt16Type.Accept(visitor,Cellvoltage3Field, ref _Cellvoltage3);    
-            UInt16Type.Accept(visitor,Cellvoltage4Field, ref _Cellvoltage4);    
-            UInt16Type.Accept(visitor,Cellvoltage5Field, ref _Cellvoltage5);    
-            UInt16Type.Accept(visitor,Cellvoltage6Field, ref _Cellvoltage6);    
-            UInt8Type.Accept(visitor,SocField, ref _Soc);    
+            UInt64Type.Accept(visitor,BatmonTimestampField, ref _batmonTimestamp);    
+            FloatType.Accept(visitor,TemperatureField, ref _temperature);    
+            UInt32Type.Accept(visitor,SafetystatusField, ref _safetystatus);    
+            UInt32Type.Accept(visitor,OperationstatusField, ref _operationstatus);    
+            UInt16Type.Accept(visitor,VoltageField, ref _voltage);    
+            Int16Type.Accept(visitor,CurrentField, ref _current);
+            UInt16Type.Accept(visitor,BatterystatusField, ref _batterystatus);    
+            UInt16Type.Accept(visitor,SerialnumberField, ref _serialnumber);    
+            UInt16Type.Accept(visitor,Cellvoltage1Field, ref _cellvoltage1);    
+            UInt16Type.Accept(visitor,Cellvoltage2Field, ref _cellvoltage2);    
+            UInt16Type.Accept(visitor,Cellvoltage3Field, ref _cellvoltage3);    
+            UInt16Type.Accept(visitor,Cellvoltage4Field, ref _cellvoltage4);    
+            UInt16Type.Accept(visitor,Cellvoltage5Field, ref _cellvoltage5);    
+            UInt16Type.Accept(visitor,Cellvoltage6Field, ref _cellvoltage6);    
+            UInt8Type.Accept(visitor,SocField, ref _soc);    
 
         }
 
@@ -2810,8 +2810,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _BatmonTimestamp;
-        public ulong BatmonTimestamp { get => _BatmonTimestamp; set { _BatmonTimestamp = value; } }
+        private ulong _batmonTimestamp;
+        public ulong BatmonTimestamp { get => _batmonTimestamp; set => _batmonTimestamp = value; }
         /// <summary>
         /// Battery pack temperature
         /// OriginName: temperature, Units: degC, IsExtended: false
@@ -2825,8 +2825,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Temperature;
-        public float Temperature { get => _Temperature; set { _Temperature = value; } }
+        private float _temperature;
+        public float Temperature { get => _temperature; set => _temperature = value; }
         /// <summary>
         /// Battery monitor safetystatus report bits in Hex
         /// OriginName: safetystatus, Units: , IsExtended: false
@@ -2840,8 +2840,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _Safetystatus;
-        public uint Safetystatus { get => _Safetystatus; set { _Safetystatus = value; } }
+        private uint _safetystatus;
+        public uint Safetystatus { get => _safetystatus; set => _safetystatus = value; }
         /// <summary>
         /// Battery monitor operation status report bits in Hex
         /// OriginName: operationstatus, Units: , IsExtended: false
@@ -2855,8 +2855,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _Operationstatus;
-        public uint Operationstatus { get => _Operationstatus; set { _Operationstatus = value; } }
+        private uint _operationstatus;
+        public uint Operationstatus { get => _operationstatus; set => _operationstatus = value; }
         /// <summary>
         /// Battery pack voltage
         /// OriginName: voltage, Units: mV, IsExtended: false
@@ -2870,8 +2870,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Voltage;
-        public ushort Voltage { get => _Voltage; set { _Voltage = value; } }
+        private ushort _voltage;
+        public ushort Voltage { get => _voltage; set => _voltage = value; }
         /// <summary>
         /// Battery pack current
         /// OriginName: current, Units: mA, IsExtended: false
@@ -2885,8 +2885,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(Int16Type.Default)
 
             .Build();
-        private short _Current;
-        public short Current { get => _Current; set { _Current = value; } }
+        private short _current;
+        public short Current { get => _current; set => _current = value; }
         /// <summary>
         /// Battery monitor status report bits in Hex
         /// OriginName: batterystatus, Units: , IsExtended: false
@@ -2900,8 +2900,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Batterystatus;
-        public ushort Batterystatus { get => _Batterystatus; set { _Batterystatus = value; } }
+        private ushort _batterystatus;
+        public ushort Batterystatus { get => _batterystatus; set => _batterystatus = value; }
         /// <summary>
         /// Battery monitor serial number in Hex
         /// OriginName: serialnumber, Units: , IsExtended: false
@@ -2915,8 +2915,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Serialnumber;
-        public ushort Serialnumber { get => _Serialnumber; set { _Serialnumber = value; } }
+        private ushort _serialnumber;
+        public ushort Serialnumber { get => _serialnumber; set => _serialnumber = value; }
         /// <summary>
         /// Battery pack cell 1 voltage
         /// OriginName: cellvoltage1, Units: mV, IsExtended: false
@@ -2930,8 +2930,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Cellvoltage1;
-        public ushort Cellvoltage1 { get => _Cellvoltage1; set { _Cellvoltage1 = value; } }
+        private ushort _cellvoltage1;
+        public ushort Cellvoltage1 { get => _cellvoltage1; set => _cellvoltage1 = value; }
         /// <summary>
         /// Battery pack cell 2 voltage
         /// OriginName: cellvoltage2, Units: mV, IsExtended: false
@@ -2945,8 +2945,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Cellvoltage2;
-        public ushort Cellvoltage2 { get => _Cellvoltage2; set { _Cellvoltage2 = value; } }
+        private ushort _cellvoltage2;
+        public ushort Cellvoltage2 { get => _cellvoltage2; set => _cellvoltage2 = value; }
         /// <summary>
         /// Battery pack cell 3 voltage
         /// OriginName: cellvoltage3, Units: mV, IsExtended: false
@@ -2960,8 +2960,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Cellvoltage3;
-        public ushort Cellvoltage3 { get => _Cellvoltage3; set { _Cellvoltage3 = value; } }
+        private ushort _cellvoltage3;
+        public ushort Cellvoltage3 { get => _cellvoltage3; set => _cellvoltage3 = value; }
         /// <summary>
         /// Battery pack cell 4 voltage
         /// OriginName: cellvoltage4, Units: mV, IsExtended: false
@@ -2975,8 +2975,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Cellvoltage4;
-        public ushort Cellvoltage4 { get => _Cellvoltage4; set { _Cellvoltage4 = value; } }
+        private ushort _cellvoltage4;
+        public ushort Cellvoltage4 { get => _cellvoltage4; set => _cellvoltage4 = value; }
         /// <summary>
         /// Battery pack cell 5 voltage
         /// OriginName: cellvoltage5, Units: mV, IsExtended: false
@@ -2990,8 +2990,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Cellvoltage5;
-        public ushort Cellvoltage5 { get => _Cellvoltage5; set { _Cellvoltage5 = value; } }
+        private ushort _cellvoltage5;
+        public ushort Cellvoltage5 { get => _cellvoltage5; set => _cellvoltage5 = value; }
         /// <summary>
         /// Battery pack cell 6 voltage
         /// OriginName: cellvoltage6, Units: mV, IsExtended: false
@@ -3005,8 +3005,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Cellvoltage6;
-        public ushort Cellvoltage6 { get => _Cellvoltage6; set { _Cellvoltage6 = value; } }
+        private ushort _cellvoltage6;
+        public ushort Cellvoltage6 { get => _cellvoltage6; set => _cellvoltage6 = value; }
         /// <summary>
         /// Battery pack state-of-charge
         /// OriginName: SoC, Units: , IsExtended: false
@@ -3020,8 +3020,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Soc;
-        public byte Soc { get => _Soc; set { _Soc = value; } }
+        private byte _soc;
+        public byte Soc { get => _soc; set => _soc = value; }
     }
     /// <summary>
     /// Fixed-wing soaring (i.e. thermal seeking) data
@@ -3148,33 +3148,33 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 102 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, ref _Timestamp);    
-            UInt64Type.Accept(visitor,TimestampmodechangedField, ref _Timestampmodechanged);    
-            FloatType.Accept(visitor,XwField, ref _Xw);    
-            FloatType.Accept(visitor,XrField, ref _Xr);    
-            FloatType.Accept(visitor,XlatField, ref _Xlat);    
-            FloatType.Accept(visitor,XlonField, ref _Xlon);    
-            FloatType.Accept(visitor,VarwField, ref _Varw);    
-            FloatType.Accept(visitor,VarrField, ref _Varr);    
-            FloatType.Accept(visitor,VarlatField, ref _Varlat);    
-            FloatType.Accept(visitor,VarlonField, ref _Varlon);    
-            FloatType.Accept(visitor,LoiterradiusField, ref _Loiterradius);    
-            FloatType.Accept(visitor,LoiterdirectionField, ref _Loiterdirection);    
-            FloatType.Accept(visitor,DisttosoarpointField, ref _Disttosoarpoint);    
-            FloatType.Accept(visitor,VsinkexpField, ref _Vsinkexp);    
-            FloatType.Accept(visitor,Z1LocalupdraftspeedField, ref _Z1Localupdraftspeed);    
-            FloatType.Accept(visitor,Z2DeltarollField, ref _Z2Deltaroll);    
-            FloatType.Accept(visitor,Z1ExpField, ref _Z1Exp);    
-            FloatType.Accept(visitor,Z2ExpField, ref _Z2Exp);    
-            FloatType.Accept(visitor,ThermalgsnorthField, ref _Thermalgsnorth);    
-            FloatType.Accept(visitor,ThermalgseastField, ref _Thermalgseast);    
-            FloatType.Accept(visitor,TseDotField, ref _TseDot);    
-            FloatType.Accept(visitor,Debugvar1Field, ref _Debugvar1);    
-            FloatType.Accept(visitor,Debugvar2Field, ref _Debugvar2);    
-            UInt8Type.Accept(visitor,ControlmodeField, ref _Controlmode);    
-            UInt8Type.Accept(visitor,ValidField, ref _Valid);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            UInt64Type.Accept(visitor,TimestampmodechangedField, ref _timestampmodechanged);    
+            FloatType.Accept(visitor,XwField, ref _xw);    
+            FloatType.Accept(visitor,XrField, ref _xr);    
+            FloatType.Accept(visitor,XlatField, ref _xlat);    
+            FloatType.Accept(visitor,XlonField, ref _xlon);    
+            FloatType.Accept(visitor,VarwField, ref _varw);    
+            FloatType.Accept(visitor,VarrField, ref _varr);    
+            FloatType.Accept(visitor,VarlatField, ref _varlat);    
+            FloatType.Accept(visitor,VarlonField, ref _varlon);    
+            FloatType.Accept(visitor,LoiterradiusField, ref _loiterradius);    
+            FloatType.Accept(visitor,LoiterdirectionField, ref _loiterdirection);    
+            FloatType.Accept(visitor,DisttosoarpointField, ref _disttosoarpoint);    
+            FloatType.Accept(visitor,VsinkexpField, ref _vsinkexp);    
+            FloatType.Accept(visitor,Z1LocalupdraftspeedField, ref _z1Localupdraftspeed);    
+            FloatType.Accept(visitor,Z2DeltarollField, ref _z2Deltaroll);    
+            FloatType.Accept(visitor,Z1ExpField, ref _z1Exp);    
+            FloatType.Accept(visitor,Z2ExpField, ref _z2Exp);    
+            FloatType.Accept(visitor,ThermalgsnorthField, ref _thermalgsnorth);    
+            FloatType.Accept(visitor,ThermalgseastField, ref _thermalgseast);    
+            FloatType.Accept(visitor,TseDotField, ref _tseDot);    
+            FloatType.Accept(visitor,Debugvar1Field, ref _debugvar1);    
+            FloatType.Accept(visitor,Debugvar2Field, ref _debugvar2);    
+            UInt8Type.Accept(visitor,ControlmodeField, ref _controlmode);    
+            UInt8Type.Accept(visitor,ValidField, ref _valid);    
 
         }
 
@@ -3191,8 +3191,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Timestamp;
-        public ulong Timestamp { get => _Timestamp; set { _Timestamp = value; } }
+        private ulong _timestamp;
+        public ulong Timestamp { get => _timestamp; set => _timestamp = value; }
         /// <summary>
         /// Timestamp since last mode change
         /// OriginName: timestampModeChanged, Units: ms, IsExtended: false
@@ -3206,8 +3206,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Timestampmodechanged;
-        public ulong Timestampmodechanged { get => _Timestampmodechanged; set { _Timestampmodechanged = value; } }
+        private ulong _timestampmodechanged;
+        public ulong Timestampmodechanged { get => _timestampmodechanged; set => _timestampmodechanged = value; }
         /// <summary>
         /// Thermal core updraft strength
         /// OriginName: xW, Units: m/s, IsExtended: false
@@ -3221,8 +3221,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Xw;
-        public float Xw { get => _Xw; set { _Xw = value; } }
+        private float _xw;
+        public float Xw { get => _xw; set => _xw = value; }
         /// <summary>
         /// Thermal radius
         /// OriginName: xR, Units: m, IsExtended: false
@@ -3236,8 +3236,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Xr;
-        public float Xr { get => _Xr; set { _Xr = value; } }
+        private float _xr;
+        public float Xr { get => _xr; set => _xr = value; }
         /// <summary>
         /// Thermal center latitude
         /// OriginName: xLat, Units: deg, IsExtended: false
@@ -3251,8 +3251,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Xlat;
-        public float Xlat { get => _Xlat; set { _Xlat = value; } }
+        private float _xlat;
+        public float Xlat { get => _xlat; set => _xlat = value; }
         /// <summary>
         /// Thermal center longitude
         /// OriginName: xLon, Units: deg, IsExtended: false
@@ -3266,8 +3266,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Xlon;
-        public float Xlon { get => _Xlon; set { _Xlon = value; } }
+        private float _xlon;
+        public float Xlon { get => _xlon; set => _xlon = value; }
         /// <summary>
         /// Variance W
         /// OriginName: VarW, Units: , IsExtended: false
@@ -3281,8 +3281,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Varw;
-        public float Varw { get => _Varw; set { _Varw = value; } }
+        private float _varw;
+        public float Varw { get => _varw; set => _varw = value; }
         /// <summary>
         /// Variance R
         /// OriginName: VarR, Units: , IsExtended: false
@@ -3296,8 +3296,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Varr;
-        public float Varr { get => _Varr; set { _Varr = value; } }
+        private float _varr;
+        public float Varr { get => _varr; set => _varr = value; }
         /// <summary>
         /// Variance Lat
         /// OriginName: VarLat, Units: , IsExtended: false
@@ -3311,8 +3311,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Varlat;
-        public float Varlat { get => _Varlat; set { _Varlat = value; } }
+        private float _varlat;
+        public float Varlat { get => _varlat; set => _varlat = value; }
         /// <summary>
         /// Variance Lon 
         /// OriginName: VarLon, Units: , IsExtended: false
@@ -3326,8 +3326,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Varlon;
-        public float Varlon { get => _Varlon; set { _Varlon = value; } }
+        private float _varlon;
+        public float Varlon { get => _varlon; set => _varlon = value; }
         /// <summary>
         /// Suggested loiter radius
         /// OriginName: LoiterRadius, Units: m, IsExtended: false
@@ -3341,8 +3341,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Loiterradius;
-        public float Loiterradius { get => _Loiterradius; set { _Loiterradius = value; } }
+        private float _loiterradius;
+        public float Loiterradius { get => _loiterradius; set => _loiterradius = value; }
         /// <summary>
         /// Suggested loiter direction
         /// OriginName: LoiterDirection, Units: , IsExtended: false
@@ -3356,8 +3356,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Loiterdirection;
-        public float Loiterdirection { get => _Loiterdirection; set { _Loiterdirection = value; } }
+        private float _loiterdirection;
+        public float Loiterdirection { get => _loiterdirection; set => _loiterdirection = value; }
         /// <summary>
         /// Distance to soar point
         /// OriginName: DistToSoarPoint, Units: m, IsExtended: false
@@ -3371,8 +3371,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Disttosoarpoint;
-        public float Disttosoarpoint { get => _Disttosoarpoint; set { _Disttosoarpoint = value; } }
+        private float _disttosoarpoint;
+        public float Disttosoarpoint { get => _disttosoarpoint; set => _disttosoarpoint = value; }
         /// <summary>
         /// Expected sink rate at current airspeed, roll and throttle
         /// OriginName: vSinkExp, Units: m/s, IsExtended: false
@@ -3386,8 +3386,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Vsinkexp;
-        public float Vsinkexp { get => _Vsinkexp; set { _Vsinkexp = value; } }
+        private float _vsinkexp;
+        public float Vsinkexp { get => _vsinkexp; set => _vsinkexp = value; }
         /// <summary>
         /// Measurement / updraft speed at current/local airplane position
         /// OriginName: z1_LocalUpdraftSpeed, Units: m/s, IsExtended: false
@@ -3401,8 +3401,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Z1Localupdraftspeed;
-        public float Z1Localupdraftspeed { get => _Z1Localupdraftspeed; set { _Z1Localupdraftspeed = value; } }
+        private float _z1Localupdraftspeed;
+        public float Z1Localupdraftspeed { get => _z1Localupdraftspeed; set => _z1Localupdraftspeed = value; }
         /// <summary>
         /// Measurement / roll angle tracking error
         /// OriginName: z2_DeltaRoll, Units: deg, IsExtended: false
@@ -3416,8 +3416,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Z2Deltaroll;
-        public float Z2Deltaroll { get => _Z2Deltaroll; set { _Z2Deltaroll = value; } }
+        private float _z2Deltaroll;
+        public float Z2Deltaroll { get => _z2Deltaroll; set => _z2Deltaroll = value; }
         /// <summary>
         /// Expected measurement 1
         /// OriginName: z1_exp, Units: , IsExtended: false
@@ -3431,8 +3431,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Z1Exp;
-        public float Z1Exp { get => _Z1Exp; set { _Z1Exp = value; } }
+        private float _z1Exp;
+        public float Z1Exp { get => _z1Exp; set => _z1Exp = value; }
         /// <summary>
         /// Expected measurement 2
         /// OriginName: z2_exp, Units: , IsExtended: false
@@ -3446,8 +3446,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Z2Exp;
-        public float Z2Exp { get => _Z2Exp; set { _Z2Exp = value; } }
+        private float _z2Exp;
+        public float Z2Exp { get => _z2Exp; set => _z2Exp = value; }
         /// <summary>
         /// Thermal drift (from estimator prediction step only)
         /// OriginName: ThermalGSNorth, Units: m/s, IsExtended: false
@@ -3461,8 +3461,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Thermalgsnorth;
-        public float Thermalgsnorth { get => _Thermalgsnorth; set { _Thermalgsnorth = value; } }
+        private float _thermalgsnorth;
+        public float Thermalgsnorth { get => _thermalgsnorth; set => _thermalgsnorth = value; }
         /// <summary>
         /// Thermal drift (from estimator prediction step only)
         /// OriginName: ThermalGSEast, Units: m/s, IsExtended: false
@@ -3476,8 +3476,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Thermalgseast;
-        public float Thermalgseast { get => _Thermalgseast; set { _Thermalgseast = value; } }
+        private float _thermalgseast;
+        public float Thermalgseast { get => _thermalgseast; set => _thermalgseast = value; }
         /// <summary>
         ///  Total specific energy change (filtered)
         /// OriginName: TSE_dot, Units: m/s, IsExtended: false
@@ -3491,8 +3491,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _TseDot;
-        public float TseDot { get => _TseDot; set { _TseDot = value; } }
+        private float _tseDot;
+        public float TseDot { get => _tseDot; set => _tseDot = value; }
         /// <summary>
         ///  Debug variable 1
         /// OriginName: DebugVar1, Units: , IsExtended: false
@@ -3506,8 +3506,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Debugvar1;
-        public float Debugvar1 { get => _Debugvar1; set { _Debugvar1 = value; } }
+        private float _debugvar1;
+        public float Debugvar1 { get => _debugvar1; set => _debugvar1 = value; }
         /// <summary>
         ///  Debug variable 2
         /// OriginName: DebugVar2, Units: , IsExtended: false
@@ -3521,8 +3521,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Debugvar2;
-        public float Debugvar2 { get => _Debugvar2; set { _Debugvar2 = value; } }
+        private float _debugvar2;
+        public float Debugvar2 { get => _debugvar2; set => _debugvar2 = value; }
         /// <summary>
         /// Control Mode [-]
         /// OriginName: ControlMode, Units: , IsExtended: false
@@ -3536,8 +3536,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Controlmode;
-        public byte Controlmode { get => _Controlmode; set { _Controlmode = value; } }
+        private byte _controlmode;
+        public byte Controlmode { get => _controlmode; set => _controlmode = value; }
         /// <summary>
         /// Data valid [-]
         /// OriginName: valid, Units: , IsExtended: false
@@ -3551,8 +3551,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Valid;
-        public byte Valid { get => _Valid; set { _Valid = value; } }
+        private byte _valid;
+        public byte Valid { get => _valid; set => _valid = value; }
     }
     /// <summary>
     /// Monitoring of sensorpod status
@@ -3628,16 +3628,16 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 16 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, ref _Timestamp);    
-            UInt16Type.Accept(visitor,FreeSpaceField, ref _FreeSpace);    
-            UInt8Type.Accept(visitor,VisensorRate1Field, ref _VisensorRate1);    
-            UInt8Type.Accept(visitor,VisensorRate2Field, ref _VisensorRate2);    
-            UInt8Type.Accept(visitor,VisensorRate3Field, ref _VisensorRate3);    
-            UInt8Type.Accept(visitor,VisensorRate4Field, ref _VisensorRate4);    
-            UInt8Type.Accept(visitor,RecordingNodesCountField, ref _RecordingNodesCount);    
-            UInt8Type.Accept(visitor,CpuTempField, ref _CpuTemp);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            UInt16Type.Accept(visitor,FreeSpaceField, ref _freeSpace);    
+            UInt8Type.Accept(visitor,VisensorRate1Field, ref _visensorRate1);    
+            UInt8Type.Accept(visitor,VisensorRate2Field, ref _visensorRate2);    
+            UInt8Type.Accept(visitor,VisensorRate3Field, ref _visensorRate3);    
+            UInt8Type.Accept(visitor,VisensorRate4Field, ref _visensorRate4);    
+            UInt8Type.Accept(visitor,RecordingNodesCountField, ref _recordingNodesCount);    
+            UInt8Type.Accept(visitor,CpuTempField, ref _cpuTemp);    
 
         }
 
@@ -3654,8 +3654,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Timestamp;
-        public ulong Timestamp { get => _Timestamp; set { _Timestamp = value; } }
+        private ulong _timestamp;
+        public ulong Timestamp { get => _timestamp; set => _timestamp = value; }
         /// <summary>
         /// Free space available in recordings directory in [Gb] * 1e2
         /// OriginName: free_space, Units: , IsExtended: false
@@ -3669,8 +3669,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _FreeSpace;
-        public ushort FreeSpace { get => _FreeSpace; set { _FreeSpace = value; } }
+        private ushort _freeSpace;
+        public ushort FreeSpace { get => _freeSpace; set => _freeSpace = value; }
         /// <summary>
         /// Rate of ROS topic 1
         /// OriginName: visensor_rate_1, Units: , IsExtended: false
@@ -3684,8 +3684,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _VisensorRate1;
-        public byte VisensorRate1 { get => _VisensorRate1; set { _VisensorRate1 = value; } }
+        private byte _visensorRate1;
+        public byte VisensorRate1 { get => _visensorRate1; set => _visensorRate1 = value; }
         /// <summary>
         /// Rate of ROS topic 2
         /// OriginName: visensor_rate_2, Units: , IsExtended: false
@@ -3699,8 +3699,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _VisensorRate2;
-        public byte VisensorRate2 { get => _VisensorRate2; set { _VisensorRate2 = value; } }
+        private byte _visensorRate2;
+        public byte VisensorRate2 { get => _visensorRate2; set => _visensorRate2 = value; }
         /// <summary>
         /// Rate of ROS topic 3
         /// OriginName: visensor_rate_3, Units: , IsExtended: false
@@ -3714,8 +3714,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _VisensorRate3;
-        public byte VisensorRate3 { get => _VisensorRate3; set { _VisensorRate3 = value; } }
+        private byte _visensorRate3;
+        public byte VisensorRate3 { get => _visensorRate3; set => _visensorRate3 = value; }
         /// <summary>
         /// Rate of ROS topic 4
         /// OriginName: visensor_rate_4, Units: , IsExtended: false
@@ -3729,8 +3729,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _VisensorRate4;
-        public byte VisensorRate4 { get => _VisensorRate4; set { _VisensorRate4 = value; } }
+        private byte _visensorRate4;
+        public byte VisensorRate4 { get => _visensorRate4; set => _visensorRate4 = value; }
         /// <summary>
         /// Number of recording nodes
         /// OriginName: recording_nodes_count, Units: , IsExtended: false
@@ -3744,8 +3744,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _RecordingNodesCount;
-        public byte RecordingNodesCount { get => _RecordingNodesCount; set { _RecordingNodesCount = value; } }
+        private byte _recordingNodesCount;
+        public byte RecordingNodesCount { get => _recordingNodesCount; set => _recordingNodesCount = value; }
         /// <summary>
         /// Temperature of sensorpod CPU in
         /// OriginName: cpu_temp, Units: degC, IsExtended: false
@@ -3759,8 +3759,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _CpuTemp;
-        public byte CpuTemp { get => _CpuTemp; set { _CpuTemp = value; } }
+        private byte _cpuTemp;
+        public byte CpuTemp { get => _cpuTemp; set => _cpuTemp = value; }
     }
     /// <summary>
     /// Monitoring of power board status
@@ -3848,20 +3848,20 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 46 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, ref _Timestamp);    
-            FloatType.Accept(visitor,PwrBrdSystemVoltField, ref _PwrBrdSystemVolt);    
-            FloatType.Accept(visitor,PwrBrdServoVoltField, ref _PwrBrdServoVolt);    
-            FloatType.Accept(visitor,PwrBrdDigitalVoltField, ref _PwrBrdDigitalVolt);    
-            FloatType.Accept(visitor,PwrBrdMotLAmpField, ref _PwrBrdMotLAmp);    
-            FloatType.Accept(visitor,PwrBrdMotRAmpField, ref _PwrBrdMotRAmp);    
-            FloatType.Accept(visitor,PwrBrdAnalogAmpField, ref _PwrBrdAnalogAmp);    
-            FloatType.Accept(visitor,PwrBrdDigitalAmpField, ref _PwrBrdDigitalAmp);    
-            FloatType.Accept(visitor,PwrBrdExtAmpField, ref _PwrBrdExtAmp);    
-            FloatType.Accept(visitor,PwrBrdAuxAmpField, ref _PwrBrdAuxAmp);    
-            UInt8Type.Accept(visitor,PwrBrdStatusField, ref _PwrBrdStatus);    
-            UInt8Type.Accept(visitor,PwrBrdLedStatusField, ref _PwrBrdLedStatus);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,PwrBrdSystemVoltField, ref _pwrBrdSystemVolt);    
+            FloatType.Accept(visitor,PwrBrdServoVoltField, ref _pwrBrdServoVolt);    
+            FloatType.Accept(visitor,PwrBrdDigitalVoltField, ref _pwrBrdDigitalVolt);    
+            FloatType.Accept(visitor,PwrBrdMotLAmpField, ref _pwrBrdMotLAmp);    
+            FloatType.Accept(visitor,PwrBrdMotRAmpField, ref _pwrBrdMotRAmp);    
+            FloatType.Accept(visitor,PwrBrdAnalogAmpField, ref _pwrBrdAnalogAmp);    
+            FloatType.Accept(visitor,PwrBrdDigitalAmpField, ref _pwrBrdDigitalAmp);    
+            FloatType.Accept(visitor,PwrBrdExtAmpField, ref _pwrBrdExtAmp);    
+            FloatType.Accept(visitor,PwrBrdAuxAmpField, ref _pwrBrdAuxAmp);    
+            UInt8Type.Accept(visitor,PwrBrdStatusField, ref _pwrBrdStatus);    
+            UInt8Type.Accept(visitor,PwrBrdLedStatusField, ref _pwrBrdLedStatus);    
 
         }
 
@@ -3878,8 +3878,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Timestamp;
-        public ulong Timestamp { get => _Timestamp; set { _Timestamp = value; } }
+        private ulong _timestamp;
+        public ulong Timestamp { get => _timestamp; set => _timestamp = value; }
         /// <summary>
         /// Power board system voltage
         /// OriginName: pwr_brd_system_volt, Units: V, IsExtended: false
@@ -3893,8 +3893,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _PwrBrdSystemVolt;
-        public float PwrBrdSystemVolt { get => _PwrBrdSystemVolt; set { _PwrBrdSystemVolt = value; } }
+        private float _pwrBrdSystemVolt;
+        public float PwrBrdSystemVolt { get => _pwrBrdSystemVolt; set => _pwrBrdSystemVolt = value; }
         /// <summary>
         /// Power board servo voltage
         /// OriginName: pwr_brd_servo_volt, Units: V, IsExtended: false
@@ -3908,8 +3908,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _PwrBrdServoVolt;
-        public float PwrBrdServoVolt { get => _PwrBrdServoVolt; set { _PwrBrdServoVolt = value; } }
+        private float _pwrBrdServoVolt;
+        public float PwrBrdServoVolt { get => _pwrBrdServoVolt; set => _pwrBrdServoVolt = value; }
         /// <summary>
         /// Power board digital voltage
         /// OriginName: pwr_brd_digital_volt, Units: V, IsExtended: false
@@ -3923,8 +3923,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _PwrBrdDigitalVolt;
-        public float PwrBrdDigitalVolt { get => _PwrBrdDigitalVolt; set { _PwrBrdDigitalVolt = value; } }
+        private float _pwrBrdDigitalVolt;
+        public float PwrBrdDigitalVolt { get => _pwrBrdDigitalVolt; set => _pwrBrdDigitalVolt = value; }
         /// <summary>
         /// Power board left motor current sensor
         /// OriginName: pwr_brd_mot_l_amp, Units: A, IsExtended: false
@@ -3938,8 +3938,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _PwrBrdMotLAmp;
-        public float PwrBrdMotLAmp { get => _PwrBrdMotLAmp; set { _PwrBrdMotLAmp = value; } }
+        private float _pwrBrdMotLAmp;
+        public float PwrBrdMotLAmp { get => _pwrBrdMotLAmp; set => _pwrBrdMotLAmp = value; }
         /// <summary>
         /// Power board right motor current sensor
         /// OriginName: pwr_brd_mot_r_amp, Units: A, IsExtended: false
@@ -3953,8 +3953,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _PwrBrdMotRAmp;
-        public float PwrBrdMotRAmp { get => _PwrBrdMotRAmp; set { _PwrBrdMotRAmp = value; } }
+        private float _pwrBrdMotRAmp;
+        public float PwrBrdMotRAmp { get => _pwrBrdMotRAmp; set => _pwrBrdMotRAmp = value; }
         /// <summary>
         /// Power board analog current sensor
         /// OriginName: pwr_brd_analog_amp, Units: A, IsExtended: false
@@ -3968,8 +3968,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _PwrBrdAnalogAmp;
-        public float PwrBrdAnalogAmp { get => _PwrBrdAnalogAmp; set { _PwrBrdAnalogAmp = value; } }
+        private float _pwrBrdAnalogAmp;
+        public float PwrBrdAnalogAmp { get => _pwrBrdAnalogAmp; set => _pwrBrdAnalogAmp = value; }
         /// <summary>
         /// Power board digital current sensor
         /// OriginName: pwr_brd_digital_amp, Units: A, IsExtended: false
@@ -3983,8 +3983,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _PwrBrdDigitalAmp;
-        public float PwrBrdDigitalAmp { get => _PwrBrdDigitalAmp; set { _PwrBrdDigitalAmp = value; } }
+        private float _pwrBrdDigitalAmp;
+        public float PwrBrdDigitalAmp { get => _pwrBrdDigitalAmp; set => _pwrBrdDigitalAmp = value; }
         /// <summary>
         /// Power board extension current sensor
         /// OriginName: pwr_brd_ext_amp, Units: A, IsExtended: false
@@ -3998,8 +3998,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _PwrBrdExtAmp;
-        public float PwrBrdExtAmp { get => _PwrBrdExtAmp; set { _PwrBrdExtAmp = value; } }
+        private float _pwrBrdExtAmp;
+        public float PwrBrdExtAmp { get => _pwrBrdExtAmp; set => _pwrBrdExtAmp = value; }
         /// <summary>
         /// Power board aux current sensor
         /// OriginName: pwr_brd_aux_amp, Units: A, IsExtended: false
@@ -4013,8 +4013,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _PwrBrdAuxAmp;
-        public float PwrBrdAuxAmp { get => _PwrBrdAuxAmp; set { _PwrBrdAuxAmp = value; } }
+        private float _pwrBrdAuxAmp;
+        public float PwrBrdAuxAmp { get => _pwrBrdAuxAmp; set => _pwrBrdAuxAmp = value; }
         /// <summary>
         /// Power board status register
         /// OriginName: pwr_brd_status, Units: , IsExtended: false
@@ -4028,8 +4028,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _PwrBrdStatus;
-        public byte PwrBrdStatus { get => _PwrBrdStatus; set { _PwrBrdStatus = value; } }
+        private byte _pwrBrdStatus;
+        public byte PwrBrdStatus { get => _pwrBrdStatus; set => _pwrBrdStatus = value; }
         /// <summary>
         /// Power board leds status
         /// OriginName: pwr_brd_led_status, Units: , IsExtended: false
@@ -4043,8 +4043,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _PwrBrdLedStatus;
-        public byte PwrBrdLedStatus { get => _PwrBrdLedStatus; set { _PwrBrdLedStatus = value; } }
+        private byte _pwrBrdLedStatus;
+        public byte PwrBrdLedStatus { get => _pwrBrdLedStatus; set => _pwrBrdLedStatus = value; }
     }
     /// <summary>
     /// Status of GSM modem (connected to onboard computer)
@@ -4117,19 +4117,19 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 14 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, ref _Timestamp);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
             var tmpGsmModemType = (byte)GsmModemType;
             UInt8Type.Accept(visitor,GsmModemTypeField, ref tmpGsmModemType);
             GsmModemType = (GsmModemType)tmpGsmModemType;
             var tmpGsmLinkType = (byte)GsmLinkType;
             UInt8Type.Accept(visitor,GsmLinkTypeField, ref tmpGsmLinkType);
             GsmLinkType = (GsmLinkType)tmpGsmLinkType;
-            UInt8Type.Accept(visitor,RssiField, ref _Rssi);    
-            UInt8Type.Accept(visitor,RsrpRscpField, ref _RsrpRscp);    
-            UInt8Type.Accept(visitor,SinrEcioField, ref _SinrEcio);    
-            UInt8Type.Accept(visitor,RsrqField, ref _Rsrq);    
+            UInt8Type.Accept(visitor,RssiField, ref _rssi);    
+            UInt8Type.Accept(visitor,RsrpRscpField, ref _rsrpRscp);    
+            UInt8Type.Accept(visitor,SinrEcioField, ref _sinrEcio);    
+            UInt8Type.Accept(visitor,RsrqField, ref _rsrq);    
 
         }
 
@@ -4146,8 +4146,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Timestamp;
-        public ulong Timestamp { get => _Timestamp; set { _Timestamp = value; } }
+        private ulong _timestamp;
+        public ulong Timestamp { get => _timestamp; set => _timestamp = value; }
         /// <summary>
         /// GSM modem used
         /// OriginName: gsm_modem_type, Units: , IsExtended: false
@@ -4161,8 +4161,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        public GsmModemType _GsmModemType;
-        public GsmModemType GsmModemType { get => _GsmModemType; set => _GsmModemType = value; } 
+        public GsmModemType _gsmModemType;
+        public GsmModemType GsmModemType { get => _gsmModemType; set => _gsmModemType = value; } 
         /// <summary>
         /// GSM link type
         /// OriginName: gsm_link_type, Units: , IsExtended: false
@@ -4176,8 +4176,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        public GsmLinkType _GsmLinkType;
-        public GsmLinkType GsmLinkType { get => _GsmLinkType; set => _GsmLinkType = value; } 
+        public GsmLinkType _gsmLinkType;
+        public GsmLinkType GsmLinkType { get => _gsmLinkType; set => _gsmLinkType = value; } 
         /// <summary>
         /// RSSI as reported by modem (unconverted)
         /// OriginName: rssi, Units: , IsExtended: false
@@ -4191,8 +4191,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Rssi;
-        public byte Rssi { get => _Rssi; set { _Rssi = value; } }
+        private byte _rssi;
+        public byte Rssi { get => _rssi; set => _rssi = value; }
         /// <summary>
         /// RSRP (LTE) or RSCP (WCDMA) as reported by modem (unconverted)
         /// OriginName: rsrp_rscp, Units: , IsExtended: false
@@ -4206,8 +4206,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _RsrpRscp;
-        public byte RsrpRscp { get => _RsrpRscp; set { _RsrpRscp = value; } }
+        private byte _rsrpRscp;
+        public byte RsrpRscp { get => _rsrpRscp; set => _rsrpRscp = value; }
         /// <summary>
         /// SINR (LTE) or ECIO (WCDMA) as reported by modem (unconverted)
         /// OriginName: sinr_ecio, Units: , IsExtended: false
@@ -4221,8 +4221,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SinrEcio;
-        public byte SinrEcio { get => _SinrEcio; set { _SinrEcio = value; } }
+        private byte _sinrEcio;
+        public byte SinrEcio { get => _sinrEcio; set => _sinrEcio = value; }
         /// <summary>
         /// RSRQ (LTE only) as reported by modem (unconverted)
         /// OriginName: rsrq, Units: , IsExtended: false
@@ -4236,8 +4236,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Rsrq;
-        public byte Rsrq { get => _Rsrq; set { _Rsrq = value; } }
+        private byte _rsrq;
+        public byte Rsrq { get => _rsrq; set => _rsrq = value; }
     }
     /// <summary>
     /// Status of the SatCom link
@@ -4313,16 +4313,16 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 24 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, ref _Timestamp);    
-            UInt64Type.Accept(visitor,LastHeartbeatField, ref _LastHeartbeat);    
-            UInt16Type.Accept(visitor,FailedSessionsField, ref _FailedSessions);    
-            UInt16Type.Accept(visitor,SuccessfulSessionsField, ref _SuccessfulSessions);    
-            UInt8Type.Accept(visitor,SignalQualityField, ref _SignalQuality);    
-            UInt8Type.Accept(visitor,RingPendingField, ref _RingPending);    
-            UInt8Type.Accept(visitor,TxSessionPendingField, ref _TxSessionPending);    
-            UInt8Type.Accept(visitor,RxSessionPendingField, ref _RxSessionPending);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            UInt64Type.Accept(visitor,LastHeartbeatField, ref _lastHeartbeat);    
+            UInt16Type.Accept(visitor,FailedSessionsField, ref _failedSessions);    
+            UInt16Type.Accept(visitor,SuccessfulSessionsField, ref _successfulSessions);    
+            UInt8Type.Accept(visitor,SignalQualityField, ref _signalQuality);    
+            UInt8Type.Accept(visitor,RingPendingField, ref _ringPending);    
+            UInt8Type.Accept(visitor,TxSessionPendingField, ref _txSessionPending);    
+            UInt8Type.Accept(visitor,RxSessionPendingField, ref _rxSessionPending);    
 
         }
 
@@ -4339,8 +4339,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Timestamp;
-        public ulong Timestamp { get => _Timestamp; set { _Timestamp = value; } }
+        private ulong _timestamp;
+        public ulong Timestamp { get => _timestamp; set => _timestamp = value; }
         /// <summary>
         /// Timestamp of the last successful sbd session
         /// OriginName: last_heartbeat, Units: us, IsExtended: false
@@ -4354,8 +4354,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _LastHeartbeat;
-        public ulong LastHeartbeat { get => _LastHeartbeat; set { _LastHeartbeat = value; } }
+        private ulong _lastHeartbeat;
+        public ulong LastHeartbeat { get => _lastHeartbeat; set => _lastHeartbeat = value; }
         /// <summary>
         /// Number of failed sessions
         /// OriginName: failed_sessions, Units: , IsExtended: false
@@ -4369,8 +4369,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _FailedSessions;
-        public ushort FailedSessions { get => _FailedSessions; set { _FailedSessions = value; } }
+        private ushort _failedSessions;
+        public ushort FailedSessions { get => _failedSessions; set => _failedSessions = value; }
         /// <summary>
         /// Number of successful sessions
         /// OriginName: successful_sessions, Units: , IsExtended: false
@@ -4384,8 +4384,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _SuccessfulSessions;
-        public ushort SuccessfulSessions { get => _SuccessfulSessions; set { _SuccessfulSessions = value; } }
+        private ushort _successfulSessions;
+        public ushort SuccessfulSessions { get => _successfulSessions; set => _successfulSessions = value; }
         /// <summary>
         /// Signal quality
         /// OriginName: signal_quality, Units: , IsExtended: false
@@ -4399,8 +4399,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SignalQuality;
-        public byte SignalQuality { get => _SignalQuality; set { _SignalQuality = value; } }
+        private byte _signalQuality;
+        public byte SignalQuality { get => _signalQuality; set => _signalQuality = value; }
         /// <summary>
         /// Ring call pending
         /// OriginName: ring_pending, Units: , IsExtended: false
@@ -4414,8 +4414,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _RingPending;
-        public byte RingPending { get => _RingPending; set { _RingPending = value; } }
+        private byte _ringPending;
+        public byte RingPending { get => _ringPending; set => _ringPending = value; }
         /// <summary>
         /// Transmission session pending
         /// OriginName: tx_session_pending, Units: , IsExtended: false
@@ -4429,8 +4429,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TxSessionPending;
-        public byte TxSessionPending { get => _TxSessionPending; set { _TxSessionPending = value; } }
+        private byte _txSessionPending;
+        public byte TxSessionPending { get => _txSessionPending; set => _txSessionPending = value; }
         /// <summary>
         /// Receiving session pending
         /// OriginName: rx_session_pending, Units: , IsExtended: false
@@ -4444,8 +4444,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _RxSessionPending;
-        public byte RxSessionPending { get => _RxSessionPending; set { _RxSessionPending = value; } }
+        private byte _rxSessionPending;
+        public byte RxSessionPending { get => _rxSessionPending; set => _rxSessionPending = value; }
     }
     /// <summary>
     /// Calibrated airflow angle measurements
@@ -4512,13 +4512,13 @@ namespace Asv.Mavlink.Asluav
             /* PayloadByteSize = 18 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, ref _Timestamp);    
-            FloatType.Accept(visitor,AngleofattackField, ref _Angleofattack);    
-            FloatType.Accept(visitor,SideslipField, ref _Sideslip);    
-            UInt8Type.Accept(visitor,AngleofattackValidField, ref _AngleofattackValid);    
-            UInt8Type.Accept(visitor,SideslipValidField, ref _SideslipValid);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,AngleofattackField, ref _angleofattack);    
+            FloatType.Accept(visitor,SideslipField, ref _sideslip);    
+            UInt8Type.Accept(visitor,AngleofattackValidField, ref _angleofattackValid);    
+            UInt8Type.Accept(visitor,SideslipValidField, ref _sideslipValid);    
 
         }
 
@@ -4535,8 +4535,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Timestamp;
-        public ulong Timestamp { get => _Timestamp; set { _Timestamp = value; } }
+        private ulong _timestamp;
+        public ulong Timestamp { get => _timestamp; set => _timestamp = value; }
         /// <summary>
         /// Angle of attack
         /// OriginName: angleofattack, Units: deg, IsExtended: false
@@ -4550,8 +4550,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Angleofattack;
-        public float Angleofattack { get => _Angleofattack; set { _Angleofattack = value; } }
+        private float _angleofattack;
+        public float Angleofattack { get => _angleofattack; set => _angleofattack = value; }
         /// <summary>
         /// Sideslip angle
         /// OriginName: sideslip, Units: deg, IsExtended: false
@@ -4565,8 +4565,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Sideslip;
-        public float Sideslip { get => _Sideslip; set { _Sideslip = value; } }
+        private float _sideslip;
+        public float Sideslip { get => _sideslip; set => _sideslip = value; }
         /// <summary>
         /// Angle of attack measurement valid
         /// OriginName: angleofattack_valid, Units: , IsExtended: false
@@ -4580,8 +4580,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _AngleofattackValid;
-        public byte AngleofattackValid { get => _AngleofattackValid; set { _AngleofattackValid = value; } }
+        private byte _angleofattackValid;
+        public byte AngleofattackValid { get => _angleofattackValid; set => _angleofattackValid = value; }
         /// <summary>
         /// Sideslip angle measurement valid
         /// OriginName: sideslip_valid, Units: , IsExtended: false
@@ -4595,8 +4595,8 @@ namespace Asv.Mavlink.Asluav
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _SideslipValid;
-        public byte SideslipValid { get => _SideslipValid; set { _SideslipValid = value; } }
+        private byte _sideslipValid;
+        public byte SideslipValid { get => _sideslipValid; set => _sideslipValid = value; }
     }
 
 

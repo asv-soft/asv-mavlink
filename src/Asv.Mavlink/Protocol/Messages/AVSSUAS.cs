@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -340,13 +340,13 @@ namespace Asv.Mavlink.Avssuas
             /* PayloadByteSize = 14 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, ref _TimeBootMs);    
-            UInt32Type.Accept(visitor,ErrorStatusField, ref _ErrorStatus);    
-            UInt32Type.Accept(visitor,BatteryStatusField, ref _BatteryStatus);    
-            UInt8Type.Accept(visitor,ArmStatusField, ref _ArmStatus);    
-            UInt8Type.Accept(visitor,ChargeStatusField, ref _ChargeStatus);    
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
+            UInt32Type.Accept(visitor,ErrorStatusField, ref _errorStatus);    
+            UInt32Type.Accept(visitor,BatteryStatusField, ref _batteryStatus);    
+            UInt8Type.Accept(visitor,ArmStatusField, ref _armStatus);    
+            UInt8Type.Accept(visitor,ChargeStatusField, ref _chargeStatus);    
 
         }
 
@@ -363,8 +363,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _TimeBootMs;
-        public uint TimeBootMs { get => _TimeBootMs; set { _TimeBootMs = value; } }
+        private uint _timeBootMs;
+        public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
         /// PRS error statuses
         /// OriginName: error_status, Units: , IsExtended: false
@@ -378,8 +378,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _ErrorStatus;
-        public uint ErrorStatus { get => _ErrorStatus; set { _ErrorStatus = value; } }
+        private uint _errorStatus;
+        public uint ErrorStatus { get => _errorStatus; set => _errorStatus = value; }
         /// <summary>
         /// Estimated battery run-time without a remote connection and PRS battery voltage
         /// OriginName: battery_status, Units: , IsExtended: false
@@ -393,8 +393,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _BatteryStatus;
-        public uint BatteryStatus { get => _BatteryStatus; set { _BatteryStatus = value; } }
+        private uint _batteryStatus;
+        public uint BatteryStatus { get => _batteryStatus; set => _batteryStatus = value; }
         /// <summary>
         /// PRS arm statuses
         /// OriginName: arm_status, Units: , IsExtended: false
@@ -408,8 +408,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _ArmStatus;
-        public byte ArmStatus { get => _ArmStatus; set { _ArmStatus = value; } }
+        private byte _armStatus;
+        public byte ArmStatus { get => _armStatus; set => _armStatus = value; }
         /// <summary>
         /// PRS battery charge statuses
         /// OriginName: charge_status, Units: , IsExtended: false
@@ -423,8 +423,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _ChargeStatus;
-        public byte ChargeStatus { get => _ChargeStatus; set { _ChargeStatus = value; } }
+        private byte _chargeStatus;
+        public byte ChargeStatus { get => _chargeStatus; set => _chargeStatus = value; }
     }
     /// <summary>
     ///  Drone position.
@@ -494,14 +494,14 @@ namespace Asv.Mavlink.Avssuas
             /* PayloadByteSize = 24 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, ref _TimeBootMs);    
-            Int32Type.Accept(visitor,LatField, ref _Lat);    
-            Int32Type.Accept(visitor,LonField, ref _Lon);    
-            Int32Type.Accept(visitor,AltField, ref _Alt);    
-            FloatType.Accept(visitor,GroundAltField, ref _GroundAlt);    
-            FloatType.Accept(visitor,BarometerAltField, ref _BarometerAlt);    
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LonField, ref _lon);    
+            Int32Type.Accept(visitor,AltField, ref _alt);    
+            FloatType.Accept(visitor,GroundAltField, ref _groundAlt);    
+            FloatType.Accept(visitor,BarometerAltField, ref _barometerAlt);    
 
         }
 
@@ -518,8 +518,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _TimeBootMs;
-        public uint TimeBootMs { get => _TimeBootMs; set { _TimeBootMs = value; } }
+        private uint _timeBootMs;
+        public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
         /// Latitude, expressed
         /// OriginName: lat, Units: degE7, IsExtended: false
@@ -533,8 +533,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _Lat;
-        public int Lat { get => _Lat; set { _Lat = value; } }
+        private int _lat;
+        public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
         /// Longitude, expressed
         /// OriginName: lon, Units: degE7, IsExtended: false
@@ -548,8 +548,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _Lon;
-        public int Lon { get => _Lon; set { _Lon = value; } }
+        private int _lon;
+        public int Lon { get => _lon; set => _lon = value; }
         /// <summary>
         /// Altitude (MSL). Note that virtually all GPS modules provide both WGS84 and MSL.
         /// OriginName: alt, Units: mm, IsExtended: false
@@ -563,8 +563,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(Int32Type.Default)
 
             .Build();
-        private int _Alt;
-        public int Alt { get => _Alt; set { _Alt = value; } }
+        private int _alt;
+        public int Alt { get => _alt; set => _alt = value; }
         /// <summary>
         /// Altitude above ground, This altitude is measured by a ultrasound, Laser rangefinder or millimeter-wave radar
         /// OriginName: ground_alt, Units: m, IsExtended: false
@@ -578,8 +578,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _GroundAlt;
-        public float GroundAlt { get => _GroundAlt; set { _GroundAlt = value; } }
+        private float _groundAlt;
+        public float GroundAlt { get => _groundAlt; set => _groundAlt = value; }
         /// <summary>
         /// This altitude is measured by a barometer
         /// OriginName: barometer_alt, Units: m, IsExtended: false
@@ -593,8 +593,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _BarometerAlt;
-        public float BarometerAlt { get => _BarometerAlt; set { _BarometerAlt = value; } }
+        private float _barometerAlt;
+        public float BarometerAlt { get => _barometerAlt; set => _barometerAlt = value; }
     }
     /// <summary>
     ///  Drone IMU data. Quaternion order is w, x, y, z and a zero rotation would be expressed as (1 0 0 0).
@@ -679,19 +679,19 @@ namespace Asv.Mavlink.Avssuas
             /* PayloadByteSize = 44 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, ref _TimeBootMs);    
-            FloatType.Accept(visitor,Q1Field, ref _Q1);    
-            FloatType.Accept(visitor,Q2Field, ref _Q2);    
-            FloatType.Accept(visitor,Q3Field, ref _Q3);    
-            FloatType.Accept(visitor,Q4Field, ref _Q4);    
-            FloatType.Accept(visitor,XaccField, ref _Xacc);    
-            FloatType.Accept(visitor,YaccField, ref _Yacc);    
-            FloatType.Accept(visitor,ZaccField, ref _Zacc);    
-            FloatType.Accept(visitor,XgyroField, ref _Xgyro);    
-            FloatType.Accept(visitor,YgyroField, ref _Ygyro);    
-            FloatType.Accept(visitor,ZgyroField, ref _Zgyro);    
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
+            FloatType.Accept(visitor,Q1Field, ref _q1);    
+            FloatType.Accept(visitor,Q2Field, ref _q2);    
+            FloatType.Accept(visitor,Q3Field, ref _q3);    
+            FloatType.Accept(visitor,Q4Field, ref _q4);    
+            FloatType.Accept(visitor,XaccField, ref _xacc);    
+            FloatType.Accept(visitor,YaccField, ref _yacc);    
+            FloatType.Accept(visitor,ZaccField, ref _zacc);    
+            FloatType.Accept(visitor,XgyroField, ref _xgyro);    
+            FloatType.Accept(visitor,YgyroField, ref _ygyro);    
+            FloatType.Accept(visitor,ZgyroField, ref _zgyro);    
 
         }
 
@@ -708,8 +708,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _TimeBootMs;
-        public uint TimeBootMs { get => _TimeBootMs; set { _TimeBootMs = value; } }
+        private uint _timeBootMs;
+        public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
         /// Quaternion component 1, w (1 in null-rotation)
         /// OriginName: q1, Units: , IsExtended: false
@@ -723,8 +723,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Q1;
-        public float Q1 { get => _Q1; set { _Q1 = value; } }
+        private float _q1;
+        public float Q1 { get => _q1; set => _q1 = value; }
         /// <summary>
         /// Quaternion component 2, x (0 in null-rotation)
         /// OriginName: q2, Units: , IsExtended: false
@@ -738,8 +738,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Q2;
-        public float Q2 { get => _Q2; set { _Q2 = value; } }
+        private float _q2;
+        public float Q2 { get => _q2; set => _q2 = value; }
         /// <summary>
         /// Quaternion component 3, y (0 in null-rotation)
         /// OriginName: q3, Units: , IsExtended: false
@@ -753,8 +753,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Q3;
-        public float Q3 { get => _Q3; set { _Q3 = value; } }
+        private float _q3;
+        public float Q3 { get => _q3; set => _q3 = value; }
         /// <summary>
         /// Quaternion component 4, z (0 in null-rotation)
         /// OriginName: q4, Units: , IsExtended: false
@@ -768,8 +768,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Q4;
-        public float Q4 { get => _Q4; set { _Q4 = value; } }
+        private float _q4;
+        public float Q4 { get => _q4; set => _q4 = value; }
         /// <summary>
         /// X acceleration
         /// OriginName: xacc, Units: m/s/s, IsExtended: false
@@ -783,8 +783,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Xacc;
-        public float Xacc { get => _Xacc; set { _Xacc = value; } }
+        private float _xacc;
+        public float Xacc { get => _xacc; set => _xacc = value; }
         /// <summary>
         /// Y acceleration
         /// OriginName: yacc, Units: m/s/s, IsExtended: false
@@ -798,8 +798,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Yacc;
-        public float Yacc { get => _Yacc; set { _Yacc = value; } }
+        private float _yacc;
+        public float Yacc { get => _yacc; set => _yacc = value; }
         /// <summary>
         /// Z acceleration
         /// OriginName: zacc, Units: m/s/s, IsExtended: false
@@ -813,8 +813,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Zacc;
-        public float Zacc { get => _Zacc; set { _Zacc = value; } }
+        private float _zacc;
+        public float Zacc { get => _zacc; set => _zacc = value; }
         /// <summary>
         /// Angular speed around X axis
         /// OriginName: xgyro, Units: rad/s, IsExtended: false
@@ -828,8 +828,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Xgyro;
-        public float Xgyro { get => _Xgyro; set { _Xgyro = value; } }
+        private float _xgyro;
+        public float Xgyro { get => _xgyro; set => _xgyro = value; }
         /// <summary>
         /// Angular speed around Y axis
         /// OriginName: ygyro, Units: rad/s, IsExtended: false
@@ -843,8 +843,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Ygyro;
-        public float Ygyro { get => _Ygyro; set { _Ygyro = value; } }
+        private float _ygyro;
+        public float Ygyro { get => _ygyro; set => _ygyro = value; }
         /// <summary>
         /// Angular speed around Z axis
         /// OriginName: zgyro, Units: rad/s, IsExtended: false
@@ -858,8 +858,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Zgyro;
-        public float Zgyro { get => _Zgyro; set { _Zgyro = value; } }
+        private float _zgyro;
+        public float Zgyro { get => _zgyro; set => _zgyro = value; }
     }
     /// <summary>
     ///  Drone operation mode.
@@ -920,11 +920,11 @@ namespace Asv.Mavlink.Avssuas
             /* PayloadByteSize = 6 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, ref _TimeBootMs);    
-            UInt8Type.Accept(visitor,M300OperationModeField, ref _M300OperationMode);    
-            UInt8Type.Accept(visitor,HorseflyOperationModeField, ref _HorseflyOperationMode);    
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
+            UInt8Type.Accept(visitor,M300OperationModeField, ref _m300OperationMode);    
+            UInt8Type.Accept(visitor,HorseflyOperationModeField, ref _horseflyOperationMode);    
 
         }
 
@@ -941,8 +941,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _TimeBootMs;
-        public uint TimeBootMs { get => _TimeBootMs; set { _TimeBootMs = value; } }
+        private uint _timeBootMs;
+        public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
         /// DJI M300 operation mode
         /// OriginName: M300_operation_mode, Units: , IsExtended: false
@@ -956,8 +956,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _M300OperationMode;
-        public byte M300OperationMode { get => _M300OperationMode; set { _M300OperationMode = value; } }
+        private byte _m300OperationMode;
+        public byte M300OperationMode { get => _m300OperationMode; set => _m300OperationMode = value; }
         /// <summary>
         /// horsefly operation mode
         /// OriginName: horsefly_operation_mode, Units: , IsExtended: false
@@ -971,8 +971,8 @@ namespace Asv.Mavlink.Avssuas
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _HorseflyOperationMode;
-        public byte HorseflyOperationMode { get => _HorseflyOperationMode; set { _HorseflyOperationMode = value; } }
+        private byte _horseflyOperationMode;
+        public byte HorseflyOperationMode { get => _horseflyOperationMode; set => _horseflyOperationMode = value; }
     }
 
 

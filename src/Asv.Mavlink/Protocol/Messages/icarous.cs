@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -154,7 +154,7 @@ namespace Asv.Mavlink.Icarous
             /* PayloadByteSize = 1 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             var tmpStatus = (byte)Status;
             UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
@@ -175,8 +175,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(UInt8Type.Default)
 
             .Build();
-        public IcarousFmsState _Status;
-        public IcarousFmsState Status { get => _Status; set => _Status = value; } 
+        public IcarousFmsState _status;
+        public IcarousFmsState Status { get => _status; set => _status = value; } 
     }
     /// <summary>
     /// Kinematic multi bands (track) output from Daidalus
@@ -276,19 +276,19 @@ namespace Asv.Mavlink.Icarous
             /* PayloadByteSize = 46 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,Min1Field, ref _Min1);    
-            FloatType.Accept(visitor,Max1Field, ref _Max1);    
-            FloatType.Accept(visitor,Min2Field, ref _Min2);    
-            FloatType.Accept(visitor,Max2Field, ref _Max2);    
-            FloatType.Accept(visitor,Min3Field, ref _Min3);    
-            FloatType.Accept(visitor,Max3Field, ref _Max3);    
-            FloatType.Accept(visitor,Min4Field, ref _Min4);    
-            FloatType.Accept(visitor,Max4Field, ref _Max4);    
-            FloatType.Accept(visitor,Min5Field, ref _Min5);    
-            FloatType.Accept(visitor,Max5Field, ref _Max5);    
-            Int8Type.Accept(visitor,NumbandsField, ref _Numbands);                
+            FloatType.Accept(visitor,Min1Field, ref _min1);    
+            FloatType.Accept(visitor,Max1Field, ref _max1);    
+            FloatType.Accept(visitor,Min2Field, ref _min2);    
+            FloatType.Accept(visitor,Max2Field, ref _max2);    
+            FloatType.Accept(visitor,Min3Field, ref _min3);    
+            FloatType.Accept(visitor,Max3Field, ref _max3);    
+            FloatType.Accept(visitor,Min4Field, ref _min4);    
+            FloatType.Accept(visitor,Max4Field, ref _max4);    
+            FloatType.Accept(visitor,Min5Field, ref _min5);    
+            FloatType.Accept(visitor,Max5Field, ref _max5);    
+            Int8Type.Accept(visitor,NumbandsField, ref _numbands);                
             var tmpType1 = (byte)Type1;
             UInt8Type.Accept(visitor,Type1Field, ref tmpType1);
             Type1 = (IcarousTrackBandTypes)tmpType1;
@@ -320,8 +320,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Min1;
-        public float Min1 { get => _Min1; set { _Min1 = value; } }
+        private float _min1;
+        public float Min1 { get => _min1; set => _min1 = value; }
         /// <summary>
         /// max angle (degrees)
         /// OriginName: max1, Units: deg, IsExtended: false
@@ -335,8 +335,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Max1;
-        public float Max1 { get => _Max1; set { _Max1 = value; } }
+        private float _max1;
+        public float Max1 { get => _max1; set => _max1 = value; }
         /// <summary>
         /// min angle (degrees)
         /// OriginName: min2, Units: deg, IsExtended: false
@@ -350,8 +350,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Min2;
-        public float Min2 { get => _Min2; set { _Min2 = value; } }
+        private float _min2;
+        public float Min2 { get => _min2; set => _min2 = value; }
         /// <summary>
         /// max angle (degrees)
         /// OriginName: max2, Units: deg, IsExtended: false
@@ -365,8 +365,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Max2;
-        public float Max2 { get => _Max2; set { _Max2 = value; } }
+        private float _max2;
+        public float Max2 { get => _max2; set => _max2 = value; }
         /// <summary>
         /// min angle (degrees)
         /// OriginName: min3, Units: deg, IsExtended: false
@@ -380,8 +380,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Min3;
-        public float Min3 { get => _Min3; set { _Min3 = value; } }
+        private float _min3;
+        public float Min3 { get => _min3; set => _min3 = value; }
         /// <summary>
         /// max angle (degrees)
         /// OriginName: max3, Units: deg, IsExtended: false
@@ -395,8 +395,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Max3;
-        public float Max3 { get => _Max3; set { _Max3 = value; } }
+        private float _max3;
+        public float Max3 { get => _max3; set => _max3 = value; }
         /// <summary>
         /// min angle (degrees)
         /// OriginName: min4, Units: deg, IsExtended: false
@@ -410,8 +410,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Min4;
-        public float Min4 { get => _Min4; set { _Min4 = value; } }
+        private float _min4;
+        public float Min4 { get => _min4; set => _min4 = value; }
         /// <summary>
         /// max angle (degrees)
         /// OriginName: max4, Units: deg, IsExtended: false
@@ -425,8 +425,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Max4;
-        public float Max4 { get => _Max4; set { _Max4 = value; } }
+        private float _max4;
+        public float Max4 { get => _max4; set => _max4 = value; }
         /// <summary>
         /// min angle (degrees)
         /// OriginName: min5, Units: deg, IsExtended: false
@@ -440,8 +440,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Min5;
-        public float Min5 { get => _Min5; set { _Min5 = value; } }
+        private float _min5;
+        public float Min5 { get => _min5; set => _min5 = value; }
         /// <summary>
         /// max angle (degrees)
         /// OriginName: max5, Units: deg, IsExtended: false
@@ -455,8 +455,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Max5;
-        public float Max5 { get => _Max5; set { _Max5 = value; } }
+        private float _max5;
+        public float Max5 { get => _max5; set => _max5 = value; }
         /// <summary>
         /// Number of track bands
         /// OriginName: numBands, Units: , IsExtended: false
@@ -470,8 +470,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(Int8Type.Default)
 
             .Build();
-        private sbyte _Numbands;
-        public sbyte Numbands { get => _Numbands; set { _Numbands = value; } }
+        private sbyte _numbands;
+        public sbyte Numbands { get => _numbands; set => _numbands = value; }
         /// <summary>
         /// See the TRACK_BAND_TYPES enum.
         /// OriginName: type1, Units: , IsExtended: false
@@ -485,8 +485,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(UInt8Type.Default)
 
             .Build();
-        public IcarousTrackBandTypes _Type1;
-        public IcarousTrackBandTypes Type1 { get => _Type1; set => _Type1 = value; } 
+        public IcarousTrackBandTypes _type1;
+        public IcarousTrackBandTypes Type1 { get => _type1; set => _type1 = value; } 
         /// <summary>
         /// See the TRACK_BAND_TYPES enum.
         /// OriginName: type2, Units: , IsExtended: false
@@ -500,8 +500,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(UInt8Type.Default)
 
             .Build();
-        public IcarousTrackBandTypes _Type2;
-        public IcarousTrackBandTypes Type2 { get => _Type2; set => _Type2 = value; } 
+        public IcarousTrackBandTypes _type2;
+        public IcarousTrackBandTypes Type2 { get => _type2; set => _type2 = value; } 
         /// <summary>
         /// See the TRACK_BAND_TYPES enum.
         /// OriginName: type3, Units: , IsExtended: false
@@ -515,8 +515,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(UInt8Type.Default)
 
             .Build();
-        public IcarousTrackBandTypes _Type3;
-        public IcarousTrackBandTypes Type3 { get => _Type3; set => _Type3 = value; } 
+        public IcarousTrackBandTypes _type3;
+        public IcarousTrackBandTypes Type3 { get => _type3; set => _type3 = value; } 
         /// <summary>
         /// See the TRACK_BAND_TYPES enum.
         /// OriginName: type4, Units: , IsExtended: false
@@ -530,8 +530,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(UInt8Type.Default)
 
             .Build();
-        public IcarousTrackBandTypes _Type4;
-        public IcarousTrackBandTypes Type4 { get => _Type4; set => _Type4 = value; } 
+        public IcarousTrackBandTypes _type4;
+        public IcarousTrackBandTypes Type4 { get => _type4; set => _type4 = value; } 
         /// <summary>
         /// See the TRACK_BAND_TYPES enum.
         /// OriginName: type5, Units: , IsExtended: false
@@ -545,8 +545,8 @@ namespace Asv.Mavlink.Icarous
             .DataType(UInt8Type.Default)
 
             .Build();
-        public IcarousTrackBandTypes _Type5;
-        public IcarousTrackBandTypes Type5 { get => _Type5; set => _Type5 = value; } 
+        public IcarousTrackBandTypes _type5;
+        public IcarousTrackBandTypes Type5 { get => _type5; set => _type5 = value; } 
     }
 
 

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -241,13 +241,13 @@ namespace Asv.Mavlink.AsvChart
             /* PayloadByteSize = 8 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _RequestId);    
-            UInt16Type.Accept(visitor,SkipField, ref _Skip);    
-            UInt16Type.Accept(visitor,CountField, ref _Count);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,SkipField, ref _skip);    
+            UInt16Type.Accept(visitor,CountField, ref _count);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -264,8 +264,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _RequestId;
-        public ushort RequestId { get => _RequestId; set { _RequestId = value; } }
+        private ushort _requestId;
+        public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// Specifies the start index of the records to be sent in the response.
         /// OriginName: skip, Units: , IsExtended: false
@@ -279,8 +279,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Skip;
-        public ushort Skip { get => _Skip; set { _Skip = value; } }
+        private ushort _skip;
+        public ushort Skip { get => _skip; set => _skip = value; }
         /// <summary>
         /// Specifies the number of records to be sent in the response after the skip index.
         /// OriginName: count, Units: , IsExtended: false
@@ -294,8 +294,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Count;
-        public ushort Count { get => _Count; set { _Count = value; } }
+        private ushort _count;
+        public ushort Count { get => _count; set => _count = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
@@ -309,8 +309,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetSystem;
-        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
@@ -324,8 +324,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetComponent;
-        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
     /// <summary>
     /// Responds to the request for available charts for visualization. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -389,11 +389,11 @@ namespace Asv.Mavlink.AsvChart
             /* PayloadByteSize = 7 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, ref _RequestId);    
-            UInt16Type.Accept(visitor,ItemsCountField, ref _ItemsCount);    
-            UInt16Type.Accept(visitor,ChatListHashField, ref _ChatListHash);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,ItemsCountField, ref _itemsCount);    
+            UInt16Type.Accept(visitor,ChatListHashField, ref _chatListHash);    
             var tmpResult = (byte)Result;
             UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (AsvChartRequestAck)tmpResult;
@@ -413,8 +413,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _RequestId;
-        public ushort RequestId { get => _RequestId; set { _RequestId = value; } }
+        private ushort _requestId;
+        public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// Number of ASV_CHART_INFO items to be transmitted after this response with a success result code (dependent on the request).
         /// OriginName: items_count, Units: , IsExtended: false
@@ -428,8 +428,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ItemsCount;
-        public ushort ItemsCount { get => _ItemsCount; set { _ItemsCount = value; } }
+        private ushort _itemsCount;
+        public ushort ItemsCount { get => _itemsCount; set => _itemsCount = value; }
         /// <summary>
         /// Hash of the all ASV_CHART_INFO.
         /// OriginName: chat_list_hash, Units: , IsExtended: false
@@ -443,8 +443,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ChatListHash;
-        public ushort ChatListHash { get => _ChatListHash; set { _ChatListHash = value; } }
+        private ushort _chatListHash;
+        public ushort ChatListHash { get => _chatListHash; set => _chatListHash = value; }
         /// <summary>
         /// Result code.
         /// OriginName: result, Units: , IsExtended: false
@@ -458,8 +458,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt8Type.Default)
 
             .Build();
-        public AsvChartRequestAck _Result;
-        public AsvChartRequestAck Result { get => _Result; set => _Result = value; } 
+        public AsvChartRequestAck _result;
+        public AsvChartRequestAck Result { get => _result; set => _result = value; } 
     }
     /// <summary>
     /// Event about chart collection or it's element changed. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -517,10 +517,10 @@ namespace Asv.Mavlink.AsvChart
             /* PayloadByteSize = 4 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,ChartCountField, ref _ChartCount);    
-            UInt16Type.Accept(visitor,ChatListHashField, ref _ChatListHash);    
+            UInt16Type.Accept(visitor,ChartCountField, ref _chartCount);    
+            UInt16Type.Accept(visitor,ChatListHashField, ref _chatListHash);    
 
         }
 
@@ -537,8 +537,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ChartCount;
-        public ushort ChartCount { get => _ChartCount; set { _ChartCount = value; } }
+        private ushort _chartCount;
+        public ushort ChartCount { get => _chartCount; set => _chartCount = value; }
         /// <summary>
         /// Hash of the all ASV_CHART_INFO.
         /// OriginName: chat_list_hash, Units: , IsExtended: false
@@ -552,8 +552,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ChatListHash;
-        public ushort ChatListHash { get => _ChatListHash; set { _ChatListHash = value; } }
+        private ushort _chatListHash;
+        public ushort ChatListHash { get => _chatListHash; set => _chatListHash = value; }
     }
     /// <summary>
     /// Contains chart info. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -710,22 +710,22 @@ namespace Asv.Mavlink.AsvChart
             /* PayloadByteSize = 78 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,AxesXMinField, ref _AxesXMin);    
-            FloatType.Accept(visitor,AxesXMaxField, ref _AxesXMax);    
-            FloatType.Accept(visitor,AxesYMinField, ref _AxesYMin);    
-            FloatType.Accept(visitor,AxesYMaxField, ref _AxesYMax);    
-            UInt16Type.Accept(visitor,ChartIdField, ref _ChartId);    
-            UInt16Type.Accept(visitor,ChartInfoHashField, ref _ChartInfoHash);    
+            FloatType.Accept(visitor,AxesXMinField, ref _axesXMin);    
+            FloatType.Accept(visitor,AxesXMaxField, ref _axesXMax);    
+            FloatType.Accept(visitor,AxesYMinField, ref _axesYMin);    
+            FloatType.Accept(visitor,AxesYMaxField, ref _axesYMax);    
+            UInt16Type.Accept(visitor,ChartIdField, ref _chartId);    
+            UInt16Type.Accept(visitor,ChartInfoHashField, ref _chartInfoHash);    
             var tmpAxesXUnit = (ushort)AxesXUnit;
             UInt16Type.Accept(visitor,AxesXUnitField, ref tmpAxesXUnit);
             AxesXUnit = (AsvChartUnitType)tmpAxesXUnit;
-            UInt16Type.Accept(visitor,AxesXCountField, ref _AxesXCount);    
+            UInt16Type.Accept(visitor,AxesXCountField, ref _axesXCount);    
             var tmpAxesYUnit = (ushort)AxesYUnit;
             UInt16Type.Accept(visitor,AxesYUnitField, ref tmpAxesYUnit);
             AxesYUnit = (AsvChartUnitType)tmpAxesYUnit;
-            UInt16Type.Accept(visitor,AxesYCountField, ref _AxesYCount);    
+            UInt16Type.Accept(visitor,AxesYCountField, ref _axesYCount);    
             ArrayType.Accept(visitor,ChartNameField, 16, (index,v) =>
             {
                 var tmp = (byte)ChartName[index];
@@ -766,8 +766,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(FloatType.Default)
 
             .Build();
-        private float _AxesXMin;
-        public float AxesXMin { get => _AxesXMin; set { _AxesXMin = value; } }
+        private float _axesXMin;
+        public float AxesXMin { get => _axesXMin; set => _axesXMin = value; }
         /// <summary>
         /// Maximum value of Axis X.
         /// OriginName: axes_x_max, Units: , IsExtended: false
@@ -781,8 +781,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(FloatType.Default)
 
             .Build();
-        private float _AxesXMax;
-        public float AxesXMax { get => _AxesXMax; set { _AxesXMax = value; } }
+        private float _axesXMax;
+        public float AxesXMax { get => _axesXMax; set => _axesXMax = value; }
         /// <summary>
         /// Minimum value of Axis Y.
         /// OriginName: axes_y_min, Units: , IsExtended: false
@@ -796,8 +796,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(FloatType.Default)
 
             .Build();
-        private float _AxesYMin;
-        public float AxesYMin { get => _AxesYMin; set { _AxesYMin = value; } }
+        private float _axesYMin;
+        public float AxesYMin { get => _axesYMin; set => _axesYMin = value; }
         /// <summary>
         /// Maximum value of Axis Y.
         /// OriginName: axes_y_max, Units: , IsExtended: false
@@ -811,8 +811,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(FloatType.Default)
 
             .Build();
-        private float _AxesYMax;
-        public float AxesYMax { get => _AxesYMax; set { _AxesYMax = value; } }
+        private float _axesYMax;
+        public float AxesYMax { get => _axesYMax; set => _axesYMax = value; }
         /// <summary>
         /// Chart ID.
         /// OriginName: chart_id, Units: , IsExtended: false
@@ -826,8 +826,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ChartId;
-        public ushort ChartId { get => _ChartId; set { _ChartId = value; } }
+        private ushort _chartId;
+        public ushort ChartId { get => _chartId; set => _chartId = value; }
         /// <summary>
         /// Hash of the chart info.
         /// OriginName: chart_info_hash, Units: , IsExtended: false
@@ -841,8 +841,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ChartInfoHash;
-        public ushort ChartInfoHash { get => _ChartInfoHash; set { _ChartInfoHash = value; } }
+        private ushort _chartInfoHash;
+        public ushort ChartInfoHash { get => _chartInfoHash; set => _chartInfoHash = value; }
         /// <summary>
         /// Axis X unit.
         /// OriginName: axes_x_unit, Units: , IsExtended: false
@@ -856,8 +856,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        public AsvChartUnitType _AxesXUnit;
-        public AsvChartUnitType AxesXUnit { get => _AxesXUnit; set => _AxesXUnit = value; } 
+        public AsvChartUnitType _axesXUnit;
+        public AsvChartUnitType AxesXUnit { get => _axesXUnit; set => _axesXUnit = value; } 
         /// <summary>
         /// Total measure points for Axis X. Dependent on chart type (1 measure for simple plot signal, more for heatmap signal).
         /// OriginName: axes_x_count, Units: , IsExtended: false
@@ -871,8 +871,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _AxesXCount;
-        public ushort AxesXCount { get => _AxesXCount; set { _AxesXCount = value; } }
+        private ushort _axesXCount;
+        public ushort AxesXCount { get => _axesXCount; set => _axesXCount = value; }
         /// <summary>
         /// Axis Y unit.
         /// OriginName: axes_y_unit, Units: , IsExtended: false
@@ -886,8 +886,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        public AsvChartUnitType _AxesYUnit;
-        public AsvChartUnitType AxesYUnit { get => _AxesYUnit; set => _AxesYUnit = value; } 
+        public AsvChartUnitType _axesYUnit;
+        public AsvChartUnitType AxesYUnit { get => _axesYUnit; set => _axesYUnit = value; } 
         /// <summary>
         /// Total measure points for Axis Y.
         /// OriginName: axes_y_count, Units: , IsExtended: false
@@ -901,8 +901,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _AxesYCount;
-        public ushort AxesYCount { get => _AxesYCount; set { _AxesYCount = value; } }
+        private ushort _axesYCount;
+        public ushort AxesYCount { get => _axesYCount; set => _axesYCount = value; }
         /// <summary>
         /// Chart name, terminated by NULL if the length is less than 16 human-readable chars, and WITHOUT null termination (NULL) byte if the length is exactly 16 chars. Applications have to provide 8+1 bytes storage if the ID is stored as a string.
         /// OriginName: chart_name, Units: , IsExtended: false
@@ -933,8 +933,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt8Type.Default)
 
             .Build();
-        public AsvChartType _ChartType;
-        public AsvChartType ChartType { get => _ChartType; set => _ChartType = value; } 
+        public AsvChartType _chartType;
+        public AsvChartType ChartType { get => _chartType; set => _chartType = value; } 
         /// <summary>
         /// Axis X name, terminated by NULL if the length is less than 16 human-readable chars, and WITHOUT null termination (NULL) byte if the length is exactly 16 chars. Applications have to provide 8+1 bytes storage if the ID is stored as a string.
         /// OriginName: axes_x_name, Units: , IsExtended: false
@@ -978,8 +978,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt8Type.Default)
 
             .Build();
-        public AsvChartDataFormat _Format;
-        public AsvChartDataFormat Format { get => _Format; set => _Format = value; } 
+        public AsvChartDataFormat _format;
+        public AsvChartDataFormat Format { get => _format; set => _format = value; } 
     }
     /// <summary>
     /// Request for chart data stream.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1049,13 +1049,13 @@ namespace Asv.Mavlink.AsvChart
             /* PayloadByteSize = 11 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DataRateField, ref _DataRate);    
-            UInt16Type.Accept(visitor,ChatIdField, ref _ChatId);    
-            UInt16Type.Accept(visitor,ChatInfoHashField, ref _ChatInfoHash);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            FloatType.Accept(visitor,DataRateField, ref _dataRate);    
+            UInt16Type.Accept(visitor,ChatIdField, ref _chatId);    
+            UInt16Type.Accept(visitor,ChatInfoHashField, ref _chatInfoHash);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
             var tmpDataTrigger = (byte)DataTrigger;
             UInt8Type.Accept(visitor,DataTriggerField, ref tmpDataTrigger);
             DataTrigger = (AsvChartDataTrigger)tmpDataTrigger;
@@ -1075,8 +1075,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(FloatType.Default)
 
             .Build();
-        private float _DataRate;
-        public float DataRate { get => _DataRate; set { _DataRate = value; } }
+        private float _dataRate;
+        public float DataRate { get => _dataRate; set => _dataRate = value; }
         /// <summary>
         /// The ID of the requested chart
         /// OriginName: chat_id, Units: , IsExtended: false
@@ -1090,8 +1090,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ChatId;
-        public ushort ChatId { get => _ChatId; set { _ChatId = value; } }
+        private ushort _chatId;
+        public ushort ChatId { get => _chatId; set => _chatId = value; }
         /// <summary>
         /// Hash of the chart ASV_CHART_INFO to ensure that all settings are synchronized.
         /// OriginName: chat_info_hash, Units: , IsExtended: false
@@ -1105,8 +1105,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ChatInfoHash;
-        public ushort ChatInfoHash { get => _ChatInfoHash; set { _ChatInfoHash = value; } }
+        private ushort _chatInfoHash;
+        public ushort ChatInfoHash { get => _chatInfoHash; set => _chatInfoHash = value; }
         /// <summary>
         /// System ID
         /// OriginName: target_system, Units: , IsExtended: false
@@ -1120,8 +1120,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetSystem;
-        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID
         /// OriginName: target_component, Units: , IsExtended: false
@@ -1135,8 +1135,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetComponent;
-        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Additional argument for stream request.
         /// OriginName: data_trigger, Units: , IsExtended: false
@@ -1150,8 +1150,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt8Type.Default)
 
             .Build();
-        public AsvChartDataTrigger _DataTrigger;
-        public AsvChartDataTrigger DataTrigger { get => _DataTrigger; set => _DataTrigger = value; } 
+        public AsvChartDataTrigger _dataTrigger;
+        public AsvChartDataTrigger DataTrigger { get => _dataTrigger; set => _dataTrigger = value; } 
     }
     /// <summary>
     /// Response for ASV_CHART_STREAM_REQUEST.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1218,11 +1218,11 @@ namespace Asv.Mavlink.AsvChart
             /* PayloadByteSize = 10 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DataRateField, ref _DataRate);    
-            UInt16Type.Accept(visitor,ChatIdField, ref _ChatId);    
-            UInt16Type.Accept(visitor,ChatInfoHashField, ref _ChatInfoHash);    
+            FloatType.Accept(visitor,DataRateField, ref _dataRate);    
+            UInt16Type.Accept(visitor,ChatIdField, ref _chatId);    
+            UInt16Type.Accept(visitor,ChatInfoHashField, ref _chatInfoHash);    
             var tmpResult = (byte)Result;
             UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (AsvChartRequestAck)tmpResult;
@@ -1245,8 +1245,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(FloatType.Default)
 
             .Build();
-        private float _DataRate;
-        public float DataRate { get => _DataRate; set { _DataRate = value; } }
+        private float _dataRate;
+        public float DataRate { get => _dataRate; set => _dataRate = value; }
         /// <summary>
         /// The ID of the requested chart
         /// OriginName: chat_id, Units: , IsExtended: false
@@ -1260,8 +1260,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ChatId;
-        public ushort ChatId { get => _ChatId; set { _ChatId = value; } }
+        private ushort _chatId;
+        public ushort ChatId { get => _chatId; set => _chatId = value; }
         /// <summary>
         /// Hash of the chart ASV_CHART_INFO to ensure that all settings are synchronized.
         /// OriginName: chat_info_hash, Units: , IsExtended: false
@@ -1275,8 +1275,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ChatInfoHash;
-        public ushort ChatInfoHash { get => _ChatInfoHash; set { _ChatInfoHash = value; } }
+        private ushort _chatInfoHash;
+        public ushort ChatInfoHash { get => _chatInfoHash; set => _chatInfoHash = value; }
         /// <summary>
         /// Result code.
         /// OriginName: result, Units: , IsExtended: false
@@ -1290,8 +1290,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt8Type.Default)
 
             .Build();
-        public AsvChartRequestAck _Result;
-        public AsvChartRequestAck Result { get => _Result; set => _Result = value; } 
+        public AsvChartRequestAck _result;
+        public AsvChartRequestAck Result { get => _result; set => _result = value; } 
         /// <summary>
         /// Additional argument for stream request.
         /// OriginName: data_trigger, Units: , IsExtended: false
@@ -1305,8 +1305,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt8Type.Default)
 
             .Build();
-        public AsvChartDataTrigger _DataTrigger;
-        public AsvChartDataTrigger DataTrigger { get => _DataTrigger; set => _DataTrigger = value; } 
+        public AsvChartDataTrigger _dataTrigger;
+        public AsvChartDataTrigger DataTrigger { get => _dataTrigger; set => _dataTrigger = value; } 
     }
     /// <summary>
     /// Raw chart data for visualization.[!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1389,14 +1389,14 @@ namespace Asv.Mavlink.AsvChart
             /* PayloadByteSize = 237 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _TimeUnixUsec);    
-            UInt16Type.Accept(visitor,ChatIdField, ref _ChatId);    
-            UInt16Type.Accept(visitor,ChatInfoHashField, ref _ChatInfoHash);    
-            UInt16Type.Accept(visitor,PktInFrameField, ref _PktInFrame);    
-            UInt16Type.Accept(visitor,PktSeqField, ref _PktSeq);    
-            UInt8Type.Accept(visitor,DataSizeField, ref _DataSize);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt16Type.Accept(visitor,ChatIdField, ref _chatId);    
+            UInt16Type.Accept(visitor,ChatInfoHashField, ref _chatInfoHash);    
+            UInt16Type.Accept(visitor,PktInFrameField, ref _pktInFrame);    
+            UInt16Type.Accept(visitor,PktSeqField, ref _pktSeq);    
+            UInt8Type.Accept(visitor,DataSizeField, ref _dataSize);    
             ArrayType.Accept(visitor,DataField, 220,
                 (index,v) => UInt8Type.Accept(v, DataField, ref Data[index]));    
 
@@ -1415,8 +1415,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _TimeUnixUsec;
-        public ulong TimeUnixUsec { get => _TimeUnixUsec; set { _TimeUnixUsec = value; } }
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Chart id.
         /// OriginName: chat_id, Units: , IsExtended: false
@@ -1430,8 +1430,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ChatId;
-        public ushort ChatId { get => _ChatId; set { _ChatId = value; } }
+        private ushort _chatId;
+        public ushort ChatId { get => _chatId; set => _chatId = value; }
         /// <summary>
         /// Hash of the chart ASV_CHART_INFO to ensure that all settings are synchronized.
         /// OriginName: chat_info_hash, Units: , IsExtended: false
@@ -1445,8 +1445,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ChatInfoHash;
-        public ushort ChatInfoHash { get => _ChatInfoHash; set { _ChatInfoHash = value; } }
+        private ushort _chatInfoHash;
+        public ushort ChatInfoHash { get => _chatInfoHash; set => _chatInfoHash = value; }
         /// <summary>
         /// Number of packets for one frame.
         /// OriginName: pkt_in_frame, Units: , IsExtended: false
@@ -1460,8 +1460,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _PktInFrame;
-        public ushort PktInFrame { get => _PktInFrame; set { _PktInFrame = value; } }
+        private ushort _pktInFrame;
+        public ushort PktInFrame { get => _pktInFrame; set => _pktInFrame = value; }
         /// <summary>
         /// Packet sequence number (starting with 0 on every encoded frame).
         /// OriginName: pkt_seq, Units: , IsExtended: false
@@ -1475,8 +1475,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _PktSeq;
-        public ushort PktSeq { get => _PktSeq; set { _PktSeq = value; } }
+        private ushort _pktSeq;
+        public ushort PktSeq { get => _pktSeq; set => _pktSeq = value; }
         /// <summary>
         /// Size of data array.
         /// OriginName: data_size, Units: , IsExtended: false
@@ -1490,8 +1490,8 @@ namespace Asv.Mavlink.AsvChart
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _DataSize;
-        public byte DataSize { get => _DataSize; set { _DataSize = value; } }
+        private byte _dataSize;
+        public byte DataSize { get => _dataSize; set => _dataSize = value; }
         /// <summary>
         /// Chart data.
         /// OriginName: data, Units: , IsExtended: false

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -201,15 +201,15 @@ namespace Asv.Mavlink.Ualberta
             /* PayloadByteSize = 32 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,UsecField, ref _Usec);    
-            FloatType.Accept(visitor,Accel0Field, ref _Accel0);    
-            FloatType.Accept(visitor,Accel1Field, ref _Accel1);    
-            FloatType.Accept(visitor,Accel2Field, ref _Accel2);    
-            FloatType.Accept(visitor,Gyro0Field, ref _Gyro0);    
-            FloatType.Accept(visitor,Gyro1Field, ref _Gyro1);    
-            FloatType.Accept(visitor,Gyro2Field, ref _Gyro2);    
+            UInt64Type.Accept(visitor,UsecField, ref _usec);    
+            FloatType.Accept(visitor,Accel0Field, ref _accel0);    
+            FloatType.Accept(visitor,Accel1Field, ref _accel1);    
+            FloatType.Accept(visitor,Accel2Field, ref _accel2);    
+            FloatType.Accept(visitor,Gyro0Field, ref _gyro0);    
+            FloatType.Accept(visitor,Gyro1Field, ref _gyro1);    
+            FloatType.Accept(visitor,Gyro2Field, ref _gyro2);    
 
         }
 
@@ -226,8 +226,8 @@ namespace Asv.Mavlink.Ualberta
             .DataType(UInt64Type.Default)
 
             .Build();
-        private ulong _Usec;
-        public ulong Usec { get => _Usec; set { _Usec = value; } }
+        private ulong _usec;
+        public ulong Usec { get => _usec; set => _usec = value; }
         /// <summary>
         /// b_f[0]
         /// OriginName: accel_0, Units: , IsExtended: false
@@ -241,8 +241,8 @@ namespace Asv.Mavlink.Ualberta
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Accel0;
-        public float Accel0 { get => _Accel0; set { _Accel0 = value; } }
+        private float _accel0;
+        public float Accel0 { get => _accel0; set => _accel0 = value; }
         /// <summary>
         /// b_f[1]
         /// OriginName: accel_1, Units: , IsExtended: false
@@ -256,8 +256,8 @@ namespace Asv.Mavlink.Ualberta
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Accel1;
-        public float Accel1 { get => _Accel1; set { _Accel1 = value; } }
+        private float _accel1;
+        public float Accel1 { get => _accel1; set => _accel1 = value; }
         /// <summary>
         /// b_f[2]
         /// OriginName: accel_2, Units: , IsExtended: false
@@ -271,8 +271,8 @@ namespace Asv.Mavlink.Ualberta
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Accel2;
-        public float Accel2 { get => _Accel2; set { _Accel2 = value; } }
+        private float _accel2;
+        public float Accel2 { get => _accel2; set => _accel2 = value; }
         /// <summary>
         /// b_f[0]
         /// OriginName: gyro_0, Units: , IsExtended: false
@@ -286,8 +286,8 @@ namespace Asv.Mavlink.Ualberta
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Gyro0;
-        public float Gyro0 { get => _Gyro0; set { _Gyro0 = value; } }
+        private float _gyro0;
+        public float Gyro0 { get => _gyro0; set => _gyro0 = value; }
         /// <summary>
         /// b_f[1]
         /// OriginName: gyro_1, Units: , IsExtended: false
@@ -301,8 +301,8 @@ namespace Asv.Mavlink.Ualberta
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Gyro1;
-        public float Gyro1 { get => _Gyro1; set { _Gyro1 = value; } }
+        private float _gyro1;
+        public float Gyro1 { get => _gyro1; set => _gyro1 = value; }
         /// <summary>
         /// b_f[2]
         /// OriginName: gyro_2, Units: , IsExtended: false
@@ -316,8 +316,8 @@ namespace Asv.Mavlink.Ualberta
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Gyro2;
-        public float Gyro2 { get => _Gyro2; set { _Gyro2 = value; } }
+        private float _gyro2;
+        public float Gyro2 { get => _gyro2; set => _gyro2 = value; }
     }
     /// <summary>
     /// Complete set of calibration parameters for the radio
@@ -432,7 +432,7 @@ namespace Asv.Mavlink.Ualberta
             /* PayloadByteSize = 42 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             ArrayType.Accept(visitor,AileronField, 3,
                 (index,v) => UInt16Type.Accept(v, AileronField, ref Aileron[index]));    
@@ -601,11 +601,11 @@ namespace Asv.Mavlink.Ualberta
             /* PayloadByteSize = 3 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,ModeField, ref _Mode);    
-            UInt8Type.Accept(visitor,NavModeField, ref _NavMode);    
-            UInt8Type.Accept(visitor,PilotField, ref _Pilot);    
+            UInt8Type.Accept(visitor,ModeField, ref _mode);    
+            UInt8Type.Accept(visitor,NavModeField, ref _navMode);    
+            UInt8Type.Accept(visitor,PilotField, ref _pilot);    
 
         }
 
@@ -622,8 +622,8 @@ namespace Asv.Mavlink.Ualberta
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Mode;
-        public byte Mode { get => _Mode; set { _Mode = value; } }
+        private byte _mode;
+        public byte Mode { get => _mode; set => _mode = value; }
         /// <summary>
         /// Navigation mode, see UALBERTA_NAV_MODE ENUM
         /// OriginName: nav_mode, Units: , IsExtended: false
@@ -637,8 +637,8 @@ namespace Asv.Mavlink.Ualberta
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _NavMode;
-        public byte NavMode { get => _NavMode; set { _NavMode = value; } }
+        private byte _navMode;
+        public byte NavMode { get => _navMode; set => _navMode = value; }
         /// <summary>
         /// Pilot mode, see UALBERTA_PILOT_MODE
         /// OriginName: pilot, Units: , IsExtended: false
@@ -652,8 +652,8 @@ namespace Asv.Mavlink.Ualberta
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Pilot;
-        public byte Pilot { get => _Pilot; set { _Pilot = value; } }
+        private byte _pilot;
+        public byte Pilot { get => _pilot; set => _pilot = value; }
     }
 
 

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -117,7 +117,7 @@ namespace Asv.Mavlink.Cubepilot
             /* PayloadByteSize = 32 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
             ArrayType.Accept(visitor,RcRawField, 32,
                 (index,v) => UInt8Type.Accept(v, RcRawField, ref RcRaw[index]));    
@@ -238,15 +238,15 @@ namespace Asv.Mavlink.Cubepilot
             /* PayloadByteSize = 246 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,FramerateField, ref _Framerate);    
-            UInt32Type.Accept(visitor,BitrateField, ref _Bitrate);    
-            UInt16Type.Accept(visitor,ResolutionHField, ref _ResolutionH);    
-            UInt16Type.Accept(visitor,ResolutionVField, ref _ResolutionV);    
-            UInt16Type.Accept(visitor,RotationField, ref _Rotation);    
-            UInt8Type.Accept(visitor,CameraIdField, ref _CameraId);    
-            UInt8Type.Accept(visitor,StatusField, ref _Status);    
+            FloatType.Accept(visitor,FramerateField, ref _framerate);    
+            UInt32Type.Accept(visitor,BitrateField, ref _bitrate);    
+            UInt16Type.Accept(visitor,ResolutionHField, ref _resolutionH);    
+            UInt16Type.Accept(visitor,ResolutionVField, ref _resolutionV);    
+            UInt16Type.Accept(visitor,RotationField, ref _rotation);    
+            UInt8Type.Accept(visitor,CameraIdField, ref _cameraId);    
+            UInt8Type.Accept(visitor,StatusField, ref _status);    
             ArrayType.Accept(visitor,UriField, 230, (index,v) =>
             {
                 var tmp = (byte)Uri[index];
@@ -269,8 +269,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(FloatType.Default)
 
             .Build();
-        private float _Framerate;
-        public float Framerate { get => _Framerate; set { _Framerate = value; } }
+        private float _framerate;
+        public float Framerate { get => _framerate; set => _framerate = value; }
         /// <summary>
         /// Bit rate.
         /// OriginName: bitrate, Units: bits/s, IsExtended: false
@@ -284,8 +284,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _Bitrate;
-        public uint Bitrate { get => _Bitrate; set { _Bitrate = value; } }
+        private uint _bitrate;
+        public uint Bitrate { get => _bitrate; set => _bitrate = value; }
         /// <summary>
         /// Horizontal resolution.
         /// OriginName: resolution_h, Units: pix, IsExtended: false
@@ -299,8 +299,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ResolutionH;
-        public ushort ResolutionH { get => _ResolutionH; set { _ResolutionH = value; } }
+        private ushort _resolutionH;
+        public ushort ResolutionH { get => _resolutionH; set => _resolutionH = value; }
         /// <summary>
         /// Vertical resolution.
         /// OriginName: resolution_v, Units: pix, IsExtended: false
@@ -314,8 +314,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _ResolutionV;
-        public ushort ResolutionV { get => _ResolutionV; set { _ResolutionV = value; } }
+        private ushort _resolutionV;
+        public ushort ResolutionV { get => _resolutionV; set => _resolutionV = value; }
         /// <summary>
         /// Video image rotation clockwise.
         /// OriginName: rotation, Units: deg, IsExtended: false
@@ -329,8 +329,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Rotation;
-        public ushort Rotation { get => _Rotation; set { _Rotation = value; } }
+        private ushort _rotation;
+        public ushort Rotation { get => _rotation; set => _rotation = value; }
         /// <summary>
         /// Video Stream ID (1 for first, 2 for second, etc.)
         /// OriginName: camera_id, Units: , IsExtended: false
@@ -344,8 +344,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _CameraId;
-        public byte CameraId { get => _CameraId; set { _CameraId = value; } }
+        private byte _cameraId;
+        public byte CameraId { get => _cameraId; set => _cameraId = value; }
         /// <summary>
         /// Number of streams available.
         /// OriginName: status, Units: , IsExtended: false
@@ -359,8 +359,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Status;
-        public byte Status { get => _Status; set { _Status = value; } }
+        private byte _status;
+        public byte Status { get => _status; set => _status = value; }
         /// <summary>
         /// Video stream URI (TCP or RTSP URI ground station should connect to) or port number (UDP port ground station should listen to).
         /// OriginName: uri, Units: , IsExtended: false
@@ -450,15 +450,15 @@ namespace Asv.Mavlink.Cubepilot
             /* PayloadByteSize = 19 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RfFreqField, ref _RfFreq);    
-            UInt32Type.Accept(visitor,LinkBwField, ref _LinkBw);    
-            UInt32Type.Accept(visitor,LinkRateField, ref _LinkRate);    
-            Int16Type.Accept(visitor,SnrField, ref _Snr);
-            Int16Type.Accept(visitor,CpuTempField, ref _CpuTemp);
-            Int16Type.Accept(visitor,BoardTempField, ref _BoardTemp);
-            UInt8Type.Accept(visitor,RssiField, ref _Rssi);    
+            UInt32Type.Accept(visitor,RfFreqField, ref _rfFreq);    
+            UInt32Type.Accept(visitor,LinkBwField, ref _linkBw);    
+            UInt32Type.Accept(visitor,LinkRateField, ref _linkRate);    
+            Int16Type.Accept(visitor,SnrField, ref _snr);
+            Int16Type.Accept(visitor,CpuTempField, ref _cpuTemp);
+            Int16Type.Accept(visitor,BoardTempField, ref _boardTemp);
+            UInt8Type.Accept(visitor,RssiField, ref _rssi);    
 
         }
 
@@ -475,8 +475,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _RfFreq;
-        public uint RfFreq { get => _RfFreq; set { _RfFreq = value; } }
+        private uint _rfFreq;
+        public uint RfFreq { get => _rfFreq; set => _rfFreq = value; }
         /// <summary>
         /// 
         /// OriginName: link_bw, Units: , IsExtended: false
@@ -490,8 +490,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _LinkBw;
-        public uint LinkBw { get => _LinkBw; set { _LinkBw = value; } }
+        private uint _linkBw;
+        public uint LinkBw { get => _linkBw; set => _linkBw = value; }
         /// <summary>
         /// 
         /// OriginName: link_rate, Units: , IsExtended: false
@@ -505,8 +505,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _LinkRate;
-        public uint LinkRate { get => _LinkRate; set { _LinkRate = value; } }
+        private uint _linkRate;
+        public uint LinkRate { get => _linkRate; set => _linkRate = value; }
         /// <summary>
         /// 
         /// OriginName: snr, Units: , IsExtended: false
@@ -520,8 +520,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(Int16Type.Default)
 
             .Build();
-        private short _Snr;
-        public short Snr { get => _Snr; set { _Snr = value; } }
+        private short _snr;
+        public short Snr { get => _snr; set => _snr = value; }
         /// <summary>
         /// 
         /// OriginName: cpu_temp, Units: , IsExtended: false
@@ -535,8 +535,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(Int16Type.Default)
 
             .Build();
-        private short _CpuTemp;
-        public short CpuTemp { get => _CpuTemp; set { _CpuTemp = value; } }
+        private short _cpuTemp;
+        public short CpuTemp { get => _cpuTemp; set => _cpuTemp = value; }
         /// <summary>
         /// 
         /// OriginName: board_temp, Units: , IsExtended: false
@@ -550,8 +550,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(Int16Type.Default)
 
             .Build();
-        private short _BoardTemp;
-        public short BoardTemp { get => _BoardTemp; set { _BoardTemp = value; } }
+        private short _boardTemp;
+        public short BoardTemp { get => _boardTemp; set => _boardTemp = value; }
         /// <summary>
         /// 
         /// OriginName: rssi, Units: , IsExtended: false
@@ -565,8 +565,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _Rssi;
-        public byte Rssi { get => _Rssi; set { _Rssi = value; } }
+        private byte _rssi;
+        public byte Rssi { get => _rssi; set => _rssi = value; }
     }
     /// <summary>
     /// Start firmware update with encapsulated data.
@@ -630,12 +630,12 @@ namespace Asv.Mavlink.Cubepilot
             /* PayloadByteSize = 10 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,SizeField, ref _Size);    
-            UInt32Type.Accept(visitor,CrcField, ref _Crc);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt32Type.Accept(visitor,SizeField, ref _size);    
+            UInt32Type.Accept(visitor,CrcField, ref _crc);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -652,8 +652,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _Size;
-        public uint Size { get => _Size; set { _Size = value; } }
+        private uint _size;
+        public uint Size { get => _size; set => _size = value; }
         /// <summary>
         /// FW CRC.
         /// OriginName: crc, Units: , IsExtended: false
@@ -667,8 +667,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _Crc;
-        public uint Crc { get => _Crc; set { _Crc = value; } }
+        private uint _crc;
+        public uint Crc { get => _crc; set => _crc = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
@@ -682,8 +682,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetSystem;
-        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
@@ -697,8 +697,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetComponent;
-        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
     /// <summary>
     /// offset response to encapsulated data.
@@ -759,11 +759,11 @@ namespace Asv.Mavlink.Cubepilot
             /* PayloadByteSize = 6 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,OffsetField, ref _Offset);    
-            UInt8Type.Accept(visitor,TargetSystemField, ref _TargetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, ref _TargetComponent);    
+            UInt32Type.Accept(visitor,OffsetField, ref _offset);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -780,8 +780,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _Offset;
-        public uint Offset { get => _Offset; set { _Offset = value; } }
+        private uint _offset;
+        public uint Offset { get => _offset; set => _offset = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
@@ -795,8 +795,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetSystem;
-        public byte TargetSystem { get => _TargetSystem; set { _TargetSystem = value; } }
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
@@ -810,8 +810,8 @@ namespace Asv.Mavlink.Cubepilot
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _TargetComponent;
-        public byte TargetComponent { get => _TargetComponent; set { _TargetComponent = value; } }
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
 
 

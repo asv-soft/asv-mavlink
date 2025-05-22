@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.16+a43ef88c0eb6d4725d650c062779442ee3bd78f6 25-05-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+9a2f8045d50788270a91c641f703bfc105fe5697 25-05-20.
 
 using System;
 using System.Text;
@@ -1293,9 +1293,9 @@ namespace Asv.Mavlink.Minimal
             /* PayloadByteSize = 9 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,CustomModeField, ref _CustomMode);    
+            UInt32Type.Accept(visitor,CustomModeField, ref _customMode);    
             var tmpType = (byte)Type;
             UInt8Type.Accept(visitor,TypeField, ref tmpType);
             Type = (MavType)tmpType;
@@ -1308,7 +1308,7 @@ namespace Asv.Mavlink.Minimal
             var tmpSystemStatus = (byte)SystemStatus;
             UInt8Type.Accept(visitor,SystemStatusField, ref tmpSystemStatus);
             SystemStatus = (MavState)tmpSystemStatus;
-            UInt8Type.Accept(visitor,MavlinkVersionField, ref _MavlinkVersion);    
+            UInt8Type.Accept(visitor,MavlinkVersionField, ref _mavlinkVersion);    
 
         }
 
@@ -1325,8 +1325,8 @@ namespace Asv.Mavlink.Minimal
             .DataType(UInt32Type.Default)
 
             .Build();
-        private uint _CustomMode;
-        public uint CustomMode { get => _CustomMode; set { _CustomMode = value; } }
+        private uint _customMode;
+        public uint CustomMode { get => _customMode; set => _customMode = value; }
         /// <summary>
         /// Vehicle or component type. For a flight controller component the vehicle type (quadrotor, helicopter, etc.). For other components the component type (e.g. camera, gimbal, etc.). This should be used in preference to component id for identifying the component type.
         /// OriginName: type, Units: , IsExtended: false
@@ -1340,8 +1340,8 @@ namespace Asv.Mavlink.Minimal
             .DataType(UInt8Type.Default)
 
             .Build();
-        public MavType _Type;
-        public MavType Type { get => _Type; set => _Type = value; } 
+        public MavType _type;
+        public MavType Type { get => _type; set => _type = value; } 
         /// <summary>
         /// Autopilot type / class. Use MAV_AUTOPILOT_INVALID for components that are not flight controllers.
         /// OriginName: autopilot, Units: , IsExtended: false
@@ -1355,8 +1355,8 @@ namespace Asv.Mavlink.Minimal
             .DataType(UInt8Type.Default)
 
             .Build();
-        public MavAutopilot _Autopilot;
-        public MavAutopilot Autopilot { get => _Autopilot; set => _Autopilot = value; } 
+        public MavAutopilot _autopilot;
+        public MavAutopilot Autopilot { get => _autopilot; set => _autopilot = value; } 
         /// <summary>
         /// System mode bitmap.
         /// OriginName: base_mode, Units: , IsExtended: false
@@ -1370,8 +1370,8 @@ namespace Asv.Mavlink.Minimal
             .DataType(UInt8Type.Default)
 
             .Build();
-        public MavModeFlag _BaseMode;
-        public MavModeFlag BaseMode { get => _BaseMode; set => _BaseMode = value; } 
+        public MavModeFlag _baseMode;
+        public MavModeFlag BaseMode { get => _baseMode; set => _baseMode = value; } 
         /// <summary>
         /// System status flag.
         /// OriginName: system_status, Units: , IsExtended: false
@@ -1385,8 +1385,8 @@ namespace Asv.Mavlink.Minimal
             .DataType(UInt8Type.Default)
 
             .Build();
-        public MavState _SystemStatus;
-        public MavState SystemStatus { get => _SystemStatus; set => _SystemStatus = value; } 
+        public MavState _systemStatus;
+        public MavState SystemStatus { get => _systemStatus; set => _systemStatus = value; } 
         /// <summary>
         /// MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version
         /// OriginName: mavlink_version, Units: , IsExtended: false
@@ -1400,8 +1400,8 @@ namespace Asv.Mavlink.Minimal
             .DataType(UInt8Type.Default)
 
             .Build();
-        private byte _MavlinkVersion;
-        public byte MavlinkVersion { get => _MavlinkVersion; set { _MavlinkVersion = value; } }
+        private byte _mavlinkVersion;
+        public byte MavlinkVersion { get => _mavlinkVersion; set => _mavlinkVersion = value; }
     }
     /// <summary>
     /// Version and capability of protocol version. This message can be requested with MAV_CMD_REQUEST_MESSAGE and is used as part of the handshaking to establish which MAVLink version should be used on the network. Every node should respond to a request for PROTOCOL_VERSION to enable the handshaking. Library implementers should consider adding this into the default decoding state machine to allow the protocol core to respond directly.
@@ -1485,11 +1485,11 @@ namespace Asv.Mavlink.Minimal
             /* PayloadByteSize = 22 */;
         }
 
-        public void Visit(IVisitor visitor)
+        public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,VersionField, ref _Version);    
-            UInt16Type.Accept(visitor,MinVersionField, ref _MinVersion);    
-            UInt16Type.Accept(visitor,MaxVersionField, ref _MaxVersion);    
+            UInt16Type.Accept(visitor,VersionField, ref _version);    
+            UInt16Type.Accept(visitor,MinVersionField, ref _minVersion);    
+            UInt16Type.Accept(visitor,MaxVersionField, ref _maxVersion);    
             ArrayType.Accept(visitor,SpecVersionHashField, 8,
                 (index,v) => UInt8Type.Accept(v, SpecVersionHashField, ref SpecVersionHash[index]));    
             ArrayType.Accept(visitor,LibraryVersionHashField, 8,
@@ -1510,8 +1510,8 @@ namespace Asv.Mavlink.Minimal
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _Version;
-        public ushort Version { get => _Version; set { _Version = value; } }
+        private ushort _version;
+        public ushort Version { get => _version; set => _version = value; }
         /// <summary>
         /// Minimum MAVLink version supported
         /// OriginName: min_version, Units: , IsExtended: false
@@ -1525,8 +1525,8 @@ namespace Asv.Mavlink.Minimal
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _MinVersion;
-        public ushort MinVersion { get => _MinVersion; set { _MinVersion = value; } }
+        private ushort _minVersion;
+        public ushort MinVersion { get => _minVersion; set => _minVersion = value; }
         /// <summary>
         /// Maximum MAVLink version supported (set to the same value as version by default)
         /// OriginName: max_version, Units: , IsExtended: false
@@ -1540,8 +1540,8 @@ namespace Asv.Mavlink.Minimal
             .DataType(UInt16Type.Default)
 
             .Build();
-        private ushort _MaxVersion;
-        public ushort MaxVersion { get => _MaxVersion; set { _MaxVersion = value; } }
+        private ushort _maxVersion;
+        public ushort MaxVersion { get => _maxVersion; set => _maxVersion = value; }
         /// <summary>
         /// The first 8 bytes (not characters printed in hex!) of the git hash.
         /// OriginName: spec_version_hash, Units: , IsExtended: false
