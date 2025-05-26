@@ -697,7 +697,6 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
                 TargetSystem = Identity.SystemId,
                 TargetComponent = Identity.ComponentId,
                 TargetNetwork = _config.NetworkId,
-                Payload = new byte[251],
             },
         };
         pkt.WriteOpcode(opcode);
