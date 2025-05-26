@@ -22,6 +22,7 @@ namespace Asv.Mavlink.Shell
             var args = Hash.FromAnonymousObject(
                 new
                 {
+                    GenerateTime = DateTime.Now.ToString("yy-MM-dd"),
                     Tool = typeof(Program).Assembly.GetTitle(),
                     ToolVersion = typeof(Program).Assembly.GetInformationalVersion(),
                     Dialect = model.Dialect,
@@ -63,11 +64,13 @@ namespace Asv.Mavlink.Shell
                                                              PayloadByteSize = msg.GetAllFields().Sum(_=>_.FieldByteSize),
                                                              ExtendedFieldsLength = msg.ExtendedFields.Sum(_=>_.FieldByteSize),
                                                              WrapToV2Extension = msg.WrapToV2Extension,
-                                                             Fields = msg.GetAllFields().Select(field =>
+                                                             Fields = msg.GetAllFields().Select((field,i) =>
                                                                                             new
                                                                                             {
+                                                                                                Index = i,
                                                                                                 Name = field.Name,
                                                                                                 CamelCaseName = NameConverter(field.Name ?? throw new InvalidOperationException()),
+                                                                                                FieldCaseName = FieldNameConverter(field.Name),
                                                                                                 Units = field.Units,
                                                                                                 IsExtended = field.IsExtended,
                                                                                                 FieldTypeByteSize = field.FieldTypeByteSize,
@@ -174,6 +177,19 @@ namespace Asv.Mavlink.Shell
             var a = Regex.Replace(name.ToLower(), "_([a-z0-9])", _=>_.Value.Substring(1).ToUpper(), RegexOptions.Compiled);
             a = a.Substring(0, 1).ToUpper() + a.Substring(1);
             return a;
+        }
+        
+        private string? FieldNameConverter(string name)
+        {
+            var cname = NameConverter(name);
+            // Проверка на null или пустую строку
+            if (string.IsNullOrEmpty(cname))
+            {
+                return cname; // Возвращаем как есть или можно выбросить исключение
+            }
+
+            // Преобразуем первый символ в нижний регистр и добавляем '_'
+            return "_" + char.ToLower(cname[0]) + cname[1..];
         }
 
         private string ConvertTypeName(MessageFieldType fieldType)

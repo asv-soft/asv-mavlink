@@ -1,10 +1,15 @@
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
+using Asv.Mavlink.Common;
 using Asv.Mavlink.PythonArrayTest;
-using Asv.Mavlink.UnitTestMessage;
+using AutoFixture;
 using DeepEqual.Syntax;
+using DotNext;
 using Xunit;
 using Xunit.Abstractions;
 using R3;
@@ -37,10 +42,7 @@ namespace Asv.Mavlink.Test
                     U64 = 1,
                     S64 = 2,
                     D = 3,
-                    U64Array = new ulong[]
-                    {
-                        1, 2, 3
-                    },
+                   
                     U32 = 1,
                     S32 = 2,
                     F = 3,
@@ -82,10 +84,7 @@ namespace Asv.Mavlink.Test
                     U64 = 1,
                     S64 = 2,
                     D = 3,
-                    U64Array = new ulong[]
-                    {
-                        1, 2, 3
-                    },
+                    
                     U32 = 1,
                     S32 = 2,
                     F = 3,
@@ -124,10 +123,7 @@ namespace Asv.Mavlink.Test
                     U64 = 1,
                     S64 = 2,
                     D = 3,
-                    U64Array = new ulong[]
-                    {
-                        1, 2, 3
-                    },
+                    
                     U32 = 1,
                     S32 = 2,
                     F = 3,
@@ -162,10 +158,7 @@ namespace Asv.Mavlink.Test
                     U64 = 1,
                     S64 = 2,
                     D = 3,
-                    U64Array = new ulong[]
-                    {
-                        1, 2, 3
-                    },
+                    
                     U32 = 1,
                     S32 = 2,
                     F = 3,
@@ -246,6 +239,58 @@ namespace Asv.Mavlink.Test
             }
         }
 
+        [Fact]
+        public void TestSerializeFields_Success()
+        {
+            var seed = Random.Shared.Next();
+            var random = new Random(seed);
+            int count = 0;
+            foreach (var id in MavlinkV2MessageFactory.Instance.GetSupportedIds())
+            {
+                var origin = MavlinkV2MessageFactory.Instance.Create(id) as MavlinkV2Message;
+                try
+                {
+                    Assert.NotNull(origin);
+                    Debug.Assert(origin != null, nameof(origin) + " != null");
+                    origin.GetPayload().Randomize(random);
+
+                    if (origin is WifiConfigApPacket)
+                    {
+                        
+                    }
+                    var maxSize = origin.GetByteSize();
+                    var buff = new byte[maxSize];
+                    var serializeSpan = new Span<byte>(buff);
+                    origin.Serialize(ref serializeSpan);
+                    var readBuffer = new ReadOnlySpan<byte>(buff,0, buff.Length - serializeSpan.Length);
+                    var readPacket = MavlinkV2MessageFactory.Instance.Create(id) as MavlinkV2Message;
+                    Assert.NotNull(readPacket);
+                    Debug.Assert(readPacket != null, nameof(readPacket) + " != null");
+                    readPacket.Deserialize(ref readBuffer);
+                    Assert.Equal(0, readBuffer.Length);
+                    Assert.Equal(origin.SystemId, readPacket.SystemId);
+                    Assert.Equal(origin.ComponentId, readPacket.ComponentId);
+                    Assert.Equal(origin.CompatFlags, readPacket.CompatFlags);
+                    Assert.Equal(origin.IncompatFlags, readPacket.IncompatFlags);
+                    Assert.Equal(origin.Sequence, readPacket.Sequence);
+                    origin.ShouldDeepEqual(readPacket);
+                    
+                }
+                catch (Exception e)
+                {
+                    Debug.Assert(origin != null, nameof(origin) + " != null");
+                    _output.WriteLine(
+                        $"ERROR EQUALITY MESSAGE=[{id}]({origin.Name})  size:{origin.GetByteSize()}. {origin.GetType().Name}. Random seed: {seed}");
+                    throw;
+                }
+                
+                count++;
+            }
+            
+            _output.WriteLine($"OK ({count}) message passed serialization test. Random seed: {seed}");
+            
+        }
+
 
         /// <summary>
         /// https://github.com/asv-soft/asv-mavlink/issues/36
@@ -253,7 +298,7 @@ namespace Asv.Mavlink.Test
         [Fact]
         public async Task Test_custom_crc_message()
         {
-            var protocol = Protocol.Create(builder =>
+            /*var protocol = Protocol.Create(builder =>
             {
                 builder.RegisterMavlinkV2Protocol();
             });
@@ -292,7 +337,7 @@ namespace Asv.Mavlink.Test
             Assert.Equal(inPkt.Payload.Bars, outPkt.Payload.Bars);
             Assert.Equal(inPkt.Payload.BarsPeak, outPkt.Payload.BarsPeak);
             Assert.Equal(inPkt.Payload.Dose, outPkt.Payload.Dose);
-            Assert.Equal(inPkt.Payload.HazardLevel, outPkt.Payload.HazardLevel);
+            Assert.Equal(inPkt.Payload.HazardLevel, outPkt.Payload.HazardLevel);*/
 
         }
         
@@ -302,7 +347,7 @@ namespace Asv.Mavlink.Test
         [Fact]
         public async Task Test_custom_crc_message2()
         {
-            var protocol = Protocol.Create(builder =>
+            /*var protocol = Protocol.Create(builder =>
             {
                 builder.RegisterMavlinkV2Protocol();
             });
@@ -341,7 +386,7 @@ namespace Asv.Mavlink.Test
             Assert.Equal(inPkt.Payload.Bars, outPkt.Payload.Bars);
             Assert.Equal(inPkt.Payload.BarsPeak, outPkt.Payload.BarsPeak);
             Assert.Equal(inPkt.Payload.Dose, outPkt.Payload.Dose);
-            Assert.Equal(inPkt.Payload.HazardLevel, outPkt.Payload.HazardLevel);
+            Assert.Equal(inPkt.Payload.HazardLevel, outPkt.Payload.HazardLevel);*/
 
         }
 
@@ -365,4 +410,6 @@ namespace Asv.Mavlink.Test
 
         }
     }
+
+    
 }

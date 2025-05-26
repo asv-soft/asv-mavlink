@@ -8,7 +8,6 @@
     <!-- mavlink MAV_CMD range:  13400 - 13499                       -->
     <!-- mavlink messages range: 13400 - 13499                       -->
     <include>minimal.xml</include>
-    <include>asv_table.xml</include>
 
     <enums>
         <!-- Asv specific MAV_TYPE identity -->

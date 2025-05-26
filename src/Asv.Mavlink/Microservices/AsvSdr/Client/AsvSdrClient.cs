@@ -35,7 +35,7 @@ public class AsvSdrClient : MavlinkMicroserviceClient, IAsvSdrClient
             .ToReadOnlyReactiveProperty();
         
         var dataPacketsHashSet = new HashSet<int>();
-        foreach (var item in Enum.GetValues(typeof(AsvSdrCustomMode)).Cast<uint>())
+        foreach (var item in Enum.GetValues(typeof(AsvSdrCustomMode)).Cast<ulong>())
         {
             dataPacketsHashSet.Add((int)item);
         }

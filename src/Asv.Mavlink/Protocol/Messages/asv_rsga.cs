@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+323463838958bbc455efbb799160b09e17080d75
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -29,6 +29,9 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.AsvRsga
@@ -59,6 +62,7 @@ namespace Asv.Mavlink.AsvRsga
             src.Add(AsvRsgaRttAdsbRepPacket.MessageId, ()=>new AsvRsgaRttAdsbRepPacket());
             src.Add(AsvRsgaRttRxGnssPacket.MessageId, ()=>new AsvRsgaRttRxGnssPacket());
         }
+ 
     }
 
 #region Enums
@@ -66,7 +70,7 @@ namespace Asv.Mavlink.AsvRsga
     /// <summary>
     ///  MAV_TYPE
     /// </summary>
-    public enum MavType:uint
+    public enum MavType : ulong
     {
         /// <summary>
         /// Identifies the Radio Signal Generator and Analyzer (RSGA) payload in the HEARTBEAT message.
@@ -74,12 +78,22 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         MavTypeAsvRsga = 254,
     }
-
+    public static class MavTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(254);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(254),"MAV_TYPE_ASV_RSGA");
+        }
+    }
     /// <summary>
     /// Defines RSGA modes mapped to the custom_mode[0–7] bit field of the HEARTBEAT message. Maximum 255 values.
     ///  ASV_RSGA_CUSTOM_MODE
     /// </summary>
-    public enum AsvRsgaCustomMode:uint
+    public enum AsvRsgaCustomMode : ulong
     {
         /// <summary>
         /// Default mode. No operation performed.
@@ -182,13 +196,61 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaCustomModeReserved = 255,
     }
-
+    public static class AsvRsgaCustomModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(25);
+            yield return converter(50);
+            yield return converter(51);
+            yield return converter(52);
+            yield return converter(53);
+            yield return converter(54);
+            yield return converter(55);
+            yield return converter(56);
+            yield return converter(57);
+            yield return converter(74);
+            yield return converter(75);
+            yield return converter(76);
+            yield return converter(77);
+            yield return converter(78);
+            yield return converter(79);
+            yield return converter(80);
+            yield return converter(81);
+            yield return converter(100);
+            yield return converter(255);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_RSGA_CUSTOM_MODE_IDLE");
+            yield return new EnumValue<T>(converter(25),"ASV_RSGA_CUSTOM_MODE_SPECTRUM");
+            yield return new EnumValue<T>(converter(50),"ASV_RSGA_CUSTOM_MODE_TX_LLZ");
+            yield return new EnumValue<T>(converter(51),"ASV_RSGA_CUSTOM_MODE_TX_GP");
+            yield return new EnumValue<T>(converter(52),"ASV_RSGA_CUSTOM_MODE_TX_VOR");
+            yield return new EnumValue<T>(converter(53),"ASV_RSGA_CUSTOM_MODE_TX_MARKER");
+            yield return new EnumValue<T>(converter(54),"ASV_RSGA_CUSTOM_MODE_DME_REP");
+            yield return new EnumValue<T>(converter(55),"ASV_RSGA_CUSTOM_MODE_TX_GBAS");
+            yield return new EnumValue<T>(converter(56),"ASV_RSGA_CUSTOM_MODE_ADSB_REQ");
+            yield return new EnumValue<T>(converter(57),"ASV_RSGA_CUSTOM_MODE_TX_GNSS");
+            yield return new EnumValue<T>(converter(74),"ASV_RSGA_CUSTOM_MODE_DME_REQ");
+            yield return new EnumValue<T>(converter(75),"ASV_RSGA_CUSTOM_MODE_RX_LLZ");
+            yield return new EnumValue<T>(converter(76),"ASV_RSGA_CUSTOM_MODE_RX_GP");
+            yield return new EnumValue<T>(converter(77),"ASV_RSGA_CUSTOM_MODE_RX_VOR");
+            yield return new EnumValue<T>(converter(78),"ASV_RSGA_CUSTOM_MODE_RX_MARKER");
+            yield return new EnumValue<T>(converter(79),"ASV_RSGA_CUSTOM_MODE_RX_GBAS");
+            yield return new EnumValue<T>(converter(80),"ASV_RSGA_CUSTOM_MODE_ADSB_REP");
+            yield return new EnumValue<T>(converter(81),"ASV_RSGA_CUSTOM_MODE_RX_GNSS");
+            yield return new EnumValue<T>(converter(100),"ASV_RSGA_CUSTOM_MODE_RADIO");
+            yield return new EnumValue<T>(converter(255),"ASV_RSGA_CUSTOM_MODE_RESERVED");
+        }
+    }
     /// <summary>
     /// A mapping of RSGA special sub modes for custom_mode[8-15] bits field of heartbeat.[!THIS_IS_ENUM_FLAG!]
     ///  ASV_RSGA_CUSTOM_SUB_MODE
     /// </summary>
     [Flags]
-    public enum AsvRsgaCustomSubMode:uint
+    public enum AsvRsgaCustomSubMode : ulong
     {
         /// <summary>
         /// Recording enabled.
@@ -231,12 +293,36 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaCustomSubModeReserved7 = 128,
     }
-
+    public static class AsvRsgaCustomSubModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_CUSTOM_SUB_MODE_RECORD");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_CUSTOM_SUB_MODE_MISSION");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED2");
+            yield return new EnumValue<T>(converter(8),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED3");
+            yield return new EnumValue<T>(converter(16),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED4");
+            yield return new EnumValue<T>(converter(32),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED5");
+            yield return new EnumValue<T>(converter(64),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED6");
+            yield return new EnumValue<T>(converter(128),"ASV_RSGA_CUSTOM_SUB_MODE_RESERVED7");
+        }
+    }
     /// <summary>
     /// ACK / NACK / ERROR values as a result of ASV_RSGA_*_REQUEST commands.
     ///  ASV_RSGA_REQUEST_ACK
     /// </summary>
-    public enum AsvRsgaRequestAck:uint
+    public enum AsvRsgaRequestAck : ulong
     {
         /// <summary>
         /// Request is ok.
@@ -264,13 +350,31 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaRequestAckNotFound = 4,
     }
-
+    public static class AsvRsgaRequestAckHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_RSGA_REQUEST_ACK_OK");
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_REQUEST_ACK_IN_PROGRESS");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_REQUEST_ACK_FAIL");
+            yield return new EnumValue<T>(converter(3),"ASV_RSGA_REQUEST_ACK_NOT_SUPPORTED");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_REQUEST_ACK_NOT_FOUND");
+        }
+    }
     /// <summary>
     /// Common status flags for all ASV_RSGA_RTT_* data.[!THIS_IS_ENUM_FLAG!]
     ///  ASV_RSGA_DATA_FLAGS
     /// </summary>
     [Flags]
-    public enum AsvRsgaDataFlags:uint
+    public enum AsvRsgaDataFlags : ulong
     {
         /// <summary>
         /// Is data valid.
@@ -278,13 +382,23 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaDataFlagsValid = 1,
     }
-
+    public static class AsvRsgaDataFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_DATA_FLAGS_VALID");
+        }
+    }
     /// <summary>
     /// Common status flags for all ASV_RSGA_RTT_GNSS message.[!THIS_IS_ENUM_FLAG!]
     ///  ASV_RSGA_RTT_GNSS_FLAGS
     /// </summary>
     [Flags]
-    public enum AsvRsgaRttGnssFlags:uint
+    public enum AsvRsgaRttGnssFlags : ulong
     {
         /// <summary>
         /// This flag is set when the vehicle is known to be on the ground.
@@ -327,12 +441,36 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaRttGnssFlagsReserved7 = 128,
     }
-
+    public static class AsvRsgaRttGnssFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_GNSS_FLAGS_ON_THE_GROUND");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED1");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED2");
+            yield return new EnumValue<T>(converter(8),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED3");
+            yield return new EnumValue<T>(converter(16),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED4");
+            yield return new EnumValue<T>(converter(32),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED5");
+            yield return new EnumValue<T>(converter(64),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED6");
+            yield return new EnumValue<T>(converter(128),"ASV_RSGA_RTT_GNSS_FLAGS_RESERVED7");
+        }
+    }
     /// <summary>
     /// Type of GNSS receiver
     ///  ASV_RSGA_RTT_GNSS_TYPE
     /// </summary>
-    public enum AsvRsgaRttGnssType:uint
+    public enum AsvRsgaRttGnssType : ulong
     {
         /// <summary>
         /// Virtual GNSS data.
@@ -350,13 +488,27 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaRttGnssTypeUav = 2,
     }
-
+    public static class AsvRsgaRttGnssTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_RSGA_RTT_GNSS_TYPE_VIRTUAL");
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_GNSS_TYPE_NMEA");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_GNSS_TYPE_UAV");
+        }
+    }
     /// <summary>
     /// Mode S interrogation or uplink formats.[!THIS_IS_ENUM_FLAG!]
     ///  ASV_RSGA_RTT_ADSB_MSG_UF
     /// </summary>
     [Flags]
-    public enum AsvRsgaRttAdsbMsgUf:uint
+    public enum AsvRsgaRttAdsbMsgUf : ulong
     {
         /// <summary>
         /// [UF00] Short air-air surveillance (ACAS).
@@ -484,13 +636,71 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaRttAdsbMsgUf24 = 16777216,
     }
-
+    public static class AsvRsgaRttAdsbMsgUfHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+            yield return converter(256);
+            yield return converter(512);
+            yield return converter(1024);
+            yield return converter(2048);
+            yield return converter(4096);
+            yield return converter(8192);
+            yield return converter(16384);
+            yield return converter(32768);
+            yield return converter(65536);
+            yield return converter(131072);
+            yield return converter(262144);
+            yield return converter(524288);
+            yield return converter(1048576);
+            yield return converter(2097152);
+            yield return converter(4194304);
+            yield return converter(8388608);
+            yield return converter(16777216);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_ADSB_MSG_UF_00");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_ADSB_MSG_UF_01");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_RTT_ADSB_MSG_UF_02");
+            yield return new EnumValue<T>(converter(8),"ASV_RSGA_RTT_ADSB_MSG_UF_03");
+            yield return new EnumValue<T>(converter(16),"ASV_RSGA_RTT_ADSB_MSG_UF_04");
+            yield return new EnumValue<T>(converter(32),"ASV_RSGA_RTT_ADSB_MSG_UF_05");
+            yield return new EnumValue<T>(converter(64),"ASV_RSGA_RTT_ADSB_MSG_UF_06");
+            yield return new EnumValue<T>(converter(128),"ASV_RSGA_RTT_ADSB_MSG_UF_07");
+            yield return new EnumValue<T>(converter(256),"ASV_RSGA_RTT_ADSB_MSG_UF_08");
+            yield return new EnumValue<T>(converter(512),"ASV_RSGA_RTT_ADSB_MSG_UF_09");
+            yield return new EnumValue<T>(converter(1024),"ASV_RSGA_RTT_ADSB_MSG_UF_10");
+            yield return new EnumValue<T>(converter(2048),"ASV_RSGA_RTT_ADSB_MSG_UF_11");
+            yield return new EnumValue<T>(converter(4096),"ASV_RSGA_RTT_ADSB_MSG_UF_12");
+            yield return new EnumValue<T>(converter(8192),"ASV_RSGA_RTT_ADSB_MSG_UF_13");
+            yield return new EnumValue<T>(converter(16384),"ASV_RSGA_RTT_ADSB_MSG_UF_14");
+            yield return new EnumValue<T>(converter(32768),"ASV_RSGA_RTT_ADSB_MSG_UF_15");
+            yield return new EnumValue<T>(converter(65536),"ASV_RSGA_RTT_ADSB_MSG_UF_16");
+            yield return new EnumValue<T>(converter(131072),"ASV_RSGA_RTT_ADSB_MSG_UF_17");
+            yield return new EnumValue<T>(converter(262144),"ASV_RSGA_RTT_ADSB_MSG_UF_18");
+            yield return new EnumValue<T>(converter(524288),"ASV_RSGA_RTT_ADSB_MSG_UF_19");
+            yield return new EnumValue<T>(converter(1048576),"ASV_RSGA_RTT_ADSB_MSG_UF_20");
+            yield return new EnumValue<T>(converter(2097152),"ASV_RSGA_RTT_ADSB_MSG_UF_21");
+            yield return new EnumValue<T>(converter(4194304),"ASV_RSGA_RTT_ADSB_MSG_UF_22");
+            yield return new EnumValue<T>(converter(8388608),"ASV_RSGA_RTT_ADSB_MSG_UF_23");
+            yield return new EnumValue<T>(converter(16777216),"ASV_RSGA_RTT_ADSB_MSG_UF_24");
+        }
+    }
     /// <summary>
     /// Mode S reply or downlink formats.[!THIS_IS_ENUM_FLAG!]
     ///  ASV_RSGA_RTT_ADSB_MSG_DF
     /// </summary>
     [Flags]
-    public enum AsvRsgaRttAdsbMsgDf:uint
+    public enum AsvRsgaRttAdsbMsgDf : ulong
     {
         /// <summary>
         /// [DF00] Short air-air surveillance (ACAS).
@@ -618,11 +828,69 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaRttAdsbMsgDf24 = 16777216,
     }
-
+    public static class AsvRsgaRttAdsbMsgDfHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+            yield return converter(256);
+            yield return converter(512);
+            yield return converter(1024);
+            yield return converter(2048);
+            yield return converter(4096);
+            yield return converter(8192);
+            yield return converter(16384);
+            yield return converter(32768);
+            yield return converter(65536);
+            yield return converter(131072);
+            yield return converter(262144);
+            yield return converter(524288);
+            yield return converter(1048576);
+            yield return converter(2097152);
+            yield return converter(4194304);
+            yield return converter(8388608);
+            yield return converter(16777216);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_ADSB_MSG_DF_00");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_ADSB_MSG_DF_01");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_RTT_ADSB_MSG_DF_02");
+            yield return new EnumValue<T>(converter(8),"ASV_RSGA_RTT_ADSB_MSG_DF_03");
+            yield return new EnumValue<T>(converter(16),"ASV_RSGA_RTT_ADSB_MSG_DF_04");
+            yield return new EnumValue<T>(converter(32),"ASV_RSGA_RTT_ADSB_MSG_DF_05");
+            yield return new EnumValue<T>(converter(64),"ASV_RSGA_RTT_ADSB_MSG_DF_06");
+            yield return new EnumValue<T>(converter(128),"ASV_RSGA_RTT_ADSB_MSG_DF_07");
+            yield return new EnumValue<T>(converter(256),"ASV_RSGA_RTT_ADSB_MSG_DF_08");
+            yield return new EnumValue<T>(converter(512),"ASV_RSGA_RTT_ADSB_MSG_DF_09");
+            yield return new EnumValue<T>(converter(1024),"ASV_RSGA_RTT_ADSB_MSG_DF_10");
+            yield return new EnumValue<T>(converter(2048),"ASV_RSGA_RTT_ADSB_MSG_DF_11");
+            yield return new EnumValue<T>(converter(4096),"ASV_RSGA_RTT_ADSB_MSG_DF_12");
+            yield return new EnumValue<T>(converter(8192),"ASV_RSGA_RTT_ADSB_MSG_DF_13");
+            yield return new EnumValue<T>(converter(16384),"ASV_RSGA_RTT_ADSB_MSG_DF_14");
+            yield return new EnumValue<T>(converter(32768),"ASV_RSGA_RTT_ADSB_MSG_DF_15");
+            yield return new EnumValue<T>(converter(65536),"ASV_RSGA_RTT_ADSB_MSG_DF_16");
+            yield return new EnumValue<T>(converter(131072),"ASV_RSGA_RTT_ADSB_MSG_DF_17");
+            yield return new EnumValue<T>(converter(262144),"ASV_RSGA_RTT_ADSB_MSG_DF_18");
+            yield return new EnumValue<T>(converter(524288),"ASV_RSGA_RTT_ADSB_MSG_DF_19");
+            yield return new EnumValue<T>(converter(1048576),"ASV_RSGA_RTT_ADSB_MSG_DF_20");
+            yield return new EnumValue<T>(converter(2097152),"ASV_RSGA_RTT_ADSB_MSG_DF_21");
+            yield return new EnumValue<T>(converter(4194304),"ASV_RSGA_RTT_ADSB_MSG_DF_22");
+            yield return new EnumValue<T>(converter(8388608),"ASV_RSGA_RTT_ADSB_MSG_DF_23");
+            yield return new EnumValue<T>(converter(16777216),"ASV_RSGA_RTT_ADSB_MSG_DF_24");
+        }
+    }
     /// <summary>
     ///  MAV_CMD
     /// </summary>
-    public enum MavCmd:uint
+    public enum MavCmd : ulong
     {
         /// <summary>
         /// Set the operational mode.
@@ -661,7 +929,21 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         MavCmdAsvRsgaStopRecord = 13402,
     }
-
+    public static class MavCmdHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(13400);
+            yield return converter(13401);
+            yield return converter(13402);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(13400),"MAV_CMD_ASV_RSGA_SET_MODE");
+            yield return new EnumValue<T>(converter(13401),"MAV_CMD_ASV_RSGA_START_RECORD");
+            yield return new EnumValue<T>(converter(13402),"MAV_CMD_ASV_RSGA_STOP_RECORD");
+        }
+    }
 
 #endregion
 
@@ -687,44 +969,6 @@ namespace Asv.Mavlink.AsvRsga
         public override AsvRsgaCompatibilityRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_COMPATIBILITY_REQUEST";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("request_id",
-"Specifies a unique number for this request. This allows the response packet to be identified.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_COMPATIBILITY_REQUEST:"
-        + "uint16_t request_id;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
     }
 
     /// <summary>
@@ -736,14 +980,14 @@ false),
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -763,26 +1007,54 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 4 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
+        }
 
         /// <summary>
         /// Specifies a unique number for this request. This allows the response packet to be identified.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public ushort RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Specifies a unique number for this request. This allows the response packet to be identified.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _requestId;
+        public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
     /// <summary>
     /// Responds to the ASV_RSGA_COMPATIBILITY_REQUEST. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -804,44 +1076,6 @@ false),
         public override AsvRsgaCompatibilityResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_COMPATIBILITY_RESPONSE";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("request_id",
-"Specifies the unique number of the original request. This allows the response to be matched to the correct request.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("result",
-"Result code.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("supported_modes",
-"Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            32, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_COMPATIBILITY_RESPONSE:"
-        + "uint16_t request_id;"
-        + "uint8_t result;"
-        + "uint8_t[32] supported_modes;"
-        ;
     }
 
     /// <summary>
@@ -853,14 +1087,14 @@ false),
         public byte GetMaxByteSize() => 35; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RequestId
-            sum+= 1; // Result
-            sum+=SupportedModes.Length; //SupportedModes
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t request_id
+            + 1 // uint8_t result
+            +SupportedModes.Length // uint8_t[32] supported_modes
+            );
         }
 
 
@@ -872,7 +1106,7 @@ false),
             RequestId = BinSerialize.ReadUShort(ref buffer);
             Result = (AsvRsgaRequestAck)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/35 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            SupportedModes = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 SupportedModes[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -890,27 +1124,57 @@ false),
             }
             /* PayloadByteSize = 35 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            var tmpResult = (byte)Result;
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            Result = (AsvRsgaRequestAck)tmpResult;
+            ArrayType.Accept(visitor,SupportedModesField, SupportedModesField.DataType, 32,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref SupportedModes[index]));    
 
+        }
 
         /// <summary>
         /// Specifies the unique number of the original request. This allows the response to be matched to the correct request.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public ushort RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Specifies the unique number of the original request. This allows the response to be matched to the correct request.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _requestId;
+        public ushort RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// Result code.
         /// OriginName: result, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaRequestAck Result { get; set; }
+        public static readonly Field ResultField = new Field.Builder()
+            .Name(nameof(Result))
+            .Title("result")
+            .Description("Result code.")
+            .DataType(new UInt8Type(AsvRsgaRequestAckHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRequestAckHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvRsgaRequestAckHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private AsvRsgaRequestAck _result;
+        public AsvRsgaRequestAck Result { get => _result; set => _result = value; } 
         /// <summary>
         /// Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true.
         /// OriginName: supported_modes, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field SupportedModesField = new Field.Builder()
+            .Name(nameof(SupportedModes))
+            .Title("supported_modes")
+            .Description("Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true.")
+
+            .DataType(new ArrayType(UInt8Type.Default,32))
+        .Build();
         public const int SupportedModesMaxItemsCount = 32;
-        public byte[] SupportedModes { get; set; } = new byte[32];
+        public byte[] SupportedModes { get; } = new byte[32];
         [Obsolete("This method is deprecated. Use GetSupportedModesMaxItemsCount instead.")]
         public byte GetSupportedModesMaxItemsCount() => 32;
     }
@@ -934,214 +1198,6 @@ false),
         public override AsvRsgaRttGnssPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_GNSS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("data_index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("lat",
-"Latitude (WGS84, EGM96 ellipsoid)",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("lat_err",
-"Expected Error in Latitude (North) Direction",
-string.Empty, 
-@"mm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("lon",
-"Longitude (WGS84, EGM96 ellipsoid)",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("lon_err",
-"Expected Error in Longitude (East) Direction",
-string.Empty, 
-@"mm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("alt_msl",
-"Antenna altitude above/below mean sea level (geoid)",
-string.Empty, 
-@"mm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("alt_wgs",
-"Antenna altitude WGS-84 earth ellipsoid",
-string.Empty, 
-@"mm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("alt_err",
-"Expected Error in Altitude",
-string.Empty, 
-@"mm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("ref_id",
-"GNSS reference station ID (used when GNSS is received from multiple sources).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("hdop",
-"HDOP horizontal dilution of position",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-@"UINT16_MAX", 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("vdop",
-"VDOP vertical dilution of position",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-@"UINT16_MAX", 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("sog",
-"Speed over ground",
-string.Empty, 
-@"cm/s", 
-string.Empty, 
-@"UINT16_MAX", 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("cog_true",
-"Course over ground (true) (yaw angle). 0.0..359.99 degrees",
-string.Empty, 
-@"cdeg", 
-string.Empty, 
-@"UINT16_MAX", 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("cog_mag",
-"Course over ground (magnetic) (yaw angle). 0.0..359.99 degrees",
-string.Empty, 
-@"cdeg", 
-string.Empty, 
-@"UINT16_MAX", 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("receiver_type",
-"GNSS receiver type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("gnss_flags",
-"GNSS special flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("sat_cnt",
-"Number of satellites in view",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("fix_type",
-"GNSS fix type",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_GNSS:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t data_index;"
-        + "int32_t lat;"
-        + "int32_t lat_err;"
-        + "int32_t lon;"
-        + "int32_t lon_err;"
-        + "int32_t alt_msl;"
-        + "int32_t alt_wgs;"
-        + "int32_t alt_err;"
-        + "uint16_t ref_id;"
-        + "uint16_t hdop;"
-        + "uint16_t vdop;"
-        + "uint16_t sog;"
-        + "uint16_t cog_true;"
-        + "uint16_t cog_mag;"
-        + "uint8_t receiver_type;"
-        + "uint8_t gnss_flags;"
-        + "uint8_t sat_cnt;"
-        + "uint8_t fix_type;"
-        ;
     }
 
     /// <summary>
@@ -1153,31 +1209,31 @@ false),
         public byte GetMaxByteSize() => 64; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 64; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //DataIndex
-            sum+=4; //Lat
-            sum+=4; //LatErr
-            sum+=4; //Lon
-            sum+=4; //LonErr
-            sum+=4; //AltMsl
-            sum+=4; //AltWgs
-            sum+=4; //AltErr
-            sum+=2; //RefId
-            sum+=2; //Hdop
-            sum+=2; //Vdop
-            sum+=2; //Sog
-            sum+=2; //CogTrue
-            sum+=2; //CogMag
-            sum+= 1; // ReceiverType
-            sum+= 1; // GnssFlags
-            sum+=1; //SatCnt
-            sum+= 1; // FixType
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t data_index
+            +4 // int32_t lat
+            +4 // int32_t lat_err
+            +4 // int32_t lon
+            +4 // int32_t lon_err
+            +4 // int32_t alt_msl
+            +4 // int32_t alt_wgs
+            +4 // int32_t alt_err
+            +2 // uint16_t ref_id
+            +2 // uint16_t hdop
+            +2 // uint16_t vdop
+            +2 // uint16_t sog
+            +2 // uint16_t cog_true
+            +2 // uint16_t cog_mag
+            + 1 // uint8_t receiver_type
+            + 1 // uint8_t gnss_flags
+            +1 // uint8_t sat_cnt
+            + 1 // uint8_t fix_type
+            );
         }
 
 
@@ -1231,111 +1287,300 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)FixType);
             /* PayloadByteSize = 64 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,DataIndexField, DataIndexField.DataType, ref _dataIndex);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LatErrField, LatErrField.DataType, ref _latErr);    
+            Int32Type.Accept(visitor,LonField, LonField.DataType, ref _lon);    
+            Int32Type.Accept(visitor,LonErrField, LonErrField.DataType, ref _lonErr);    
+            Int32Type.Accept(visitor,AltMslField, AltMslField.DataType, ref _altMsl);    
+            Int32Type.Accept(visitor,AltWgsField, AltWgsField.DataType, ref _altWgs);    
+            Int32Type.Accept(visitor,AltErrField, AltErrField.DataType, ref _altErr);    
+            UInt16Type.Accept(visitor,RefIdField, RefIdField.DataType, ref _refId);    
+            UInt16Type.Accept(visitor,HdopField, HdopField.DataType, ref _hdop);    
+            UInt16Type.Accept(visitor,VdopField, VdopField.DataType, ref _vdop);    
+            UInt16Type.Accept(visitor,SogField, SogField.DataType, ref _sog);    
+            UInt16Type.Accept(visitor,CogTrueField, CogTrueField.DataType, ref _cogTrue);    
+            UInt16Type.Accept(visitor,CogMagField, CogMagField.DataType, ref _cogMag);    
+            var tmpReceiverType = (byte)ReceiverType;
+            UInt8Type.Accept(visitor,ReceiverTypeField, ReceiverTypeField.DataType, ref tmpReceiverType);
+            ReceiverType = (AsvRsgaRttGnssType)tmpReceiverType;
+            var tmpGnssFlags = (byte)GnssFlags;
+            UInt8Type.Accept(visitor,GnssFlagsField, GnssFlagsField.DataType, ref tmpGnssFlags);
+            GnssFlags = (AsvRsgaRttGnssFlags)tmpGnssFlags;
+            UInt8Type.Accept(visitor,SatCntField, SatCntField.DataType, ref _satCnt);    
+            var tmpFixType = (byte)FixType;
+            UInt8Type.Accept(visitor,FixTypeField, FixTypeField.DataType, ref tmpFixType);
+            FixType = (GpsFixType)tmpFixType;
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: data_index, Units: , IsExtended: false
         /// </summary>
-        public uint DataIndex { get; set; }
+        public static readonly Field DataIndexField = new Field.Builder()
+            .Name(nameof(DataIndex))
+            .Title("data_index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _dataIndex;
+        public uint DataIndex { get => _dataIndex; set => _dataIndex = value; }
         /// <summary>
         /// Latitude (WGS84, EGM96 ellipsoid)
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude (WGS84, EGM96 ellipsoid)")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lat;
+        public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
         /// Expected Error in Latitude (North) Direction
         /// OriginName: lat_err, Units: mm, IsExtended: false
         /// </summary>
-        public int LatErr { get; set; }
+        public static readonly Field LatErrField = new Field.Builder()
+            .Name(nameof(LatErr))
+            .Title("lat_err")
+            .Description("Expected Error in Latitude (North) Direction")
+.Units(@"mm")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _latErr;
+        public int LatErr { get => _latErr; set => _latErr = value; }
         /// <summary>
         /// Longitude (WGS84, EGM96 ellipsoid)
         /// OriginName: lon, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lon { get; set; }
+        public static readonly Field LonField = new Field.Builder()
+            .Name(nameof(Lon))
+            .Title("lon")
+            .Description("Longitude (WGS84, EGM96 ellipsoid)")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lon;
+        public int Lon { get => _lon; set => _lon = value; }
         /// <summary>
         /// Expected Error in Longitude (East) Direction
         /// OriginName: lon_err, Units: mm, IsExtended: false
         /// </summary>
-        public int LonErr { get; set; }
+        public static readonly Field LonErrField = new Field.Builder()
+            .Name(nameof(LonErr))
+            .Title("lon_err")
+            .Description("Expected Error in Longitude (East) Direction")
+.Units(@"mm")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lonErr;
+        public int LonErr { get => _lonErr; set => _lonErr = value; }
         /// <summary>
         /// Antenna altitude above/below mean sea level (geoid)
         /// OriginName: alt_msl, Units: mm, IsExtended: false
         /// </summary>
-        public int AltMsl { get; set; }
+        public static readonly Field AltMslField = new Field.Builder()
+            .Name(nameof(AltMsl))
+            .Title("alt_msl")
+            .Description("Antenna altitude above/below mean sea level (geoid)")
+.Units(@"mm")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _altMsl;
+        public int AltMsl { get => _altMsl; set => _altMsl = value; }
         /// <summary>
         /// Antenna altitude WGS-84 earth ellipsoid
         /// OriginName: alt_wgs, Units: mm, IsExtended: false
         /// </summary>
-        public int AltWgs { get; set; }
+        public static readonly Field AltWgsField = new Field.Builder()
+            .Name(nameof(AltWgs))
+            .Title("alt_wgs")
+            .Description("Antenna altitude WGS-84 earth ellipsoid")
+.Units(@"mm")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _altWgs;
+        public int AltWgs { get => _altWgs; set => _altWgs = value; }
         /// <summary>
         /// Expected Error in Altitude
         /// OriginName: alt_err, Units: mm, IsExtended: false
         /// </summary>
-        public int AltErr { get; set; }
+        public static readonly Field AltErrField = new Field.Builder()
+            .Name(nameof(AltErr))
+            .Title("alt_err")
+            .Description("Expected Error in Altitude")
+.Units(@"mm")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _altErr;
+        public int AltErr { get => _altErr; set => _altErr = value; }
         /// <summary>
         /// GNSS reference station ID (used when GNSS is received from multiple sources).
         /// OriginName: ref_id, Units: , IsExtended: false
         /// </summary>
-        public ushort RefId { get; set; }
+        public static readonly Field RefIdField = new Field.Builder()
+            .Name(nameof(RefId))
+            .Title("ref_id")
+            .Description("GNSS reference station ID (used when GNSS is received from multiple sources).")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _refId;
+        public ushort RefId { get => _refId; set => _refId = value; }
         /// <summary>
         /// HDOP horizontal dilution of position
         /// OriginName: hdop, Units: , IsExtended: false
         /// </summary>
-        public ushort Hdop { get; set; }
+        public static readonly Field HdopField = new Field.Builder()
+            .Name(nameof(Hdop))
+            .Title("hdop")
+            .Description("HDOP horizontal dilution of position")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _hdop;
+        public ushort Hdop { get => _hdop; set => _hdop = value; }
         /// <summary>
         /// VDOP vertical dilution of position
         /// OriginName: vdop, Units: , IsExtended: false
         /// </summary>
-        public ushort Vdop { get; set; }
+        public static readonly Field VdopField = new Field.Builder()
+            .Name(nameof(Vdop))
+            .Title("vdop")
+            .Description("VDOP vertical dilution of position")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _vdop;
+        public ushort Vdop { get => _vdop; set => _vdop = value; }
         /// <summary>
         /// Speed over ground
         /// OriginName: sog, Units: cm/s, IsExtended: false
         /// </summary>
-        public ushort Sog { get; set; }
+        public static readonly Field SogField = new Field.Builder()
+            .Name(nameof(Sog))
+            .Title("sog")
+            .Description("Speed over ground")
+.Units(@"cm/s")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _sog;
+        public ushort Sog { get => _sog; set => _sog = value; }
         /// <summary>
         /// Course over ground (true) (yaw angle). 0.0..359.99 degrees
         /// OriginName: cog_true, Units: cdeg, IsExtended: false
         /// </summary>
-        public ushort CogTrue { get; set; }
+        public static readonly Field CogTrueField = new Field.Builder()
+            .Name(nameof(CogTrue))
+            .Title("cog_true")
+            .Description("Course over ground (true) (yaw angle). 0.0..359.99 degrees")
+.Units(@"cdeg")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _cogTrue;
+        public ushort CogTrue { get => _cogTrue; set => _cogTrue = value; }
         /// <summary>
         /// Course over ground (magnetic) (yaw angle). 0.0..359.99 degrees
         /// OriginName: cog_mag, Units: cdeg, IsExtended: false
         /// </summary>
-        public ushort CogMag { get; set; }
+        public static readonly Field CogMagField = new Field.Builder()
+            .Name(nameof(CogMag))
+            .Title("cog_mag")
+            .Description("Course over ground (magnetic) (yaw angle). 0.0..359.99 degrees")
+.Units(@"cdeg")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _cogMag;
+        public ushort CogMag { get => _cogMag; set => _cogMag = value; }
         /// <summary>
         /// GNSS receiver type.
         /// OriginName: receiver_type, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaRttGnssType ReceiverType { get; set; }
+        public static readonly Field ReceiverTypeField = new Field.Builder()
+            .Name(nameof(ReceiverType))
+            .Title("receiver_type")
+            .Description("GNSS receiver type.")
+            .DataType(new UInt8Type(AsvRsgaRttGnssTypeHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRttGnssTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvRsgaRttGnssTypeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private AsvRsgaRttGnssType _receiverType;
+        public AsvRsgaRttGnssType ReceiverType { get => _receiverType; set => _receiverType = value; } 
         /// <summary>
         /// GNSS special flags.
         /// OriginName: gnss_flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaRttGnssFlags GnssFlags { get; set; }
+        public static readonly Field GnssFlagsField = new Field.Builder()
+            .Name(nameof(GnssFlags))
+            .Title("gnss_flags")
+            .Description("GNSS special flags.")
+            .DataType(new UInt8Type(AsvRsgaRttGnssFlagsHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRttGnssFlagsHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvRsgaRttGnssFlagsHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private AsvRsgaRttGnssFlags _gnssFlags;
+        public AsvRsgaRttGnssFlags GnssFlags { get => _gnssFlags; set => _gnssFlags = value; } 
         /// <summary>
         /// Number of satellites in view
         /// OriginName: sat_cnt, Units: , IsExtended: false
         /// </summary>
-        public byte SatCnt { get; set; }
+        public static readonly Field SatCntField = new Field.Builder()
+            .Name(nameof(SatCnt))
+            .Title("sat_cnt")
+            .Description("Number of satellites in view")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _satCnt;
+        public byte SatCnt { get => _satCnt; set => _satCnt = value; }
         /// <summary>
         /// GNSS fix type
         /// OriginName: fix_type, Units: , IsExtended: false
         /// </summary>
-        public GpsFixType FixType { get; set; }
+        public static readonly Field FixTypeField = new Field.Builder()
+            .Name(nameof(FixType))
+            .Title("fix_type")
+            .Description("GNSS fix type")
+            .DataType(new UInt8Type(GpsFixTypeHelper.GetValues(x=>(byte)x).Min(),GpsFixTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GpsFixTypeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private GpsFixType _fixType;
+        public GpsFixType FixType { get => _fixType; set => _fixType = value; } 
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_SPECTRUM mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1357,44 +1602,6 @@ false),
         public override AsvRsgaRttSpectrumPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_SPECTRUM";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_SPECTRUM:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -1406,14 +1613,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -1433,26 +1640,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_LLZ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1474,44 +1711,6 @@ false),
         public override AsvRsgaRttTxLlzPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_TX_LLZ";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_TX_LLZ:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -1523,14 +1722,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -1550,26 +1749,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_GP mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1591,44 +1820,6 @@ false),
         public override AsvRsgaRttTxGpPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_TX_GP";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_TX_GP:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -1640,14 +1831,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -1667,26 +1858,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_VOR mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1708,44 +1929,6 @@ false),
         public override AsvRsgaRttTxVorPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_TX_VOR";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_TX_VOR:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -1757,14 +1940,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -1784,26 +1967,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_MARKER mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1825,44 +2038,6 @@ false),
         public override AsvRsgaRttTxMarkerPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_TX_MARKER";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_TX_MARKER:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -1874,14 +2049,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -1901,26 +2076,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_DME_REP mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -1942,44 +2147,6 @@ false),
         public override AsvRsgaRttDmeRepPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_DME_REP";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_DME_REP:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -1991,14 +2158,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -2018,26 +2185,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_GBAS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -2059,44 +2256,6 @@ false),
         public override AsvRsgaRttTxGbasPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_TX_GBAS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_TX_GBAS:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -2108,14 +2267,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -2135,26 +2294,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_ADSB_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -2176,44 +2365,6 @@ false),
         public override AsvRsgaRttAdsbReqPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_ADSB_REQ";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_ADSB_REQ:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -2225,14 +2376,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -2252,26 +2403,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_GNSS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -2293,44 +2474,6 @@ false),
         public override AsvRsgaRttTxGnssPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_TX_GNSS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_TX_GNSS:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -2342,14 +2485,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -2369,26 +2512,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_DME_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -2410,244 +2583,6 @@ false),
         public override AsvRsgaRttDmeReqPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_DME_REQ";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("tx_freq",
-"TX frequency",
-string.Empty, 
-@"Hz", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("rx_freq",
-"RX frequency",
-string.Empty, 
-@"Hz", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("tx_power",
-"Output power",
-string.Empty, 
-@"dBm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("tx_gain",
-"Percent of total TX gain level (0.0 - 1.0)",
-string.Empty, 
-@"%", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("rx_power",
-"Receive power (peak)",
-string.Empty, 
-@"dBm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("rx_field_strength",
-"Receive power field strength.",
-string.Empty, 
-@"uV/m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("rx_signal_overflow",
-"Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).",
-string.Empty, 
-@"%", 
-string.Empty, 
-@"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("rx_gain",
-"Percent of total RX gain level (0.0 - 1.0)",
-string.Empty, 
-@"%", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("distance",
-"Measured distance",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("reply_efficiency",
-"Reply efficiency request\\response (between 0% - 100%)",
-string.Empty, 
-@"%", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("rx_freq_offset",
-"RX frequency offset",
-string.Empty, 
-@"Hz", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("pulse_shape_rise",
-"Pulse shape: rise time (\u22643 \u03BCs)",
-string.Empty, 
-@"ns", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("pulse_shape_duration",
-"Pulse shape: rise time (3.5 \u03BCs, \u00B10.5 \u03BCs)",
-string.Empty, 
-@"ns", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("pulse_shape_decay",
-"Pulse shape: rise time (\u22643.5 \u03BCs)",
-string.Empty, 
-@"ns", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("pulse_spacing",
-"Pulse spacing (X channel 12 \u00B10.25 us, Y channel: 30 \u00B10.25 us)",
-string.Empty, 
-@"ns", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("req_freq",
-"Number of our request",
-string.Empty, 
-@"pps", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("hip_freq",
-"Measured number of all replies, that was recognised as beacon HIP",
-string.Empty, 
-@"pps", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("measure_time",
-"Measure time.",
-string.Empty, 
-@"ms", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("pulse_shape_amplitude",
-"Pulse shape: amplitude (between 95% rise/fall amplitudes, \u226595% of maximum amplitude)",
-string.Empty, 
-@"%", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int8, 
-            0, 
-false),
-            new("code_id",
-"Code identification",
-string.Empty, 
-@"Letters", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            4, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_DME_REQ:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint64_t tx_freq;"
-        + "uint64_t rx_freq;"
-        + "uint32_t index;"
-        + "float tx_power;"
-        + "float tx_gain;"
-        + "float rx_power;"
-        + "float rx_field_strength;"
-        + "float rx_signal_overflow;"
-        + "float rx_gain;"
-        + "float distance;"
-        + "float reply_efficiency;"
-        + "int16_t rx_freq_offset;"
-        + "uint16_t pulse_shape_rise;"
-        + "uint16_t pulse_shape_duration;"
-        + "uint16_t pulse_shape_decay;"
-        + "uint16_t pulse_spacing;"
-        + "uint16_t req_freq;"
-        + "uint16_t hip_freq;"
-        + "int16_t measure_time;"
-        + "int8_t pulse_shape_amplitude;"
-        + "char[4] code_id;"
-        ;
     }
 
     /// <summary>
@@ -2659,34 +2594,34 @@ false),
         public byte GetMaxByteSize() => 89; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 89; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=8; //TxFreq
-            sum+=8; //RxFreq
-            sum+=4; //Index
-            sum+=4; //TxPower
-            sum+=4; //TxGain
-            sum+=4; //RxPower
-            sum+=4; //RxFieldStrength
-            sum+=4; //RxSignalOverflow
-            sum+=4; //RxGain
-            sum+=4; //Distance
-            sum+=4; //ReplyEfficiency
-            sum+=2; //RxFreqOffset
-            sum+=2; //PulseShapeRise
-            sum+=2; //PulseShapeDuration
-            sum+=2; //PulseShapeDecay
-            sum+=2; //PulseSpacing
-            sum+=2; //ReqFreq
-            sum+=2; //HipFreq
-            sum+=2; //MeasureTime
-            sum+=1; //PulseShapeAmplitude
-            sum+=CodeId.Length; //CodeId
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +8 // uint64_t tx_freq
+            +8 // uint64_t rx_freq
+            +4 // uint32_t index
+            +4 // float tx_power
+            +4 // float tx_gain
+            +4 // float rx_power
+            +4 // float rx_field_strength
+            +4 // float rx_signal_overflow
+            +4 // float rx_gain
+            +4 // float distance
+            +4 // float reply_efficiency
+            +2 // int16_t rx_freq_offset
+            +2 // uint16_t pulse_shape_rise
+            +2 // uint16_t pulse_shape_duration
+            +2 // uint16_t pulse_shape_decay
+            +2 // uint16_t pulse_spacing
+            +2 // uint16_t req_freq
+            +2 // uint16_t hip_freq
+            +2 // int16_t measure_time
+            +1 // int8_t pulse_shape_amplitude
+            +CodeId.Length // char[4] code_id
+            );
         }
 
 
@@ -2718,7 +2653,7 @@ false),
             MeasureTime = BinSerialize.ReadShort(ref buffer);
             PulseShapeAmplitude = (sbyte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/89 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            CodeId = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -2727,7 +2662,7 @@ false),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, CodeId.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
 
         }
@@ -2768,127 +2703,337 @@ false),
             
             /* PayloadByteSize = 89 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt64Type.Accept(visitor,TxFreqField, TxFreqField.DataType, ref _txFreq);    
+            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            FloatType.Accept(visitor,TxPowerField, TxPowerField.DataType, ref _txPower);    
+            FloatType.Accept(visitor,TxGainField, TxGainField.DataType, ref _txGain);    
+            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
+            FloatType.Accept(visitor,DistanceField, DistanceField.DataType, ref _distance);    
+            FloatType.Accept(visitor,ReplyEfficiencyField, ReplyEfficiencyField.DataType, ref _replyEfficiency);    
+            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
+            UInt16Type.Accept(visitor,PulseShapeRiseField, PulseShapeRiseField.DataType, ref _pulseShapeRise);    
+            UInt16Type.Accept(visitor,PulseShapeDurationField, PulseShapeDurationField.DataType, ref _pulseShapeDuration);    
+            UInt16Type.Accept(visitor,PulseShapeDecayField, PulseShapeDecayField.DataType, ref _pulseShapeDecay);    
+            UInt16Type.Accept(visitor,PulseSpacingField, PulseSpacingField.DataType, ref _pulseSpacing);    
+            UInt16Type.Accept(visitor,ReqFreqField, ReqFreqField.DataType, ref _reqFreq);    
+            UInt16Type.Accept(visitor,HipFreqField, HipFreqField.DataType, ref _hipFreq);    
+            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
+            Int8Type.Accept(visitor,PulseShapeAmplitudeField, PulseShapeAmplitudeField.DataType, ref _pulseShapeAmplitude);                
+            ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// TX frequency
         /// OriginName: tx_freq, Units: Hz, IsExtended: false
         /// </summary>
-        public ulong TxFreq { get; set; }
+        public static readonly Field TxFreqField = new Field.Builder()
+            .Name(nameof(TxFreq))
+            .Title("tx_freq")
+            .Description("TX frequency")
+.Units(@"Hz")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _txFreq;
+        public ulong TxFreq { get => _txFreq; set => _txFreq = value; }
         /// <summary>
         /// RX frequency
         /// OriginName: rx_freq, Units: Hz, IsExtended: false
         /// </summary>
-        public ulong RxFreq { get; set; }
+        public static readonly Field RxFreqField = new Field.Builder()
+            .Name(nameof(RxFreq))
+            .Title("rx_freq")
+            .Description("RX frequency")
+.Units(@"Hz")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _rxFreq;
+        public ulong RxFreq { get => _rxFreq; set => _rxFreq = value; }
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
         /// <summary>
         /// Output power
         /// OriginName: tx_power, Units: dBm, IsExtended: false
         /// </summary>
-        public float TxPower { get; set; }
+        public static readonly Field TxPowerField = new Field.Builder()
+            .Name(nameof(TxPower))
+            .Title("tx_power")
+            .Description("Output power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _txPower;
+        public float TxPower { get => _txPower; set => _txPower = value; }
         /// <summary>
         /// Percent of total TX gain level (0.0 - 1.0)
         /// OriginName: tx_gain, Units: %, IsExtended: false
         /// </summary>
-        public float TxGain { get; set; }
+        public static readonly Field TxGainField = new Field.Builder()
+            .Name(nameof(TxGain))
+            .Title("tx_gain")
+            .Description("Percent of total TX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _txGain;
+        public float TxGain { get => _txGain; set => _txGain = value; }
         /// <summary>
         /// Receive power (peak)
         /// OriginName: rx_power, Units: dBm, IsExtended: false
         /// </summary>
-        public float RxPower { get; set; }
+        public static readonly Field RxPowerField = new Field.Builder()
+            .Name(nameof(RxPower))
+            .Title("rx_power")
+            .Description("Receive power (peak)")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxPower;
+        public float RxPower { get => _rxPower; set => _rxPower = value; }
         /// <summary>
         /// Receive power field strength.
         /// OriginName: rx_field_strength, Units: uV/m, IsExtended: false
         /// </summary>
-        public float RxFieldStrength { get; set; }
+        public static readonly Field RxFieldStrengthField = new Field.Builder()
+            .Name(nameof(RxFieldStrength))
+            .Title("rx_field_strength")
+            .Description("Receive power field strength.")
+.Units(@"uV/m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxFieldStrength;
+        public float RxFieldStrength { get => _rxFieldStrength; set => _rxFieldStrength = value; }
         /// <summary>
         /// Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong).
         /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
         /// </summary>
-        public float RxSignalOverflow { get; set; }
+        public static readonly Field RxSignalOverflowField = new Field.Builder()
+            .Name(nameof(RxSignalOverflow))
+            .Title("rx_signal_overflow")
+            .Description("Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxSignalOverflow;
+        public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
         /// <summary>
         /// Percent of total RX gain level (0.0 - 1.0)
         /// OriginName: rx_gain, Units: %, IsExtended: false
         /// </summary>
-        public float RxGain { get; set; }
+        public static readonly Field RxGainField = new Field.Builder()
+            .Name(nameof(RxGain))
+            .Title("rx_gain")
+            .Description("Percent of total RX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxGain;
+        public float RxGain { get => _rxGain; set => _rxGain = value; }
         /// <summary>
         /// Measured distance
         /// OriginName: distance, Units: m, IsExtended: false
         /// </summary>
-        public float Distance { get; set; }
+        public static readonly Field DistanceField = new Field.Builder()
+            .Name(nameof(Distance))
+            .Title("distance")
+            .Description("Measured distance")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _distance;
+        public float Distance { get => _distance; set => _distance = value; }
         /// <summary>
         /// Reply efficiency request\response (between 0% - 100%)
         /// OriginName: reply_efficiency, Units: %, IsExtended: false
         /// </summary>
-        public float ReplyEfficiency { get; set; }
+        public static readonly Field ReplyEfficiencyField = new Field.Builder()
+            .Name(nameof(ReplyEfficiency))
+            .Title("reply_efficiency")
+            .Description("Reply efficiency request\\response (between 0% - 100%)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyEfficiency;
+        public float ReplyEfficiency { get => _replyEfficiency; set => _replyEfficiency = value; }
         /// <summary>
         /// RX frequency offset
         /// OriginName: rx_freq_offset, Units: Hz, IsExtended: false
         /// </summary>
-        public short RxFreqOffset { get; set; }
+        public static readonly Field RxFreqOffsetField = new Field.Builder()
+            .Name(nameof(RxFreqOffset))
+            .Title("rx_freq_offset")
+            .Description("RX frequency offset")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _rxFreqOffset;
+        public short RxFreqOffset { get => _rxFreqOffset; set => _rxFreqOffset = value; }
         /// <summary>
         /// Pulse shape: rise time (≤3 μs)
         /// OriginName: pulse_shape_rise, Units: ns, IsExtended: false
         /// </summary>
-        public ushort PulseShapeRise { get; set; }
+        public static readonly Field PulseShapeRiseField = new Field.Builder()
+            .Name(nameof(PulseShapeRise))
+            .Title("pulse_shape_rise")
+            .Description("Pulse shape: rise time (\u22643 \u03BCs)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeRise;
+        public ushort PulseShapeRise { get => _pulseShapeRise; set => _pulseShapeRise = value; }
         /// <summary>
         /// Pulse shape: rise time (3.5 μs, ±0.5 μs)
         /// OriginName: pulse_shape_duration, Units: ns, IsExtended: false
         /// </summary>
-        public ushort PulseShapeDuration { get; set; }
+        public static readonly Field PulseShapeDurationField = new Field.Builder()
+            .Name(nameof(PulseShapeDuration))
+            .Title("pulse_shape_duration")
+            .Description("Pulse shape: rise time (3.5 \u03BCs, \u00B10.5 \u03BCs)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeDuration;
+        public ushort PulseShapeDuration { get => _pulseShapeDuration; set => _pulseShapeDuration = value; }
         /// <summary>
         /// Pulse shape: rise time (≤3.5 μs)
         /// OriginName: pulse_shape_decay, Units: ns, IsExtended: false
         /// </summary>
-        public ushort PulseShapeDecay { get; set; }
+        public static readonly Field PulseShapeDecayField = new Field.Builder()
+            .Name(nameof(PulseShapeDecay))
+            .Title("pulse_shape_decay")
+            .Description("Pulse shape: rise time (\u22643.5 \u03BCs)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeDecay;
+        public ushort PulseShapeDecay { get => _pulseShapeDecay; set => _pulseShapeDecay = value; }
         /// <summary>
         /// Pulse spacing (X channel 12 ±0.25 us, Y channel: 30 ±0.25 us)
         /// OriginName: pulse_spacing, Units: ns, IsExtended: false
         /// </summary>
-        public ushort PulseSpacing { get; set; }
+        public static readonly Field PulseSpacingField = new Field.Builder()
+            .Name(nameof(PulseSpacing))
+            .Title("pulse_spacing")
+            .Description("Pulse spacing (X channel 12 \u00B10.25 us, Y channel: 30 \u00B10.25 us)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseSpacing;
+        public ushort PulseSpacing { get => _pulseSpacing; set => _pulseSpacing = value; }
         /// <summary>
         /// Number of our request
         /// OriginName: req_freq, Units: pps, IsExtended: false
         /// </summary>
-        public ushort ReqFreq { get; set; }
+        public static readonly Field ReqFreqField = new Field.Builder()
+            .Name(nameof(ReqFreq))
+            .Title("req_freq")
+            .Description("Number of our request")
+.Units(@"pps")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _reqFreq;
+        public ushort ReqFreq { get => _reqFreq; set => _reqFreq = value; }
         /// <summary>
         /// Measured number of all replies, that was recognised as beacon HIP
         /// OriginName: hip_freq, Units: pps, IsExtended: false
         /// </summary>
-        public ushort HipFreq { get; set; }
+        public static readonly Field HipFreqField = new Field.Builder()
+            .Name(nameof(HipFreq))
+            .Title("hip_freq")
+            .Description("Measured number of all replies, that was recognised as beacon HIP")
+.Units(@"pps")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _hipFreq;
+        public ushort HipFreq { get => _hipFreq; set => _hipFreq = value; }
         /// <summary>
         /// Measure time.
         /// OriginName: measure_time, Units: ms, IsExtended: false
         /// </summary>
-        public short MeasureTime { get; set; }
+        public static readonly Field MeasureTimeField = new Field.Builder()
+            .Name(nameof(MeasureTime))
+            .Title("measure_time")
+            .Description("Measure time.")
+.Units(@"ms")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _measureTime;
+        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
         /// <summary>
         /// Pulse shape: amplitude (between 95% rise/fall amplitudes, ≥95% of maximum amplitude)
         /// OriginName: pulse_shape_amplitude, Units: %, IsExtended: false
         /// </summary>
-        public sbyte PulseShapeAmplitude { get; set; }
+        public static readonly Field PulseShapeAmplitudeField = new Field.Builder()
+            .Name(nameof(PulseShapeAmplitude))
+            .Title("pulse_shape_amplitude")
+            .Description("Pulse shape: amplitude (between 95% rise/fall amplitudes, \u226595% of maximum amplitude)")
+.Units(@"%")
+            .DataType(Int8Type.Default)
+        .Build();
+        private sbyte _pulseShapeAmplitude;
+        public sbyte PulseShapeAmplitude { get => _pulseShapeAmplitude; set => _pulseShapeAmplitude = value; }
         /// <summary>
         /// Code identification
         /// OriginName: code_id, Units: Letters, IsExtended: false
         /// </summary>
+        public static readonly Field CodeIdField = new Field.Builder()
+            .Name(nameof(CodeId))
+            .Title("code_id")
+            .Description("Code identification")
+.Units(@"Letters")
+            .DataType(new ArrayType(CharType.Ascii,4))
+        .Build();
         public const int CodeIdMaxItemsCount = 4;
-        public char[] CodeId { get; set; } = new char[4];
+        public char[] CodeId { get; } = new char[4];
         [Obsolete("This method is deprecated. Use GetCodeIdMaxItemsCount instead.")]
         public byte GetCodeIdMaxItemsCount() => 4;
     }
@@ -2912,44 +3057,6 @@ false),
         public override AsvRsgaRttRxLlzPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_RX_LLZ";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_RX_LLZ:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -2961,14 +3068,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -2988,26 +3095,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_GP mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -3029,44 +3166,6 @@ false),
         public override AsvRsgaRttRxGpPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_RX_GP";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_RX_GP:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -3078,14 +3177,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -3105,26 +3204,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_VOR mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -3146,44 +3275,6 @@ false),
         public override AsvRsgaRttRxVorPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_RX_VOR";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_RX_VOR:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -3195,14 +3286,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -3222,26 +3313,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_MARKER mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -3263,44 +3384,6 @@ false),
         public override AsvRsgaRttRxMarkerPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_RX_MARKER";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_RX_MARKER:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -3312,14 +3395,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -3339,26 +3422,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_GBAS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -3380,44 +3493,6 @@ false),
         public override AsvRsgaRttRxGbasPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_RX_GBAS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_RX_GBAS:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -3429,14 +3504,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -3456,26 +3531,56 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_ADSB_REP mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -3497,214 +3602,6 @@ false),
         public override AsvRsgaRttAdsbRepPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_ADSB_REP";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("tx_freq",
-"TX frequency",
-string.Empty, 
-@"Hz", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("rx_freq",
-"RX frequency",
-string.Empty, 
-@"Hz", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("tx_power",
-"Output power",
-string.Empty, 
-@"dBm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("tx_gain",
-"Percent of total TX gain level (0.0 - 1.0)",
-string.Empty, 
-@"%", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("rx_power",
-"Receive power (peak)",
-string.Empty, 
-@"dBm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("rx_field_strength",
-"Receive power field strength.",
-string.Empty, 
-@"uV/m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("rx_signal_overflow",
-"Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).",
-string.Empty, 
-@"%", 
-string.Empty, 
-@"NaN", 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("rx_gain",
-"Percent of total RX gain level (0.0 - 1.0)",
-string.Empty, 
-@"%", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("icao_address",
-"Vehicle ICAO address (24 bit)",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("uf_counter_flag",
-"UF counters present flag ",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("df_counter_present",
-"UF counters present ",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("rx_freq_offset",
-"RX frequency offset",
-string.Empty, 
-@"Hz", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("ref_id",
-"GNSS reference station ID (used when GNSS is received from multiple sources).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("squawk",
-"Mode A code (typically 1200 [0x04B0] for VFR)",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("call_sign",
-"Vehicle identifier (8 characters, valid characters are A-Z, 0-9, \" \" only)",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            8, 
-false),
-            new("uf_counter",
-"UF incremental counters for every 25 message ",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            25, 
-false),
-            new("df_counter",
-"DF incremental counters for every 25 message ",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            25, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_ADSB_REP:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint64_t tx_freq;"
-        + "uint64_t rx_freq;"
-        + "uint32_t index;"
-        + "float tx_power;"
-        + "float tx_gain;"
-        + "float rx_power;"
-        + "float rx_field_strength;"
-        + "float rx_signal_overflow;"
-        + "float rx_gain;"
-        + "uint32_t icao_address;"
-        + "uint32_t uf_counter_flag;"
-        + "uint32_t df_counter_present;"
-        + "int16_t rx_freq_offset;"
-        + "uint16_t ref_id;"
-        + "uint16_t squawk;"
-        + "char[8] call_sign;"
-        + "uint8_t[25] uf_counter;"
-        + "uint8_t[25] df_counter;"
-        ;
     }
 
     /// <summary>
@@ -3716,31 +3613,31 @@ false),
         public byte GetMaxByteSize() => 136; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 136; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=8; //TxFreq
-            sum+=8; //RxFreq
-            sum+=4; //Index
-            sum+=4; //TxPower
-            sum+=4; //TxGain
-            sum+=4; //RxPower
-            sum+=4; //RxFieldStrength
-            sum+=4; //RxSignalOverflow
-            sum+=4; //RxGain
-            sum+=4; //IcaoAddress
-            sum+= 4; // UfCounterFlag
-            sum+= 4; // DfCounterPresent
-            sum+=2; //RxFreqOffset
-            sum+=2; //RefId
-            sum+=2; //Squawk
-            sum+=CallSign.Length; //CallSign
-            sum+=UfCounter.Length; //UfCounter
-            sum+=DfCounter.Length; //DfCounter
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +8 // uint64_t tx_freq
+            +8 // uint64_t rx_freq
+            +4 // uint32_t index
+            +4 // float tx_power
+            +4 // float tx_gain
+            +4 // float rx_power
+            +4 // float rx_field_strength
+            +4 // float rx_signal_overflow
+            +4 // float rx_gain
+            +4 // uint32_t icao_address
+            + 4 // uint32_t uf_counter_flag
+            + 4 // uint32_t df_counter_present
+            +2 // int16_t rx_freq_offset
+            +2 // uint16_t ref_id
+            +2 // uint16_t squawk
+            +CallSign.Length // char[8] call_sign
+            +UfCounter.Length // uint8_t[25] uf_counter
+            +DfCounter.Length // uint8_t[25] df_counter
+            );
         }
 
 
@@ -3775,10 +3672,10 @@ false),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, CallSign.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             arraySize = /*ArrayLength*/25 - Math.Max(0,((/*PayloadByteSize*/136 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            UfCounter = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 UfCounter[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -3830,114 +3727,301 @@ false),
             }
             /* PayloadByteSize = 136 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt64Type.Accept(visitor,TxFreqField, TxFreqField.DataType, ref _txFreq);    
+            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            FloatType.Accept(visitor,TxPowerField, TxPowerField.DataType, ref _txPower);    
+            FloatType.Accept(visitor,TxGainField, TxGainField.DataType, ref _txGain);    
+            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
+            UInt32Type.Accept(visitor,IcaoAddressField, IcaoAddressField.DataType, ref _icaoAddress);    
+            var tmpUfCounterFlag = (uint)UfCounterFlag;
+            UInt32Type.Accept(visitor,UfCounterFlagField, UfCounterFlagField.DataType, ref tmpUfCounterFlag);
+            UfCounterFlag = (AsvRsgaRttAdsbMsgUf)tmpUfCounterFlag;
+            var tmpDfCounterPresent = (uint)DfCounterPresent;
+            UInt32Type.Accept(visitor,DfCounterPresentField, DfCounterPresentField.DataType, ref tmpDfCounterPresent);
+            DfCounterPresent = (AsvRsgaRttAdsbMsgDf)tmpDfCounterPresent;
+            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
+            UInt16Type.Accept(visitor,RefIdField, RefIdField.DataType, ref _refId);    
+            UInt16Type.Accept(visitor,SquawkField, SquawkField.DataType, ref _squawk);    
+            ArrayType.Accept(visitor,CallSignField, CallSignField.DataType, 8, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref CallSign[index]));
+            ArrayType.Accept(visitor,UfCounterField, UfCounterField.DataType, 25,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref UfCounter[index]));    
+            ArrayType.Accept(visitor,DfCounterField, DfCounterField.DataType, 25,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref DfCounter[index]));    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// TX frequency
         /// OriginName: tx_freq, Units: Hz, IsExtended: false
         /// </summary>
-        public ulong TxFreq { get; set; }
+        public static readonly Field TxFreqField = new Field.Builder()
+            .Name(nameof(TxFreq))
+            .Title("tx_freq")
+            .Description("TX frequency")
+.Units(@"Hz")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _txFreq;
+        public ulong TxFreq { get => _txFreq; set => _txFreq = value; }
         /// <summary>
         /// RX frequency
         /// OriginName: rx_freq, Units: Hz, IsExtended: false
         /// </summary>
-        public ulong RxFreq { get; set; }
+        public static readonly Field RxFreqField = new Field.Builder()
+            .Name(nameof(RxFreq))
+            .Title("rx_freq")
+            .Description("RX frequency")
+.Units(@"Hz")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _rxFreq;
+        public ulong RxFreq { get => _rxFreq; set => _rxFreq = value; }
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
         /// <summary>
         /// Output power
         /// OriginName: tx_power, Units: dBm, IsExtended: false
         /// </summary>
-        public float TxPower { get; set; }
+        public static readonly Field TxPowerField = new Field.Builder()
+            .Name(nameof(TxPower))
+            .Title("tx_power")
+            .Description("Output power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _txPower;
+        public float TxPower { get => _txPower; set => _txPower = value; }
         /// <summary>
         /// Percent of total TX gain level (0.0 - 1.0)
         /// OriginName: tx_gain, Units: %, IsExtended: false
         /// </summary>
-        public float TxGain { get; set; }
+        public static readonly Field TxGainField = new Field.Builder()
+            .Name(nameof(TxGain))
+            .Title("tx_gain")
+            .Description("Percent of total TX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _txGain;
+        public float TxGain { get => _txGain; set => _txGain = value; }
         /// <summary>
         /// Receive power (peak)
         /// OriginName: rx_power, Units: dBm, IsExtended: false
         /// </summary>
-        public float RxPower { get; set; }
+        public static readonly Field RxPowerField = new Field.Builder()
+            .Name(nameof(RxPower))
+            .Title("rx_power")
+            .Description("Receive power (peak)")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxPower;
+        public float RxPower { get => _rxPower; set => _rxPower = value; }
         /// <summary>
         /// Receive power field strength.
         /// OriginName: rx_field_strength, Units: uV/m, IsExtended: false
         /// </summary>
-        public float RxFieldStrength { get; set; }
+        public static readonly Field RxFieldStrengthField = new Field.Builder()
+            .Name(nameof(RxFieldStrength))
+            .Title("rx_field_strength")
+            .Description("Receive power field strength.")
+.Units(@"uV/m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxFieldStrength;
+        public float RxFieldStrength { get => _rxFieldStrength; set => _rxFieldStrength = value; }
         /// <summary>
         /// Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong).
         /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
         /// </summary>
-        public float RxSignalOverflow { get; set; }
+        public static readonly Field RxSignalOverflowField = new Field.Builder()
+            .Name(nameof(RxSignalOverflow))
+            .Title("rx_signal_overflow")
+            .Description("Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxSignalOverflow;
+        public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
         /// <summary>
         /// Percent of total RX gain level (0.0 - 1.0)
         /// OriginName: rx_gain, Units: %, IsExtended: false
         /// </summary>
-        public float RxGain { get; set; }
+        public static readonly Field RxGainField = new Field.Builder()
+            .Name(nameof(RxGain))
+            .Title("rx_gain")
+            .Description("Percent of total RX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxGain;
+        public float RxGain { get => _rxGain; set => _rxGain = value; }
         /// <summary>
         /// Vehicle ICAO address (24 bit)
         /// OriginName: icao_address, Units: , IsExtended: false
         /// </summary>
-        public uint IcaoAddress { get; set; }
+        public static readonly Field IcaoAddressField = new Field.Builder()
+            .Name(nameof(IcaoAddress))
+            .Title("icao_address")
+            .Description("Vehicle ICAO address (24 bit)")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _icaoAddress;
+        public uint IcaoAddress { get => _icaoAddress; set => _icaoAddress = value; }
         /// <summary>
         /// UF counters present flag 
         /// OriginName: uf_counter_flag, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaRttAdsbMsgUf UfCounterFlag { get; set; }
+        public static readonly Field UfCounterFlagField = new Field.Builder()
+            .Name(nameof(UfCounterFlag))
+            .Title("uf_counter_flag")
+            .Description("UF counters present flag ")
+            .DataType(new UInt32Type(AsvRsgaRttAdsbMsgUfHelper.GetValues(x=>(uint)x).Min(),AsvRsgaRttAdsbMsgUfHelper.GetValues(x=>(uint)x).Max()))
+            .Enum(AsvRsgaRttAdsbMsgUfHelper.GetEnumValues(x=>(uint)x))
+            .Build();
+        private AsvRsgaRttAdsbMsgUf _ufCounterFlag;
+        public AsvRsgaRttAdsbMsgUf UfCounterFlag { get => _ufCounterFlag; set => _ufCounterFlag = value; } 
         /// <summary>
         /// UF counters present 
         /// OriginName: df_counter_present, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaRttAdsbMsgDf DfCounterPresent { get; set; }
+        public static readonly Field DfCounterPresentField = new Field.Builder()
+            .Name(nameof(DfCounterPresent))
+            .Title("df_counter_present")
+            .Description("UF counters present ")
+            .DataType(new UInt32Type(AsvRsgaRttAdsbMsgDfHelper.GetValues(x=>(uint)x).Min(),AsvRsgaRttAdsbMsgDfHelper.GetValues(x=>(uint)x).Max()))
+            .Enum(AsvRsgaRttAdsbMsgDfHelper.GetEnumValues(x=>(uint)x))
+            .Build();
+        private AsvRsgaRttAdsbMsgDf _dfCounterPresent;
+        public AsvRsgaRttAdsbMsgDf DfCounterPresent { get => _dfCounterPresent; set => _dfCounterPresent = value; } 
         /// <summary>
         /// RX frequency offset
         /// OriginName: rx_freq_offset, Units: Hz, IsExtended: false
         /// </summary>
-        public short RxFreqOffset { get; set; }
+        public static readonly Field RxFreqOffsetField = new Field.Builder()
+            .Name(nameof(RxFreqOffset))
+            .Title("rx_freq_offset")
+            .Description("RX frequency offset")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _rxFreqOffset;
+        public short RxFreqOffset { get => _rxFreqOffset; set => _rxFreqOffset = value; }
         /// <summary>
         /// GNSS reference station ID (used when GNSS is received from multiple sources).
         /// OriginName: ref_id, Units: , IsExtended: false
         /// </summary>
-        public ushort RefId { get; set; }
+        public static readonly Field RefIdField = new Field.Builder()
+            .Name(nameof(RefId))
+            .Title("ref_id")
+            .Description("GNSS reference station ID (used when GNSS is received from multiple sources).")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _refId;
+        public ushort RefId { get => _refId; set => _refId = value; }
         /// <summary>
         /// Mode A code (typically 1200 [0x04B0] for VFR)
         /// OriginName: squawk, Units: , IsExtended: false
         /// </summary>
-        public ushort Squawk { get; set; }
+        public static readonly Field SquawkField = new Field.Builder()
+            .Name(nameof(Squawk))
+            .Title("squawk")
+            .Description("Mode A code (typically 1200 [0x04B0] for VFR)")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _squawk;
+        public ushort Squawk { get => _squawk; set => _squawk = value; }
         /// <summary>
         /// Vehicle identifier (8 characters, valid characters are A-Z, 0-9, " " only)
         /// OriginName: call_sign, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CallSignField = new Field.Builder()
+            .Name(nameof(CallSign))
+            .Title("call_sign")
+            .Description("Vehicle identifier (8 characters, valid characters are A-Z, 0-9, \" \" only)")
+
+            .DataType(new ArrayType(CharType.Ascii,8))
+        .Build();
         public const int CallSignMaxItemsCount = 8;
         public char[] CallSign { get; } = new char[8];
         /// <summary>
         /// UF incremental counters for every 25 message 
         /// OriginName: uf_counter, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field UfCounterField = new Field.Builder()
+            .Name(nameof(UfCounter))
+            .Title("uf_counter")
+            .Description("UF incremental counters for every 25 message ")
+
+            .DataType(new ArrayType(UInt8Type.Default,25))
+        .Build();
         public const int UfCounterMaxItemsCount = 25;
-        public byte[] UfCounter { get; set; } = new byte[25];
+        public byte[] UfCounter { get; } = new byte[25];
         [Obsolete("This method is deprecated. Use GetUfCounterMaxItemsCount instead.")]
         public byte GetUfCounterMaxItemsCount() => 25;
         /// <summary>
         /// DF incremental counters for every 25 message 
         /// OriginName: df_counter, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DfCounterField = new Field.Builder()
+            .Name(nameof(DfCounter))
+            .Title("df_counter")
+            .Description("DF incremental counters for every 25 message ")
+
+            .DataType(new ArrayType(UInt8Type.Default,25))
+        .Build();
         public const int DfCounterMaxItemsCount = 25;
         public byte[] DfCounter { get; } = new byte[25];
     }
@@ -3961,44 +4045,6 @@ false),
         public override AsvRsgaRttRxGnssPayload Payload { get; } = new();
 
         public override string Name => "ASV_RSGA_RTT_RX_GNSS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_unix_usec",
-"Timestamp (UNIX epoch time).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("flags",
-"Data flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("index",
-"Data index in record",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ASV_RSGA_RTT_RX_GNSS:"
-        + "uint64_t time_unix_usec;"
-        + "uint64_t flags;"
-        + "uint32_t index;"
-        ;
     }
 
     /// <summary>
@@ -4010,14 +4056,14 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUnixUsec
-            sum+= 8; // Flags
-            sum+=4; //Index
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
         }
 
 
@@ -4037,27 +4083,62 @@ false),
             BinSerialize.WriteUInt(ref buffer,Index);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
 
+        }
 
         /// <summary>
         /// Timestamp (UNIX epoch time).
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUnixUsec { get; set; }
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
         /// <summary>
         /// Data flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public AsvRsgaDataFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
-        public uint Index { get; set; }
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
     }
+
+
+
+
+        
 
 
 #endregion

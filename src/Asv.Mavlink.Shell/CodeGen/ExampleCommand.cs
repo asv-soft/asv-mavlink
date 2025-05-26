@@ -11,7 +11,7 @@ namespace Asv.Mavlink.Shell
         private const string BaseDirectory = "in";
         private const string CommonFileName = "common.xml";
         private const string StandardFileName = "standard.xml";
-        private const string CsharpFileName = "csharp.tpl";
+        private const string CsharpFileName = "csharp.liquid";
         private const string GenerateFileName = "generate.bat";
         private const string ReadmeFileName = "README.md";
 

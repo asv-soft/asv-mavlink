@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -29,6 +29,9 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.All
@@ -39,6 +42,7 @@ namespace Asv.Mavlink.All
         public static void RegisterAllDialect(this ImmutableDictionary<int,Func<MavlinkMessage>>.Builder src)
         {
         }
+ 
     }
 
 #region Enums
@@ -48,6 +52,11 @@ namespace Asv.Mavlink.All
 
 #region Messages
 
+
+
+
+
+        
 
 
 #endregion

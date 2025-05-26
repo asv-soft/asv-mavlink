@@ -60,14 +60,11 @@ public class MavlinkV2WrapFeature(IProtocolMessageFactory<MavlinkMessage, int>? 
                 TargetComponent = 0,
                 TargetSystem = 0,
                 TargetNetwork = 0,
-                MessageType = V2ExtensionMessageId
+                MessageType = V2ExtensionMessageId,
             },
             Tags = message.Tags
         };
         var size = message.Serialize(wrappedPacket.Payload.Payload);
-        var arr = wrappedPacket.Payload.Payload;
-        Array.Resize(ref arr, size);
-        wrappedPacket.Payload.Payload = arr;
         return ValueTask.FromResult<IProtocolMessage?>(wrappedPacket);
 
     }

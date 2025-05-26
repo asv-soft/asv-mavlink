@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -29,6 +29,9 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.PythonArrayTest
@@ -47,6 +50,7 @@ namespace Asv.Mavlink.PythonArrayTest
             src.Add(ArrayTest7Packet.MessageId, ()=>new ArrayTest7Packet());
             src.Add(ArrayTest8Packet.MessageId, ()=>new ArrayTest8Packet());
         }
+ 
     }
 
 #region Enums
@@ -76,64 +80,6 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest0Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_0";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            4, 
-false),
-            new("ar_u16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("v1",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("ar_i8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int8, 
-            4, 
-false),
-            new("ar_u8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            4, 
-false),
-        ];
-        public const string FormatMessage = "ARRAY_TEST_0:"
-        + "uint32_t[4] ar_u32;"
-        + "uint16_t[4] ar_u16;"
-        + "uint8_t v1;"
-        + "int8_t[4] ar_i8;"
-        + "uint8_t[4] ar_u8;"
-        ;
     }
 
     /// <summary>
@@ -145,16 +91,16 @@ false),
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArU32.Length * 4; //ArU32
-            sum+=ArU16.Length * 2; //ArU16
-            sum+=1; //V1
-            sum+=ArI8.Length; //ArI8
-            sum+=ArU8.Length; //ArU8
-            return (byte)sum;
+            return (byte)(
+            +ArU32.Length * 4 // uint32_t[4] ar_u32
+            +ArU16.Length * 2 // uint16_t[4] ar_u16
+            +1 // uint8_t v1
+            +ArI8.Length // int8_t[4] ar_i8
+            +ArU8.Length // uint8_t[4] ar_u8
+            );
         }
 
 
@@ -164,7 +110,7 @@ false),
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/33 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            ArU32 = new uint[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 ArU32[i] = BinSerialize.ReadUInt(ref buffer);
@@ -209,40 +155,86 @@ false),
             }
             /* PayloadByteSize = 33 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 4,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
+            ArrayType.Accept(visitor,ArU16Field, ArU16Field.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref ArU16[index]));    
+            UInt8Type.Accept(visitor,V1Field, V1Field.DataType, ref _v1);    
+            ArrayType.Accept(visitor,ArI8Field, ArI8Field.DataType, 4, 
+                (index, v, f, t) => Int8Type.Accept(v, f, t, ref ArI8[index]));
+            ArrayType.Accept(visitor,ArU8Field, ArU8Field.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref ArU8[index]));    
 
+        }
 
         /// <summary>
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU32Field = new Field.Builder()
+            .Name(nameof(ArU32))
+            .Title("ar_u32")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt32Type.Default,4))        
+        .Build();
         public const int ArU32MaxItemsCount = 4;
-        public uint[] ArU32 { get; set; } = new uint[4];
+        public uint[] ArU32 { get; } = new uint[4];
         [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
         public byte GetArU32MaxItemsCount() => 4;
         /// <summary>
         /// Value array
         /// OriginName: ar_u16, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU16Field = new Field.Builder()
+            .Name(nameof(ArU16))
+            .Title("ar_u16")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int ArU16MaxItemsCount = 4;
         public ushort[] ArU16 { get; } = new ushort[4];
         /// <summary>
         /// Stub field
         /// OriginName: v1, Units: , IsExtended: false
         /// </summary>
-        public byte V1 { get; set; }
+        public static readonly Field V1Field = new Field.Builder()
+            .Name(nameof(V1))
+            .Title("v1")
+            .Description("Stub field")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _v1;
+        public byte V1 { get => _v1; set => _v1 = value; }
         /// <summary>
         /// Value array
         /// OriginName: ar_i8, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArI8Field = new Field.Builder()
+            .Name(nameof(ArI8))
+            .Title("ar_i8")
+            .Description("Value array")
+
+            .DataType(new ArrayType(Int8Type.Default,4))
+        .Build();
         public const int ArI8MaxItemsCount = 4;
         public sbyte[] ArI8 { get; } = new sbyte[4];
         /// <summary>
         /// Value array
         /// OriginName: ar_u8, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU8Field = new Field.Builder()
+            .Name(nameof(ArU8))
+            .Title("ar_u8")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt8Type.Default,4))
+        .Build();
         public const int ArU8MaxItemsCount = 4;
         public byte[] ArU8 { get; } = new byte[4];
     }
@@ -266,24 +258,6 @@ false),
         public override ArrayTest1Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_1";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            4, 
-false),
-        ];
-        public const string FormatMessage = "ARRAY_TEST_1:"
-        + "uint32_t[4] ar_u32;"
-        ;
     }
 
     /// <summary>
@@ -295,12 +269,12 @@ false),
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArU32.Length * 4; //ArU32
-            return (byte)sum;
+            return (byte)(
+            +ArU32.Length * 4 // uint32_t[4] ar_u32
+            );
         }
 
 
@@ -310,7 +284,7 @@ false),
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/16 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            ArU32 = new uint[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 ArU32[i] = BinSerialize.ReadUInt(ref buffer);
@@ -326,17 +300,27 @@ false),
             }
             /* PayloadByteSize = 16 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 4,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
 
+        }
 
         /// <summary>
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU32Field = new Field.Builder()
+            .Name(nameof(ArU32))
+            .Title("ar_u32")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt32Type.Default,4))        
+        .Build();
         public const int ArU32MaxItemsCount = 4;
-        public uint[] ArU32 { get; set; } = new uint[4];
+        public uint[] ArU32 { get; } = new uint[4];
         [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
         public byte GetArU32MaxItemsCount() => 4;
     }
@@ -360,34 +344,6 @@ false),
         public override ArrayTest3Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_3";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            4, 
-false),
-            new("v",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ARRAY_TEST_3:"
-        + "uint32_t[4] ar_u32;"
-        + "uint8_t v;"
-        ;
     }
 
     /// <summary>
@@ -399,13 +355,13 @@ false),
         public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArU32.Length * 4; //ArU32
-            sum+=1; //V
-            return (byte)sum;
+            return (byte)(
+            +ArU32.Length * 4 // uint32_t[4] ar_u32
+            +1 // uint8_t v
+            );
         }
 
 
@@ -415,7 +371,7 @@ false),
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            ArU32 = new uint[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 ArU32[i] = BinSerialize.ReadUInt(ref buffer);
@@ -433,24 +389,43 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)V);
             /* PayloadByteSize = 17 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 4,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
+            UInt8Type.Accept(visitor,VField, VField.DataType, ref _v);    
 
+        }
 
         /// <summary>
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU32Field = new Field.Builder()
+            .Name(nameof(ArU32))
+            .Title("ar_u32")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt32Type.Default,4))        
+        .Build();
         public const int ArU32MaxItemsCount = 4;
-        public uint[] ArU32 { get; set; } = new uint[4];
+        public uint[] ArU32 { get; } = new uint[4];
         [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
         public byte GetArU32MaxItemsCount() => 4;
         /// <summary>
         /// Stub field
         /// OriginName: v, Units: , IsExtended: false
         /// </summary>
-        public byte V { get; set; }
+        public static readonly Field VField = new Field.Builder()
+            .Name(nameof(V))
+            .Title("v")
+            .Description("Stub field")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _v;
+        public byte V { get => _v; set => _v = value; }
     }
     /// <summary>
     /// Array test #4.
@@ -472,34 +447,6 @@ false),
         public override ArrayTest4Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_4";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            4, 
-false),
-            new("v",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ARRAY_TEST_4:"
-        + "uint32_t[4] ar_u32;"
-        + "uint8_t v;"
-        ;
     }
 
     /// <summary>
@@ -511,13 +458,13 @@ false),
         public byte GetMaxByteSize() => 17; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 17; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArU32.Length * 4; //ArU32
-            sum+=1; //V
-            return (byte)sum;
+            return (byte)(
+            +ArU32.Length * 4 // uint32_t[4] ar_u32
+            +1 // uint8_t v
+            );
         }
 
 
@@ -527,7 +474,7 @@ false),
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/17 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            ArU32 = new uint[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 ArU32[i] = BinSerialize.ReadUInt(ref buffer);
@@ -545,24 +492,43 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)V);
             /* PayloadByteSize = 17 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 4,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
+            UInt8Type.Accept(visitor,VField, VField.DataType, ref _v);    
 
+        }
 
         /// <summary>
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU32Field = new Field.Builder()
+            .Name(nameof(ArU32))
+            .Title("ar_u32")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt32Type.Default,4))        
+        .Build();
         public const int ArU32MaxItemsCount = 4;
-        public uint[] ArU32 { get; set; } = new uint[4];
+        public uint[] ArU32 { get; } = new uint[4];
         [Obsolete("This method is deprecated. Use GetArU32MaxItemsCount instead.")]
         public byte GetArU32MaxItemsCount() => 4;
         /// <summary>
         /// Stub field
         /// OriginName: v, Units: , IsExtended: false
         /// </summary>
-        public byte V { get; set; }
+        public static readonly Field VField = new Field.Builder()
+            .Name(nameof(V))
+            .Title("v")
+            .Description("Stub field")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _v;
+        public byte V { get => _v; set => _v = value; }
     }
     /// <summary>
     /// Array test #5.
@@ -584,34 +550,6 @@ false),
         public override ArrayTest5Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_5";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("c1",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            5, 
-false),
-            new("c2",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            5, 
-false),
-        ];
-        public const string FormatMessage = "ARRAY_TEST_5:"
-        + "char[5] c1;"
-        + "char[5] c2;"
-        ;
     }
 
     /// <summary>
@@ -623,13 +561,13 @@ false),
         public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=C1.Length; //C1
-            sum+=C2.Length; //C2
-            return (byte)sum;
+            return (byte)(
+            +C1.Length // char[5] c1
+            +C2.Length // char[5] c2
+            );
         }
 
 
@@ -639,7 +577,7 @@ false),
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/10 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            C1 = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -648,7 +586,7 @@ false),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, C1.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             arraySize = 5;
             unsafe
@@ -659,7 +597,7 @@ false),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, C2.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
 
         }
@@ -688,23 +626,42 @@ false),
             
             /* PayloadByteSize = 10 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,C1Field, C1Field.DataType, 5, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref C1[index]));
+            ArrayType.Accept(visitor,C2Field, C2Field.DataType, 5, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref C2[index]));
 
+        }
 
         /// <summary>
         /// Value array
         /// OriginName: c1, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field C1Field = new Field.Builder()
+            .Name(nameof(C1))
+            .Title("c1")
+            .Description("Value array")
+
+            .DataType(new ArrayType(CharType.Ascii,5))
+        .Build();
         public const int C1MaxItemsCount = 5;
-        public char[] C1 { get; set; } = new char[5];
+        public char[] C1 { get; } = new char[5];
         [Obsolete("This method is deprecated. Use GetC1MaxItemsCount instead.")]
         public byte GetC1MaxItemsCount() => 5;
         /// <summary>
         /// Value array
         /// OriginName: c2, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field C2Field = new Field.Builder()
+            .Name(nameof(C2))
+            .Title("c2")
+            .Description("Value array")
+
+            .DataType(new ArrayType(CharType.Ascii,5))
+        .Build();
         public const int C2MaxItemsCount = 5;
         public char[] C2 { get; } = new char[5];
     }
@@ -728,134 +685,6 @@ false),
         public override ArrayTest6Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_6";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("ar_d",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Double, 
-            2, 
-false),
-            new("v3",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            2, 
-false),
-            new("ar_i32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            2, 
-false),
-            new("ar_f",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            2, 
-false),
-            new("v2",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("ar_u16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            2, 
-false),
-            new("ar_i16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            2, 
-false),
-            new("v1",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("ar_u8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            2, 
-false),
-            new("ar_i8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int8, 
-            2, 
-false),
-            new("ar_c",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            32, 
-false),
-        ];
-        public const string FormatMessage = "ARRAY_TEST_6:"
-        + "double[2] ar_d;"
-        + "uint32_t v3;"
-        + "uint32_t[2] ar_u32;"
-        + "int32_t[2] ar_i32;"
-        + "float[2] ar_f;"
-        + "uint16_t v2;"
-        + "uint16_t[2] ar_u16;"
-        + "int16_t[2] ar_i16;"
-        + "uint8_t v1;"
-        + "uint8_t[2] ar_u8;"
-        + "int8_t[2] ar_i8;"
-        + "char[32] ar_c;"
-        ;
     }
 
     /// <summary>
@@ -867,23 +696,23 @@ false),
         public byte GetMaxByteSize() => 91; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 91; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArD.Length * 8; //ArD
-            sum+=4; //V3
-            sum+=ArU32.Length * 4; //ArU32
-            sum+=ArI32.Length * 4; //ArI32
-            sum+=ArF.Length * 4; //ArF
-            sum+=2; //V2
-            sum+=ArU16.Length * 2; //ArU16
-            sum+=ArI16.Length * 2; //ArI16
-            sum+=1; //V1
-            sum+=ArU8.Length; //ArU8
-            sum+=ArI8.Length; //ArI8
-            sum+=ArC.Length; //ArC
-            return (byte)sum;
+            return (byte)(
+            +ArD.Length * 8 // double[2] ar_d
+            +4 // uint32_t v3
+            +ArU32.Length * 4 // uint32_t[2] ar_u32
+            +ArI32.Length * 4 // int32_t[2] ar_i32
+            +ArF.Length * 4 // float[2] ar_f
+            +2 // uint16_t v2
+            +ArU16.Length * 2 // uint16_t[2] ar_u16
+            +ArI16.Length * 2 // int16_t[2] ar_i16
+            +1 // uint8_t v1
+            +ArU8.Length // uint8_t[2] ar_u8
+            +ArI8.Length // int8_t[2] ar_i8
+            +ArC.Length // char[32] ar_c
+            );
         }
 
 
@@ -936,7 +765,7 @@ false),
                 ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);
             }
             arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/91 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            ArC = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -945,7 +774,7 @@ false),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, ArC.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
 
         }
@@ -999,80 +828,189 @@ false),
             
             /* PayloadByteSize = 91 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,ArDField, ArDField.DataType, 2,
+                (index, v, f, t) => DoubleType.Accept(v, f, t, ref ArD[index]));    
+            UInt32Type.Accept(visitor,V3Field, V3Field.DataType, ref _v3);    
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 2,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
+            ArrayType.Accept(visitor,ArI32Field, ArI32Field.DataType, 2,
+                (index, v, f, t) => Int32Type.Accept(v, f, t, ref ArI32[index]));
+            ArrayType.Accept(visitor,ArFField, ArFField.DataType, 2,
+                (index, v, f, t) => FloatType.Accept(v, f, t, ref ArF[index]));
+            UInt16Type.Accept(visitor,V2Field, V2Field.DataType, ref _v2);    
+            ArrayType.Accept(visitor,ArU16Field, ArU16Field.DataType, 2,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref ArU16[index]));    
+            ArrayType.Accept(visitor,ArI16Field, ArI16Field.DataType, 2,
+                (index, v, f, t) => Int16Type.Accept(v, f, t, ref ArI16[index]));    
+            UInt8Type.Accept(visitor,V1Field, V1Field.DataType, ref _v1);    
+            ArrayType.Accept(visitor,ArU8Field, ArU8Field.DataType, 2,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref ArU8[index]));    
+            ArrayType.Accept(visitor,ArI8Field, ArI8Field.DataType, 2, 
+                (index, v, f, t) => Int8Type.Accept(v, f, t, ref ArI8[index]));
+            ArrayType.Accept(visitor,ArCField, ArCField.DataType, 32, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref ArC[index]));
 
+        }
 
         /// <summary>
         /// Value array
         /// OriginName: ar_d, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArDField = new Field.Builder()
+            .Name(nameof(ArD))
+            .Title("ar_d")
+            .Description("Value array")
+
+            .DataType(new ArrayType(DoubleType.Default,2))        
+        .Build();
         public const int ArDMaxItemsCount = 2;
         public double[] ArD { get; } = new double[2];
         /// <summary>
         /// Stub field
         /// OriginName: v3, Units: , IsExtended: false
         /// </summary>
-        public uint V3 { get; set; }
+        public static readonly Field V3Field = new Field.Builder()
+            .Name(nameof(V3))
+            .Title("v3")
+            .Description("Stub field")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _v3;
+        public uint V3 { get => _v3; set => _v3 = value; }
         /// <summary>
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU32Field = new Field.Builder()
+            .Name(nameof(ArU32))
+            .Title("ar_u32")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt32Type.Default,2))        
+        .Build();
         public const int ArU32MaxItemsCount = 2;
         public uint[] ArU32 { get; } = new uint[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i32, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArI32Field = new Field.Builder()
+            .Name(nameof(ArI32))
+            .Title("ar_i32")
+            .Description("Value array")
+
+            .DataType(new ArrayType(Int32Type.Default,2))        
+        .Build();
         public const int ArI32MaxItemsCount = 2;
         public int[] ArI32 { get; } = new int[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_f, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArFField = new Field.Builder()
+            .Name(nameof(ArF))
+            .Title("ar_f")
+            .Description("Value array")
+
+            .DataType(new ArrayType(FloatType.Default,2))        
+        .Build();
         public const int ArFMaxItemsCount = 2;
         public float[] ArF { get; } = new float[2];
         /// <summary>
         /// Stub field
         /// OriginName: v2, Units: , IsExtended: false
         /// </summary>
-        public ushort V2 { get; set; }
+        public static readonly Field V2Field = new Field.Builder()
+            .Name(nameof(V2))
+            .Title("v2")
+            .Description("Stub field")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _v2;
+        public ushort V2 { get => _v2; set => _v2 = value; }
         /// <summary>
         /// Value array
         /// OriginName: ar_u16, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU16Field = new Field.Builder()
+            .Name(nameof(ArU16))
+            .Title("ar_u16")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt16Type.Default,2))
+        .Build();
         public const int ArU16MaxItemsCount = 2;
         public ushort[] ArU16 { get; } = new ushort[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i16, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArI16Field = new Field.Builder()
+            .Name(nameof(ArI16))
+            .Title("ar_i16")
+            .Description("Value array")
+
+            .DataType(new ArrayType(Int16Type.Default,2))
+        .Build();
         public const int ArI16MaxItemsCount = 2;
         public short[] ArI16 { get; } = new short[2];
         /// <summary>
         /// Stub field
         /// OriginName: v1, Units: , IsExtended: false
         /// </summary>
-        public byte V1 { get; set; }
+        public static readonly Field V1Field = new Field.Builder()
+            .Name(nameof(V1))
+            .Title("v1")
+            .Description("Stub field")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _v1;
+        public byte V1 { get => _v1; set => _v1 = value; }
         /// <summary>
         /// Value array
         /// OriginName: ar_u8, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU8Field = new Field.Builder()
+            .Name(nameof(ArU8))
+            .Title("ar_u8")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt8Type.Default,2))
+        .Build();
         public const int ArU8MaxItemsCount = 2;
         public byte[] ArU8 { get; } = new byte[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i8, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArI8Field = new Field.Builder()
+            .Name(nameof(ArI8))
+            .Title("ar_i8")
+            .Description("Value array")
+
+            .DataType(new ArrayType(Int8Type.Default,2))
+        .Build();
         public const int ArI8MaxItemsCount = 2;
         public sbyte[] ArI8 { get; } = new sbyte[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_c, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArCField = new Field.Builder()
+            .Name(nameof(ArC))
+            .Title("ar_c")
+            .Description("Value array")
+
+            .DataType(new ArrayType(CharType.Ascii,32))
+        .Build();
         public const int ArCMaxItemsCount = 32;
-        public char[] ArC { get; set; } = new char[32];
+        public char[] ArC { get; } = new char[32];
         [Obsolete("This method is deprecated. Use GetArCMaxItemsCount instead.")]
         public byte GetArCMaxItemsCount() => 32;
     }
@@ -1096,104 +1034,6 @@ false),
         public override ArrayTest7Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_7";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("ar_d",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Double, 
-            2, 
-false),
-            new("ar_f",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            2, 
-false),
-            new("ar_u32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            2, 
-false),
-            new("ar_i32",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            2, 
-false),
-            new("ar_u16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            2, 
-false),
-            new("ar_i16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            2, 
-false),
-            new("ar_u8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            2, 
-false),
-            new("ar_i8",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int8, 
-            2, 
-false),
-            new("ar_c",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            32, 
-false),
-        ];
-        public const string FormatMessage = "ARRAY_TEST_7:"
-        + "double[2] ar_d;"
-        + "float[2] ar_f;"
-        + "uint32_t[2] ar_u32;"
-        + "int32_t[2] ar_i32;"
-        + "uint16_t[2] ar_u16;"
-        + "int16_t[2] ar_i16;"
-        + "uint8_t[2] ar_u8;"
-        + "int8_t[2] ar_i8;"
-        + "char[32] ar_c;"
-        ;
     }
 
     /// <summary>
@@ -1205,20 +1045,20 @@ false),
         public byte GetMaxByteSize() => 84; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 84; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArD.Length * 8; //ArD
-            sum+=ArF.Length * 4; //ArF
-            sum+=ArU32.Length * 4; //ArU32
-            sum+=ArI32.Length * 4; //ArI32
-            sum+=ArU16.Length * 2; //ArU16
-            sum+=ArI16.Length * 2; //ArI16
-            sum+=ArU8.Length; //ArU8
-            sum+=ArI8.Length; //ArI8
-            sum+=ArC.Length; //ArC
-            return (byte)sum;
+            return (byte)(
+            +ArD.Length * 8 // double[2] ar_d
+            +ArF.Length * 4 // float[2] ar_f
+            +ArU32.Length * 4 // uint32_t[2] ar_u32
+            +ArI32.Length * 4 // int32_t[2] ar_i32
+            +ArU16.Length * 2 // uint16_t[2] ar_u16
+            +ArI16.Length * 2 // int16_t[2] ar_i16
+            +ArU8.Length // uint8_t[2] ar_u8
+            +ArI8.Length // int8_t[2] ar_i8
+            +ArC.Length // char[32] ar_c
+            );
         }
 
 
@@ -1268,7 +1108,7 @@ false),
                 ArI8[i] = (sbyte)BinSerialize.ReadByte(ref buffer);
             }
             arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/84 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            ArC = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -1277,7 +1117,7 @@ false),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, ArC.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
 
         }
@@ -1328,65 +1168,147 @@ false),
             
             /* PayloadByteSize = 84 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,ArDField, ArDField.DataType, 2,
+                (index, v, f, t) => DoubleType.Accept(v, f, t, ref ArD[index]));    
+            ArrayType.Accept(visitor,ArFField, ArFField.DataType, 2,
+                (index, v, f, t) => FloatType.Accept(v, f, t, ref ArF[index]));
+            ArrayType.Accept(visitor,ArU32Field, ArU32Field.DataType, 2,
+                (index, v, f, t) => UInt32Type.Accept(v, f, t, ref ArU32[index]));    
+            ArrayType.Accept(visitor,ArI32Field, ArI32Field.DataType, 2,
+                (index, v, f, t) => Int32Type.Accept(v, f, t, ref ArI32[index]));
+            ArrayType.Accept(visitor,ArU16Field, ArU16Field.DataType, 2,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref ArU16[index]));    
+            ArrayType.Accept(visitor,ArI16Field, ArI16Field.DataType, 2,
+                (index, v, f, t) => Int16Type.Accept(v, f, t, ref ArI16[index]));    
+            ArrayType.Accept(visitor,ArU8Field, ArU8Field.DataType, 2,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref ArU8[index]));    
+            ArrayType.Accept(visitor,ArI8Field, ArI8Field.DataType, 2, 
+                (index, v, f, t) => Int8Type.Accept(v, f, t, ref ArI8[index]));
+            ArrayType.Accept(visitor,ArCField, ArCField.DataType, 32, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref ArC[index]));
 
+        }
 
         /// <summary>
         /// Value array
         /// OriginName: ar_d, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArDField = new Field.Builder()
+            .Name(nameof(ArD))
+            .Title("ar_d")
+            .Description("Value array")
+
+            .DataType(new ArrayType(DoubleType.Default,2))        
+        .Build();
         public const int ArDMaxItemsCount = 2;
         public double[] ArD { get; } = new double[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_f, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArFField = new Field.Builder()
+            .Name(nameof(ArF))
+            .Title("ar_f")
+            .Description("Value array")
+
+            .DataType(new ArrayType(FloatType.Default,2))        
+        .Build();
         public const int ArFMaxItemsCount = 2;
         public float[] ArF { get; } = new float[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_u32, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU32Field = new Field.Builder()
+            .Name(nameof(ArU32))
+            .Title("ar_u32")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt32Type.Default,2))        
+        .Build();
         public const int ArU32MaxItemsCount = 2;
         public uint[] ArU32 { get; } = new uint[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i32, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArI32Field = new Field.Builder()
+            .Name(nameof(ArI32))
+            .Title("ar_i32")
+            .Description("Value array")
+
+            .DataType(new ArrayType(Int32Type.Default,2))        
+        .Build();
         public const int ArI32MaxItemsCount = 2;
         public int[] ArI32 { get; } = new int[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_u16, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU16Field = new Field.Builder()
+            .Name(nameof(ArU16))
+            .Title("ar_u16")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt16Type.Default,2))
+        .Build();
         public const int ArU16MaxItemsCount = 2;
         public ushort[] ArU16 { get; } = new ushort[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i16, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArI16Field = new Field.Builder()
+            .Name(nameof(ArI16))
+            .Title("ar_i16")
+            .Description("Value array")
+
+            .DataType(new ArrayType(Int16Type.Default,2))
+        .Build();
         public const int ArI16MaxItemsCount = 2;
         public short[] ArI16 { get; } = new short[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_u8, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU8Field = new Field.Builder()
+            .Name(nameof(ArU8))
+            .Title("ar_u8")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt8Type.Default,2))
+        .Build();
         public const int ArU8MaxItemsCount = 2;
         public byte[] ArU8 { get; } = new byte[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_i8, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArI8Field = new Field.Builder()
+            .Name(nameof(ArI8))
+            .Title("ar_i8")
+            .Description("Value array")
+
+            .DataType(new ArrayType(Int8Type.Default,2))
+        .Build();
         public const int ArI8MaxItemsCount = 2;
         public sbyte[] ArI8 { get; } = new sbyte[2];
         /// <summary>
         /// Value array
         /// OriginName: ar_c, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArCField = new Field.Builder()
+            .Name(nameof(ArC))
+            .Title("ar_c")
+            .Description("Value array")
+
+            .DataType(new ArrayType(CharType.Ascii,32))
+        .Build();
         public const int ArCMaxItemsCount = 32;
-        public char[] ArC { get; set; } = new char[32];
+        public char[] ArC { get; } = new char[32];
         [Obsolete("This method is deprecated. Use GetArCMaxItemsCount instead.")]
         public byte GetArCMaxItemsCount() => 32;
     }
@@ -1410,44 +1332,6 @@ false),
         public override ArrayTest8Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_8";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("ar_d",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Double, 
-            2, 
-false),
-            new("v3",
-"Stub field",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("ar_u16",
-"Value array",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            2, 
-false),
-        ];
-        public const string FormatMessage = "ARRAY_TEST_8:"
-        + "double[2] ar_d;"
-        + "uint32_t v3;"
-        + "uint16_t[2] ar_u16;"
-        ;
     }
 
     /// <summary>
@@ -1459,14 +1343,14 @@ false),
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=ArD.Length * 8; //ArD
-            sum+=4; //V3
-            sum+=ArU16.Length * 2; //ArU16
-            return (byte)sum;
+            return (byte)(
+            +ArD.Length * 8 // double[2] ar_d
+            +4 // uint32_t v3
+            +ArU16.Length * 2 // uint16_t[2] ar_u16
+            );
         }
 
 
@@ -1476,7 +1360,7 @@ false),
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/2 - Math.Max(0,((/*PayloadByteSize*/24 - payloadSize - /*ExtendedFieldsLength*/0)/8 /*FieldTypeByteSize*/));
-            ArD = new double[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 ArD[i] = BinSerialize.ReadDouble(ref buffer);
@@ -1503,31 +1387,64 @@ false),
             }
             /* PayloadByteSize = 24 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,ArDField, ArDField.DataType, 2,
+                (index, v, f, t) => DoubleType.Accept(v, f, t, ref ArD[index]));    
+            UInt32Type.Accept(visitor,V3Field, V3Field.DataType, ref _v3);    
+            ArrayType.Accept(visitor,ArU16Field, ArU16Field.DataType, 2,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref ArU16[index]));    
 
+        }
 
         /// <summary>
         /// Value array
         /// OriginName: ar_d, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArDField = new Field.Builder()
+            .Name(nameof(ArD))
+            .Title("ar_d")
+            .Description("Value array")
+
+            .DataType(new ArrayType(DoubleType.Default,2))        
+        .Build();
         public const int ArDMaxItemsCount = 2;
-        public double[] ArD { get; set; } = new double[2];
+        public double[] ArD { get; } = new double[2];
         [Obsolete("This method is deprecated. Use GetArDMaxItemsCount instead.")]
         public byte GetArDMaxItemsCount() => 2;
         /// <summary>
         /// Stub field
         /// OriginName: v3, Units: , IsExtended: false
         /// </summary>
-        public uint V3 { get; set; }
+        public static readonly Field V3Field = new Field.Builder()
+            .Name(nameof(V3))
+            .Title("v3")
+            .Description("Stub field")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _v3;
+        public uint V3 { get => _v3; set => _v3 = value; }
         /// <summary>
         /// Value array
         /// OriginName: ar_u16, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ArU16Field = new Field.Builder()
+            .Name(nameof(ArU16))
+            .Title("ar_u16")
+            .Description("Value array")
+
+            .DataType(new ArrayType(UInt16Type.Default,2))
+        .Build();
         public const int ArU16MaxItemsCount = 2;
         public ushort[] ArU16 { get; } = new ushort[2];
     }
+
+
+
+
+        
 
 
 #endregion

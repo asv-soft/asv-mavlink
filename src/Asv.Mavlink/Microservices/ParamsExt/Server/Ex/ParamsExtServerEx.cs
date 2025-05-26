@@ -175,7 +175,7 @@ public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtSer
         {
             MavlinkTypesHelper.SetString(payload.ParamId, param.Item2.Name);
             payload.ParamType = param.Item2.Type;
-            payload.ParamValue = value;
+            value.CopyTo(payload.ParamValue);
             payload.ParamResult = ParamAck.ParamAckAccepted;
         }, cancel).ConfigureAwait(false);
     }
@@ -189,7 +189,7 @@ public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtSer
             MavlinkTypesHelper.SetString(payload.ParamId, param.Item2.Name);
             payload.ParamType = param.Item2.Type;
             payload.ParamCount = (ushort)_paramList.Count;
-            payload.ParamValue = value;
+            value.CopyTo(payload.ParamValue);
         }, cancel).ConfigureAwait(false);
     }
 

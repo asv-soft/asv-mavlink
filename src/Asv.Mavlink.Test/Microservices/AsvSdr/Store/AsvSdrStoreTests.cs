@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Asv.IO;
 using Asv.Mavlink.AsvSdr;
 using DeepEqual.Syntax;
@@ -79,9 +80,9 @@ public class AsvSdrStoreTests
         //Arrange
         var payload = new AsvSdrRecordPayload()
         {
-            RecordName =  "name".ToCharArray(),
             DataType = AsvSdrCustomMode.AsvSdrCustomModeLlz
         };
+        "name".ToCharArray().CopyTo(payload.RecordName,0);
         Stream stream = new MemoryStream();
         const string fileName = "testFIle";
         var guid = Guid.NewGuid();

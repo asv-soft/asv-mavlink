@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -29,6 +29,9 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Csairlink
@@ -41,6 +44,7 @@ namespace Asv.Mavlink.Csairlink
             src.Add(AirlinkAuthPacket.MessageId, ()=>new AirlinkAuthPacket());
             src.Add(AirlinkAuthResponsePacket.MessageId, ()=>new AirlinkAuthResponsePacket());
         }
+ 
     }
 
 #region Enums
@@ -48,7 +52,7 @@ namespace Asv.Mavlink.Csairlink
     /// <summary>
     ///  AIRLINK_AUTH_RESPONSE_TYPE
     /// </summary>
-    public enum AirlinkAuthResponseType:uint
+    public enum AirlinkAuthResponseType : ulong
     {
         /// <summary>
         /// Login or password error
@@ -61,7 +65,19 @@ namespace Asv.Mavlink.Csairlink
         /// </summary>
         AirlinkAuthOk = 1,
     }
-
+    public static class AirlinkAuthResponseTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"AIRLINK_ERROR_LOGIN_OR_PASS");
+            yield return new EnumValue<T>(converter(1),"AIRLINK_AUTH_OK");
+        }
+    }
 
 #endregion
 
@@ -87,34 +103,6 @@ namespace Asv.Mavlink.Csairlink
         public override AirlinkAuthPayload Payload { get; } = new();
 
         public override string Name => "AIRLINK_AUTH";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("login",
-"Login",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            50, 
-false),
-            new("password",
-"Password",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            50, 
-false),
-        ];
-        public const string FormatMessage = "AIRLINK_AUTH:"
-        + "char[50] login;"
-        + "char[50] password;"
-        ;
     }
 
     /// <summary>
@@ -126,13 +114,13 @@ false),
         public byte GetMaxByteSize() => 100; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 100; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=Login.Length; //Login
-            sum+=Password.Length; //Password
-            return (byte)sum;
+            return (byte)(
+            +Login.Length // char[50] login
+            +Password.Length // char[50] password
+            );
         }
 
 
@@ -142,7 +130,7 @@ false),
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/50 - Math.Max(0,((/*PayloadByteSize*/100 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Login = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -151,7 +139,7 @@ false),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Login.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             arraySize = 50;
             unsafe
@@ -162,7 +150,7 @@ false),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Password.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
 
         }
@@ -191,23 +179,42 @@ false),
             
             /* PayloadByteSize = 100 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,LoginField, LoginField.DataType, 50, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Login[index]));
+            ArrayType.Accept(visitor,PasswordField, PasswordField.DataType, 50, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Password[index]));
 
+        }
 
         /// <summary>
         /// Login
         /// OriginName: login, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field LoginField = new Field.Builder()
+            .Name(nameof(Login))
+            .Title("login")
+            .Description("Login")
+
+            .DataType(new ArrayType(CharType.Ascii,50))
+        .Build();
         public const int LoginMaxItemsCount = 50;
-        public char[] Login { get; set; } = new char[50];
+        public char[] Login { get; } = new char[50];
         [Obsolete("This method is deprecated. Use GetLoginMaxItemsCount instead.")]
         public byte GetLoginMaxItemsCount() => 50;
         /// <summary>
         /// Password
         /// OriginName: password, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field PasswordField = new Field.Builder()
+            .Name(nameof(Password))
+            .Title("password")
+            .Description("Password")
+
+            .DataType(new ArrayType(CharType.Ascii,50))
+        .Build();
         public const int PasswordMaxItemsCount = 50;
         public char[] Password { get; } = new char[50];
     }
@@ -231,24 +238,6 @@ false),
         public override AirlinkAuthResponsePayload Payload { get; } = new();
 
         public override string Name => "AIRLINK_AUTH_RESPONSE";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("resp_type",
-"Response type",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "AIRLINK_AUTH_RESPONSE:"
-        + "uint8_t resp_type;"
-        ;
     }
 
     /// <summary>
@@ -260,12 +249,12 @@ false),
         public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // RespType
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t resp_type
+            );
         }
 
 
@@ -281,17 +270,34 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)RespType);
             /* PayloadByteSize = 1 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            var tmpRespType = (byte)RespType;
+            UInt8Type.Accept(visitor,RespTypeField, RespTypeField.DataType, ref tmpRespType);
+            RespType = (AirlinkAuthResponseType)tmpRespType;
 
+        }
 
         /// <summary>
         /// Response type
         /// OriginName: resp_type, Units: , IsExtended: false
         /// </summary>
-        public AirlinkAuthResponseType RespType { get; set; }
+        public static readonly Field RespTypeField = new Field.Builder()
+            .Name(nameof(RespType))
+            .Title("resp_type")
+            .Description("Response type")
+            .DataType(new UInt8Type(AirlinkAuthResponseTypeHelper.GetValues(x=>(byte)x).Min(),AirlinkAuthResponseTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AirlinkAuthResponseTypeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private AirlinkAuthResponseType _respType;
+        public AirlinkAuthResponseType RespType { get => _respType; set => _respType = value; } 
     }
+
+
+
+
+        
 
 
 #endregion

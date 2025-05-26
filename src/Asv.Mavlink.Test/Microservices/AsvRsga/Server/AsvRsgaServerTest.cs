@@ -34,7 +34,6 @@ public class AsvRsgaServerTest : ServerTestBase<AsvRsgaServer>, IDisposable
         {
             RequestId = 1,
             Result = AsvRsgaRequestAck.AsvRsgaRequestAckOk,
-            SupportedModes = new byte[32],
         };
 
         using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p => _taskCompletionSource.TrySetResult(p));

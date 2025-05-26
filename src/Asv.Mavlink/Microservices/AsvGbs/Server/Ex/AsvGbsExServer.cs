@@ -201,9 +201,7 @@ public class AsvGbsExServer: MavlinkMicroserviceServer, IAsvGbsServerEx, IDispos
                 pkt.Payload.Flags += (byte)((increment & 0x1f) << 3);
 
                 var dataLength = Math.Min(length - i1 * MaxDgpsMessageLength, MaxDgpsMessageLength);
-                var dataArray = new byte[dataLength];
-                Array.Copy(data, i1 * MaxDgpsMessageLength, dataArray, 0, dataLength);
-                pkt.Payload.Data = dataArray;
+                Array.Copy(data, i1 * MaxDgpsMessageLength, pkt.Payload.Data, 0, dataLength);
 
                 pkt.Payload.Len = (byte)dataLength;
             }, cancel).ConfigureAwait(false);

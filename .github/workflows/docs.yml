@@ -108,7 +108,7 @@ jobs:
           echo "ARTIFACT: ${{ needs.build.outputs.artifact }}"
           echo "ALGOLIA_ARTIFACT: ${{ needs.build.outputs.algolia_artifact }}"
       
-      - name: Create Release
+      - name: Create release and upload artifacts
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
@@ -116,12 +116,6 @@ jobs:
           name: "Release ${{ github.ref_name }}"
           draft: false
           prerelease: ${{ contains(github.ref, 'alpha') }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GIHUB_NUGET_AUTH_TOKEN }}
-
-      - name: Upload artifact to release
-        uses: softprops/action-gh-release@v2
-        with:
           files: |
             artifacts/pdfSource${{ needs.build.outputs.instance_id_upper }}.pdf
             artifacts/${{ needs.build.outputs.artifact }}

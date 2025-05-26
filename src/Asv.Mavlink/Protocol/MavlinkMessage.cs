@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using Asv.IO;
 
 namespace Asv.Mavlink;

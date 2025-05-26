@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -29,6 +29,9 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Icarous
@@ -41,6 +44,7 @@ namespace Asv.Mavlink.Icarous
             src.Add(IcarousHeartbeatPacket.MessageId, ()=>new IcarousHeartbeatPacket());
             src.Add(IcarousKinematicBandsPacket.MessageId, ()=>new IcarousKinematicBandsPacket());
         }
+ 
     }
 
 #region Enums
@@ -48,7 +52,7 @@ namespace Asv.Mavlink.Icarous
     /// <summary>
     ///  ICAROUS_TRACK_BAND_TYPES
     /// </summary>
-    public enum IcarousTrackBandTypes:uint
+    public enum IcarousTrackBandTypes : ulong
     {
         /// <summary>
         /// ICAROUS_TRACK_BAND_TYPE_NONE
@@ -63,11 +67,25 @@ namespace Asv.Mavlink.Icarous
         /// </summary>
         IcarousTrackBandTypeRecovery = 2,
     }
-
+    public static class IcarousTrackBandTypesHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ICAROUS_TRACK_BAND_TYPE_NONE");
+            yield return new EnumValue<T>(converter(1),"ICAROUS_TRACK_BAND_TYPE_NEAR");
+            yield return new EnumValue<T>(converter(2),"ICAROUS_TRACK_BAND_TYPE_RECOVERY");
+        }
+    }
     /// <summary>
     ///  ICAROUS_FMS_STATE
     /// </summary>
-    public enum IcarousFmsState:uint
+    public enum IcarousFmsState : ulong
     {
         /// <summary>
         /// ICAROUS_FMS_STATE_IDLE
@@ -94,7 +112,27 @@ namespace Asv.Mavlink.Icarous
         /// </summary>
         IcarousFmsStateLand = 5,
     }
-
+    public static class IcarousFmsStateHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ICAROUS_FMS_STATE_IDLE");
+            yield return new EnumValue<T>(converter(1),"ICAROUS_FMS_STATE_TAKEOFF");
+            yield return new EnumValue<T>(converter(2),"ICAROUS_FMS_STATE_CLIMB");
+            yield return new EnumValue<T>(converter(3),"ICAROUS_FMS_STATE_CRUISE");
+            yield return new EnumValue<T>(converter(4),"ICAROUS_FMS_STATE_APPROACH");
+            yield return new EnumValue<T>(converter(5),"ICAROUS_FMS_STATE_LAND");
+        }
+    }
 
 #endregion
 
@@ -120,24 +158,6 @@ namespace Asv.Mavlink.Icarous
         public override IcarousHeartbeatPayload Payload { get; } = new();
 
         public override string Name => "ICAROUS_HEARTBEAT";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("status",
-"See the FMS_STATE enum.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ICAROUS_HEARTBEAT:"
-        + "uint8_t status;"
-        ;
     }
 
     /// <summary>
@@ -149,12 +169,12 @@ false),
         public byte GetMaxByteSize() => 1; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 1; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // Status
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t status
+            );
         }
 
 
@@ -170,16 +190,28 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Status);
             /* PayloadByteSize = 1 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            var tmpStatus = (byte)Status;
+            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
+            Status = (IcarousFmsState)tmpStatus;
 
+        }
 
         /// <summary>
         /// See the FMS_STATE enum.
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
-        public IcarousFmsState Status { get; set; }
+        public static readonly Field StatusField = new Field.Builder()
+            .Name(nameof(Status))
+            .Title("status")
+            .Description("See the FMS_STATE enum.")
+            .DataType(new UInt8Type(IcarousFmsStateHelper.GetValues(x=>(byte)x).Min(),IcarousFmsStateHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(IcarousFmsStateHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private IcarousFmsState _status;
+        public IcarousFmsState Status { get => _status; set => _status = value; } 
     }
     /// <summary>
     /// Kinematic multi bands (track) output from Daidalus
@@ -201,174 +233,6 @@ false),
         public override IcarousKinematicBandsPayload Payload { get; } = new();
 
         public override string Name => "ICAROUS_KINEMATIC_BANDS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("min1",
-"min angle (degrees)",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("max1",
-"max angle (degrees)",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("min2",
-"min angle (degrees)",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("max2",
-"max angle (degrees)",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("min3",
-"min angle (degrees)",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("max3",
-"max angle (degrees)",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("min4",
-"min angle (degrees)",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("max4",
-"max angle (degrees)",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("min5",
-"min angle (degrees)",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("max5",
-"max angle (degrees)",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("numBands",
-"Number of track bands",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int8, 
-            0, 
-false),
-            new("type1",
-"See the TRACK_BAND_TYPES enum.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("type2",
-"See the TRACK_BAND_TYPES enum.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("type3",
-"See the TRACK_BAND_TYPES enum.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("type4",
-"See the TRACK_BAND_TYPES enum.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("type5",
-"See the TRACK_BAND_TYPES enum.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ICAROUS_KINEMATIC_BANDS:"
-        + "float min1;"
-        + "float max1;"
-        + "float min2;"
-        + "float max2;"
-        + "float min3;"
-        + "float max3;"
-        + "float min4;"
-        + "float max4;"
-        + "float min5;"
-        + "float max5;"
-        + "int8_t numBands;"
-        + "uint8_t type1;"
-        + "uint8_t type2;"
-        + "uint8_t type3;"
-        + "uint8_t type4;"
-        + "uint8_t type5;"
-        ;
     }
 
     /// <summary>
@@ -380,27 +244,27 @@ false),
         public byte GetMaxByteSize() => 46; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 46; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Min1
-            sum+=4; //Max1
-            sum+=4; //Min2
-            sum+=4; //Max2
-            sum+=4; //Min3
-            sum+=4; //Max3
-            sum+=4; //Min4
-            sum+=4; //Max4
-            sum+=4; //Min5
-            sum+=4; //Max5
-            sum+=1; //Numbands
-            sum+= 1; // Type1
-            sum+= 1; // Type2
-            sum+= 1; // Type3
-            sum+= 1; // Type4
-            sum+= 1; // Type5
-            return (byte)sum;
+            return (byte)(
+            +4 // float min1
+            +4 // float max1
+            +4 // float min2
+            +4 // float max2
+            +4 // float min3
+            +4 // float max3
+            +4 // float min4
+            +4 // float max4
+            +4 // float min5
+            +4 // float max5
+            +1 // int8_t numBands
+            + 1 // uint8_t type1
+            + 1 // uint8_t type2
+            + 1 // uint8_t type3
+            + 1 // uint8_t type4
+            + 1 // uint8_t type5
+            );
         }
 
 
@@ -446,92 +310,252 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Type5);
             /* PayloadByteSize = 46 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,Min1Field, Min1Field.DataType, ref _min1);    
+            FloatType.Accept(visitor,Max1Field, Max1Field.DataType, ref _max1);    
+            FloatType.Accept(visitor,Min2Field, Min2Field.DataType, ref _min2);    
+            FloatType.Accept(visitor,Max2Field, Max2Field.DataType, ref _max2);    
+            FloatType.Accept(visitor,Min3Field, Min3Field.DataType, ref _min3);    
+            FloatType.Accept(visitor,Max3Field, Max3Field.DataType, ref _max3);    
+            FloatType.Accept(visitor,Min4Field, Min4Field.DataType, ref _min4);    
+            FloatType.Accept(visitor,Max4Field, Max4Field.DataType, ref _max4);    
+            FloatType.Accept(visitor,Min5Field, Min5Field.DataType, ref _min5);    
+            FloatType.Accept(visitor,Max5Field, Max5Field.DataType, ref _max5);    
+            Int8Type.Accept(visitor,NumbandsField, NumbandsField.DataType, ref _numbands);                
+            var tmpType1 = (byte)Type1;
+            UInt8Type.Accept(visitor,Type1Field, Type1Field.DataType, ref tmpType1);
+            Type1 = (IcarousTrackBandTypes)tmpType1;
+            var tmpType2 = (byte)Type2;
+            UInt8Type.Accept(visitor,Type2Field, Type2Field.DataType, ref tmpType2);
+            Type2 = (IcarousTrackBandTypes)tmpType2;
+            var tmpType3 = (byte)Type3;
+            UInt8Type.Accept(visitor,Type3Field, Type3Field.DataType, ref tmpType3);
+            Type3 = (IcarousTrackBandTypes)tmpType3;
+            var tmpType4 = (byte)Type4;
+            UInt8Type.Accept(visitor,Type4Field, Type4Field.DataType, ref tmpType4);
+            Type4 = (IcarousTrackBandTypes)tmpType4;
+            var tmpType5 = (byte)Type5;
+            UInt8Type.Accept(visitor,Type5Field, Type5Field.DataType, ref tmpType5);
+            Type5 = (IcarousTrackBandTypes)tmpType5;
 
+        }
 
         /// <summary>
         /// min angle (degrees)
         /// OriginName: min1, Units: deg, IsExtended: false
         /// </summary>
-        public float Min1 { get; set; }
+        public static readonly Field Min1Field = new Field.Builder()
+            .Name(nameof(Min1))
+            .Title("min1")
+            .Description("min angle (degrees)")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _min1;
+        public float Min1 { get => _min1; set => _min1 = value; }
         /// <summary>
         /// max angle (degrees)
         /// OriginName: max1, Units: deg, IsExtended: false
         /// </summary>
-        public float Max1 { get; set; }
+        public static readonly Field Max1Field = new Field.Builder()
+            .Name(nameof(Max1))
+            .Title("max1")
+            .Description("max angle (degrees)")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _max1;
+        public float Max1 { get => _max1; set => _max1 = value; }
         /// <summary>
         /// min angle (degrees)
         /// OriginName: min2, Units: deg, IsExtended: false
         /// </summary>
-        public float Min2 { get; set; }
+        public static readonly Field Min2Field = new Field.Builder()
+            .Name(nameof(Min2))
+            .Title("min2")
+            .Description("min angle (degrees)")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _min2;
+        public float Min2 { get => _min2; set => _min2 = value; }
         /// <summary>
         /// max angle (degrees)
         /// OriginName: max2, Units: deg, IsExtended: false
         /// </summary>
-        public float Max2 { get; set; }
+        public static readonly Field Max2Field = new Field.Builder()
+            .Name(nameof(Max2))
+            .Title("max2")
+            .Description("max angle (degrees)")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _max2;
+        public float Max2 { get => _max2; set => _max2 = value; }
         /// <summary>
         /// min angle (degrees)
         /// OriginName: min3, Units: deg, IsExtended: false
         /// </summary>
-        public float Min3 { get; set; }
+        public static readonly Field Min3Field = new Field.Builder()
+            .Name(nameof(Min3))
+            .Title("min3")
+            .Description("min angle (degrees)")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _min3;
+        public float Min3 { get => _min3; set => _min3 = value; }
         /// <summary>
         /// max angle (degrees)
         /// OriginName: max3, Units: deg, IsExtended: false
         /// </summary>
-        public float Max3 { get; set; }
+        public static readonly Field Max3Field = new Field.Builder()
+            .Name(nameof(Max3))
+            .Title("max3")
+            .Description("max angle (degrees)")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _max3;
+        public float Max3 { get => _max3; set => _max3 = value; }
         /// <summary>
         /// min angle (degrees)
         /// OriginName: min4, Units: deg, IsExtended: false
         /// </summary>
-        public float Min4 { get; set; }
+        public static readonly Field Min4Field = new Field.Builder()
+            .Name(nameof(Min4))
+            .Title("min4")
+            .Description("min angle (degrees)")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _min4;
+        public float Min4 { get => _min4; set => _min4 = value; }
         /// <summary>
         /// max angle (degrees)
         /// OriginName: max4, Units: deg, IsExtended: false
         /// </summary>
-        public float Max4 { get; set; }
+        public static readonly Field Max4Field = new Field.Builder()
+            .Name(nameof(Max4))
+            .Title("max4")
+            .Description("max angle (degrees)")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _max4;
+        public float Max4 { get => _max4; set => _max4 = value; }
         /// <summary>
         /// min angle (degrees)
         /// OriginName: min5, Units: deg, IsExtended: false
         /// </summary>
-        public float Min5 { get; set; }
+        public static readonly Field Min5Field = new Field.Builder()
+            .Name(nameof(Min5))
+            .Title("min5")
+            .Description("min angle (degrees)")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _min5;
+        public float Min5 { get => _min5; set => _min5 = value; }
         /// <summary>
         /// max angle (degrees)
         /// OriginName: max5, Units: deg, IsExtended: false
         /// </summary>
-        public float Max5 { get; set; }
+        public static readonly Field Max5Field = new Field.Builder()
+            .Name(nameof(Max5))
+            .Title("max5")
+            .Description("max angle (degrees)")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _max5;
+        public float Max5 { get => _max5; set => _max5 = value; }
         /// <summary>
         /// Number of track bands
         /// OriginName: numBands, Units: , IsExtended: false
         /// </summary>
-        public sbyte Numbands { get; set; }
+        public static readonly Field NumbandsField = new Field.Builder()
+            .Name(nameof(Numbands))
+            .Title("numBands")
+            .Description("Number of track bands")
+
+            .DataType(Int8Type.Default)
+        .Build();
+        private sbyte _numbands;
+        public sbyte Numbands { get => _numbands; set => _numbands = value; }
         /// <summary>
         /// See the TRACK_BAND_TYPES enum.
         /// OriginName: type1, Units: , IsExtended: false
         /// </summary>
-        public IcarousTrackBandTypes Type1 { get; set; }
+        public static readonly Field Type1Field = new Field.Builder()
+            .Name(nameof(Type1))
+            .Title("type1")
+            .Description("See the TRACK_BAND_TYPES enum.")
+            .DataType(new UInt8Type(IcarousTrackBandTypesHelper.GetValues(x=>(byte)x).Min(),IcarousTrackBandTypesHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(IcarousTrackBandTypesHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private IcarousTrackBandTypes _type1;
+        public IcarousTrackBandTypes Type1 { get => _type1; set => _type1 = value; } 
         /// <summary>
         /// See the TRACK_BAND_TYPES enum.
         /// OriginName: type2, Units: , IsExtended: false
         /// </summary>
-        public IcarousTrackBandTypes Type2 { get; set; }
+        public static readonly Field Type2Field = new Field.Builder()
+            .Name(nameof(Type2))
+            .Title("type2")
+            .Description("See the TRACK_BAND_TYPES enum.")
+            .DataType(new UInt8Type(IcarousTrackBandTypesHelper.GetValues(x=>(byte)x).Min(),IcarousTrackBandTypesHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(IcarousTrackBandTypesHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private IcarousTrackBandTypes _type2;
+        public IcarousTrackBandTypes Type2 { get => _type2; set => _type2 = value; } 
         /// <summary>
         /// See the TRACK_BAND_TYPES enum.
         /// OriginName: type3, Units: , IsExtended: false
         /// </summary>
-        public IcarousTrackBandTypes Type3 { get; set; }
+        public static readonly Field Type3Field = new Field.Builder()
+            .Name(nameof(Type3))
+            .Title("type3")
+            .Description("See the TRACK_BAND_TYPES enum.")
+            .DataType(new UInt8Type(IcarousTrackBandTypesHelper.GetValues(x=>(byte)x).Min(),IcarousTrackBandTypesHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(IcarousTrackBandTypesHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private IcarousTrackBandTypes _type3;
+        public IcarousTrackBandTypes Type3 { get => _type3; set => _type3 = value; } 
         /// <summary>
         /// See the TRACK_BAND_TYPES enum.
         /// OriginName: type4, Units: , IsExtended: false
         /// </summary>
-        public IcarousTrackBandTypes Type4 { get; set; }
+        public static readonly Field Type4Field = new Field.Builder()
+            .Name(nameof(Type4))
+            .Title("type4")
+            .Description("See the TRACK_BAND_TYPES enum.")
+            .DataType(new UInt8Type(IcarousTrackBandTypesHelper.GetValues(x=>(byte)x).Min(),IcarousTrackBandTypesHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(IcarousTrackBandTypesHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private IcarousTrackBandTypes _type4;
+        public IcarousTrackBandTypes Type4 { get => _type4; set => _type4 = value; } 
         /// <summary>
         /// See the TRACK_BAND_TYPES enum.
         /// OriginName: type5, Units: , IsExtended: false
         /// </summary>
-        public IcarousTrackBandTypes Type5 { get; set; }
+        public static readonly Field Type5Field = new Field.Builder()
+            .Name(nameof(Type5))
+            .Title("type5")
+            .Description("See the TRACK_BAND_TYPES enum.")
+            .DataType(new UInt8Type(IcarousTrackBandTypesHelper.GetValues(x=>(byte)x).Min(),IcarousTrackBandTypesHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(IcarousTrackBandTypesHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private IcarousTrackBandTypes _type5;
+        public IcarousTrackBandTypes Type5 { get => _type5; set => _type5 = value; } 
     }
+
+
+
+
+        
 
 
 #endregion

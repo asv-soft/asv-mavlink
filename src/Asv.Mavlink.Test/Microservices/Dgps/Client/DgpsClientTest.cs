@@ -62,7 +62,11 @@ public class DgpsClientTest : ClientTestBase<DgpsClient>
             var expectedData = data.Skip(i * maxMessageLength).Take(expectedLength).ToArray();
 
             Assert.Equal(expectedLength, sentPackets[i].Payload.Len);
-            Assert.Equal(expectedData, sentPackets[i].Payload.Data);
+            for (int j = 0; j < expectedLength; j++)
+            {
+                Assert.Equal(expectedData[j], sentPackets[i].Payload.Data[j]);    
+            }
+            
         }
     }
 

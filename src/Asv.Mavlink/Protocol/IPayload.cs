@@ -5,7 +5,7 @@ namespace Asv.Mavlink
     /// <summary>
     /// Represents an interface for a payload object.
     /// </summary>
-    public interface IPayload : ISizedSpanSerializable
+    public interface IPayload : ISizedSpanSerializable, IVisitable
     {
         /// <summary>
         /// Maximum size of payload

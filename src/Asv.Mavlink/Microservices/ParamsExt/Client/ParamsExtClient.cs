@@ -107,7 +107,7 @@ public class ParamsExtClient : MavlinkMicroserviceClient, IParamsExtClient
                 packet.Payload.TargetSystem = Identity.Target.SystemId;
                 packet.Payload.ParamType = type;
                 MavlinkTypesHelper.SetString(packet.Payload.ParamId, name);
-                packet.Payload.ParamValue = value;
+                value.CopyTo(packet.Payload.ParamValue,0);
             }, packet => name.Equals(MavlinkTypesHelper.GetString(packet.Payload.ParamId)),
             packet => packet.Payload, _config.ReadAttemptCount,
             timeoutMs: _config.ReadTimeoutMs, cancel: cancel).ConfigureAwait(false);

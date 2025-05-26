@@ -20,7 +20,6 @@ using Asv.Mavlink.Minimal;
 using Asv.Mavlink.Storm32;
 using Asv.Mavlink.Ualberta;
 using Asv.Mavlink.Uavionix;
-using Asv.Mavlink.UnitTestMessage;
 
 namespace Asv.Mavlink;
 
@@ -49,7 +48,6 @@ public class MavlinkV2MessageFactory : IProtocolMessageFactory<MavlinkMessage, i
         builder.RegisterAsvRfsaDialect();
         builder.RegisterAsvChartDialect();
         builder.RegisterAsvRsgaDialect();
-        builder.RegisterUnitTestMessageDialect();
         _factory = builder.ToImmutable();
     }
 

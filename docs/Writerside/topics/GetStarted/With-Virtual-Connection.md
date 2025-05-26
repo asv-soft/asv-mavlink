@@ -25,21 +25,21 @@ The [DeepEqual](https://github.com/jamesfoster/DeepEqual) package is also used i
 ## Setup task completion source and cancellation token
 
 1. Create a task completion source.
-   You'll need it to wait for a response from the server.
+   You'll need it to wait for a client initialization.
 ```c#
-var tcs = new TaskCompletionSource<HeartbeatPayload>();
+var tcsInitialize = new TaskCompletionSource();
 ```
 
 2. Create a cancellation token source with a timeout.
-   The cancellation token will trigger after 10 seconds. You can change this by setting a different time span.
+   The cancellation token will trigger after 20 seconds. You can change this by setting a different time span.
 ```c#
-var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(10), TimeProvider.System);
+using var cancelInitialize = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
 ```
 
 3. Register a delegate that will be called when the cancellation token is canceled.
    This will stop tcs from running in a loop when the token fails.
 ```c#
-cancel.Token.Register(() => tcs.TrySetCanceled());
+cancelInitialize.Token.Register(() => tcsInitialize.TrySetCanceled());
 ```
 
 ## Create virtual mavlink connection
@@ -52,11 +52,12 @@ Refer to [](With-Ardu-SITL.md) for more information.*
 ```c#
 var protocol = Protocol.Create(builder =>
 {
+    builder.SetTimeProvider(TimeProvider.System);
     builder.RegisterMavlinkV2Protocol();
     builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
     builder.Formatters.RegisterSimpleFormatter();
 });
-
+        
 var link = protocol.CreateVirtualConnection();
 ```
 
@@ -82,27 +83,35 @@ var clientCore = new CoreServices(
     link.Client, 
     clientSeq, 
     logFactory: null, 
-    timeProvider: null, 
+    timeProvider: TimeProvider.System, 
     new DefaultMeterFactory()
 );
 ```
 
 3. Create a default device id.
 ```c#
-var deviceId = new MavlinkClientDeviceId("copter", identity);
+var deviceId = new MavlinkClientDeviceId("COPTER", identity);
 ```
 
-4. Create a configuration for the vehicle client device.
+4. Create a configuration for the client device.
 ```c#
-var config = new VehicleClientDeviceConfig();
+MavlinkClientDeviceConfig config = new()
+{
+    Heartbeat =
+    {
+        HeartbeatTimeoutMs = 1000,
+        LinkQualityWarningSkipCount = 3,
+        RateMovingAverageFilter = 10,
+    }
+};
 ```
 
-5. Finally, create an ArduCopter client device.
+5. Finally, create a MavlinkClient client device.
 ```c#
-var arduCopter = new ArduCopterClientDevice(
+var client = new MavlinkClientDevice(
     deviceId, 
     config, 
-    ImmutableArray<IClientDeviceExtender>.Empty, 
+    [], 
     clientCore
 );
 ```
@@ -116,52 +125,34 @@ var serverCore = new CoreServices(
     link.Server,
     serverSeq, 
     logFactory: null, 
-    timeProvider: null, 
+    timeProvider: TimeProvider.System, 
     new DefaultMeterFactory()
 );
 ```
 
-2. Create a heartbeat server.
+2. Create heartbeat server.
 ```c#
-var mavlinkServer = new HeartbeatServer(
+var server = new HeartbeatServer(
     identity.Target, 
     new MavlinkHeartbeatServerConfig(), 
     serverCore
 );
 ```
 
-## Send data from server to client
-
-1. Asv.Mavlink uses the R3 library, which allows you to use a reactive programming approach.
-   To catch data received from the server, subscribe to its source.
+3. Start the server (note: some servers may not have this method).
 ```c#
-arduCopter.Heartbeat.RawHeartbeat.Subscribe(p =>
-{
-    if (p is null) // if we have no data we skip it
-    {
-        return;
-    }
-    
-    // We use console to see that everything works fine
-    Console.WriteLine($"Heartbeat type: {p.Type}, Heartbeat baseMode: {p.BaseMode}");
-    tcs.TrySetResult(p); // here we get the result
-});
+server.Start();
 ```
 
-2. tart the server (note: some servers may not have this method).
-```c#
-mavlinkServer.Start();
-```
-
-3. Create a variable to save the payload sent from the server.
+4. Create a variable to save the payload sent from the server.
 ```c#
 HeartbeatPayload? payload = null;
 ```
 
-4. Set the payload for the MAVLink package.
+5. Set the payload for the MAVLink package.
    This operation triggers the process that sends data to the client.
 ```c#
-mavlinkServer.Set(p =>
+server.Set(p =>
 {
 p.Type = MavType.MavTypeBattery;
 p.BaseMode = MavModeFlag.MavModeFlagGuidedEnabled;
@@ -170,20 +161,87 @@ payload = p;
 });
 ```
 
-5. Get the result
+## Heartbeat client initialization
+
+1. Call client initialization
+``` c#
+client.Initialize();
+```
+
+2. Wait until the client is initialized
+``` c#
+var sub2 = client.State
+.Subscribe(x =>
+{ 
+    if (x != ClientDeviceState.Complete) 
+    { 
+        return; 
+    }
+    
+    tcsInitialize.TrySetResult(); 
+});
+
+await tcsInitialize.Task;
+```
+3. Dispose the subscription, because we don't need it anymore
+``` c#
+sub2.Dispose();
+```
+
+## Setup for Heartbeat test
+
+Setup new tcs and cancellation token for the heartbeat test
+``` c#
+var tcsHeartbeat = new TaskCompletionSource();
+using var cancelHeartbeat = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
+cancelHeartbeat.Token.Register(() => tcsHeartbeat.TrySetCanceled());
+```
+
+## Check for the Heartbeat client
 ```c#
-var result = await tcs.Task;
+var heartbeat = client.GetMicroservice<IHeartbeatClient>();
+
+if (heartbeat is null)
+{
+    throw new Exception("Heartbeat client not found");
+}
+```
+
+## Send data from server to client
+
+1. Asv.Mavlink uses the R3 library, which allows you to use a reactive programming approach.
+   To catch data received from the server, subscribe to its source.
+```c#
+HeartbeatPayload? result = null;
+var sub = heartbeat.RawHeartbeat
+    .Subscribe(p => 
+    { 
+        if (p is null) 
+        { 
+            return; 
+        }
+        
+        Console.WriteLine($"Heartbeat type: {p.Type}, Heartbeat baseMode: {p.BaseMode}");
+        
+        result = p;
+        tcsHeartbeat.TrySetResult(); 
+    });
+```
+
+2. Wait for the result and remove subscription
+```c#
+await tcsHeartbeat.Task;
+sub.Dispose();
 ```
 
 ## Compare data
 
 ```c#
-if (!payload.IsDeepEqual(result))
-{
-    Console.WriteLine("Result is not equal to payload from server");
-}
-
-Console.WriteLine("Payload from server is equal to result");
+Console.WriteLine(
+    !payload.IsDeepEqual(result) 
+        ? "Result is not equal to payload from server" 
+        : "Payload from server is equal to result"
+);
 ```
 
 ## Code's output
@@ -197,10 +255,18 @@ Payload from server is equal to result
 Process finished with exit code 0.
 ```
 
+## Clear the resources
+```c#
+await Task.Delay(TimeSpan.FromMilliseconds(500)); // Wait till the server gets unlocked
+
+client.Dispose();
+server.Dispose();
+heartbeat.Dispose();
+```
+
 ## Complete code { #virtual-complete-code }
 
 ```c#
-using System.Collections.Immutable;
 using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink;
@@ -208,14 +274,15 @@ using Asv.Mavlink.Minimal;
 using DeepEqual.Syntax;
 using R3;
 
-// Setup
-var tcs = new TaskCompletionSource<HeartbeatPayload>();
-var cancel = new CancellationTokenSource(TimeSpan.FromSeconds(10), TimeProvider.System);
-cancel.Token.Register(() => tcs.TrySetCanceled());
+// Setup for device initialization
+var tcsInitialize = new TaskCompletionSource();
+using var cancelInitialize = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
+cancelInitialize.Token.Register(() => tcsInitialize.TrySetCanceled());
 
 // Virtual mavlink connection
 var protocol = Protocol.Create(builder =>
 {
+    builder.SetTimeProvider(TimeProvider.System);
     builder.RegisterMavlinkV2Protocol();
     builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
     builder.Formatters.RegisterSimpleFormatter();
@@ -232,17 +299,25 @@ var clientCore = new CoreServices(
     link.Client, 
     clientSeq, 
     logFactory: null, 
-    timeProvider: null, 
+    timeProvider: TimeProvider.System, 
     new DefaultMeterFactory()
 );
 
-var deviceId = new MavlinkClientDeviceId("copter", identity);
-var config = new VehicleClientDeviceConfig();
+var deviceId = new MavlinkClientDeviceId("COPTER", identity);
+MavlinkClientDeviceConfig config = new()
+{
+    Heartbeat =
+    {
+        HeartbeatTimeoutMs = 1000,
+        LinkQualityWarningSkipCount = 3,
+        RateMovingAverageFilter = 10,
+    }
+};
 
-var arduCopter = new ArduCopterClientDevice(
+var client = new MavlinkClientDevice(
     deviceId, 
     config, 
-    ImmutableArray<IClientDeviceExtender>.Empty, 
+    [], 
     clientCore
 );
 //
@@ -253,45 +328,89 @@ var serverCore = new CoreServices(
     link.Server,
     serverSeq, 
     logFactory: null, 
-    timeProvider: null, 
+    timeProvider: TimeProvider.System, 
     new DefaultMeterFactory()
 );
 
-var mavlinkServer = new HeartbeatServer(
+var server = new HeartbeatServer(
     identity.Target, 
     new MavlinkHeartbeatServerConfig(), 
     serverCore
 );
-//
 
-arduCopter.Heartbeat.RawHeartbeat.Subscribe(p =>
-{
-    if (p is null)
-    {
-        return;
-    }
-    
-    Console.WriteLine($"Heartbeat type: {p.Type}, Heartbeat baseMode: {p.BaseMode}");
-    tcs.TrySetResult(p);
-});
-
-mavlinkServer.Start();
+server.Start();
 
 HeartbeatPayload? payload = null;
-mavlinkServer.Set(p =>
+server.Set(p =>
 {
     p.Type = MavType.MavTypeBattery;
     p.BaseMode = MavModeFlag.MavModeFlagGuidedEnabled;
     Console.WriteLine($"From Server Type: {p.Type}, From server baseMode: {p.BaseMode}");
     payload = p;
 });
+//
 
-var result = await tcs.Task;
+// Heartbeat client initialization
+client.Initialize();
+var sub2 = client.State
+    .Subscribe(x => 
+    {
+        if (x != ClientDeviceState.Complete) 
+        { 
+            return; 
+        }
+        
+        tcsInitialize.TrySetResult();
+    });
 
-if (!payload.IsDeepEqual(result))
+await tcsInitialize.Task;
+sub2.Dispose();
+//
+
+// Setup for Heartbeat test
+var tcsHeartbeat = new TaskCompletionSource();
+using var cancelHeartbeat = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
+cancelHeartbeat.Token.Register(() => tcsHeartbeat.TrySetCanceled());
+//
+
+// Test
+var heartbeat = client.GetMicroservice<IHeartbeatClient>();
+
+if (heartbeat is null)
 {
-    Console.WriteLine("Result is not equal to payload from server");
+    throw new Exception("Heartbeat client not found");
 }
 
-Console.WriteLine("Payload from server is equal to result");
+HeartbeatPayload? result = null;
+var sub = heartbeat.RawHeartbeat
+    .Subscribe(p => 
+    { 
+        if (p is null) 
+        { 
+            return; 
+        }
+        
+        Console.WriteLine($"Heartbeat type: {p.Type}, Heartbeat baseMode: {p.BaseMode}");
+        
+        result = p;
+        tcsHeartbeat.TrySetResult(); 
+    });
+
+await tcsHeartbeat.Task;
+sub.Dispose();
+
+Console.WriteLine(
+    !payload.IsDeepEqual(result) 
+        ? "Result is not equal to payload from server" 
+        : "Payload from server is equal to result"
+);
+//
+
+await Task.Delay(TimeSpan.FromMilliseconds(500)); // Wait till the server gets unlocked
+
+// Dispose
+client.Dispose();
+server.Dispose();
+heartbeat.Dispose();
+//
 ```

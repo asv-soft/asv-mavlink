@@ -66,7 +66,12 @@ public class AsvRsgaServerEx : MavlinkMicroserviceServer, IAsvRsgaServerEx
 
     public RsgaSetMode? SetMode { get; set; }
     public RsgaGetCompatibility? GetCompatibility { get; set; }
-    public ValueTask SendMeasure(MavlinkV2Message message, CancellationToken cancel) => InternalSend(message, cancel);
+
+    public ValueTask SendMeasure(MavlinkV2Message message, CancellationToken cancel)
+    {
+        FillMessageBeforeSent(message);
+        return InternalSend(message, cancel);   
+    } 
 
     #region Dispose
 

@@ -1,5 +1,6 @@
 namespace Asv.Mavlink.Shell
 {
+    
     public class MessageFieldModel: MavlinkModelBase
     {
         public MessageFieldType Type { get; set; }

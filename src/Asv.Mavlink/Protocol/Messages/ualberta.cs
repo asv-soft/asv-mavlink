@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -29,6 +29,9 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Ualberta
@@ -42,6 +45,7 @@ namespace Asv.Mavlink.Ualberta
             src.Add(RadioCalibrationPacket.MessageId, ()=>new RadioCalibrationPacket());
             src.Add(UalbertaSysStatusPacket.MessageId, ()=>new UalbertaSysStatusPacket());
         }
+ 
     }
 
 #region Enums
@@ -50,7 +54,7 @@ namespace Asv.Mavlink.Ualberta
     /// Available autopilot modes for ualberta uav
     ///  UALBERTA_AUTOPILOT_MODE
     /// </summary>
-    public enum UalbertaAutopilotMode:uint
+    public enum UalbertaAutopilotMode : ulong
     {
         /// <summary>
         /// Raw input pulse widts sent to output
@@ -75,12 +79,30 @@ namespace Asv.Mavlink.Ualberta
         /// </summary>
         ModeAutoPidPos = 5,
     }
-
+    public static class UalbertaAutopilotModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"MODE_MANUAL_DIRECT");
+            yield return new EnumValue<T>(converter(2),"MODE_MANUAL_SCALED");
+            yield return new EnumValue<T>(converter(3),"MODE_AUTO_PID_ATT");
+            yield return new EnumValue<T>(converter(4),"MODE_AUTO_PID_VEL");
+            yield return new EnumValue<T>(converter(5),"MODE_AUTO_PID_POS");
+        }
+    }
     /// <summary>
     /// Navigation filter mode
     ///  UALBERTA_NAV_MODE
     /// </summary>
-    public enum UalbertaNavMode:uint
+    public enum UalbertaNavMode : ulong
     {
         /// <summary>
         /// NAV_AHRS_INIT
@@ -102,12 +124,28 @@ namespace Asv.Mavlink.Ualberta
         /// </summary>
         NavInsGps = 4,
     }
-
+    public static class UalbertaNavModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"NAV_AHRS_INIT");
+            yield return new EnumValue<T>(converter(2),"NAV_AHRS");
+            yield return new EnumValue<T>(converter(3),"NAV_INS_GPS_INIT");
+            yield return new EnumValue<T>(converter(4),"NAV_INS_GPS");
+        }
+    }
     /// <summary>
     /// Mode currently commanded by pilot
     ///  UALBERTA_PILOT_MODE
     /// </summary>
-    public enum UalbertaPilotMode:uint
+    public enum UalbertaPilotMode : ulong
     {
         /// <summary>
         /// PILOT_MANUAL
@@ -123,7 +161,21 @@ namespace Asv.Mavlink.Ualberta
         /// </summary>
         PilotRoto = 3,
     }
-
+    public static class UalbertaPilotModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"PILOT_MANUAL");
+            yield return new EnumValue<T>(converter(2),"PILOT_AUTO");
+            yield return new EnumValue<T>(converter(3),"PILOT_ROTO");
+        }
+    }
 
 #endregion
 
@@ -149,84 +201,6 @@ namespace Asv.Mavlink.Ualberta
         public override NavFilterBiasPayload Payload { get; } = new();
 
         public override string Name => "NAV_FILTER_BIAS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("usec",
-"Timestamp (microseconds)",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("accel_0",
-"b_f[0]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("accel_1",
-"b_f[1]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("accel_2",
-"b_f[2]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("gyro_0",
-"b_f[0]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("gyro_1",
-"b_f[1]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("gyro_2",
-"b_f[2]",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "NAV_FILTER_BIAS:"
-        + "uint64_t usec;"
-        + "float accel_0;"
-        + "float accel_1;"
-        + "float accel_2;"
-        + "float gyro_0;"
-        + "float gyro_1;"
-        + "float gyro_2;"
-        ;
     }
 
     /// <summary>
@@ -238,18 +212,18 @@ false),
         public byte GetMaxByteSize() => 32; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //Usec
-            sum+=4; //Accel0
-            sum+=4; //Accel1
-            sum+=4; //Accel2
-            sum+=4; //Gyro0
-            sum+=4; //Gyro1
-            sum+=4; //Gyro2
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t usec
+            +4 // float accel_0
+            +4 // float accel_1
+            +4 // float accel_2
+            +4 // float gyro_0
+            +4 // float gyro_1
+            +4 // float gyro_2
+            );
         }
 
 
@@ -277,46 +251,110 @@ false),
             BinSerialize.WriteFloat(ref buffer,Gyro2);
             /* PayloadByteSize = 32 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,UsecField, UsecField.DataType, ref _usec);    
+            FloatType.Accept(visitor,Accel0Field, Accel0Field.DataType, ref _accel0);    
+            FloatType.Accept(visitor,Accel1Field, Accel1Field.DataType, ref _accel1);    
+            FloatType.Accept(visitor,Accel2Field, Accel2Field.DataType, ref _accel2);    
+            FloatType.Accept(visitor,Gyro0Field, Gyro0Field.DataType, ref _gyro0);    
+            FloatType.Accept(visitor,Gyro1Field, Gyro1Field.DataType, ref _gyro1);    
+            FloatType.Accept(visitor,Gyro2Field, Gyro2Field.DataType, ref _gyro2);    
 
+        }
 
         /// <summary>
         /// Timestamp (microseconds)
         /// OriginName: usec, Units: , IsExtended: false
         /// </summary>
-        public ulong Usec { get; set; }
+        public static readonly Field UsecField = new Field.Builder()
+            .Name(nameof(Usec))
+            .Title("usec")
+            .Description("Timestamp (microseconds)")
+
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _usec;
+        public ulong Usec { get => _usec; set => _usec = value; }
         /// <summary>
         /// b_f[0]
         /// OriginName: accel_0, Units: , IsExtended: false
         /// </summary>
-        public float Accel0 { get; set; }
+        public static readonly Field Accel0Field = new Field.Builder()
+            .Name(nameof(Accel0))
+            .Title("accel_0")
+            .Description("b_f[0]")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _accel0;
+        public float Accel0 { get => _accel0; set => _accel0 = value; }
         /// <summary>
         /// b_f[1]
         /// OriginName: accel_1, Units: , IsExtended: false
         /// </summary>
-        public float Accel1 { get; set; }
+        public static readonly Field Accel1Field = new Field.Builder()
+            .Name(nameof(Accel1))
+            .Title("accel_1")
+            .Description("b_f[1]")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _accel1;
+        public float Accel1 { get => _accel1; set => _accel1 = value; }
         /// <summary>
         /// b_f[2]
         /// OriginName: accel_2, Units: , IsExtended: false
         /// </summary>
-        public float Accel2 { get; set; }
+        public static readonly Field Accel2Field = new Field.Builder()
+            .Name(nameof(Accel2))
+            .Title("accel_2")
+            .Description("b_f[2]")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _accel2;
+        public float Accel2 { get => _accel2; set => _accel2 = value; }
         /// <summary>
         /// b_f[0]
         /// OriginName: gyro_0, Units: , IsExtended: false
         /// </summary>
-        public float Gyro0 { get; set; }
+        public static readonly Field Gyro0Field = new Field.Builder()
+            .Name(nameof(Gyro0))
+            .Title("gyro_0")
+            .Description("b_f[0]")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _gyro0;
+        public float Gyro0 { get => _gyro0; set => _gyro0 = value; }
         /// <summary>
         /// b_f[1]
         /// OriginName: gyro_1, Units: , IsExtended: false
         /// </summary>
-        public float Gyro1 { get; set; }
+        public static readonly Field Gyro1Field = new Field.Builder()
+            .Name(nameof(Gyro1))
+            .Title("gyro_1")
+            .Description("b_f[1]")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _gyro1;
+        public float Gyro1 { get => _gyro1; set => _gyro1 = value; }
         /// <summary>
         /// b_f[2]
         /// OriginName: gyro_2, Units: , IsExtended: false
         /// </summary>
-        public float Gyro2 { get; set; }
+        public static readonly Field Gyro2Field = new Field.Builder()
+            .Name(nameof(Gyro2))
+            .Title("gyro_2")
+            .Description("b_f[2]")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _gyro2;
+        public float Gyro2 { get => _gyro2; set => _gyro2 = value; }
     }
     /// <summary>
     /// Complete set of calibration parameters for the radio
@@ -338,74 +376,6 @@ false),
         public override RadioCalibrationPayload Payload { get; } = new();
 
         public override string Name => "RADIO_CALIBRATION";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("aileron",
-"Aileron setpoints: left, center, right",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            3, 
-false),
-            new("elevator",
-"Elevator setpoints: nose down, center, nose up",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            3, 
-false),
-            new("rudder",
-"Rudder setpoints: nose left, center, nose right",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            3, 
-false),
-            new("gyro",
-"Tail gyro mode/gain setpoints: heading hold, rate mode",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            2, 
-false),
-            new("pitch",
-"Pitch curve setpoints (every 25%)",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            5, 
-false),
-            new("throttle",
-"Throttle curve setpoints (every 25%)",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            5, 
-false),
-        ];
-        public const string FormatMessage = "RADIO_CALIBRATION:"
-        + "uint16_t[3] aileron;"
-        + "uint16_t[3] elevator;"
-        + "uint16_t[3] rudder;"
-        + "uint16_t[2] gyro;"
-        + "uint16_t[5] pitch;"
-        + "uint16_t[5] throttle;"
-        ;
     }
 
     /// <summary>
@@ -417,17 +387,17 @@ false),
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=Aileron.Length * 2; //Aileron
-            sum+=Elevator.Length * 2; //Elevator
-            sum+=Rudder.Length * 2; //Rudder
-            sum+=Gyro.Length * 2; //Gyro
-            sum+=Pitch.Length * 2; //Pitch
-            sum+=Throttle.Length * 2; //Throttle
-            return (byte)sum;
+            return (byte)(
+            +Aileron.Length * 2 // uint16_t[3] aileron
+            +Elevator.Length * 2 // uint16_t[3] elevator
+            +Rudder.Length * 2 // uint16_t[3] rudder
+            +Gyro.Length * 2 // uint16_t[2] gyro
+            +Pitch.Length * 2 // uint16_t[5] pitch
+            +Throttle.Length * 2 // uint16_t[5] throttle
+            );
         }
 
 
@@ -457,7 +427,7 @@ false),
                 Gyro[i] = BinSerialize.ReadUShort(ref buffer);
             }
             arraySize = /*ArrayLength*/5 - Math.Max(0,((/*PayloadByteSize*/42 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
-            Pitch = new ushort[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Pitch[i] = BinSerialize.ReadUShort(ref buffer);
@@ -498,47 +468,102 @@ false),
             }
             /* PayloadByteSize = 42 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,AileronField, AileronField.DataType, 3,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Aileron[index]));    
+            ArrayType.Accept(visitor,ElevatorField, ElevatorField.DataType, 3,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Elevator[index]));    
+            ArrayType.Accept(visitor,RudderField, RudderField.DataType, 3,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rudder[index]));    
+            ArrayType.Accept(visitor,GyroField, GyroField.DataType, 2,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Gyro[index]));    
+            ArrayType.Accept(visitor,PitchField, PitchField.DataType, 5,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Pitch[index]));    
+            ArrayType.Accept(visitor,ThrottleField, ThrottleField.DataType, 5,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Throttle[index]));    
 
+        }
 
         /// <summary>
         /// Aileron setpoints: left, center, right
         /// OriginName: aileron, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field AileronField = new Field.Builder()
+            .Name(nameof(Aileron))
+            .Title("aileron")
+            .Description("Aileron setpoints: left, center, right")
+
+            .DataType(new ArrayType(UInt16Type.Default,3))
+        .Build();
         public const int AileronMaxItemsCount = 3;
         public ushort[] Aileron { get; } = new ushort[3];
         /// <summary>
         /// Elevator setpoints: nose down, center, nose up
         /// OriginName: elevator, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ElevatorField = new Field.Builder()
+            .Name(nameof(Elevator))
+            .Title("elevator")
+            .Description("Elevator setpoints: nose down, center, nose up")
+
+            .DataType(new ArrayType(UInt16Type.Default,3))
+        .Build();
         public const int ElevatorMaxItemsCount = 3;
         public ushort[] Elevator { get; } = new ushort[3];
         /// <summary>
         /// Rudder setpoints: nose left, center, nose right
         /// OriginName: rudder, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field RudderField = new Field.Builder()
+            .Name(nameof(Rudder))
+            .Title("rudder")
+            .Description("Rudder setpoints: nose left, center, nose right")
+
+            .DataType(new ArrayType(UInt16Type.Default,3))
+        .Build();
         public const int RudderMaxItemsCount = 3;
         public ushort[] Rudder { get; } = new ushort[3];
         /// <summary>
         /// Tail gyro mode/gain setpoints: heading hold, rate mode
         /// OriginName: gyro, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field GyroField = new Field.Builder()
+            .Name(nameof(Gyro))
+            .Title("gyro")
+            .Description("Tail gyro mode/gain setpoints: heading hold, rate mode")
+
+            .DataType(new ArrayType(UInt16Type.Default,2))
+        .Build();
         public const int GyroMaxItemsCount = 2;
         public ushort[] Gyro { get; } = new ushort[2];
         /// <summary>
         /// Pitch curve setpoints (every 25%)
         /// OriginName: pitch, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Pitch curve setpoints (every 25%)")
+
+            .DataType(new ArrayType(UInt16Type.Default,5))
+        .Build();
         public const int PitchMaxItemsCount = 5;
-        public ushort[] Pitch { get; set; } = new ushort[5];
+        public ushort[] Pitch { get; } = new ushort[5];
         [Obsolete("This method is deprecated. Use GetPitchMaxItemsCount instead.")]
         public byte GetPitchMaxItemsCount() => 5;
         /// <summary>
         /// Throttle curve setpoints (every 25%)
         /// OriginName: throttle, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ThrottleField = new Field.Builder()
+            .Name(nameof(Throttle))
+            .Title("throttle")
+            .Description("Throttle curve setpoints (every 25%)")
+
+            .DataType(new ArrayType(UInt16Type.Default,5))
+        .Build();
         public const int ThrottleMaxItemsCount = 5;
         public ushort[] Throttle { get; } = new ushort[5];
     }
@@ -562,44 +587,6 @@ false),
         public override UalbertaSysStatusPayload Payload { get; } = new();
 
         public override string Name => "UALBERTA_SYS_STATUS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("mode",
-"System mode, see UALBERTA_AUTOPILOT_MODE ENUM",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("nav_mode",
-"Navigation mode, see UALBERTA_NAV_MODE ENUM",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("pilot",
-"Pilot mode, see UALBERTA_PILOT_MODE",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "UALBERTA_SYS_STATUS:"
-        + "uint8_t mode;"
-        + "uint8_t nav_mode;"
-        + "uint8_t pilot;"
-        ;
     }
 
     /// <summary>
@@ -611,14 +598,14 @@ false),
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //Mode
-            sum+=1; //NavMode
-            sum+=1; //Pilot
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t mode
+            +1 // uint8_t nav_mode
+            +1 // uint8_t pilot
+            );
         }
 
 
@@ -638,27 +625,60 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Pilot);
             /* PayloadByteSize = 3 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,ModeField, ModeField.DataType, ref _mode);    
+            UInt8Type.Accept(visitor,NavModeField, NavModeField.DataType, ref _navMode);    
+            UInt8Type.Accept(visitor,PilotField, PilotField.DataType, ref _pilot);    
 
+        }
 
         /// <summary>
         /// System mode, see UALBERTA_AUTOPILOT_MODE ENUM
         /// OriginName: mode, Units: , IsExtended: false
         /// </summary>
-        public byte Mode { get; set; }
+        public static readonly Field ModeField = new Field.Builder()
+            .Name(nameof(Mode))
+            .Title("mode")
+            .Description("System mode, see UALBERTA_AUTOPILOT_MODE ENUM")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _mode;
+        public byte Mode { get => _mode; set => _mode = value; }
         /// <summary>
         /// Navigation mode, see UALBERTA_NAV_MODE ENUM
         /// OriginName: nav_mode, Units: , IsExtended: false
         /// </summary>
-        public byte NavMode { get; set; }
+        public static readonly Field NavModeField = new Field.Builder()
+            .Name(nameof(NavMode))
+            .Title("nav_mode")
+            .Description("Navigation mode, see UALBERTA_NAV_MODE ENUM")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _navMode;
+        public byte NavMode { get => _navMode; set => _navMode = value; }
         /// <summary>
         /// Pilot mode, see UALBERTA_PILOT_MODE
         /// OriginName: pilot, Units: , IsExtended: false
         /// </summary>
-        public byte Pilot { get; set; }
+        public static readonly Field PilotField = new Field.Builder()
+            .Name(nameof(Pilot))
+            .Title("pilot")
+            .Description("Pilot mode, see UALBERTA_PILOT_MODE")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _pilot;
+        public byte Pilot { get => _pilot; set => _pilot = value; }
     }
+
+
+
+
+        
 
 
 #endregion

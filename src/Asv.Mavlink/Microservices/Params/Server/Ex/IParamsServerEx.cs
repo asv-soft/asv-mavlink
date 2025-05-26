@@ -203,6 +203,32 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
         }
     }
     
+    public void OnInt32Command(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, Func<CancellationToken, Task> onEvent)
+    {
+        CheckType(param, MavParamType.MavParamTypeInt32);
+        OnUpdated
+            .Where(x => x.Metadata.Name.Equals(param.Name))
+            .SubscribeAwait(OnNext, AwaitOperation.Drop).RegisterTo(disposeCancel);
+        this[param] = 0;
+        return;
+
+        async ValueTask OnNext(ParamChangedEvent x, CancellationToken cancel)
+        {
+            try
+            {
+                if ((int)x.OldValue == 0 && (int)x.NewValue != 0)
+                {
+                    this[param] = (int)0;
+                    await onEvent(cancel).ConfigureAwait(false);    
+                }
+            }
+            catch (Exception e)
+            {
+                logger.ZLogError(e, $"Error on set {param.Name}={x.NewValue}:{e.Message}");
+            }
+        }
+    }
+    
     public async Task OnU8Bool(IMavParamTypeMetadata param,CancellationToken disposeCancel, ILogger logger, ParamValueCallback<bool> setCallback)
     {
         CheckType(param, MavParamType.MavParamTypeUint8);

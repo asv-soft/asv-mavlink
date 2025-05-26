@@ -1,6 +1,6 @@
 // MIT License
 //
-// Copyright (c) 2024 asv-soft (https://github.com/asv-soft)
+// Copyright (c) 2025 asv-soft (https://github.com/asv-soft)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0-dev.11+22841a669900eb4c494a7e77e2d4b5fee4e474db
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
 
 using System;
 using System.Text;
@@ -29,6 +29,9 @@ using System.Runtime.CompilerServices;
 using System.Collections.Immutable;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.Mavlink.AsvAudio;
+using System.Linq;
+using System.Collections.Generic;
 using Asv.IO;
 
 namespace Asv.Mavlink.Ardupilotmega
@@ -104,6 +107,7 @@ namespace Asv.Mavlink.Ardupilotmega
             src.Add(WaterDepthPacket.MessageId, ()=>new WaterDepthPacket());
             src.Add(McuStatusPacket.MessageId, ()=>new McuStatusPacket());
         }
+ 
     }
 
 #region Enums
@@ -111,7 +115,7 @@ namespace Asv.Mavlink.Ardupilotmega
     /// <summary>
     ///  ACCELCAL_VEHICLE_POS
     /// </summary>
-    public enum AccelcalVehiclePos:uint
+    public enum AccelcalVehiclePos : ulong
     {
         /// <summary>
         /// ACCELCAL_VEHICLE_POS_LEVEL
@@ -146,11 +150,35 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         AccelcalVehiclePosFailed = 16777216,
     }
-
+    public static class AccelcalVehiclePosHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(16777215);
+            yield return converter(16777216);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ACCELCAL_VEHICLE_POS_LEVEL");
+            yield return new EnumValue<T>(converter(2),"ACCELCAL_VEHICLE_POS_LEFT");
+            yield return new EnumValue<T>(converter(3),"ACCELCAL_VEHICLE_POS_RIGHT");
+            yield return new EnumValue<T>(converter(4),"ACCELCAL_VEHICLE_POS_NOSEDOWN");
+            yield return new EnumValue<T>(converter(5),"ACCELCAL_VEHICLE_POS_NOSEUP");
+            yield return new EnumValue<T>(converter(6),"ACCELCAL_VEHICLE_POS_BACK");
+            yield return new EnumValue<T>(converter(16777215),"ACCELCAL_VEHICLE_POS_SUCCESS");
+            yield return new EnumValue<T>(converter(16777216),"ACCELCAL_VEHICLE_POS_FAILED");
+        }
+    }
     /// <summary>
     ///  HEADING_TYPE
     /// </summary>
-    public enum HeadingType:uint
+    public enum HeadingType : ulong
     {
         /// <summary>
         /// HEADING_TYPE_COURSE_OVER_GROUND
@@ -161,11 +189,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         HeadingTypeHeading = 1,
     }
-
+    public static class HeadingTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"HEADING_TYPE_COURSE_OVER_GROUND");
+            yield return new EnumValue<T>(converter(1),"HEADING_TYPE_HEADING");
+        }
+    }
     /// <summary>
     ///  MAV_CMD
     /// </summary>
-    public enum MavCmd:uint
+    public enum MavCmd : ulong
     {
         /// <summary>
         /// Set the distance to be repeated on mission resume
@@ -542,11 +582,83 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         MavCmdExternalPositionEstimate = 43003,
     }
-
+    public static class MavCmdHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(215);
+            yield return converter(216);
+            yield return converter(217);
+            yield return converter(218);
+            yield return converter(83);
+            yield return converter(42000);
+            yield return converter(42001);
+            yield return converter(42002);
+            yield return converter(42003);
+            yield return converter(42004);
+            yield return converter(42005);
+            yield return converter(42007);
+            yield return converter(42424);
+            yield return converter(42425);
+            yield return converter(42426);
+            yield return converter(42429);
+            yield return converter(42428);
+            yield return converter(42427);
+            yield return converter(42501);
+            yield return converter(42502);
+            yield return converter(42503);
+            yield return converter(42505);
+            yield return converter(42650);
+            yield return converter(42651);
+            yield return converter(42700);
+            yield return converter(42701);
+            yield return converter(42702);
+            yield return converter(42703);
+            yield return converter(43000);
+            yield return converter(43001);
+            yield return converter(43002);
+            yield return converter(43003);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(215),"MAV_CMD_DO_SET_RESUME_REPEAT_DIST");
+            yield return new EnumValue<T>(converter(216),"MAV_CMD_DO_SPRAYER");
+            yield return new EnumValue<T>(converter(217),"MAV_CMD_DO_SEND_SCRIPT_MESSAGE");
+            yield return new EnumValue<T>(converter(218),"MAV_CMD_DO_AUX_FUNCTION");
+            yield return new EnumValue<T>(converter(83),"MAV_CMD_NAV_ALTITUDE_WAIT");
+            yield return new EnumValue<T>(converter(42000),"MAV_CMD_POWER_OFF_INITIATED");
+            yield return new EnumValue<T>(converter(42001),"MAV_CMD_SOLO_BTN_FLY_CLICK");
+            yield return new EnumValue<T>(converter(42002),"MAV_CMD_SOLO_BTN_FLY_HOLD");
+            yield return new EnumValue<T>(converter(42003),"MAV_CMD_SOLO_BTN_PAUSE_CLICK");
+            yield return new EnumValue<T>(converter(42004),"MAV_CMD_FIXED_MAG_CAL");
+            yield return new EnumValue<T>(converter(42005),"MAV_CMD_FIXED_MAG_CAL_FIELD");
+            yield return new EnumValue<T>(converter(42007),"MAV_CMD_SET_EKF_SOURCE_SET");
+            yield return new EnumValue<T>(converter(42424),"MAV_CMD_DO_START_MAG_CAL");
+            yield return new EnumValue<T>(converter(42425),"MAV_CMD_DO_ACCEPT_MAG_CAL");
+            yield return new EnumValue<T>(converter(42426),"MAV_CMD_DO_CANCEL_MAG_CAL");
+            yield return new EnumValue<T>(converter(42429),"MAV_CMD_ACCELCAL_VEHICLE_POS");
+            yield return new EnumValue<T>(converter(42428),"MAV_CMD_DO_SEND_BANNER");
+            yield return new EnumValue<T>(converter(42427),"MAV_CMD_SET_FACTORY_TEST_MODE");
+            yield return new EnumValue<T>(converter(42501),"MAV_CMD_GIMBAL_RESET");
+            yield return new EnumValue<T>(converter(42502),"MAV_CMD_GIMBAL_AXIS_CALIBRATION_STATUS");
+            yield return new EnumValue<T>(converter(42503),"MAV_CMD_GIMBAL_REQUEST_AXIS_CALIBRATION");
+            yield return new EnumValue<T>(converter(42505),"MAV_CMD_GIMBAL_FULL_RESET");
+            yield return new EnumValue<T>(converter(42650),"MAV_CMD_FLASH_BOOTLOADER");
+            yield return new EnumValue<T>(converter(42651),"MAV_CMD_BATTERY_RESET");
+            yield return new EnumValue<T>(converter(42700),"MAV_CMD_DEBUG_TRAP");
+            yield return new EnumValue<T>(converter(42701),"MAV_CMD_SCRIPTING");
+            yield return new EnumValue<T>(converter(42702),"MAV_CMD_NAV_SCRIPT_TIME");
+            yield return new EnumValue<T>(converter(42703),"MAV_CMD_NAV_ATTITUDE_TIME");
+            yield return new EnumValue<T>(converter(43000),"MAV_CMD_GUIDED_CHANGE_SPEED");
+            yield return new EnumValue<T>(converter(43001),"MAV_CMD_GUIDED_CHANGE_ALTITUDE");
+            yield return new EnumValue<T>(converter(43002),"MAV_CMD_GUIDED_CHANGE_HEADING");
+            yield return new EnumValue<T>(converter(43003),"MAV_CMD_EXTERNAL_POSITION_ESTIMATE");
+        }
+    }
     /// <summary>
     ///  SCRIPTING_CMD
     /// </summary>
-    public enum ScriptingCmd:uint
+    public enum ScriptingCmd : ulong
     {
         /// <summary>
         /// Start a REPL session.
@@ -569,11 +681,27 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         ScriptingCmdStopAndRestart = 3,
     }
-
+    public static class ScriptingCmdHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"SCRIPTING_CMD_REPL_START");
+            yield return new EnumValue<T>(converter(1),"SCRIPTING_CMD_REPL_STOP");
+            yield return new EnumValue<T>(converter(2),"SCRIPTING_CMD_STOP");
+            yield return new EnumValue<T>(converter(3),"SCRIPTING_CMD_STOP_AND_RESTART");
+        }
+    }
     /// <summary>
     ///  LIMITS_STATE
     /// </summary>
-    public enum LimitsState:uint
+    public enum LimitsState : ulong
     {
         /// <summary>
         /// Pre-initialization.
@@ -606,11 +734,31 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         LimitsRecovered = 5,
     }
-
+    public static class LimitsStateHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"LIMITS_INIT");
+            yield return new EnumValue<T>(converter(1),"LIMITS_DISABLED");
+            yield return new EnumValue<T>(converter(2),"LIMITS_ENABLED");
+            yield return new EnumValue<T>(converter(3),"LIMITS_TRIGGERED");
+            yield return new EnumValue<T>(converter(4),"LIMITS_RECOVERING");
+            yield return new EnumValue<T>(converter(5),"LIMITS_RECOVERED");
+        }
+    }
     /// <summary>
     ///  LIMIT_MODULE
     /// </summary>
-    public enum LimitModule:uint
+    public enum LimitModule : ulong
     {
         /// <summary>
         /// Pre-initialization.
@@ -628,12 +776,26 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         LimitAltitude = 4,
     }
-
+    public static class LimitModuleHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"LIMIT_GPSLOCK");
+            yield return new EnumValue<T>(converter(2),"LIMIT_GEOFENCE");
+            yield return new EnumValue<T>(converter(4),"LIMIT_ALTITUDE");
+        }
+    }
     /// <summary>
     /// Flags in RALLY_POINT message.
     ///  RALLY_FLAGS
     /// </summary>
-    public enum RallyFlags:uint
+    public enum RallyFlags : ulong
     {
         /// <summary>
         /// Flag set when requiring favorable winds for landing.
@@ -646,11 +808,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         LandImmediately = 2,
     }
-
+    public static class RallyFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"FAVORABLE_WIND");
+            yield return new EnumValue<T>(converter(2),"LAND_IMMEDIATELY");
+        }
+    }
     /// <summary>
     ///  CAMERA_STATUS_TYPES
     /// </summary>
-    public enum CameraStatusTypes:uint
+    public enum CameraStatusTypes : ulong
     {
         /// <summary>
         /// Camera heartbeat, announce camera component ID at 1Hz.
@@ -688,11 +862,33 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         CameraStatusTypeLowstorev = 6,
     }
-
+    public static class CameraStatusTypesHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"CAMERA_STATUS_TYPE_HEARTBEAT");
+            yield return new EnumValue<T>(converter(1),"CAMERA_STATUS_TYPE_TRIGGER");
+            yield return new EnumValue<T>(converter(2),"CAMERA_STATUS_TYPE_DISCONNECT");
+            yield return new EnumValue<T>(converter(3),"CAMERA_STATUS_TYPE_ERROR");
+            yield return new EnumValue<T>(converter(4),"CAMERA_STATUS_TYPE_LOWBATT");
+            yield return new EnumValue<T>(converter(5),"CAMERA_STATUS_TYPE_LOWSTORE");
+            yield return new EnumValue<T>(converter(6),"CAMERA_STATUS_TYPE_LOWSTOREV");
+        }
+    }
     /// <summary>
     ///  CAMERA_FEEDBACK_FLAGS
     /// </summary>
-    public enum CameraFeedbackFlags:uint
+    public enum CameraFeedbackFlags : ulong
     {
         /// <summary>
         /// Shooting photos, not video.
@@ -720,11 +916,29 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         CameraFeedbackOpenloop = 4,
     }
-
+    public static class CameraFeedbackFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"CAMERA_FEEDBACK_PHOTO");
+            yield return new EnumValue<T>(converter(1),"CAMERA_FEEDBACK_VIDEO");
+            yield return new EnumValue<T>(converter(2),"CAMERA_FEEDBACK_BADEXPOSURE");
+            yield return new EnumValue<T>(converter(3),"CAMERA_FEEDBACK_CLOSEDLOOP");
+            yield return new EnumValue<T>(converter(4),"CAMERA_FEEDBACK_OPENLOOP");
+        }
+    }
     /// <summary>
     ///  MAV_MODE_GIMBAL
     /// </summary>
-    public enum MavModeGimbal:uint
+    public enum MavModeGimbal : ulong
     {
         /// <summary>
         /// Gimbal is powered on but has not started initializing yet.
@@ -762,11 +976,33 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         MavModeGimbalRateCmdTimeout = 6,
     }
-
+    public static class MavModeGimbalHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_MODE_GIMBAL_UNINITIALIZED");
+            yield return new EnumValue<T>(converter(1),"MAV_MODE_GIMBAL_CALIBRATING_PITCH");
+            yield return new EnumValue<T>(converter(2),"MAV_MODE_GIMBAL_CALIBRATING_ROLL");
+            yield return new EnumValue<T>(converter(3),"MAV_MODE_GIMBAL_CALIBRATING_YAW");
+            yield return new EnumValue<T>(converter(4),"MAV_MODE_GIMBAL_INITIALIZED");
+            yield return new EnumValue<T>(converter(5),"MAV_MODE_GIMBAL_ACTIVE");
+            yield return new EnumValue<T>(converter(6),"MAV_MODE_GIMBAL_RATE_CMD_TIMEOUT");
+        }
+    }
     /// <summary>
     ///  GIMBAL_AXIS
     /// </summary>
-    public enum GimbalAxis:uint
+    public enum GimbalAxis : ulong
     {
         /// <summary>
         /// Gimbal yaw axis.
@@ -784,11 +1020,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GimbalAxisRoll = 2,
     }
-
+    public static class GimbalAxisHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GIMBAL_AXIS_YAW");
+            yield return new EnumValue<T>(converter(1),"GIMBAL_AXIS_PITCH");
+            yield return new EnumValue<T>(converter(2),"GIMBAL_AXIS_ROLL");
+        }
+    }
     /// <summary>
     ///  GIMBAL_AXIS_CALIBRATION_STATUS
     /// </summary>
-    public enum GimbalAxisCalibrationStatus:uint
+    public enum GimbalAxisCalibrationStatus : ulong
     {
         /// <summary>
         /// Axis calibration is in progress.
@@ -806,11 +1056,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GimbalAxisCalibrationStatusFailed = 2,
     }
-
+    public static class GimbalAxisCalibrationStatusHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GIMBAL_AXIS_CALIBRATION_STATUS_IN_PROGRESS");
+            yield return new EnumValue<T>(converter(1),"GIMBAL_AXIS_CALIBRATION_STATUS_SUCCEEDED");
+            yield return new EnumValue<T>(converter(2),"GIMBAL_AXIS_CALIBRATION_STATUS_FAILED");
+        }
+    }
     /// <summary>
     ///  GIMBAL_AXIS_CALIBRATION_REQUIRED
     /// </summary>
-    public enum GimbalAxisCalibrationRequired:uint
+    public enum GimbalAxisCalibrationRequired : ulong
     {
         /// <summary>
         /// Whether or not this axis requires calibration is unknown at this time.
@@ -828,11 +1092,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GimbalAxisCalibrationRequiredFalse = 2,
     }
-
+    public static class GimbalAxisCalibrationRequiredHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GIMBAL_AXIS_CALIBRATION_REQUIRED_UNKNOWN");
+            yield return new EnumValue<T>(converter(1),"GIMBAL_AXIS_CALIBRATION_REQUIRED_TRUE");
+            yield return new EnumValue<T>(converter(2),"GIMBAL_AXIS_CALIBRATION_REQUIRED_FALSE");
+        }
+    }
     /// <summary>
     ///  GOPRO_HEARTBEAT_STATUS
     /// </summary>
-    public enum GoproHeartbeatStatus:uint
+    public enum GoproHeartbeatStatus : ulong
     {
         /// <summary>
         /// No GoPro connected.
@@ -855,11 +1133,27 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproHeartbeatStatusError = 3,
     }
-
+    public static class GoproHeartbeatStatusHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_HEARTBEAT_STATUS_DISCONNECTED");
+            yield return new EnumValue<T>(converter(1),"GOPRO_HEARTBEAT_STATUS_INCOMPATIBLE");
+            yield return new EnumValue<T>(converter(2),"GOPRO_HEARTBEAT_STATUS_CONNECTED");
+            yield return new EnumValue<T>(converter(3),"GOPRO_HEARTBEAT_STATUS_ERROR");
+        }
+    }
     /// <summary>
     ///  GOPRO_HEARTBEAT_FLAGS
     /// </summary>
-    public enum GoproHeartbeatFlags:uint
+    public enum GoproHeartbeatFlags : ulong
     {
         /// <summary>
         /// GoPro is currently recording.
@@ -867,11 +1161,21 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproFlagRecording = 1,
     }
-
+    public static class GoproHeartbeatFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"GOPRO_FLAG_RECORDING");
+        }
+    }
     /// <summary>
     ///  GOPRO_REQUEST_STATUS
     /// </summary>
-    public enum GoproRequestStatus:uint
+    public enum GoproRequestStatus : ulong
     {
         /// <summary>
         /// The write message with ID indicated succeeded.
@@ -884,11 +1188,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproRequestFailed = 1,
     }
-
+    public static class GoproRequestStatusHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_REQUEST_SUCCESS");
+            yield return new EnumValue<T>(converter(1),"GOPRO_REQUEST_FAILED");
+        }
+    }
     /// <summary>
     ///  GOPRO_COMMAND
     /// </summary>
-    public enum GoproCommand:uint
+    public enum GoproCommand : ulong
     {
         /// <summary>
         /// (Get/Set).
@@ -976,11 +1292,53 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproCommandCharging = 16,
     }
-
+    public static class GoproCommandHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+            yield return converter(16);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_COMMAND_POWER");
+            yield return new EnumValue<T>(converter(1),"GOPRO_COMMAND_CAPTURE_MODE");
+            yield return new EnumValue<T>(converter(2),"GOPRO_COMMAND_SHUTTER");
+            yield return new EnumValue<T>(converter(3),"GOPRO_COMMAND_BATTERY");
+            yield return new EnumValue<T>(converter(4),"GOPRO_COMMAND_MODEL");
+            yield return new EnumValue<T>(converter(5),"GOPRO_COMMAND_VIDEO_SETTINGS");
+            yield return new EnumValue<T>(converter(6),"GOPRO_COMMAND_LOW_LIGHT");
+            yield return new EnumValue<T>(converter(7),"GOPRO_COMMAND_PHOTO_RESOLUTION");
+            yield return new EnumValue<T>(converter(8),"GOPRO_COMMAND_PHOTO_BURST_RATE");
+            yield return new EnumValue<T>(converter(9),"GOPRO_COMMAND_PROTUNE");
+            yield return new EnumValue<T>(converter(10),"GOPRO_COMMAND_PROTUNE_WHITE_BALANCE");
+            yield return new EnumValue<T>(converter(11),"GOPRO_COMMAND_PROTUNE_COLOUR");
+            yield return new EnumValue<T>(converter(12),"GOPRO_COMMAND_PROTUNE_GAIN");
+            yield return new EnumValue<T>(converter(13),"GOPRO_COMMAND_PROTUNE_SHARPNESS");
+            yield return new EnumValue<T>(converter(14),"GOPRO_COMMAND_PROTUNE_EXPOSURE");
+            yield return new EnumValue<T>(converter(15),"GOPRO_COMMAND_TIME");
+            yield return new EnumValue<T>(converter(16),"GOPRO_COMMAND_CHARGING");
+        }
+    }
     /// <summary>
     ///  GOPRO_CAPTURE_MODE
     /// </summary>
-    public enum GoproCaptureMode:uint
+    public enum GoproCaptureMode : ulong
     {
         /// <summary>
         /// Video mode.
@@ -1023,11 +1381,35 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproCaptureModeUnknown = 255,
     }
-
+    public static class GoproCaptureModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(255);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_CAPTURE_MODE_VIDEO");
+            yield return new EnumValue<T>(converter(1),"GOPRO_CAPTURE_MODE_PHOTO");
+            yield return new EnumValue<T>(converter(2),"GOPRO_CAPTURE_MODE_BURST");
+            yield return new EnumValue<T>(converter(3),"GOPRO_CAPTURE_MODE_TIME_LAPSE");
+            yield return new EnumValue<T>(converter(4),"GOPRO_CAPTURE_MODE_MULTI_SHOT");
+            yield return new EnumValue<T>(converter(5),"GOPRO_CAPTURE_MODE_PLAYBACK");
+            yield return new EnumValue<T>(converter(6),"GOPRO_CAPTURE_MODE_SETUP");
+            yield return new EnumValue<T>(converter(255),"GOPRO_CAPTURE_MODE_UNKNOWN");
+        }
+    }
     /// <summary>
     ///  GOPRO_RESOLUTION
     /// </summary>
-    public enum GoproResolution:uint
+    public enum GoproResolution : ulong
     {
         /// <summary>
         /// 848 x 480 (480p).
@@ -1100,11 +1482,47 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproResolution4kSuperview = 13,
     }
-
+    public static class GoproResolutionHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_RESOLUTION_480p");
+            yield return new EnumValue<T>(converter(1),"GOPRO_RESOLUTION_720p");
+            yield return new EnumValue<T>(converter(2),"GOPRO_RESOLUTION_960p");
+            yield return new EnumValue<T>(converter(3),"GOPRO_RESOLUTION_1080p");
+            yield return new EnumValue<T>(converter(4),"GOPRO_RESOLUTION_1440p");
+            yield return new EnumValue<T>(converter(5),"GOPRO_RESOLUTION_2_7k_17_9");
+            yield return new EnumValue<T>(converter(6),"GOPRO_RESOLUTION_2_7k_16_9");
+            yield return new EnumValue<T>(converter(7),"GOPRO_RESOLUTION_2_7k_4_3");
+            yield return new EnumValue<T>(converter(8),"GOPRO_RESOLUTION_4k_16_9");
+            yield return new EnumValue<T>(converter(9),"GOPRO_RESOLUTION_4k_17_9");
+            yield return new EnumValue<T>(converter(10),"GOPRO_RESOLUTION_720p_SUPERVIEW");
+            yield return new EnumValue<T>(converter(11),"GOPRO_RESOLUTION_1080p_SUPERVIEW");
+            yield return new EnumValue<T>(converter(12),"GOPRO_RESOLUTION_2_7k_SUPERVIEW");
+            yield return new EnumValue<T>(converter(13),"GOPRO_RESOLUTION_4k_SUPERVIEW");
+        }
+    }
     /// <summary>
     ///  GOPRO_FRAME_RATE
     /// </summary>
-    public enum GoproFrameRate:uint
+    public enum GoproFrameRate : ulong
     {
         /// <summary>
         /// 12 FPS.
@@ -1177,11 +1595,47 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproFrameRate125 = 13,
     }
-
+    public static class GoproFrameRateHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_FRAME_RATE_12");
+            yield return new EnumValue<T>(converter(1),"GOPRO_FRAME_RATE_15");
+            yield return new EnumValue<T>(converter(2),"GOPRO_FRAME_RATE_24");
+            yield return new EnumValue<T>(converter(3),"GOPRO_FRAME_RATE_25");
+            yield return new EnumValue<T>(converter(4),"GOPRO_FRAME_RATE_30");
+            yield return new EnumValue<T>(converter(5),"GOPRO_FRAME_RATE_48");
+            yield return new EnumValue<T>(converter(6),"GOPRO_FRAME_RATE_50");
+            yield return new EnumValue<T>(converter(7),"GOPRO_FRAME_RATE_60");
+            yield return new EnumValue<T>(converter(8),"GOPRO_FRAME_RATE_80");
+            yield return new EnumValue<T>(converter(9),"GOPRO_FRAME_RATE_90");
+            yield return new EnumValue<T>(converter(10),"GOPRO_FRAME_RATE_100");
+            yield return new EnumValue<T>(converter(11),"GOPRO_FRAME_RATE_120");
+            yield return new EnumValue<T>(converter(12),"GOPRO_FRAME_RATE_240");
+            yield return new EnumValue<T>(converter(13),"GOPRO_FRAME_RATE_12_5");
+        }
+    }
     /// <summary>
     ///  GOPRO_FIELD_OF_VIEW
     /// </summary>
-    public enum GoproFieldOfView:uint
+    public enum GoproFieldOfView : ulong
     {
         /// <summary>
         /// 0x00: Wide.
@@ -1199,11 +1653,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproFieldOfViewNarrow = 2,
     }
-
+    public static class GoproFieldOfViewHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_FIELD_OF_VIEW_WIDE");
+            yield return new EnumValue<T>(converter(1),"GOPRO_FIELD_OF_VIEW_MEDIUM");
+            yield return new EnumValue<T>(converter(2),"GOPRO_FIELD_OF_VIEW_NARROW");
+        }
+    }
     /// <summary>
     ///  GOPRO_VIDEO_SETTINGS_FLAGS
     /// </summary>
-    public enum GoproVideoSettingsFlags:uint
+    public enum GoproVideoSettingsFlags : ulong
     {
         /// <summary>
         /// 0=NTSC, 1=PAL.
@@ -1211,11 +1679,21 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproVideoSettingsTvMode = 1,
     }
-
+    public static class GoproVideoSettingsFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"GOPRO_VIDEO_SETTINGS_TV_MODE");
+        }
+    }
     /// <summary>
     ///  GOPRO_PHOTO_RESOLUTION
     /// </summary>
-    public enum GoproPhotoResolution:uint
+    public enum GoproPhotoResolution : ulong
     {
         /// <summary>
         /// 5MP Medium.
@@ -1243,11 +1721,29 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproPhotoResolution12mpWide = 4,
     }
-
+    public static class GoproPhotoResolutionHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PHOTO_RESOLUTION_5MP_MEDIUM");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PHOTO_RESOLUTION_7MP_MEDIUM");
+            yield return new EnumValue<T>(converter(2),"GOPRO_PHOTO_RESOLUTION_7MP_WIDE");
+            yield return new EnumValue<T>(converter(3),"GOPRO_PHOTO_RESOLUTION_10MP_WIDE");
+            yield return new EnumValue<T>(converter(4),"GOPRO_PHOTO_RESOLUTION_12MP_WIDE");
+        }
+    }
     /// <summary>
     ///  GOPRO_PROTUNE_WHITE_BALANCE
     /// </summary>
-    public enum GoproProtuneWhiteBalance:uint
+    public enum GoproProtuneWhiteBalance : ulong
     {
         /// <summary>
         /// Auto.
@@ -1275,11 +1771,29 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproProtuneWhiteBalanceRaw = 4,
     }
-
+    public static class GoproProtuneWhiteBalanceHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PROTUNE_WHITE_BALANCE_AUTO");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PROTUNE_WHITE_BALANCE_3000K");
+            yield return new EnumValue<T>(converter(2),"GOPRO_PROTUNE_WHITE_BALANCE_5500K");
+            yield return new EnumValue<T>(converter(3),"GOPRO_PROTUNE_WHITE_BALANCE_6500K");
+            yield return new EnumValue<T>(converter(4),"GOPRO_PROTUNE_WHITE_BALANCE_RAW");
+        }
+    }
     /// <summary>
     ///  GOPRO_PROTUNE_COLOUR
     /// </summary>
-    public enum GoproProtuneColour:uint
+    public enum GoproProtuneColour : ulong
     {
         /// <summary>
         /// Auto.
@@ -1292,11 +1806,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproProtuneColourNeutral = 1,
     }
-
+    public static class GoproProtuneColourHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PROTUNE_COLOUR_STANDARD");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PROTUNE_COLOUR_NEUTRAL");
+        }
+    }
     /// <summary>
     ///  GOPRO_PROTUNE_GAIN
     /// </summary>
-    public enum GoproProtuneGain:uint
+    public enum GoproProtuneGain : ulong
     {
         /// <summary>
         /// ISO 400.
@@ -1324,11 +1850,29 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproProtuneGain6400 = 4,
     }
-
+    public static class GoproProtuneGainHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PROTUNE_GAIN_400");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PROTUNE_GAIN_800");
+            yield return new EnumValue<T>(converter(2),"GOPRO_PROTUNE_GAIN_1600");
+            yield return new EnumValue<T>(converter(3),"GOPRO_PROTUNE_GAIN_3200");
+            yield return new EnumValue<T>(converter(4),"GOPRO_PROTUNE_GAIN_6400");
+        }
+    }
     /// <summary>
     ///  GOPRO_PROTUNE_SHARPNESS
     /// </summary>
-    public enum GoproProtuneSharpness:uint
+    public enum GoproProtuneSharpness : ulong
     {
         /// <summary>
         /// Low Sharpness.
@@ -1346,11 +1890,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproProtuneSharpnessHigh = 2,
     }
-
+    public static class GoproProtuneSharpnessHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PROTUNE_SHARPNESS_LOW");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PROTUNE_SHARPNESS_MEDIUM");
+            yield return new EnumValue<T>(converter(2),"GOPRO_PROTUNE_SHARPNESS_HIGH");
+        }
+    }
     /// <summary>
     ///  GOPRO_PROTUNE_EXPOSURE
     /// </summary>
-    public enum GoproProtuneExposure:uint
+    public enum GoproProtuneExposure : ulong
     {
         /// <summary>
         /// -5.0 EV (Hero 3+ Only).
@@ -1458,11 +2016,61 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproProtuneExposurePos50 = 20,
     }
-
+    public static class GoproProtuneExposureHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+            yield return converter(16);
+            yield return converter(17);
+            yield return converter(18);
+            yield return converter(19);
+            yield return converter(20);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_PROTUNE_EXPOSURE_NEG_5_0");
+            yield return new EnumValue<T>(converter(1),"GOPRO_PROTUNE_EXPOSURE_NEG_4_5");
+            yield return new EnumValue<T>(converter(2),"GOPRO_PROTUNE_EXPOSURE_NEG_4_0");
+            yield return new EnumValue<T>(converter(3),"GOPRO_PROTUNE_EXPOSURE_NEG_3_5");
+            yield return new EnumValue<T>(converter(4),"GOPRO_PROTUNE_EXPOSURE_NEG_3_0");
+            yield return new EnumValue<T>(converter(5),"GOPRO_PROTUNE_EXPOSURE_NEG_2_5");
+            yield return new EnumValue<T>(converter(6),"GOPRO_PROTUNE_EXPOSURE_NEG_2_0");
+            yield return new EnumValue<T>(converter(7),"GOPRO_PROTUNE_EXPOSURE_NEG_1_5");
+            yield return new EnumValue<T>(converter(8),"GOPRO_PROTUNE_EXPOSURE_NEG_1_0");
+            yield return new EnumValue<T>(converter(9),"GOPRO_PROTUNE_EXPOSURE_NEG_0_5");
+            yield return new EnumValue<T>(converter(10),"GOPRO_PROTUNE_EXPOSURE_ZERO");
+            yield return new EnumValue<T>(converter(11),"GOPRO_PROTUNE_EXPOSURE_POS_0_5");
+            yield return new EnumValue<T>(converter(12),"GOPRO_PROTUNE_EXPOSURE_POS_1_0");
+            yield return new EnumValue<T>(converter(13),"GOPRO_PROTUNE_EXPOSURE_POS_1_5");
+            yield return new EnumValue<T>(converter(14),"GOPRO_PROTUNE_EXPOSURE_POS_2_0");
+            yield return new EnumValue<T>(converter(15),"GOPRO_PROTUNE_EXPOSURE_POS_2_5");
+            yield return new EnumValue<T>(converter(16),"GOPRO_PROTUNE_EXPOSURE_POS_3_0");
+            yield return new EnumValue<T>(converter(17),"GOPRO_PROTUNE_EXPOSURE_POS_3_5");
+            yield return new EnumValue<T>(converter(18),"GOPRO_PROTUNE_EXPOSURE_POS_4_0");
+            yield return new EnumValue<T>(converter(19),"GOPRO_PROTUNE_EXPOSURE_POS_4_5");
+            yield return new EnumValue<T>(converter(20),"GOPRO_PROTUNE_EXPOSURE_POS_5_0");
+        }
+    }
     /// <summary>
     ///  GOPRO_CHARGING
     /// </summary>
-    public enum GoproCharging:uint
+    public enum GoproCharging : ulong
     {
         /// <summary>
         /// Charging disabled.
@@ -1475,11 +2083,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproChargingEnabled = 1,
     }
-
+    public static class GoproChargingHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_CHARGING_DISABLED");
+            yield return new EnumValue<T>(converter(1),"GOPRO_CHARGING_ENABLED");
+        }
+    }
     /// <summary>
     ///  GOPRO_MODEL
     /// </summary>
-    public enum GoproModel:uint
+    public enum GoproModel : ulong
     {
         /// <summary>
         /// Unknown gopro model.
@@ -1507,11 +2127,29 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproModelHero4Black = 4,
     }
-
+    public static class GoproModelHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_MODEL_UNKNOWN");
+            yield return new EnumValue<T>(converter(1),"GOPRO_MODEL_HERO_3_PLUS_SILVER");
+            yield return new EnumValue<T>(converter(2),"GOPRO_MODEL_HERO_3_PLUS_BLACK");
+            yield return new EnumValue<T>(converter(3),"GOPRO_MODEL_HERO_4_SILVER");
+            yield return new EnumValue<T>(converter(4),"GOPRO_MODEL_HERO_4_BLACK");
+        }
+    }
     /// <summary>
     ///  GOPRO_BURST_RATE
     /// </summary>
-    public enum GoproBurstRate:uint
+    public enum GoproBurstRate : ulong
     {
         /// <summary>
         /// 3 Shots / 1 Second.
@@ -1559,11 +2197,37 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         GoproBurstRate30In6Second = 8,
     }
-
+    public static class GoproBurstRateHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"GOPRO_BURST_RATE_3_IN_1_SECOND");
+            yield return new EnumValue<T>(converter(1),"GOPRO_BURST_RATE_5_IN_1_SECOND");
+            yield return new EnumValue<T>(converter(2),"GOPRO_BURST_RATE_10_IN_1_SECOND");
+            yield return new EnumValue<T>(converter(3),"GOPRO_BURST_RATE_10_IN_2_SECOND");
+            yield return new EnumValue<T>(converter(4),"GOPRO_BURST_RATE_10_IN_3_SECOND");
+            yield return new EnumValue<T>(converter(5),"GOPRO_BURST_RATE_30_IN_1_SECOND");
+            yield return new EnumValue<T>(converter(6),"GOPRO_BURST_RATE_30_IN_2_SECOND");
+            yield return new EnumValue<T>(converter(7),"GOPRO_BURST_RATE_30_IN_3_SECOND");
+            yield return new EnumValue<T>(converter(8),"GOPRO_BURST_RATE_30_IN_6_SECOND");
+        }
+    }
     /// <summary>
     ///  MAV_CMD_DO_AUX_FUNCTION_SWITCH_LEVEL
     /// </summary>
-    public enum MavCmdDoAuxFunctionSwitchLevel:uint
+    public enum MavCmdDoAuxFunctionSwitchLevel : ulong
     {
         /// <summary>
         /// Switch Low.
@@ -1581,11 +2245,25 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         MavCmdDoAuxFunctionSwitchLevelHigh = 2,
     }
-
+    public static class MavCmdDoAuxFunctionSwitchLevelHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_CMD_DO_AUX_FUNCTION_SWITCH_LEVEL_LOW");
+            yield return new EnumValue<T>(converter(1),"MAV_CMD_DO_AUX_FUNCTION_SWITCH_LEVEL_MIDDLE");
+            yield return new EnumValue<T>(converter(2),"MAV_CMD_DO_AUX_FUNCTION_SWITCH_LEVEL_HIGH");
+        }
+    }
     /// <summary>
     ///  LED_CONTROL_PATTERN
     /// </summary>
-    public enum LedControlPattern:uint
+    public enum LedControlPattern : ulong
     {
         /// <summary>
         /// LED patterns off (return control to regular vehicle control).
@@ -1603,12 +2281,26 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         LedControlPatternCustom = 255,
     }
-
+    public static class LedControlPatternHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(255);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"LED_CONTROL_PATTERN_OFF");
+            yield return new EnumValue<T>(converter(1),"LED_CONTROL_PATTERN_FIRMWAREUPDATE");
+            yield return new EnumValue<T>(converter(255),"LED_CONTROL_PATTERN_CUSTOM");
+        }
+    }
     /// <summary>
     /// Flags in EKF_STATUS message.
     ///  EKF_STATUS_FLAGS
     /// </summary>
-    public enum EkfStatusFlags:uint
+    public enum EkfStatusFlags : ulong
     {
         /// <summary>
         /// Set if EKF's attitude estimate is good.
@@ -1666,11 +2358,41 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         EkfUninitialized = 1024,
     }
-
+    public static class EkfStatusFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+            yield return converter(256);
+            yield return converter(512);
+            yield return converter(1024);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"EKF_ATTITUDE");
+            yield return new EnumValue<T>(converter(2),"EKF_VELOCITY_HORIZ");
+            yield return new EnumValue<T>(converter(4),"EKF_VELOCITY_VERT");
+            yield return new EnumValue<T>(converter(8),"EKF_POS_HORIZ_REL");
+            yield return new EnumValue<T>(converter(16),"EKF_POS_HORIZ_ABS");
+            yield return new EnumValue<T>(converter(32),"EKF_POS_VERT_ABS");
+            yield return new EnumValue<T>(converter(64),"EKF_POS_VERT_AGL");
+            yield return new EnumValue<T>(converter(128),"EKF_CONST_POS_MODE");
+            yield return new EnumValue<T>(converter(256),"EKF_PRED_POS_HORIZ_REL");
+            yield return new EnumValue<T>(converter(512),"EKF_PRED_POS_HORIZ_ABS");
+            yield return new EnumValue<T>(converter(1024),"EKF_UNINITIALIZED");
+        }
+    }
     /// <summary>
     ///  PID_TUNING_AXIS
     /// </summary>
-    public enum PidTuningAxis:uint
+    public enum PidTuningAxis : ulong
     {
         /// <summary>
         /// PID_TUNING_ROLL
@@ -1697,12 +2419,32 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         PidTuningLanding = 6,
     }
-
+    public static class PidTuningAxisHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"PID_TUNING_ROLL");
+            yield return new EnumValue<T>(converter(2),"PID_TUNING_PITCH");
+            yield return new EnumValue<T>(converter(3),"PID_TUNING_YAW");
+            yield return new EnumValue<T>(converter(4),"PID_TUNING_ACCZ");
+            yield return new EnumValue<T>(converter(5),"PID_TUNING_STEER");
+            yield return new EnumValue<T>(converter(6),"PID_TUNING_LANDING");
+        }
+    }
     /// <summary>
     /// Special ACK block numbers control activation of dataflash log streaming.
     ///  MAV_REMOTE_LOG_DATA_BLOCK_COMMANDS
     /// </summary>
-    public enum MavRemoteLogDataBlockCommands:uint
+    public enum MavRemoteLogDataBlockCommands : ulong
     {
         /// <summary>
         /// UAV to stop sending DataFlash blocks.
@@ -1715,12 +2457,24 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         MavRemoteLogDataBlockStart = 2147483646,
     }
-
+    public static class MavRemoteLogDataBlockCommandsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(2147483645);
+            yield return converter(2147483646);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(2147483645),"MAV_REMOTE_LOG_DATA_BLOCK_STOP");
+            yield return new EnumValue<T>(converter(2147483646),"MAV_REMOTE_LOG_DATA_BLOCK_START");
+        }
+    }
     /// <summary>
     /// Possible remote log data block statuses.
     ///  MAV_REMOTE_LOG_DATA_BLOCK_STATUSES
     /// </summary>
-    public enum MavRemoteLogDataBlockStatuses:uint
+    public enum MavRemoteLogDataBlockStatuses : ulong
     {
         /// <summary>
         /// This block has NOT been received.
@@ -1733,12 +2487,24 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         MavRemoteLogDataBlockAck = 1,
     }
-
+    public static class MavRemoteLogDataBlockStatusesHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"MAV_REMOTE_LOG_DATA_BLOCK_NACK");
+            yield return new EnumValue<T>(converter(1),"MAV_REMOTE_LOG_DATA_BLOCK_ACK");
+        }
+    }
     /// <summary>
     /// Bus types for device operations.
     ///  DEVICE_OP_BUSTYPE
     /// </summary>
-    public enum DeviceOpBustype:uint
+    public enum DeviceOpBustype : ulong
     {
         /// <summary>
         /// I2C Device operation.
@@ -1751,12 +2517,24 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         DeviceOpBustypeSpi = 1,
     }
-
+    public static class DeviceOpBustypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"DEVICE_OP_BUSTYPE_I2C");
+            yield return new EnumValue<T>(converter(1),"DEVICE_OP_BUSTYPE_SPI");
+        }
+    }
     /// <summary>
     /// Deepstall flight stage.
     ///  DEEPSTALL_STAGE
     /// </summary>
-    public enum DeepstallStage:uint
+    public enum DeepstallStage : ulong
     {
         /// <summary>
         /// Flying to the landing point.
@@ -1794,12 +2572,34 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         DeepstallStageLand = 6,
     }
-
+    public static class DeepstallStageHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"DEEPSTALL_STAGE_FLY_TO_LANDING");
+            yield return new EnumValue<T>(converter(1),"DEEPSTALL_STAGE_ESTIMATE_WIND");
+            yield return new EnumValue<T>(converter(2),"DEEPSTALL_STAGE_WAIT_FOR_BREAKOUT");
+            yield return new EnumValue<T>(converter(3),"DEEPSTALL_STAGE_FLY_TO_ARC");
+            yield return new EnumValue<T>(converter(4),"DEEPSTALL_STAGE_ARC");
+            yield return new EnumValue<T>(converter(5),"DEEPSTALL_STAGE_APPROACH");
+            yield return new EnumValue<T>(converter(6),"DEEPSTALL_STAGE_LAND");
+        }
+    }
     /// <summary>
     /// A mapping of plane flight modes for custom_mode field of heartbeat.
     ///  PLANE_MODE
     /// </summary>
-    public enum PlaneMode:uint
+    public enum PlaneMode : ulong
     {
         /// <summary>
         /// PLANE_MODE_MANUAL
@@ -1898,12 +2698,68 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         PlaneModeThermal = 24,
     }
-
+    public static class PlaneModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+            yield return converter(16);
+            yield return converter(17);
+            yield return converter(18);
+            yield return converter(19);
+            yield return converter(20);
+            yield return converter(21);
+            yield return converter(22);
+            yield return converter(23);
+            yield return converter(24);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"PLANE_MODE_MANUAL");
+            yield return new EnumValue<T>(converter(1),"PLANE_MODE_CIRCLE");
+            yield return new EnumValue<T>(converter(2),"PLANE_MODE_STABILIZE");
+            yield return new EnumValue<T>(converter(3),"PLANE_MODE_TRAINING");
+            yield return new EnumValue<T>(converter(4),"PLANE_MODE_ACRO");
+            yield return new EnumValue<T>(converter(5),"PLANE_MODE_FLY_BY_WIRE_A");
+            yield return new EnumValue<T>(converter(6),"PLANE_MODE_FLY_BY_WIRE_B");
+            yield return new EnumValue<T>(converter(7),"PLANE_MODE_CRUISE");
+            yield return new EnumValue<T>(converter(8),"PLANE_MODE_AUTOTUNE");
+            yield return new EnumValue<T>(converter(10),"PLANE_MODE_AUTO");
+            yield return new EnumValue<T>(converter(11),"PLANE_MODE_RTL");
+            yield return new EnumValue<T>(converter(12),"PLANE_MODE_LOITER");
+            yield return new EnumValue<T>(converter(13),"PLANE_MODE_TAKEOFF");
+            yield return new EnumValue<T>(converter(14),"PLANE_MODE_AVOID_ADSB");
+            yield return new EnumValue<T>(converter(15),"PLANE_MODE_GUIDED");
+            yield return new EnumValue<T>(converter(16),"PLANE_MODE_INITIALIZING");
+            yield return new EnumValue<T>(converter(17),"PLANE_MODE_QSTABILIZE");
+            yield return new EnumValue<T>(converter(18),"PLANE_MODE_QHOVER");
+            yield return new EnumValue<T>(converter(19),"PLANE_MODE_QLOITER");
+            yield return new EnumValue<T>(converter(20),"PLANE_MODE_QLAND");
+            yield return new EnumValue<T>(converter(21),"PLANE_MODE_QRTL");
+            yield return new EnumValue<T>(converter(22),"PLANE_MODE_QAUTOTUNE");
+            yield return new EnumValue<T>(converter(23),"PLANE_MODE_QACRO");
+            yield return new EnumValue<T>(converter(24),"PLANE_MODE_THERMAL");
+        }
+    }
     /// <summary>
     /// A mapping of copter flight modes for custom_mode field of heartbeat.
     ///  COPTER_MODE
     /// </summary>
-    public enum CopterMode:uint
+    public enum CopterMode : ulong
     {
         /// <summary>
         /// COPTER_MODE_STABILIZE
@@ -2006,12 +2862,70 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         CopterModeAutoRtl = 27,
     }
-
+    public static class CopterModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(9);
+            yield return converter(11);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+            yield return converter(16);
+            yield return converter(17);
+            yield return converter(18);
+            yield return converter(19);
+            yield return converter(20);
+            yield return converter(21);
+            yield return converter(22);
+            yield return converter(23);
+            yield return converter(24);
+            yield return converter(25);
+            yield return converter(26);
+            yield return converter(27);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"COPTER_MODE_STABILIZE");
+            yield return new EnumValue<T>(converter(1),"COPTER_MODE_ACRO");
+            yield return new EnumValue<T>(converter(2),"COPTER_MODE_ALT_HOLD");
+            yield return new EnumValue<T>(converter(3),"COPTER_MODE_AUTO");
+            yield return new EnumValue<T>(converter(4),"COPTER_MODE_GUIDED");
+            yield return new EnumValue<T>(converter(5),"COPTER_MODE_LOITER");
+            yield return new EnumValue<T>(converter(6),"COPTER_MODE_RTL");
+            yield return new EnumValue<T>(converter(7),"COPTER_MODE_CIRCLE");
+            yield return new EnumValue<T>(converter(9),"COPTER_MODE_LAND");
+            yield return new EnumValue<T>(converter(11),"COPTER_MODE_DRIFT");
+            yield return new EnumValue<T>(converter(13),"COPTER_MODE_SPORT");
+            yield return new EnumValue<T>(converter(14),"COPTER_MODE_FLIP");
+            yield return new EnumValue<T>(converter(15),"COPTER_MODE_AUTOTUNE");
+            yield return new EnumValue<T>(converter(16),"COPTER_MODE_POSHOLD");
+            yield return new EnumValue<T>(converter(17),"COPTER_MODE_BRAKE");
+            yield return new EnumValue<T>(converter(18),"COPTER_MODE_THROW");
+            yield return new EnumValue<T>(converter(19),"COPTER_MODE_AVOID_ADSB");
+            yield return new EnumValue<T>(converter(20),"COPTER_MODE_GUIDED_NOGPS");
+            yield return new EnumValue<T>(converter(21),"COPTER_MODE_SMART_RTL");
+            yield return new EnumValue<T>(converter(22),"COPTER_MODE_FLOWHOLD");
+            yield return new EnumValue<T>(converter(23),"COPTER_MODE_FOLLOW");
+            yield return new EnumValue<T>(converter(24),"COPTER_MODE_ZIGZAG");
+            yield return new EnumValue<T>(converter(25),"COPTER_MODE_SYSTEMID");
+            yield return new EnumValue<T>(converter(26),"COPTER_MODE_AUTOROTATE");
+            yield return new EnumValue<T>(converter(27),"COPTER_MODE_AUTO_RTL");
+        }
+    }
     /// <summary>
     /// A mapping of sub flight modes for custom_mode field of heartbeat.
     ///  SUB_MODE
     /// </summary>
-    public enum SubMode:uint
+    public enum SubMode : ulong
     {
         /// <summary>
         /// SUB_MODE_STABILIZE
@@ -2050,12 +2964,38 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         SubModeManual = 19,
     }
-
+    public static class SubModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(7);
+            yield return converter(9);
+            yield return converter(16);
+            yield return converter(19);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"SUB_MODE_STABILIZE");
+            yield return new EnumValue<T>(converter(1),"SUB_MODE_ACRO");
+            yield return new EnumValue<T>(converter(2),"SUB_MODE_ALT_HOLD");
+            yield return new EnumValue<T>(converter(3),"SUB_MODE_AUTO");
+            yield return new EnumValue<T>(converter(4),"SUB_MODE_GUIDED");
+            yield return new EnumValue<T>(converter(7),"SUB_MODE_CIRCLE");
+            yield return new EnumValue<T>(converter(9),"SUB_MODE_SURFACE");
+            yield return new EnumValue<T>(converter(16),"SUB_MODE_POSHOLD");
+            yield return new EnumValue<T>(converter(19),"SUB_MODE_MANUAL");
+        }
+    }
     /// <summary>
     /// A mapping of rover flight modes for custom_mode field of heartbeat.
     ///  ROVER_MODE
     /// </summary>
-    public enum RoverMode:uint
+    public enum RoverMode : ulong
     {
         /// <summary>
         /// ROVER_MODE_MANUAL
@@ -2106,12 +3046,44 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         RoverModeInitializing = 16,
     }
-
+    public static class RoverModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(15);
+            yield return converter(16);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ROVER_MODE_MANUAL");
+            yield return new EnumValue<T>(converter(1),"ROVER_MODE_ACRO");
+            yield return new EnumValue<T>(converter(3),"ROVER_MODE_STEERING");
+            yield return new EnumValue<T>(converter(4),"ROVER_MODE_HOLD");
+            yield return new EnumValue<T>(converter(5),"ROVER_MODE_LOITER");
+            yield return new EnumValue<T>(converter(6),"ROVER_MODE_FOLLOW");
+            yield return new EnumValue<T>(converter(7),"ROVER_MODE_SIMPLE");
+            yield return new EnumValue<T>(converter(10),"ROVER_MODE_AUTO");
+            yield return new EnumValue<T>(converter(11),"ROVER_MODE_RTL");
+            yield return new EnumValue<T>(converter(12),"ROVER_MODE_SMART_RTL");
+            yield return new EnumValue<T>(converter(15),"ROVER_MODE_GUIDED");
+            yield return new EnumValue<T>(converter(16),"ROVER_MODE_INITIALIZING");
+        }
+    }
     /// <summary>
     /// A mapping of antenna tracker flight modes for custom_mode field of heartbeat.
     ///  TRACKER_MODE
     /// </summary>
-    public enum TrackerMode:uint
+    public enum TrackerMode : ulong
     {
         /// <summary>
         /// TRACKER_MODE_MANUAL
@@ -2138,12 +3110,32 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         TrackerModeInitializing = 16,
     }
-
+    public static class TrackerModeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(10);
+            yield return converter(16);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"TRACKER_MODE_MANUAL");
+            yield return new EnumValue<T>(converter(1),"TRACKER_MODE_STOP");
+            yield return new EnumValue<T>(converter(2),"TRACKER_MODE_SCAN");
+            yield return new EnumValue<T>(converter(3),"TRACKER_MODE_SERVO_TEST");
+            yield return new EnumValue<T>(converter(10),"TRACKER_MODE_AUTO");
+            yield return new EnumValue<T>(converter(16),"TRACKER_MODE_INITIALIZING");
+        }
+    }
     /// <summary>
     /// The type of parameter for the OSD parameter editor.
     ///  OSD_PARAM_CONFIG_TYPE
     /// </summary>
-    public enum OsdParamConfigType:uint
+    public enum OsdParamConfigType : ulong
     {
         /// <summary>
         /// OSD_PARAM_NONE
@@ -2182,12 +3174,38 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         OsdParamNumTypes = 8,
     }
-
+    public static class OsdParamConfigTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"OSD_PARAM_NONE");
+            yield return new EnumValue<T>(converter(1),"OSD_PARAM_SERIAL_PROTOCOL");
+            yield return new EnumValue<T>(converter(2),"OSD_PARAM_SERVO_FUNCTION");
+            yield return new EnumValue<T>(converter(3),"OSD_PARAM_AUX_FUNCTION");
+            yield return new EnumValue<T>(converter(4),"OSD_PARAM_FLIGHT_MODE");
+            yield return new EnumValue<T>(converter(5),"OSD_PARAM_FAILSAFE_ACTION");
+            yield return new EnumValue<T>(converter(6),"OSD_PARAM_FAILSAFE_ACTION_1");
+            yield return new EnumValue<T>(converter(7),"OSD_PARAM_FAILSAFE_ACTION_2");
+            yield return new EnumValue<T>(converter(8),"OSD_PARAM_NUM_TYPES");
+        }
+    }
     /// <summary>
     /// The error type for the OSD parameter editor.
     ///  OSD_PARAM_CONFIG_ERROR
     /// </summary>
-    public enum OsdParamConfigError:uint
+    public enum OsdParamConfigError : ulong
     {
         /// <summary>
         /// OSD_PARAM_SUCCESS
@@ -2206,7 +3224,23 @@ namespace Asv.Mavlink.Ardupilotmega
         /// </summary>
         OsdParamInvalidParameter = 3,
     }
-
+    public static class OsdParamConfigErrorHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"OSD_PARAM_SUCCESS");
+            yield return new EnumValue<T>(converter(1),"OSD_PARAM_INVALID_SCREEN");
+            yield return new EnumValue<T>(converter(2),"OSD_PARAM_INVALID_PARAMETER_INDEX");
+            yield return new EnumValue<T>(converter(3),"OSD_PARAM_INVALID_PARAMETER");
+        }
+    }
 
 #endregion
 
@@ -2232,134 +3266,6 @@ namespace Asv.Mavlink.Ardupilotmega
         public override SensorOffsetsPayload Payload { get; } = new();
 
         public override string Name => "SENSOR_OFFSETS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("mag_declination",
-"Magnetic declination.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("raw_press",
-"Raw pressure from barometer.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("raw_temp",
-"Raw temperature from barometer.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("gyro_cal_x",
-"Gyro X calibration.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("gyro_cal_y",
-"Gyro Y calibration.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("gyro_cal_z",
-"Gyro Z calibration.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("accel_cal_x",
-"Accel X calibration.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("accel_cal_y",
-"Accel Y calibration.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("accel_cal_z",
-"Accel Z calibration.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("mag_ofs_x",
-"Magnetometer X offset.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("mag_ofs_y",
-"Magnetometer Y offset.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("mag_ofs_z",
-"Magnetometer Z offset.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "SENSOR_OFFSETS:"
-        + "float mag_declination;"
-        + "int32_t raw_press;"
-        + "int32_t raw_temp;"
-        + "float gyro_cal_x;"
-        + "float gyro_cal_y;"
-        + "float gyro_cal_z;"
-        + "float accel_cal_x;"
-        + "float accel_cal_y;"
-        + "float accel_cal_z;"
-        + "int16_t mag_ofs_x;"
-        + "int16_t mag_ofs_y;"
-        + "int16_t mag_ofs_z;"
-        ;
     }
 
     /// <summary>
@@ -2371,23 +3277,23 @@ false),
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //MagDeclination
-            sum+=4; //RawPress
-            sum+=4; //RawTemp
-            sum+=4; //GyroCalX
-            sum+=4; //GyroCalY
-            sum+=4; //GyroCalZ
-            sum+=4; //AccelCalX
-            sum+=4; //AccelCalY
-            sum+=4; //AccelCalZ
-            sum+=2; //MagOfsX
-            sum+=2; //MagOfsY
-            sum+=2; //MagOfsZ
-            return (byte)sum;
+            return (byte)(
+            +4 // float mag_declination
+            +4 // int32_t raw_press
+            +4 // int32_t raw_temp
+            +4 // float gyro_cal_x
+            +4 // float gyro_cal_y
+            +4 // float gyro_cal_z
+            +4 // float accel_cal_x
+            +4 // float accel_cal_y
+            +4 // float accel_cal_z
+            +2 // int16_t mag_ofs_x
+            +2 // int16_t mag_ofs_y
+            +2 // int16_t mag_ofs_z
+            );
         }
 
 
@@ -2425,71 +3331,180 @@ false),
             BinSerialize.WriteShort(ref buffer,MagOfsZ);
             /* PayloadByteSize = 42 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,MagDeclinationField, MagDeclinationField.DataType, ref _magDeclination);    
+            Int32Type.Accept(visitor,RawPressField, RawPressField.DataType, ref _rawPress);    
+            Int32Type.Accept(visitor,RawTempField, RawTempField.DataType, ref _rawTemp);    
+            FloatType.Accept(visitor,GyroCalXField, GyroCalXField.DataType, ref _gyroCalX);    
+            FloatType.Accept(visitor,GyroCalYField, GyroCalYField.DataType, ref _gyroCalY);    
+            FloatType.Accept(visitor,GyroCalZField, GyroCalZField.DataType, ref _gyroCalZ);    
+            FloatType.Accept(visitor,AccelCalXField, AccelCalXField.DataType, ref _accelCalX);    
+            FloatType.Accept(visitor,AccelCalYField, AccelCalYField.DataType, ref _accelCalY);    
+            FloatType.Accept(visitor,AccelCalZField, AccelCalZField.DataType, ref _accelCalZ);    
+            Int16Type.Accept(visitor,MagOfsXField, MagOfsXField.DataType, ref _magOfsX);
+            Int16Type.Accept(visitor,MagOfsYField, MagOfsYField.DataType, ref _magOfsY);
+            Int16Type.Accept(visitor,MagOfsZField, MagOfsZField.DataType, ref _magOfsZ);
 
+        }
 
         /// <summary>
         /// Magnetic declination.
         /// OriginName: mag_declination, Units: rad, IsExtended: false
         /// </summary>
-        public float MagDeclination { get; set; }
+        public static readonly Field MagDeclinationField = new Field.Builder()
+            .Name(nameof(MagDeclination))
+            .Title("mag_declination")
+            .Description("Magnetic declination.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _magDeclination;
+        public float MagDeclination { get => _magDeclination; set => _magDeclination = value; }
         /// <summary>
         /// Raw pressure from barometer.
         /// OriginName: raw_press, Units: , IsExtended: false
         /// </summary>
-        public int RawPress { get; set; }
+        public static readonly Field RawPressField = new Field.Builder()
+            .Name(nameof(RawPress))
+            .Title("raw_press")
+            .Description("Raw pressure from barometer.")
+
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _rawPress;
+        public int RawPress { get => _rawPress; set => _rawPress = value; }
         /// <summary>
         /// Raw temperature from barometer.
         /// OriginName: raw_temp, Units: , IsExtended: false
         /// </summary>
-        public int RawTemp { get; set; }
+        public static readonly Field RawTempField = new Field.Builder()
+            .Name(nameof(RawTemp))
+            .Title("raw_temp")
+            .Description("Raw temperature from barometer.")
+
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _rawTemp;
+        public int RawTemp { get => _rawTemp; set => _rawTemp = value; }
         /// <summary>
         /// Gyro X calibration.
         /// OriginName: gyro_cal_x, Units: , IsExtended: false
         /// </summary>
-        public float GyroCalX { get; set; }
+        public static readonly Field GyroCalXField = new Field.Builder()
+            .Name(nameof(GyroCalX))
+            .Title("gyro_cal_x")
+            .Description("Gyro X calibration.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _gyroCalX;
+        public float GyroCalX { get => _gyroCalX; set => _gyroCalX = value; }
         /// <summary>
         /// Gyro Y calibration.
         /// OriginName: gyro_cal_y, Units: , IsExtended: false
         /// </summary>
-        public float GyroCalY { get; set; }
+        public static readonly Field GyroCalYField = new Field.Builder()
+            .Name(nameof(GyroCalY))
+            .Title("gyro_cal_y")
+            .Description("Gyro Y calibration.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _gyroCalY;
+        public float GyroCalY { get => _gyroCalY; set => _gyroCalY = value; }
         /// <summary>
         /// Gyro Z calibration.
         /// OriginName: gyro_cal_z, Units: , IsExtended: false
         /// </summary>
-        public float GyroCalZ { get; set; }
+        public static readonly Field GyroCalZField = new Field.Builder()
+            .Name(nameof(GyroCalZ))
+            .Title("gyro_cal_z")
+            .Description("Gyro Z calibration.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _gyroCalZ;
+        public float GyroCalZ { get => _gyroCalZ; set => _gyroCalZ = value; }
         /// <summary>
         /// Accel X calibration.
         /// OriginName: accel_cal_x, Units: , IsExtended: false
         /// </summary>
-        public float AccelCalX { get; set; }
+        public static readonly Field AccelCalXField = new Field.Builder()
+            .Name(nameof(AccelCalX))
+            .Title("accel_cal_x")
+            .Description("Accel X calibration.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _accelCalX;
+        public float AccelCalX { get => _accelCalX; set => _accelCalX = value; }
         /// <summary>
         /// Accel Y calibration.
         /// OriginName: accel_cal_y, Units: , IsExtended: false
         /// </summary>
-        public float AccelCalY { get; set; }
+        public static readonly Field AccelCalYField = new Field.Builder()
+            .Name(nameof(AccelCalY))
+            .Title("accel_cal_y")
+            .Description("Accel Y calibration.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _accelCalY;
+        public float AccelCalY { get => _accelCalY; set => _accelCalY = value; }
         /// <summary>
         /// Accel Z calibration.
         /// OriginName: accel_cal_z, Units: , IsExtended: false
         /// </summary>
-        public float AccelCalZ { get; set; }
+        public static readonly Field AccelCalZField = new Field.Builder()
+            .Name(nameof(AccelCalZ))
+            .Title("accel_cal_z")
+            .Description("Accel Z calibration.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _accelCalZ;
+        public float AccelCalZ { get => _accelCalZ; set => _accelCalZ = value; }
         /// <summary>
         /// Magnetometer X offset.
         /// OriginName: mag_ofs_x, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsX { get; set; }
+        public static readonly Field MagOfsXField = new Field.Builder()
+            .Name(nameof(MagOfsX))
+            .Title("mag_ofs_x")
+            .Description("Magnetometer X offset.")
+
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _magOfsX;
+        public short MagOfsX { get => _magOfsX; set => _magOfsX = value; }
         /// <summary>
         /// Magnetometer Y offset.
         /// OriginName: mag_ofs_y, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsY { get; set; }
+        public static readonly Field MagOfsYField = new Field.Builder()
+            .Name(nameof(MagOfsY))
+            .Title("mag_ofs_y")
+            .Description("Magnetometer Y offset.")
+
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _magOfsY;
+        public short MagOfsY { get => _magOfsY; set => _magOfsY = value; }
         /// <summary>
         /// Magnetometer Z offset.
         /// OriginName: mag_ofs_z, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsZ { get; set; }
+        public static readonly Field MagOfsZField = new Field.Builder()
+            .Name(nameof(MagOfsZ))
+            .Title("mag_ofs_z")
+            .Description("Magnetometer Z offset.")
+
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _magOfsZ;
+        public short MagOfsZ { get => _magOfsZ; set => _magOfsZ = value; }
     }
     /// <summary>
     /// Set the magnetometer offsets
@@ -2511,64 +3526,6 @@ false),
         public override SetMagOffsetsPayload Payload { get; } = new();
 
         public override string Name => "SET_MAG_OFFSETS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("mag_ofs_x",
-"Magnetometer X offset.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("mag_ofs_y",
-"Magnetometer Y offset.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("mag_ofs_z",
-"Magnetometer Z offset.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "SET_MAG_OFFSETS:"
-        + "int16_t mag_ofs_x;"
-        + "int16_t mag_ofs_y;"
-        + "int16_t mag_ofs_z;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
     }
 
     /// <summary>
@@ -2580,16 +3537,16 @@ false),
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //MagOfsX
-            sum+=2; //MagOfsY
-            sum+=2; //MagOfsZ
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +2 // int16_t mag_ofs_x
+            +2 // int16_t mag_ofs_y
+            +2 // int16_t mag_ofs_z
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -2613,36 +3570,82 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            Int16Type.Accept(visitor,MagOfsXField, MagOfsXField.DataType, ref _magOfsX);
+            Int16Type.Accept(visitor,MagOfsYField, MagOfsYField.DataType, ref _magOfsY);
+            Int16Type.Accept(visitor,MagOfsZField, MagOfsZField.DataType, ref _magOfsZ);
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
+        }
 
         /// <summary>
         /// Magnetometer X offset.
         /// OriginName: mag_ofs_x, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsX { get; set; }
+        public static readonly Field MagOfsXField = new Field.Builder()
+            .Name(nameof(MagOfsX))
+            .Title("mag_ofs_x")
+            .Description("Magnetometer X offset.")
+
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _magOfsX;
+        public short MagOfsX { get => _magOfsX; set => _magOfsX = value; }
         /// <summary>
         /// Magnetometer Y offset.
         /// OriginName: mag_ofs_y, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsY { get; set; }
+        public static readonly Field MagOfsYField = new Field.Builder()
+            .Name(nameof(MagOfsY))
+            .Title("mag_ofs_y")
+            .Description("Magnetometer Y offset.")
+
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _magOfsY;
+        public short MagOfsY { get => _magOfsY; set => _magOfsY = value; }
         /// <summary>
         /// Magnetometer Z offset.
         /// OriginName: mag_ofs_z, Units: , IsExtended: false
         /// </summary>
-        public short MagOfsZ { get; set; }
+        public static readonly Field MagOfsZField = new Field.Builder()
+            .Name(nameof(MagOfsZ))
+            .Title("mag_ofs_z")
+            .Description("Magnetometer Z offset.")
+
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _magOfsZ;
+        public short MagOfsZ { get => _magOfsZ; set => _magOfsZ = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
     /// <summary>
     /// State of autopilot RAM.
@@ -2664,44 +3667,6 @@ false),
         public override MeminfoPayload Payload { get; } = new();
 
         public override string Name => "MEMINFO";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("brkval",
-"Heap top.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("freemem",
-"Free memory.",
-string.Empty, 
-@"bytes", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("freemem32",
-"Free memory (32 bit).",
-string.Empty, 
-@"bytes", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-true),
-        ];
-        public const string FormatMessage = "MEMINFO:"
-        + "uint16_t brkval;"
-        + "uint16_t freemem;"
-        + "uint32_t freemem32;"
-        ;
     }
 
     /// <summary>
@@ -2713,14 +3678,14 @@ true),
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Brkval
-            sum+=2; //Freemem
-            sum+=4; //Freemem32
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t brkval
+            +2 // uint16_t freemem
+            +4 // uint32_t freemem32
+            );
         }
 
 
@@ -2742,26 +3707,54 @@ true),
             BinSerialize.WriteUInt(ref buffer,Freemem32);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,BrkvalField, BrkvalField.DataType, ref _brkval);    
+            UInt16Type.Accept(visitor,FreememField, FreememField.DataType, ref _freemem);    
+            UInt32Type.Accept(visitor,Freemem32Field, Freemem32Field.DataType, ref _freemem32);    
 
+        }
 
         /// <summary>
         /// Heap top.
         /// OriginName: brkval, Units: , IsExtended: false
         /// </summary>
-        public ushort Brkval { get; set; }
+        public static readonly Field BrkvalField = new Field.Builder()
+            .Name(nameof(Brkval))
+            .Title("brkval")
+            .Description("Heap top.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _brkval;
+        public ushort Brkval { get => _brkval; set => _brkval = value; }
         /// <summary>
         /// Free memory.
         /// OriginName: freemem, Units: bytes, IsExtended: false
         /// </summary>
-        public ushort Freemem { get; set; }
+        public static readonly Field FreememField = new Field.Builder()
+            .Name(nameof(Freemem))
+            .Title("freemem")
+            .Description("Free memory.")
+.Units(@"bytes")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _freemem;
+        public ushort Freemem { get => _freemem; set => _freemem = value; }
         /// <summary>
         /// Free memory (32 bit).
         /// OriginName: freemem32, Units: bytes, IsExtended: true
         /// </summary>
-        public uint Freemem32 { get; set; }
+        public static readonly Field Freemem32Field = new Field.Builder()
+            .Name(nameof(Freemem32))
+            .Title("freemem32")
+            .Description("Free memory (32 bit).")
+.Units(@"bytes")
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _freemem32;
+        public uint Freemem32 { get => _freemem32; set => _freemem32 = value; }
     }
     /// <summary>
     /// Raw ADC output.
@@ -2783,74 +3776,6 @@ true),
         public override ApAdcPayload Payload { get; } = new();
 
         public override string Name => "AP_ADC";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("adc1",
-"ADC output 1.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("adc2",
-"ADC output 2.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("adc3",
-"ADC output 3.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("adc4",
-"ADC output 4.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("adc5",
-"ADC output 5.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("adc6",
-"ADC output 6.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "AP_ADC:"
-        + "uint16_t adc1;"
-        + "uint16_t adc2;"
-        + "uint16_t adc3;"
-        + "uint16_t adc4;"
-        + "uint16_t adc5;"
-        + "uint16_t adc6;"
-        ;
     }
 
     /// <summary>
@@ -2862,17 +3787,17 @@ false),
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Adc1
-            sum+=2; //Adc2
-            sum+=2; //Adc3
-            sum+=2; //Adc4
-            sum+=2; //Adc5
-            sum+=2; //Adc6
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t adc1
+            +2 // uint16_t adc2
+            +2 // uint16_t adc3
+            +2 // uint16_t adc4
+            +2 // uint16_t adc5
+            +2 // uint16_t adc6
+            );
         }
 
 
@@ -2898,41 +3823,96 @@ false),
             BinSerialize.WriteUShort(ref buffer,Adc6);
             /* PayloadByteSize = 12 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,Adc1Field, Adc1Field.DataType, ref _adc1);    
+            UInt16Type.Accept(visitor,Adc2Field, Adc2Field.DataType, ref _adc2);    
+            UInt16Type.Accept(visitor,Adc3Field, Adc3Field.DataType, ref _adc3);    
+            UInt16Type.Accept(visitor,Adc4Field, Adc4Field.DataType, ref _adc4);    
+            UInt16Type.Accept(visitor,Adc5Field, Adc5Field.DataType, ref _adc5);    
+            UInt16Type.Accept(visitor,Adc6Field, Adc6Field.DataType, ref _adc6);    
 
+        }
 
         /// <summary>
         /// ADC output 1.
         /// OriginName: adc1, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc1 { get; set; }
+        public static readonly Field Adc1Field = new Field.Builder()
+            .Name(nameof(Adc1))
+            .Title("adc1")
+            .Description("ADC output 1.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _adc1;
+        public ushort Adc1 { get => _adc1; set => _adc1 = value; }
         /// <summary>
         /// ADC output 2.
         /// OriginName: adc2, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc2 { get; set; }
+        public static readonly Field Adc2Field = new Field.Builder()
+            .Name(nameof(Adc2))
+            .Title("adc2")
+            .Description("ADC output 2.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _adc2;
+        public ushort Adc2 { get => _adc2; set => _adc2 = value; }
         /// <summary>
         /// ADC output 3.
         /// OriginName: adc3, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc3 { get; set; }
+        public static readonly Field Adc3Field = new Field.Builder()
+            .Name(nameof(Adc3))
+            .Title("adc3")
+            .Description("ADC output 3.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _adc3;
+        public ushort Adc3 { get => _adc3; set => _adc3 = value; }
         /// <summary>
         /// ADC output 4.
         /// OriginName: adc4, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc4 { get; set; }
+        public static readonly Field Adc4Field = new Field.Builder()
+            .Name(nameof(Adc4))
+            .Title("adc4")
+            .Description("ADC output 4.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _adc4;
+        public ushort Adc4 { get => _adc4; set => _adc4 = value; }
         /// <summary>
         /// ADC output 5.
         /// OriginName: adc5, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc5 { get; set; }
+        public static readonly Field Adc5Field = new Field.Builder()
+            .Name(nameof(Adc5))
+            .Title("adc5")
+            .Description("ADC output 5.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _adc5;
+        public ushort Adc5 { get => _adc5; set => _adc5 = value; }
         /// <summary>
         /// ADC output 6.
         /// OriginName: adc6, Units: , IsExtended: false
         /// </summary>
-        public ushort Adc6 { get; set; }
+        public static readonly Field Adc6Field = new Field.Builder()
+            .Name(nameof(Adc6))
+            .Title("adc6")
+            .Description("ADC output 6.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _adc6;
+        public ushort Adc6 { get => _adc6; set => _adc6 = value; }
     }
     /// <summary>
     /// Configure on-board Camera Control System.
@@ -2954,124 +3934,6 @@ false),
         public override DigicamConfigurePayload Payload { get; } = new();
 
         public override string Name => "DIGICAM_CONFIGURE";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("extra_value",
-"Correspondent value to given extra_param.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("shutter_speed",
-"Divisor number //e.g. 1000 means 1/1000 (0 means ignore).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("mode",
-"Mode enumeration from 1 to N //P, TV, AV, M, etc. (0 means ignore).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("aperture",
-"F stop number x 10 //e.g. 28 means 2.8 (0 means ignore).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("iso",
-"ISO enumeration from 1 to N //e.g. 80, 100, 200, Etc (0 means ignore).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("exposure_type",
-"Exposure type enumeration from 1 to N (0 means ignore).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("command_id",
-"Command Identity (incremental loop: 0 to 255). //A command sent multiple times will be executed or pooled just once.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("engine_cut_off",
-"Main engine cut-off time before camera trigger (0 means no cut-off).",
-string.Empty, 
-@"ds", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("extra_param",
-"Extra parameters enumeration (0 means ignore).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "DIGICAM_CONFIGURE:"
-        + "float extra_value;"
-        + "uint16_t shutter_speed;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t mode;"
-        + "uint8_t aperture;"
-        + "uint8_t iso;"
-        + "uint8_t exposure_type;"
-        + "uint8_t command_id;"
-        + "uint8_t engine_cut_off;"
-        + "uint8_t extra_param;"
-        ;
     }
 
     /// <summary>
@@ -3083,22 +3945,22 @@ false),
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //ExtraValue
-            sum+=2; //ShutterSpeed
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Mode
-            sum+=1; //Aperture
-            sum+=1; //Iso
-            sum+=1; //ExposureType
-            sum+=1; //CommandId
-            sum+=1; //EngineCutOff
-            sum+=1; //ExtraParam
-            return (byte)sum;
+            return (byte)(
+            +4 // float extra_value
+            +2 // uint16_t shutter_speed
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t mode
+            +1 // uint8_t aperture
+            +1 // uint8_t iso
+            +1 // uint8_t exposure_type
+            +1 // uint8_t command_id
+            +1 // uint8_t engine_cut_off
+            +1 // uint8_t extra_param
+            );
         }
 
 
@@ -3134,66 +3996,166 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)ExtraParam);
             /* PayloadByteSize = 15 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,ExtraValueField, ExtraValueField.DataType, ref _extraValue);    
+            UInt16Type.Accept(visitor,ShutterSpeedField, ShutterSpeedField.DataType, ref _shutterSpeed);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,ModeField, ModeField.DataType, ref _mode);    
+            UInt8Type.Accept(visitor,ApertureField, ApertureField.DataType, ref _aperture);    
+            UInt8Type.Accept(visitor,IsoField, IsoField.DataType, ref _iso);    
+            UInt8Type.Accept(visitor,ExposureTypeField, ExposureTypeField.DataType, ref _exposureType);    
+            UInt8Type.Accept(visitor,CommandIdField, CommandIdField.DataType, ref _commandId);    
+            UInt8Type.Accept(visitor,EngineCutOffField, EngineCutOffField.DataType, ref _engineCutOff);    
+            UInt8Type.Accept(visitor,ExtraParamField, ExtraParamField.DataType, ref _extraParam);    
 
+        }
 
         /// <summary>
         /// Correspondent value to given extra_param.
         /// OriginName: extra_value, Units: , IsExtended: false
         /// </summary>
-        public float ExtraValue { get; set; }
+        public static readonly Field ExtraValueField = new Field.Builder()
+            .Name(nameof(ExtraValue))
+            .Title("extra_value")
+            .Description("Correspondent value to given extra_param.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _extraValue;
+        public float ExtraValue { get => _extraValue; set => _extraValue = value; }
         /// <summary>
         /// Divisor number //e.g. 1000 means 1/1000 (0 means ignore).
         /// OriginName: shutter_speed, Units: , IsExtended: false
         /// </summary>
-        public ushort ShutterSpeed { get; set; }
+        public static readonly Field ShutterSpeedField = new Field.Builder()
+            .Name(nameof(ShutterSpeed))
+            .Title("shutter_speed")
+            .Description("Divisor number //e.g. 1000 means 1/1000 (0 means ignore).")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _shutterSpeed;
+        public ushort ShutterSpeed { get => _shutterSpeed; set => _shutterSpeed = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Mode enumeration from 1 to N //P, TV, AV, M, etc. (0 means ignore).
         /// OriginName: mode, Units: , IsExtended: false
         /// </summary>
-        public byte Mode { get; set; }
+        public static readonly Field ModeField = new Field.Builder()
+            .Name(nameof(Mode))
+            .Title("mode")
+            .Description("Mode enumeration from 1 to N //P, TV, AV, M, etc. (0 means ignore).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _mode;
+        public byte Mode { get => _mode; set => _mode = value; }
         /// <summary>
         /// F stop number x 10 //e.g. 28 means 2.8 (0 means ignore).
         /// OriginName: aperture, Units: , IsExtended: false
         /// </summary>
-        public byte Aperture { get; set; }
+        public static readonly Field ApertureField = new Field.Builder()
+            .Name(nameof(Aperture))
+            .Title("aperture")
+            .Description("F stop number x 10 //e.g. 28 means 2.8 (0 means ignore).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _aperture;
+        public byte Aperture { get => _aperture; set => _aperture = value; }
         /// <summary>
         /// ISO enumeration from 1 to N //e.g. 80, 100, 200, Etc (0 means ignore).
         /// OriginName: iso, Units: , IsExtended: false
         /// </summary>
-        public byte Iso { get; set; }
+        public static readonly Field IsoField = new Field.Builder()
+            .Name(nameof(Iso))
+            .Title("iso")
+            .Description("ISO enumeration from 1 to N //e.g. 80, 100, 200, Etc (0 means ignore).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _iso;
+        public byte Iso { get => _iso; set => _iso = value; }
         /// <summary>
         /// Exposure type enumeration from 1 to N (0 means ignore).
         /// OriginName: exposure_type, Units: , IsExtended: false
         /// </summary>
-        public byte ExposureType { get; set; }
+        public static readonly Field ExposureTypeField = new Field.Builder()
+            .Name(nameof(ExposureType))
+            .Title("exposure_type")
+            .Description("Exposure type enumeration from 1 to N (0 means ignore).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _exposureType;
+        public byte ExposureType { get => _exposureType; set => _exposureType = value; }
         /// <summary>
         /// Command Identity (incremental loop: 0 to 255). //A command sent multiple times will be executed or pooled just once.
         /// OriginName: command_id, Units: , IsExtended: false
         /// </summary>
-        public byte CommandId { get; set; }
+        public static readonly Field CommandIdField = new Field.Builder()
+            .Name(nameof(CommandId))
+            .Title("command_id")
+            .Description("Command Identity (incremental loop: 0 to 255). //A command sent multiple times will be executed or pooled just once.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _commandId;
+        public byte CommandId { get => _commandId; set => _commandId = value; }
         /// <summary>
         /// Main engine cut-off time before camera trigger (0 means no cut-off).
         /// OriginName: engine_cut_off, Units: ds, IsExtended: false
         /// </summary>
-        public byte EngineCutOff { get; set; }
+        public static readonly Field EngineCutOffField = new Field.Builder()
+            .Name(nameof(EngineCutOff))
+            .Title("engine_cut_off")
+            .Description("Main engine cut-off time before camera trigger (0 means no cut-off).")
+.Units(@"ds")
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _engineCutOff;
+        public byte EngineCutOff { get => _engineCutOff; set => _engineCutOff = value; }
         /// <summary>
         /// Extra parameters enumeration (0 means ignore).
         /// OriginName: extra_param, Units: , IsExtended: false
         /// </summary>
-        public byte ExtraParam { get; set; }
+        public static readonly Field ExtraParamField = new Field.Builder()
+            .Name(nameof(ExtraParam))
+            .Title("extra_param")
+            .Description("Extra parameters enumeration (0 means ignore).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _extraParam;
+        public byte ExtraParam { get => _extraParam; set => _extraParam = value; }
     }
     /// <summary>
     /// Control on-board Camera Control System to take shots.
@@ -3215,114 +4177,6 @@ false),
         public override DigicamControlPayload Payload { get; } = new();
 
         public override string Name => "DIGICAM_CONTROL";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("extra_value",
-"Correspondent value to given extra_param.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("session",
-"0: stop, 1: start or keep it up //Session control e.g. show/hide lens.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("zoom_pos",
-"1 to N //Zoom's absolute position (0 means ignore).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("zoom_step",
-"-100 to 100 //Zooming step value to offset zoom from the current position.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int8, 
-            0, 
-false),
-            new("focus_lock",
-"0: unlock focus or keep unlocked, 1: lock focus or keep locked, 3: re-lock focus.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("shot",
-"0: ignore, 1: shot or start filming.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("command_id",
-"Command Identity (incremental loop: 0 to 255)//A command sent multiple times will be executed or pooled just once.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("extra_param",
-"Extra parameters enumeration (0 means ignore).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "DIGICAM_CONTROL:"
-        + "float extra_value;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t session;"
-        + "uint8_t zoom_pos;"
-        + "int8_t zoom_step;"
-        + "uint8_t focus_lock;"
-        + "uint8_t shot;"
-        + "uint8_t command_id;"
-        + "uint8_t extra_param;"
-        ;
     }
 
     /// <summary>
@@ -3334,21 +4188,21 @@ false),
         public byte GetMaxByteSize() => 13; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //ExtraValue
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Session
-            sum+=1; //ZoomPos
-            sum+=1; //ZoomStep
-            sum+=1; //FocusLock
-            sum+=1; //Shot
-            sum+=1; //CommandId
-            sum+=1; //ExtraParam
-            return (byte)sum;
+            return (byte)(
+            +4 // float extra_value
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t session
+            +1 // uint8_t zoom_pos
+            +1 // int8_t zoom_step
+            +1 // uint8_t focus_lock
+            +1 // uint8_t shot
+            +1 // uint8_t command_id
+            +1 // uint8_t extra_param
+            );
         }
 
 
@@ -3382,61 +4236,152 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)ExtraParam);
             /* PayloadByteSize = 13 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,ExtraValueField, ExtraValueField.DataType, ref _extraValue);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,SessionField, SessionField.DataType, ref _session);    
+            UInt8Type.Accept(visitor,ZoomPosField, ZoomPosField.DataType, ref _zoomPos);    
+            Int8Type.Accept(visitor,ZoomStepField, ZoomStepField.DataType, ref _zoomStep);                
+            UInt8Type.Accept(visitor,FocusLockField, FocusLockField.DataType, ref _focusLock);    
+            UInt8Type.Accept(visitor,ShotField, ShotField.DataType, ref _shot);    
+            UInt8Type.Accept(visitor,CommandIdField, CommandIdField.DataType, ref _commandId);    
+            UInt8Type.Accept(visitor,ExtraParamField, ExtraParamField.DataType, ref _extraParam);    
 
+        }
 
         /// <summary>
         /// Correspondent value to given extra_param.
         /// OriginName: extra_value, Units: , IsExtended: false
         /// </summary>
-        public float ExtraValue { get; set; }
+        public static readonly Field ExtraValueField = new Field.Builder()
+            .Name(nameof(ExtraValue))
+            .Title("extra_value")
+            .Description("Correspondent value to given extra_param.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _extraValue;
+        public float ExtraValue { get => _extraValue; set => _extraValue = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// 0: stop, 1: start or keep it up //Session control e.g. show/hide lens.
         /// OriginName: session, Units: , IsExtended: false
         /// </summary>
-        public byte Session { get; set; }
+        public static readonly Field SessionField = new Field.Builder()
+            .Name(nameof(Session))
+            .Title("session")
+            .Description("0: stop, 1: start or keep it up //Session control e.g. show/hide lens.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _session;
+        public byte Session { get => _session; set => _session = value; }
         /// <summary>
         /// 1 to N //Zoom's absolute position (0 means ignore).
         /// OriginName: zoom_pos, Units: , IsExtended: false
         /// </summary>
-        public byte ZoomPos { get; set; }
+        public static readonly Field ZoomPosField = new Field.Builder()
+            .Name(nameof(ZoomPos))
+            .Title("zoom_pos")
+            .Description("1 to N //Zoom's absolute position (0 means ignore).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _zoomPos;
+        public byte ZoomPos { get => _zoomPos; set => _zoomPos = value; }
         /// <summary>
         /// -100 to 100 //Zooming step value to offset zoom from the current position.
         /// OriginName: zoom_step, Units: , IsExtended: false
         /// </summary>
-        public sbyte ZoomStep { get; set; }
+        public static readonly Field ZoomStepField = new Field.Builder()
+            .Name(nameof(ZoomStep))
+            .Title("zoom_step")
+            .Description("-100 to 100 //Zooming step value to offset zoom from the current position.")
+
+            .DataType(Int8Type.Default)
+        .Build();
+        private sbyte _zoomStep;
+        public sbyte ZoomStep { get => _zoomStep; set => _zoomStep = value; }
         /// <summary>
         /// 0: unlock focus or keep unlocked, 1: lock focus or keep locked, 3: re-lock focus.
         /// OriginName: focus_lock, Units: , IsExtended: false
         /// </summary>
-        public byte FocusLock { get; set; }
+        public static readonly Field FocusLockField = new Field.Builder()
+            .Name(nameof(FocusLock))
+            .Title("focus_lock")
+            .Description("0: unlock focus or keep unlocked, 1: lock focus or keep locked, 3: re-lock focus.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _focusLock;
+        public byte FocusLock { get => _focusLock; set => _focusLock = value; }
         /// <summary>
         /// 0: ignore, 1: shot or start filming.
         /// OriginName: shot, Units: , IsExtended: false
         /// </summary>
-        public byte Shot { get; set; }
+        public static readonly Field ShotField = new Field.Builder()
+            .Name(nameof(Shot))
+            .Title("shot")
+            .Description("0: ignore, 1: shot or start filming.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _shot;
+        public byte Shot { get => _shot; set => _shot = value; }
         /// <summary>
         /// Command Identity (incremental loop: 0 to 255)//A command sent multiple times will be executed or pooled just once.
         /// OriginName: command_id, Units: , IsExtended: false
         /// </summary>
-        public byte CommandId { get; set; }
+        public static readonly Field CommandIdField = new Field.Builder()
+            .Name(nameof(CommandId))
+            .Title("command_id")
+            .Description("Command Identity (incremental loop: 0 to 255)//A command sent multiple times will be executed or pooled just once.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _commandId;
+        public byte CommandId { get => _commandId; set => _commandId = value; }
         /// <summary>
         /// Extra parameters enumeration (0 means ignore).
         /// OriginName: extra_param, Units: , IsExtended: false
         /// </summary>
-        public byte ExtraParam { get; set; }
+        public static readonly Field ExtraParamField = new Field.Builder()
+            .Name(nameof(ExtraParam))
+            .Title("extra_param")
+            .Description("Extra parameters enumeration (0 means ignore).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _extraParam;
+        public byte ExtraParam { get => _extraParam; set => _extraParam = value; }
     }
     /// <summary>
     /// Message to configure a camera mount, directional antenna, etc.
@@ -3458,74 +4403,6 @@ false),
         public override MountConfigurePayload Payload { get; } = new();
 
         public override string Name => "MOUNT_CONFIGURE";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("mount_mode",
-"Mount operating mode.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("stab_roll",
-"(1 = yes, 0 = no).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("stab_pitch",
-"(1 = yes, 0 = no).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("stab_yaw",
-"(1 = yes, 0 = no).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "MOUNT_CONFIGURE:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t mount_mode;"
-        + "uint8_t stab_roll;"
-        + "uint8_t stab_pitch;"
-        + "uint8_t stab_yaw;"
-        ;
     }
 
     /// <summary>
@@ -3537,17 +4414,17 @@ false),
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // MountMode
-            sum+=1; //StabRoll
-            sum+=1; //StabPitch
-            sum+=1; //StabYaw
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t mount_mode
+            +1 // uint8_t stab_roll
+            +1 // uint8_t stab_pitch
+            +1 // uint8_t stab_yaw
+            );
         }
 
 
@@ -3573,41 +4450,98 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)StabYaw);
             /* PayloadByteSize = 6 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            var tmpMountMode = (byte)MountMode;
+            UInt8Type.Accept(visitor,MountModeField, MountModeField.DataType, ref tmpMountMode);
+            MountMode = (MavMountMode)tmpMountMode;
+            UInt8Type.Accept(visitor,StabRollField, StabRollField.DataType, ref _stabRoll);    
+            UInt8Type.Accept(visitor,StabPitchField, StabPitchField.DataType, ref _stabPitch);    
+            UInt8Type.Accept(visitor,StabYawField, StabYawField.DataType, ref _stabYaw);    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Mount operating mode.
         /// OriginName: mount_mode, Units: , IsExtended: false
         /// </summary>
-        public MavMountMode MountMode { get; set; }
+        public static readonly Field MountModeField = new Field.Builder()
+            .Name(nameof(MountMode))
+            .Title("mount_mode")
+            .Description("Mount operating mode.")
+            .DataType(new UInt8Type(MavMountModeHelper.GetValues(x=>(byte)x).Min(),MavMountModeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavMountModeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private MavMountMode _mountMode;
+        public MavMountMode MountMode { get => _mountMode; set => _mountMode = value; } 
         /// <summary>
         /// (1 = yes, 0 = no).
         /// OriginName: stab_roll, Units: , IsExtended: false
         /// </summary>
-        public byte StabRoll { get; set; }
+        public static readonly Field StabRollField = new Field.Builder()
+            .Name(nameof(StabRoll))
+            .Title("stab_roll")
+            .Description("(1 = yes, 0 = no).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _stabRoll;
+        public byte StabRoll { get => _stabRoll; set => _stabRoll = value; }
         /// <summary>
         /// (1 = yes, 0 = no).
         /// OriginName: stab_pitch, Units: , IsExtended: false
         /// </summary>
-        public byte StabPitch { get; set; }
+        public static readonly Field StabPitchField = new Field.Builder()
+            .Name(nameof(StabPitch))
+            .Title("stab_pitch")
+            .Description("(1 = yes, 0 = no).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _stabPitch;
+        public byte StabPitch { get => _stabPitch; set => _stabPitch = value; }
         /// <summary>
         /// (1 = yes, 0 = no).
         /// OriginName: stab_yaw, Units: , IsExtended: false
         /// </summary>
-        public byte StabYaw { get; set; }
+        public static readonly Field StabYawField = new Field.Builder()
+            .Name(nameof(StabYaw))
+            .Title("stab_yaw")
+            .Description("(1 = yes, 0 = no).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _stabYaw;
+        public byte StabYaw { get => _stabYaw; set => _stabYaw = value; }
     }
     /// <summary>
     /// Message to control a camera mount, directional antenna, etc.
@@ -3629,74 +4563,6 @@ false),
         public override MountControlPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_CONTROL";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("input_a",
-"Pitch (centi-degrees) or lat (degE7), depending on mount mode.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("input_b",
-"Roll (centi-degrees) or lon (degE7) depending on mount mode.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("input_c",
-"Yaw (centi-degrees) or alt (cm) depending on mount mode.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("save_position",
-"If \"1\" it will save current trimmed position on EEPROM (just valid for NEUTRAL and LANDING).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "MOUNT_CONTROL:"
-        + "int32_t input_a;"
-        + "int32_t input_b;"
-        + "int32_t input_c;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t save_position;"
-        ;
     }
 
     /// <summary>
@@ -3708,17 +4574,17 @@ false),
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //InputA
-            sum+=4; //InputB
-            sum+=4; //InputC
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //SavePosition
-            return (byte)sum;
+            return (byte)(
+            +4 // int32_t input_a
+            +4 // int32_t input_b
+            +4 // int32_t input_c
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t save_position
+            );
         }
 
 
@@ -3744,41 +4610,96 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)SavePosition);
             /* PayloadByteSize = 15 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            Int32Type.Accept(visitor,InputAField, InputAField.DataType, ref _inputA);    
+            Int32Type.Accept(visitor,InputBField, InputBField.DataType, ref _inputB);    
+            Int32Type.Accept(visitor,InputCField, InputCField.DataType, ref _inputC);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,SavePositionField, SavePositionField.DataType, ref _savePosition);    
 
+        }
 
         /// <summary>
         /// Pitch (centi-degrees) or lat (degE7), depending on mount mode.
         /// OriginName: input_a, Units: , IsExtended: false
         /// </summary>
-        public int InputA { get; set; }
+        public static readonly Field InputAField = new Field.Builder()
+            .Name(nameof(InputA))
+            .Title("input_a")
+            .Description("Pitch (centi-degrees) or lat (degE7), depending on mount mode.")
+
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _inputA;
+        public int InputA { get => _inputA; set => _inputA = value; }
         /// <summary>
         /// Roll (centi-degrees) or lon (degE7) depending on mount mode.
         /// OriginName: input_b, Units: , IsExtended: false
         /// </summary>
-        public int InputB { get; set; }
+        public static readonly Field InputBField = new Field.Builder()
+            .Name(nameof(InputB))
+            .Title("input_b")
+            .Description("Roll (centi-degrees) or lon (degE7) depending on mount mode.")
+
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _inputB;
+        public int InputB { get => _inputB; set => _inputB = value; }
         /// <summary>
         /// Yaw (centi-degrees) or alt (cm) depending on mount mode.
         /// OriginName: input_c, Units: , IsExtended: false
         /// </summary>
-        public int InputC { get; set; }
+        public static readonly Field InputCField = new Field.Builder()
+            .Name(nameof(InputC))
+            .Title("input_c")
+            .Description("Yaw (centi-degrees) or alt (cm) depending on mount mode.")
+
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _inputC;
+        public int InputC { get => _inputC; set => _inputC = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// If "1" it will save current trimmed position on EEPROM (just valid for NEUTRAL and LANDING).
         /// OriginName: save_position, Units: , IsExtended: false
         /// </summary>
-        public byte SavePosition { get; set; }
+        public static readonly Field SavePositionField = new Field.Builder()
+            .Name(nameof(SavePosition))
+            .Title("save_position")
+            .Description("If \"1\" it will save current trimmed position on EEPROM (just valid for NEUTRAL and LANDING).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _savePosition;
+        public byte SavePosition { get => _savePosition; set => _savePosition = value; }
     }
     /// <summary>
     /// Message with some status from autopilot to GCS about camera or antenna mount.
@@ -3800,74 +4721,6 @@ false),
         public override MountStatusPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_STATUS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("pointing_a",
-"Pitch.",
-string.Empty, 
-@"cdeg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("pointing_b",
-"Roll.",
-string.Empty, 
-@"cdeg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("pointing_c",
-"Yaw.",
-string.Empty, 
-@"cdeg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("mount_mode",
-"Mount operating mode.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-true),
-        ];
-        public const string FormatMessage = "MOUNT_STATUS:"
-        + "int32_t pointing_a;"
-        + "int32_t pointing_b;"
-        + "int32_t pointing_c;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t mount_mode;"
-        ;
     }
 
     /// <summary>
@@ -3879,17 +4732,17 @@ true),
         public byte GetMaxByteSize() => 15; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 15; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //PointingA
-            sum+=4; //PointingB
-            sum+=4; //PointingC
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // MountMode
-            return (byte)sum;
+            return (byte)(
+            +4 // int32_t pointing_a
+            +4 // int32_t pointing_b
+            +4 // int32_t pointing_c
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t mount_mode
+            );
         }
 
 
@@ -3917,41 +4770,98 @@ true),
             BinSerialize.WriteByte(ref buffer,(byte)MountMode);
             /* PayloadByteSize = 15 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            Int32Type.Accept(visitor,PointingAField, PointingAField.DataType, ref _pointingA);    
+            Int32Type.Accept(visitor,PointingBField, PointingBField.DataType, ref _pointingB);    
+            Int32Type.Accept(visitor,PointingCField, PointingCField.DataType, ref _pointingC);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            var tmpMountMode = (byte)MountMode;
+            UInt8Type.Accept(visitor,MountModeField, MountModeField.DataType, ref tmpMountMode);
+            MountMode = (MavMountMode)tmpMountMode;
 
+        }
 
         /// <summary>
         /// Pitch.
         /// OriginName: pointing_a, Units: cdeg, IsExtended: false
         /// </summary>
-        public int PointingA { get; set; }
+        public static readonly Field PointingAField = new Field.Builder()
+            .Name(nameof(PointingA))
+            .Title("pointing_a")
+            .Description("Pitch.")
+.Units(@"cdeg")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _pointingA;
+        public int PointingA { get => _pointingA; set => _pointingA = value; }
         /// <summary>
         /// Roll.
         /// OriginName: pointing_b, Units: cdeg, IsExtended: false
         /// </summary>
-        public int PointingB { get; set; }
+        public static readonly Field PointingBField = new Field.Builder()
+            .Name(nameof(PointingB))
+            .Title("pointing_b")
+            .Description("Roll.")
+.Units(@"cdeg")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _pointingB;
+        public int PointingB { get => _pointingB; set => _pointingB = value; }
         /// <summary>
         /// Yaw.
         /// OriginName: pointing_c, Units: cdeg, IsExtended: false
         /// </summary>
-        public int PointingC { get; set; }
+        public static readonly Field PointingCField = new Field.Builder()
+            .Name(nameof(PointingC))
+            .Title("pointing_c")
+            .Description("Yaw.")
+.Units(@"cdeg")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _pointingC;
+        public int PointingC { get => _pointingC; set => _pointingC = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Mount operating mode.
         /// OriginName: mount_mode, Units: , IsExtended: true
         /// </summary>
-        public MavMountMode MountMode { get; set; }
+        public static readonly Field MountModeField = new Field.Builder()
+            .Name(nameof(MountMode))
+            .Title("mount_mode")
+            .Description("Mount operating mode.")
+            .DataType(new UInt8Type(MavMountModeHelper.GetValues(x=>(byte)x).Min(),MavMountModeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavMountModeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private MavMountMode _mountMode;
+        public MavMountMode MountMode { get => _mountMode; set => _mountMode = value; } 
     }
     /// <summary>
     /// A fence point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
@@ -3973,74 +4883,6 @@ true),
         public override FencePointPayload Payload { get; } = new();
 
         public override string Name => "FENCE_POINT";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("lat",
-"Latitude of point.",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("lng",
-"Longitude of point.",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("idx",
-"Point index (first point is 1, 0 is for return point).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("count",
-"Total number of points (for sanity checking).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "FENCE_POINT:"
-        + "float lat;"
-        + "float lng;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t idx;"
-        + "uint8_t count;"
-        ;
     }
 
     /// <summary>
@@ -4052,17 +4894,17 @@ false),
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Lat
-            sum+=4; //Lng
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Idx
-            sum+=1; //Count
-            return (byte)sum;
+            return (byte)(
+            +4 // float lat
+            +4 // float lng
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t idx
+            +1 // uint8_t count
+            );
         }
 
 
@@ -4088,41 +4930,96 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Count);
             /* PayloadByteSize = 12 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            FloatType.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
 
+        }
 
         /// <summary>
         /// Latitude of point.
         /// OriginName: lat, Units: deg, IsExtended: false
         /// </summary>
-        public float Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude of point.")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _lat;
+        public float Lat { get => _lat; set => _lat = value; }
         /// <summary>
         /// Longitude of point.
         /// OriginName: lng, Units: deg, IsExtended: false
         /// </summary>
-        public float Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude of point.")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _lng;
+        public float Lng { get => _lng; set => _lng = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Point index (first point is 1, 0 is for return point).
         /// OriginName: idx, Units: , IsExtended: false
         /// </summary>
-        public byte Idx { get; set; }
+        public static readonly Field IdxField = new Field.Builder()
+            .Name(nameof(Idx))
+            .Title("idx")
+            .Description("Point index (first point is 1, 0 is for return point).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _idx;
+        public byte Idx { get => _idx; set => _idx = value; }
         /// <summary>
         /// Total number of points (for sanity checking).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Total number of points (for sanity checking).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _count;
+        public byte Count { get => _count; set => _count = value; }
     }
     /// <summary>
     /// Request a current fence point from MAV.
@@ -4144,44 +5041,6 @@ false),
         public override FenceFetchPointPayload Payload { get; } = new();
 
         public override string Name => "FENCE_FETCH_POINT";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("idx",
-"Point index (first point is 1, 0 is for return point).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "FENCE_FETCH_POINT:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t idx;"
-        ;
     }
 
     /// <summary>
@@ -4193,14 +5052,14 @@ false),
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Idx
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t idx
+            );
         }
 
 
@@ -4220,26 +5079,54 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Idx);
             /* PayloadByteSize = 3 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Point index (first point is 1, 0 is for return point).
         /// OriginName: idx, Units: , IsExtended: false
         /// </summary>
-        public byte Idx { get; set; }
+        public static readonly Field IdxField = new Field.Builder()
+            .Name(nameof(Idx))
+            .Title("idx")
+            .Description("Point index (first point is 1, 0 is for return point).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _idx;
+        public byte Idx { get => _idx; set => _idx = value; }
     }
     /// <summary>
     /// Status of DCM attitude estimator.
@@ -4261,84 +5148,6 @@ false),
         public override AhrsPayload Payload { get; } = new();
 
         public override string Name => "AHRS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("omegaIx",
-"X gyro drift estimate.",
-string.Empty, 
-@"rad/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("omegaIy",
-"Y gyro drift estimate.",
-string.Empty, 
-@"rad/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("omegaIz",
-"Z gyro drift estimate.",
-string.Empty, 
-@"rad/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("accel_weight",
-"Average accel_weight.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("renorm_val",
-"Average renormalisation value.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("error_rp",
-"Average error_roll_pitch value.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("error_yaw",
-"Average error_yaw value.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "AHRS:"
-        + "float omegaIx;"
-        + "float omegaIy;"
-        + "float omegaIz;"
-        + "float accel_weight;"
-        + "float renorm_val;"
-        + "float error_rp;"
-        + "float error_yaw;"
-        ;
     }
 
     /// <summary>
@@ -4350,18 +5159,18 @@ false),
         public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Omegaix
-            sum+=4; //Omegaiy
-            sum+=4; //Omegaiz
-            sum+=4; //AccelWeight
-            sum+=4; //RenormVal
-            sum+=4; //ErrorRp
-            sum+=4; //ErrorYaw
-            return (byte)sum;
+            return (byte)(
+            +4 // float omegaIx
+            +4 // float omegaIy
+            +4 // float omegaIz
+            +4 // float accel_weight
+            +4 // float renorm_val
+            +4 // float error_rp
+            +4 // float error_yaw
+            );
         }
 
 
@@ -4389,46 +5198,110 @@ false),
             BinSerialize.WriteFloat(ref buffer,ErrorYaw);
             /* PayloadByteSize = 28 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,OmegaixField, OmegaixField.DataType, ref _omegaix);    
+            FloatType.Accept(visitor,OmegaiyField, OmegaiyField.DataType, ref _omegaiy);    
+            FloatType.Accept(visitor,OmegaizField, OmegaizField.DataType, ref _omegaiz);    
+            FloatType.Accept(visitor,AccelWeightField, AccelWeightField.DataType, ref _accelWeight);    
+            FloatType.Accept(visitor,RenormValField, RenormValField.DataType, ref _renormVal);    
+            FloatType.Accept(visitor,ErrorRpField, ErrorRpField.DataType, ref _errorRp);    
+            FloatType.Accept(visitor,ErrorYawField, ErrorYawField.DataType, ref _errorYaw);    
 
+        }
 
         /// <summary>
         /// X gyro drift estimate.
         /// OriginName: omegaIx, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Omegaix { get; set; }
+        public static readonly Field OmegaixField = new Field.Builder()
+            .Name(nameof(Omegaix))
+            .Title("omegaIx")
+            .Description("X gyro drift estimate.")
+.Units(@"rad/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _omegaix;
+        public float Omegaix { get => _omegaix; set => _omegaix = value; }
         /// <summary>
         /// Y gyro drift estimate.
         /// OriginName: omegaIy, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Omegaiy { get; set; }
+        public static readonly Field OmegaiyField = new Field.Builder()
+            .Name(nameof(Omegaiy))
+            .Title("omegaIy")
+            .Description("Y gyro drift estimate.")
+.Units(@"rad/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _omegaiy;
+        public float Omegaiy { get => _omegaiy; set => _omegaiy = value; }
         /// <summary>
         /// Z gyro drift estimate.
         /// OriginName: omegaIz, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Omegaiz { get; set; }
+        public static readonly Field OmegaizField = new Field.Builder()
+            .Name(nameof(Omegaiz))
+            .Title("omegaIz")
+            .Description("Z gyro drift estimate.")
+.Units(@"rad/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _omegaiz;
+        public float Omegaiz { get => _omegaiz; set => _omegaiz = value; }
         /// <summary>
         /// Average accel_weight.
         /// OriginName: accel_weight, Units: , IsExtended: false
         /// </summary>
-        public float AccelWeight { get; set; }
+        public static readonly Field AccelWeightField = new Field.Builder()
+            .Name(nameof(AccelWeight))
+            .Title("accel_weight")
+            .Description("Average accel_weight.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _accelWeight;
+        public float AccelWeight { get => _accelWeight; set => _accelWeight = value; }
         /// <summary>
         /// Average renormalisation value.
         /// OriginName: renorm_val, Units: , IsExtended: false
         /// </summary>
-        public float RenormVal { get; set; }
+        public static readonly Field RenormValField = new Field.Builder()
+            .Name(nameof(RenormVal))
+            .Title("renorm_val")
+            .Description("Average renormalisation value.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _renormVal;
+        public float RenormVal { get => _renormVal; set => _renormVal = value; }
         /// <summary>
         /// Average error_roll_pitch value.
         /// OriginName: error_rp, Units: , IsExtended: false
         /// </summary>
-        public float ErrorRp { get; set; }
+        public static readonly Field ErrorRpField = new Field.Builder()
+            .Name(nameof(ErrorRp))
+            .Title("error_rp")
+            .Description("Average error_roll_pitch value.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _errorRp;
+        public float ErrorRp { get => _errorRp; set => _errorRp = value; }
         /// <summary>
         /// Average error_yaw value.
         /// OriginName: error_yaw, Units: , IsExtended: false
         /// </summary>
-        public float ErrorYaw { get; set; }
+        public static readonly Field ErrorYawField = new Field.Builder()
+            .Name(nameof(ErrorYaw))
+            .Title("error_yaw")
+            .Description("Average error_yaw value.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _errorYaw;
+        public float ErrorYaw { get => _errorYaw; set => _errorYaw = value; }
     }
     /// <summary>
     /// Status of simulation environment, if used.
@@ -4450,124 +5323,6 @@ false),
         public override SimstatePayload Payload { get; } = new();
 
         public override string Name => "SIMSTATE";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("roll",
-"Roll angle.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("pitch",
-"Pitch angle.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("yaw",
-"Yaw angle.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("xacc",
-"X acceleration.",
-string.Empty, 
-@"m/s/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("yacc",
-"Y acceleration.",
-string.Empty, 
-@"m/s/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("zacc",
-"Z acceleration.",
-string.Empty, 
-@"m/s/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("xgyro",
-"Angular speed around X axis.",
-string.Empty, 
-@"rad/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("ygyro",
-"Angular speed around Y axis.",
-string.Empty, 
-@"rad/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("zgyro",
-"Angular speed around Z axis.",
-string.Empty, 
-@"rad/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("lat",
-"Latitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("lng",
-"Longitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "SIMSTATE:"
-        + "float roll;"
-        + "float pitch;"
-        + "float yaw;"
-        + "float xacc;"
-        + "float yacc;"
-        + "float zacc;"
-        + "float xgyro;"
-        + "float ygyro;"
-        + "float zgyro;"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        ;
     }
 
     /// <summary>
@@ -4579,22 +5334,22 @@ false),
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //Xacc
-            sum+=4; //Yacc
-            sum+=4; //Zacc
-            sum+=4; //Xgyro
-            sum+=4; //Ygyro
-            sum+=4; //Zgyro
-            sum+=4; //Lat
-            sum+=4; //Lng
-            return (byte)sum;
+            return (byte)(
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float xacc
+            +4 // float yacc
+            +4 // float zacc
+            +4 // float xgyro
+            +4 // float ygyro
+            +4 // float zgyro
+            +4 // int32_t lat
+            +4 // int32_t lng
+            );
         }
 
 
@@ -4630,66 +5385,166 @@ false),
             BinSerialize.WriteInt(ref buffer,Lng);
             /* PayloadByteSize = 44 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,XaccField, XaccField.DataType, ref _xacc);    
+            FloatType.Accept(visitor,YaccField, YaccField.DataType, ref _yacc);    
+            FloatType.Accept(visitor,ZaccField, ZaccField.DataType, ref _zacc);    
+            FloatType.Accept(visitor,XgyroField, XgyroField.DataType, ref _xgyro);    
+            FloatType.Accept(visitor,YgyroField, YgyroField.DataType, ref _ygyro);    
+            FloatType.Accept(visitor,ZgyroField, ZgyroField.DataType, ref _zgyro);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
 
+        }
 
         /// <summary>
         /// Roll angle.
         /// OriginName: roll, Units: rad, IsExtended: false
         /// </summary>
-        public float Roll { get; set; }
+        public static readonly Field RollField = new Field.Builder()
+            .Name(nameof(Roll))
+            .Title("roll")
+            .Description("Roll angle.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _roll;
+        public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
         /// Pitch angle.
         /// OriginName: pitch, Units: rad, IsExtended: false
         /// </summary>
-        public float Pitch { get; set; }
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Pitch angle.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _pitch;
+        public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
         /// Yaw angle.
         /// OriginName: yaw, Units: rad, IsExtended: false
         /// </summary>
-        public float Yaw { get; set; }
+        public static readonly Field YawField = new Field.Builder()
+            .Name(nameof(Yaw))
+            .Title("yaw")
+            .Description("Yaw angle.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _yaw;
+        public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
         /// X acceleration.
         /// OriginName: xacc, Units: m/s/s, IsExtended: false
         /// </summary>
-        public float Xacc { get; set; }
+        public static readonly Field XaccField = new Field.Builder()
+            .Name(nameof(Xacc))
+            .Title("xacc")
+            .Description("X acceleration.")
+.Units(@"m/s/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _xacc;
+        public float Xacc { get => _xacc; set => _xacc = value; }
         /// <summary>
         /// Y acceleration.
         /// OriginName: yacc, Units: m/s/s, IsExtended: false
         /// </summary>
-        public float Yacc { get; set; }
+        public static readonly Field YaccField = new Field.Builder()
+            .Name(nameof(Yacc))
+            .Title("yacc")
+            .Description("Y acceleration.")
+.Units(@"m/s/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _yacc;
+        public float Yacc { get => _yacc; set => _yacc = value; }
         /// <summary>
         /// Z acceleration.
         /// OriginName: zacc, Units: m/s/s, IsExtended: false
         /// </summary>
-        public float Zacc { get; set; }
+        public static readonly Field ZaccField = new Field.Builder()
+            .Name(nameof(Zacc))
+            .Title("zacc")
+            .Description("Z acceleration.")
+.Units(@"m/s/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _zacc;
+        public float Zacc { get => _zacc; set => _zacc = value; }
         /// <summary>
         /// Angular speed around X axis.
         /// OriginName: xgyro, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Xgyro { get; set; }
+        public static readonly Field XgyroField = new Field.Builder()
+            .Name(nameof(Xgyro))
+            .Title("xgyro")
+            .Description("Angular speed around X axis.")
+.Units(@"rad/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _xgyro;
+        public float Xgyro { get => _xgyro; set => _xgyro = value; }
         /// <summary>
         /// Angular speed around Y axis.
         /// OriginName: ygyro, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Ygyro { get; set; }
+        public static readonly Field YgyroField = new Field.Builder()
+            .Name(nameof(Ygyro))
+            .Title("ygyro")
+            .Description("Angular speed around Y axis.")
+.Units(@"rad/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _ygyro;
+        public float Ygyro { get => _ygyro; set => _ygyro = value; }
         /// <summary>
         /// Angular speed around Z axis.
         /// OriginName: zgyro, Units: rad/s, IsExtended: false
         /// </summary>
-        public float Zgyro { get; set; }
+        public static readonly Field ZgyroField = new Field.Builder()
+            .Name(nameof(Zgyro))
+            .Title("zgyro")
+            .Description("Angular speed around Z axis.")
+.Units(@"rad/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _zgyro;
+        public float Zgyro { get => _zgyro; set => _zgyro = value; }
         /// <summary>
         /// Latitude.
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lat;
+        public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
         /// Longitude.
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lng;
+        public int Lng { get => _lng; set => _lng = value; }
     }
     /// <summary>
     /// Status of key hardware.
@@ -4711,34 +5566,6 @@ false),
         public override HwstatusPayload Payload { get; } = new();
 
         public override string Name => "HWSTATUS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("Vcc",
-"Board voltage.",
-string.Empty, 
-@"mV", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("I2Cerr",
-"I2C error count.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "HWSTATUS:"
-        + "uint16_t Vcc;"
-        + "uint8_t I2Cerr;"
-        ;
     }
 
     /// <summary>
@@ -4750,13 +5577,13 @@ false),
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Vcc
-            sum+=1; //I2cerr
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t Vcc
+            +1 // uint8_t I2Cerr
+            );
         }
 
 
@@ -4774,21 +5601,40 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)I2cerr);
             /* PayloadByteSize = 3 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,VccField, VccField.DataType, ref _vcc);    
+            UInt8Type.Accept(visitor,I2cerrField, I2cerrField.DataType, ref _i2cerr);    
 
+        }
 
         /// <summary>
         /// Board voltage.
         /// OriginName: Vcc, Units: mV, IsExtended: false
         /// </summary>
-        public ushort Vcc { get; set; }
+        public static readonly Field VccField = new Field.Builder()
+            .Name(nameof(Vcc))
+            .Title("Vcc")
+            .Description("Board voltage.")
+.Units(@"mV")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _vcc;
+        public ushort Vcc { get => _vcc; set => _vcc = value; }
         /// <summary>
         /// I2C error count.
         /// OriginName: I2Cerr, Units: , IsExtended: false
         /// </summary>
-        public byte I2cerr { get; set; }
+        public static readonly Field I2cerrField = new Field.Builder()
+            .Name(nameof(I2cerr))
+            .Title("I2Cerr")
+            .Description("I2C error count.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _i2cerr;
+        public byte I2cerr { get => _i2cerr; set => _i2cerr = value; }
     }
     /// <summary>
     /// Status generated by radio.
@@ -4810,84 +5656,6 @@ false),
         public override RadioPayload Payload { get; } = new();
 
         public override string Name => "RADIO";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("rxerrors",
-"Receive errors.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("fixed",
-"Count of error corrected packets.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("rssi",
-"Local signal strength.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("remrssi",
-"Remote signal strength.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("txbuf",
-"How full the tx buffer is.",
-string.Empty, 
-@"%", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("noise",
-"Background noise level.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("remnoise",
-"Remote background noise level.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "RADIO:"
-        + "uint16_t rxerrors;"
-        + "uint16_t fixed;"
-        + "uint8_t rssi;"
-        + "uint8_t remrssi;"
-        + "uint8_t txbuf;"
-        + "uint8_t noise;"
-        + "uint8_t remnoise;"
-        ;
     }
 
     /// <summary>
@@ -4899,18 +5667,18 @@ false),
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Rxerrors
-            sum+=2; //Fixed
-            sum+=1; //Rssi
-            sum+=1; //Remrssi
-            sum+=1; //Txbuf
-            sum+=1; //Noise
-            sum+=1; //Remnoise
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t rxerrors
+            +2 // uint16_t fixed
+            +1 // uint8_t rssi
+            +1 // uint8_t remrssi
+            +1 // uint8_t txbuf
+            +1 // uint8_t noise
+            +1 // uint8_t remnoise
+            );
         }
 
 
@@ -4938,46 +5706,110 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Remnoise);
             /* PayloadByteSize = 9 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,RxerrorsField, RxerrorsField.DataType, ref _rxerrors);    
+            UInt16Type.Accept(visitor,FixedField, FixedField.DataType, ref _fixed);    
+            UInt8Type.Accept(visitor,RssiField, RssiField.DataType, ref _rssi);    
+            UInt8Type.Accept(visitor,RemrssiField, RemrssiField.DataType, ref _remrssi);    
+            UInt8Type.Accept(visitor,TxbufField, TxbufField.DataType, ref _txbuf);    
+            UInt8Type.Accept(visitor,NoiseField, NoiseField.DataType, ref _noise);    
+            UInt8Type.Accept(visitor,RemnoiseField, RemnoiseField.DataType, ref _remnoise);    
 
+        }
 
         /// <summary>
         /// Receive errors.
         /// OriginName: rxerrors, Units: , IsExtended: false
         /// </summary>
-        public ushort Rxerrors { get; set; }
+        public static readonly Field RxerrorsField = new Field.Builder()
+            .Name(nameof(Rxerrors))
+            .Title("rxerrors")
+            .Description("Receive errors.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _rxerrors;
+        public ushort Rxerrors { get => _rxerrors; set => _rxerrors = value; }
         /// <summary>
         /// Count of error corrected packets.
         /// OriginName: fixed, Units: , IsExtended: false
         /// </summary>
-        public ushort Fixed { get; set; }
+        public static readonly Field FixedField = new Field.Builder()
+            .Name(nameof(Fixed))
+            .Title("fixed")
+            .Description("Count of error corrected packets.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _fixed;
+        public ushort Fixed { get => _fixed; set => _fixed = value; }
         /// <summary>
         /// Local signal strength.
         /// OriginName: rssi, Units: , IsExtended: false
         /// </summary>
-        public byte Rssi { get; set; }
+        public static readonly Field RssiField = new Field.Builder()
+            .Name(nameof(Rssi))
+            .Title("rssi")
+            .Description("Local signal strength.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _rssi;
+        public byte Rssi { get => _rssi; set => _rssi = value; }
         /// <summary>
         /// Remote signal strength.
         /// OriginName: remrssi, Units: , IsExtended: false
         /// </summary>
-        public byte Remrssi { get; set; }
+        public static readonly Field RemrssiField = new Field.Builder()
+            .Name(nameof(Remrssi))
+            .Title("remrssi")
+            .Description("Remote signal strength.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _remrssi;
+        public byte Remrssi { get => _remrssi; set => _remrssi = value; }
         /// <summary>
         /// How full the tx buffer is.
         /// OriginName: txbuf, Units: %, IsExtended: false
         /// </summary>
-        public byte Txbuf { get; set; }
+        public static readonly Field TxbufField = new Field.Builder()
+            .Name(nameof(Txbuf))
+            .Title("txbuf")
+            .Description("How full the tx buffer is.")
+.Units(@"%")
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _txbuf;
+        public byte Txbuf { get => _txbuf; set => _txbuf = value; }
         /// <summary>
         /// Background noise level.
         /// OriginName: noise, Units: , IsExtended: false
         /// </summary>
-        public byte Noise { get; set; }
+        public static readonly Field NoiseField = new Field.Builder()
+            .Name(nameof(Noise))
+            .Title("noise")
+            .Description("Background noise level.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _noise;
+        public byte Noise { get => _noise; set => _noise = value; }
         /// <summary>
         /// Remote background noise level.
         /// OriginName: remnoise, Units: , IsExtended: false
         /// </summary>
-        public byte Remnoise { get; set; }
+        public static readonly Field RemnoiseField = new Field.Builder()
+            .Name(nameof(Remnoise))
+            .Title("remnoise")
+            .Description("Remote background noise level.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _remnoise;
+        public byte Remnoise { get => _remnoise; set => _remnoise = value; }
     }
     /// <summary>
     /// Status of AP_Limits. Sent in extended status stream when AP_Limits is enabled.
@@ -4999,104 +5831,6 @@ false),
         public override LimitsStatusPayload Payload { get; } = new();
 
         public override string Name => "LIMITS_STATUS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("last_trigger",
-"Time (since boot) of last breach.",
-string.Empty, 
-@"ms", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("last_action",
-"Time (since boot) of last recovery action.",
-string.Empty, 
-@"ms", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("last_recovery",
-"Time (since boot) of last successful recovery.",
-string.Empty, 
-@"ms", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("last_clear",
-"Time (since boot) of last all-clear.",
-string.Empty, 
-@"ms", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("breach_count",
-"Number of fence breaches.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("limits_state",
-"State of AP_Limits.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("mods_enabled",
-"AP_Limit_Module bitfield of enabled modules.",
-string.Empty, 
-string.Empty, 
-"bitmask", 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("mods_required",
-"AP_Limit_Module bitfield of required modules.",
-string.Empty, 
-string.Empty, 
-"bitmask", 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("mods_triggered",
-"AP_Limit_Module bitfield of triggered modules.",
-string.Empty, 
-string.Empty, 
-"bitmask", 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "LIMITS_STATUS:"
-        + "uint32_t last_trigger;"
-        + "uint32_t last_action;"
-        + "uint32_t last_recovery;"
-        + "uint32_t last_clear;"
-        + "uint16_t breach_count;"
-        + "uint8_t limits_state;"
-        + "uint8_t mods_enabled;"
-        + "uint8_t mods_required;"
-        + "uint8_t mods_triggered;"
-        ;
     }
 
     /// <summary>
@@ -5108,20 +5842,20 @@ false),
         public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //LastTrigger
-            sum+=4; //LastAction
-            sum+=4; //LastRecovery
-            sum+=4; //LastClear
-            sum+=2; //BreachCount
-            sum+= 1; // LimitsState
-            sum+= 1; // ModsEnabled
-            sum+= 1; // ModsRequired
-            sum+= 1; // ModsTriggered
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t last_trigger
+            +4 // uint32_t last_action
+            +4 // uint32_t last_recovery
+            +4 // uint32_t last_clear
+            +2 // uint16_t breach_count
+            + 1 // uint8_t limits_state
+            + 1 // uint8_t mods_enabled
+            + 1 // uint8_t mods_required
+            + 1 // uint8_t mods_triggered
+            );
         }
 
 
@@ -5153,56 +5887,146 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)ModsTriggered);
             /* PayloadByteSize = 22 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,LastTriggerField, LastTriggerField.DataType, ref _lastTrigger);    
+            UInt32Type.Accept(visitor,LastActionField, LastActionField.DataType, ref _lastAction);    
+            UInt32Type.Accept(visitor,LastRecoveryField, LastRecoveryField.DataType, ref _lastRecovery);    
+            UInt32Type.Accept(visitor,LastClearField, LastClearField.DataType, ref _lastClear);    
+            UInt16Type.Accept(visitor,BreachCountField, BreachCountField.DataType, ref _breachCount);    
+            var tmpLimitsState = (byte)LimitsState;
+            UInt8Type.Accept(visitor,LimitsStateField, LimitsStateField.DataType, ref tmpLimitsState);
+            LimitsState = (LimitsState)tmpLimitsState;
+            var tmpModsEnabled = (byte)ModsEnabled;
+            UInt8Type.Accept(visitor,ModsEnabledField, ModsEnabledField.DataType, ref tmpModsEnabled);
+            ModsEnabled = (LimitModule)tmpModsEnabled;
+            var tmpModsRequired = (byte)ModsRequired;
+            UInt8Type.Accept(visitor,ModsRequiredField, ModsRequiredField.DataType, ref tmpModsRequired);
+            ModsRequired = (LimitModule)tmpModsRequired;
+            var tmpModsTriggered = (byte)ModsTriggered;
+            UInt8Type.Accept(visitor,ModsTriggeredField, ModsTriggeredField.DataType, ref tmpModsTriggered);
+            ModsTriggered = (LimitModule)tmpModsTriggered;
 
+        }
 
         /// <summary>
         /// Time (since boot) of last breach.
         /// OriginName: last_trigger, Units: ms, IsExtended: false
         /// </summary>
-        public uint LastTrigger { get; set; }
+        public static readonly Field LastTriggerField = new Field.Builder()
+            .Name(nameof(LastTrigger))
+            .Title("last_trigger")
+            .Description("Time (since boot) of last breach.")
+.Units(@"ms")
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _lastTrigger;
+        public uint LastTrigger { get => _lastTrigger; set => _lastTrigger = value; }
         /// <summary>
         /// Time (since boot) of last recovery action.
         /// OriginName: last_action, Units: ms, IsExtended: false
         /// </summary>
-        public uint LastAction { get; set; }
+        public static readonly Field LastActionField = new Field.Builder()
+            .Name(nameof(LastAction))
+            .Title("last_action")
+            .Description("Time (since boot) of last recovery action.")
+.Units(@"ms")
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _lastAction;
+        public uint LastAction { get => _lastAction; set => _lastAction = value; }
         /// <summary>
         /// Time (since boot) of last successful recovery.
         /// OriginName: last_recovery, Units: ms, IsExtended: false
         /// </summary>
-        public uint LastRecovery { get; set; }
+        public static readonly Field LastRecoveryField = new Field.Builder()
+            .Name(nameof(LastRecovery))
+            .Title("last_recovery")
+            .Description("Time (since boot) of last successful recovery.")
+.Units(@"ms")
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _lastRecovery;
+        public uint LastRecovery { get => _lastRecovery; set => _lastRecovery = value; }
         /// <summary>
         /// Time (since boot) of last all-clear.
         /// OriginName: last_clear, Units: ms, IsExtended: false
         /// </summary>
-        public uint LastClear { get; set; }
+        public static readonly Field LastClearField = new Field.Builder()
+            .Name(nameof(LastClear))
+            .Title("last_clear")
+            .Description("Time (since boot) of last all-clear.")
+.Units(@"ms")
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _lastClear;
+        public uint LastClear { get => _lastClear; set => _lastClear = value; }
         /// <summary>
         /// Number of fence breaches.
         /// OriginName: breach_count, Units: , IsExtended: false
         /// </summary>
-        public ushort BreachCount { get; set; }
+        public static readonly Field BreachCountField = new Field.Builder()
+            .Name(nameof(BreachCount))
+            .Title("breach_count")
+            .Description("Number of fence breaches.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _breachCount;
+        public ushort BreachCount { get => _breachCount; set => _breachCount = value; }
         /// <summary>
         /// State of AP_Limits.
         /// OriginName: limits_state, Units: , IsExtended: false
         /// </summary>
-        public LimitsState LimitsState { get; set; }
+        public static readonly Field LimitsStateField = new Field.Builder()
+            .Name(nameof(LimitsState))
+            .Title("limits_state")
+            .Description("State of AP_Limits.")
+            .DataType(new UInt8Type(LimitsStateHelper.GetValues(x=>(byte)x).Min(),LimitsStateHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(LimitsStateHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private LimitsState _limitsState;
+        public LimitsState LimitsState { get => _limitsState; set => _limitsState = value; } 
         /// <summary>
         /// AP_Limit_Module bitfield of enabled modules.
         /// OriginName: mods_enabled, Units: , IsExtended: false
         /// </summary>
-        public LimitModule ModsEnabled { get; set; }
+        public static readonly Field ModsEnabledField = new Field.Builder()
+            .Name(nameof(ModsEnabled))
+            .Title("bitmask")
+            .Description("AP_Limit_Module bitfield of enabled modules.")
+            .DataType(new UInt8Type(LimitModuleHelper.GetValues(x=>(byte)x).Min(),LimitModuleHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(LimitModuleHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private LimitModule _modsEnabled;
+        public LimitModule ModsEnabled { get => _modsEnabled; set => _modsEnabled = value; } 
         /// <summary>
         /// AP_Limit_Module bitfield of required modules.
         /// OriginName: mods_required, Units: , IsExtended: false
         /// </summary>
-        public LimitModule ModsRequired { get; set; }
+        public static readonly Field ModsRequiredField = new Field.Builder()
+            .Name(nameof(ModsRequired))
+            .Title("bitmask")
+            .Description("AP_Limit_Module bitfield of required modules.")
+            .DataType(new UInt8Type(LimitModuleHelper.GetValues(x=>(byte)x).Min(),LimitModuleHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(LimitModuleHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private LimitModule _modsRequired;
+        public LimitModule ModsRequired { get => _modsRequired; set => _modsRequired = value; } 
         /// <summary>
         /// AP_Limit_Module bitfield of triggered modules.
         /// OriginName: mods_triggered, Units: , IsExtended: false
         /// </summary>
-        public LimitModule ModsTriggered { get; set; }
+        public static readonly Field ModsTriggeredField = new Field.Builder()
+            .Name(nameof(ModsTriggered))
+            .Title("bitmask")
+            .Description("AP_Limit_Module bitfield of triggered modules.")
+            .DataType(new UInt8Type(LimitModuleHelper.GetValues(x=>(byte)x).Min(),LimitModuleHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(LimitModuleHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private LimitModule _modsTriggered;
+        public LimitModule ModsTriggered { get => _modsTriggered; set => _modsTriggered = value; } 
     }
     /// <summary>
     /// Wind estimation.
@@ -5224,44 +6048,6 @@ false),
         public override WindPayload Payload { get; } = new();
 
         public override string Name => "WIND";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("direction",
-"Wind direction (that wind is coming from).",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("speed",
-"Wind speed in ground plane.",
-string.Empty, 
-@"m/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("speed_z",
-"Vertical wind speed.",
-string.Empty, 
-@"m/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "WIND:"
-        + "float direction;"
-        + "float speed;"
-        + "float speed_z;"
-        ;
     }
 
     /// <summary>
@@ -5273,14 +6059,14 @@ false),
         public byte GetMaxByteSize() => 12; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Direction
-            sum+=4; //Speed
-            sum+=4; //SpeedZ
-            return (byte)sum;
+            return (byte)(
+            +4 // float direction
+            +4 // float speed
+            +4 // float speed_z
+            );
         }
 
 
@@ -5300,26 +6086,54 @@ false),
             BinSerialize.WriteFloat(ref buffer,SpeedZ);
             /* PayloadByteSize = 12 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DirectionField, DirectionField.DataType, ref _direction);    
+            FloatType.Accept(visitor,SpeedField, SpeedField.DataType, ref _speed);    
+            FloatType.Accept(visitor,SpeedZField, SpeedZField.DataType, ref _speedZ);    
 
+        }
 
         /// <summary>
         /// Wind direction (that wind is coming from).
         /// OriginName: direction, Units: deg, IsExtended: false
         /// </summary>
-        public float Direction { get; set; }
+        public static readonly Field DirectionField = new Field.Builder()
+            .Name(nameof(Direction))
+            .Title("direction")
+            .Description("Wind direction (that wind is coming from).")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _direction;
+        public float Direction { get => _direction; set => _direction = value; }
         /// <summary>
         /// Wind speed in ground plane.
         /// OriginName: speed, Units: m/s, IsExtended: false
         /// </summary>
-        public float Speed { get; set; }
+        public static readonly Field SpeedField = new Field.Builder()
+            .Name(nameof(Speed))
+            .Title("speed")
+            .Description("Wind speed in ground plane.")
+.Units(@"m/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _speed;
+        public float Speed { get => _speed; set => _speed = value; }
         /// <summary>
         /// Vertical wind speed.
         /// OriginName: speed_z, Units: m/s, IsExtended: false
         /// </summary>
-        public float SpeedZ { get; set; }
+        public static readonly Field SpeedZField = new Field.Builder()
+            .Name(nameof(SpeedZ))
+            .Title("speed_z")
+            .Description("Vertical wind speed.")
+.Units(@"m/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _speedZ;
+        public float SpeedZ { get => _speedZ; set => _speedZ = value; }
     }
     /// <summary>
     /// Data packet, size 16.
@@ -5341,44 +6155,6 @@ false),
         public override Data16Payload Payload { get; } = new();
 
         public override string Name => "DATA16";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("type",
-"Data type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("len",
-"Data length.",
-string.Empty, 
-@"bytes", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("data",
-"Raw data.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            16, 
-false),
-        ];
-        public const string FormatMessage = "DATA16:"
-        + "uint8_t type;"
-        + "uint8_t len;"
-        + "uint8_t[16] data;"
-        ;
     }
 
     /// <summary>
@@ -5390,14 +6166,14 @@ false),
         public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //Type
-            sum+=1; //Len
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t type
+            +1 // uint8_t len
+            +Data.Length // uint8_t[16] data
+            );
         }
 
 
@@ -5409,7 +6185,7 @@ false),
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/18 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -5427,27 +6203,55 @@ false),
             }
             /* PayloadByteSize = 18 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
+            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 16,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
+        }
 
         /// <summary>
         /// Data type.
         /// OriginName: type, Units: , IsExtended: false
         /// </summary>
-        public byte Type { get; set; }
+        public static readonly Field TypeField = new Field.Builder()
+            .Name(nameof(Type))
+            .Title("type")
+            .Description("Data type.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _type;
+        public byte Type { get => _type; set => _type = value; }
         /// <summary>
         /// Data length.
         /// OriginName: len, Units: bytes, IsExtended: false
         /// </summary>
-        public byte Len { get; set; }
+        public static readonly Field LenField = new Field.Builder()
+            .Name(nameof(Len))
+            .Title("len")
+            .Description("Data length.")
+.Units(@"bytes")
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _len;
+        public byte Len { get => _len; set => _len = value; }
         /// <summary>
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Raw data.")
+
+            .DataType(new ArrayType(UInt8Type.Default,16))
+        .Build();
         public const int DataMaxItemsCount = 16;
-        public byte[] Data { get; set; } = new byte[16];
+        public byte[] Data { get; } = new byte[16];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 16;
     }
@@ -5471,44 +6275,6 @@ false),
         public override Data32Payload Payload { get; } = new();
 
         public override string Name => "DATA32";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("type",
-"Data type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("len",
-"Data length.",
-string.Empty, 
-@"bytes", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("data",
-"Raw data.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            32, 
-false),
-        ];
-        public const string FormatMessage = "DATA32:"
-        + "uint8_t type;"
-        + "uint8_t len;"
-        + "uint8_t[32] data;"
-        ;
     }
 
     /// <summary>
@@ -5520,14 +6286,14 @@ false),
         public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //Type
-            sum+=1; //Len
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t type
+            +1 // uint8_t len
+            +Data.Length // uint8_t[32] data
+            );
         }
 
 
@@ -5539,7 +6305,7 @@ false),
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/32 - Math.Max(0,((/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -5557,27 +6323,55 @@ false),
             }
             /* PayloadByteSize = 34 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
+            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 32,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
+        }
 
         /// <summary>
         /// Data type.
         /// OriginName: type, Units: , IsExtended: false
         /// </summary>
-        public byte Type { get; set; }
+        public static readonly Field TypeField = new Field.Builder()
+            .Name(nameof(Type))
+            .Title("type")
+            .Description("Data type.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _type;
+        public byte Type { get => _type; set => _type = value; }
         /// <summary>
         /// Data length.
         /// OriginName: len, Units: bytes, IsExtended: false
         /// </summary>
-        public byte Len { get; set; }
+        public static readonly Field LenField = new Field.Builder()
+            .Name(nameof(Len))
+            .Title("len")
+            .Description("Data length.")
+.Units(@"bytes")
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _len;
+        public byte Len { get => _len; set => _len = value; }
         /// <summary>
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Raw data.")
+
+            .DataType(new ArrayType(UInt8Type.Default,32))
+        .Build();
         public const int DataMaxItemsCount = 32;
-        public byte[] Data { get; set; } = new byte[32];
+        public byte[] Data { get; } = new byte[32];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 32;
     }
@@ -5601,44 +6395,6 @@ false),
         public override Data64Payload Payload { get; } = new();
 
         public override string Name => "DATA64";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("type",
-"Data type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("len",
-"Data length.",
-string.Empty, 
-@"bytes", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("data",
-"Raw data.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            64, 
-false),
-        ];
-        public const string FormatMessage = "DATA64:"
-        + "uint8_t type;"
-        + "uint8_t len;"
-        + "uint8_t[64] data;"
-        ;
     }
 
     /// <summary>
@@ -5650,14 +6406,14 @@ false),
         public byte GetMaxByteSize() => 66; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 66; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //Type
-            sum+=1; //Len
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t type
+            +1 // uint8_t len
+            +Data.Length // uint8_t[64] data
+            );
         }
 
 
@@ -5669,7 +6425,7 @@ false),
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/64 - Math.Max(0,((/*PayloadByteSize*/66 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -5687,27 +6443,55 @@ false),
             }
             /* PayloadByteSize = 66 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
+            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 64,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
+        }
 
         /// <summary>
         /// Data type.
         /// OriginName: type, Units: , IsExtended: false
         /// </summary>
-        public byte Type { get; set; }
+        public static readonly Field TypeField = new Field.Builder()
+            .Name(nameof(Type))
+            .Title("type")
+            .Description("Data type.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _type;
+        public byte Type { get => _type; set => _type = value; }
         /// <summary>
         /// Data length.
         /// OriginName: len, Units: bytes, IsExtended: false
         /// </summary>
-        public byte Len { get; set; }
+        public static readonly Field LenField = new Field.Builder()
+            .Name(nameof(Len))
+            .Title("len")
+            .Description("Data length.")
+.Units(@"bytes")
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _len;
+        public byte Len { get => _len; set => _len = value; }
         /// <summary>
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Raw data.")
+
+            .DataType(new ArrayType(UInt8Type.Default,64))
+        .Build();
         public const int DataMaxItemsCount = 64;
-        public byte[] Data { get; set; } = new byte[64];
+        public byte[] Data { get; } = new byte[64];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 64;
     }
@@ -5731,44 +6515,6 @@ false),
         public override Data96Payload Payload { get; } = new();
 
         public override string Name => "DATA96";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("type",
-"Data type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("len",
-"Data length.",
-string.Empty, 
-@"bytes", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("data",
-"Raw data.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            96, 
-false),
-        ];
-        public const string FormatMessage = "DATA96:"
-        + "uint8_t type;"
-        + "uint8_t len;"
-        + "uint8_t[96] data;"
-        ;
     }
 
     /// <summary>
@@ -5780,14 +6526,14 @@ false),
         public byte GetMaxByteSize() => 98; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //Type
-            sum+=1; //Len
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t type
+            +1 // uint8_t len
+            +Data.Length // uint8_t[96] data
+            );
         }
 
 
@@ -5799,7 +6545,7 @@ false),
             Type = (byte)BinSerialize.ReadByte(ref buffer);
             Len = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/96 - Math.Max(0,((/*PayloadByteSize*/98 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -5817,27 +6563,55 @@ false),
             }
             /* PayloadByteSize = 98 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
+            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 96,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
+        }
 
         /// <summary>
         /// Data type.
         /// OriginName: type, Units: , IsExtended: false
         /// </summary>
-        public byte Type { get; set; }
+        public static readonly Field TypeField = new Field.Builder()
+            .Name(nameof(Type))
+            .Title("type")
+            .Description("Data type.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _type;
+        public byte Type { get => _type; set => _type = value; }
         /// <summary>
         /// Data length.
         /// OriginName: len, Units: bytes, IsExtended: false
         /// </summary>
-        public byte Len { get; set; }
+        public static readonly Field LenField = new Field.Builder()
+            .Name(nameof(Len))
+            .Title("len")
+            .Description("Data length.")
+.Units(@"bytes")
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _len;
+        public byte Len { get => _len; set => _len = value; }
         /// <summary>
         /// Raw data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Raw data.")
+
+            .DataType(new ArrayType(UInt8Type.Default,96))
+        .Build();
         public const int DataMaxItemsCount = 96;
-        public byte[] Data { get; set; } = new byte[96];
+        public byte[] Data { get; } = new byte[96];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 96;
     }
@@ -5861,34 +6635,6 @@ false),
         public override RangefinderPayload Payload { get; } = new();
 
         public override string Name => "RANGEFINDER";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("distance",
-"Distance.",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("voltage",
-"Raw voltage if available, zero otherwise.",
-string.Empty, 
-@"V", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "RANGEFINDER:"
-        + "float distance;"
-        + "float voltage;"
-        ;
     }
 
     /// <summary>
@@ -5900,13 +6646,13 @@ false),
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Distance
-            sum+=4; //Voltage
-            return (byte)sum;
+            return (byte)(
+            +4 // float distance
+            +4 // float voltage
+            );
         }
 
 
@@ -5924,21 +6670,40 @@ false),
             BinSerialize.WriteFloat(ref buffer,Voltage);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DistanceField, DistanceField.DataType, ref _distance);    
+            FloatType.Accept(visitor,VoltageField, VoltageField.DataType, ref _voltage);    
 
+        }
 
         /// <summary>
         /// Distance.
         /// OriginName: distance, Units: m, IsExtended: false
         /// </summary>
-        public float Distance { get; set; }
+        public static readonly Field DistanceField = new Field.Builder()
+            .Name(nameof(Distance))
+            .Title("distance")
+            .Description("Distance.")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _distance;
+        public float Distance { get => _distance; set => _distance = value; }
         /// <summary>
         /// Raw voltage if available, zero otherwise.
         /// OriginName: voltage, Units: V, IsExtended: false
         /// </summary>
-        public float Voltage { get; set; }
+        public static readonly Field VoltageField = new Field.Builder()
+            .Name(nameof(Voltage))
+            .Title("voltage")
+            .Description("Raw voltage if available, zero otherwise.")
+.Units(@"V")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _voltage;
+        public float Voltage { get => _voltage; set => _voltage = value; }
     }
     /// <summary>
     /// Airspeed auto-calibration.
@@ -5960,134 +6725,6 @@ false),
         public override AirspeedAutocalPayload Payload { get; } = new();
 
         public override string Name => "AIRSPEED_AUTOCAL";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("vx",
-"GPS velocity north.",
-string.Empty, 
-@"m/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("vy",
-"GPS velocity east.",
-string.Empty, 
-@"m/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("vz",
-"GPS velocity down.",
-string.Empty, 
-@"m/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("diff_pressure",
-"Differential pressure.",
-string.Empty, 
-@"Pa", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("EAS2TAS",
-"Estimated to true airspeed ratio.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("ratio",
-"Airspeed ratio.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("state_x",
-"EKF state x.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("state_y",
-"EKF state y.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("state_z",
-"EKF state z.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("Pax",
-"EKF Pax.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("Pby",
-"EKF Pby.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("Pcz",
-"EKF Pcz.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "AIRSPEED_AUTOCAL:"
-        + "float vx;"
-        + "float vy;"
-        + "float vz;"
-        + "float diff_pressure;"
-        + "float EAS2TAS;"
-        + "float ratio;"
-        + "float state_x;"
-        + "float state_y;"
-        + "float state_z;"
-        + "float Pax;"
-        + "float Pby;"
-        + "float Pcz;"
-        ;
     }
 
     /// <summary>
@@ -6099,23 +6736,23 @@ false),
         public byte GetMaxByteSize() => 48; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 48; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Vx
-            sum+=4; //Vy
-            sum+=4; //Vz
-            sum+=4; //DiffPressure
-            sum+=4; //Eas2tas
-            sum+=4; //Ratio
-            sum+=4; //StateX
-            sum+=4; //StateY
-            sum+=4; //StateZ
-            sum+=4; //Pax
-            sum+=4; //Pby
-            sum+=4; //Pcz
-            return (byte)sum;
+            return (byte)(
+            +4 // float vx
+            +4 // float vy
+            +4 // float vz
+            +4 // float diff_pressure
+            +4 // float EAS2TAS
+            +4 // float ratio
+            +4 // float state_x
+            +4 // float state_y
+            +4 // float state_z
+            +4 // float Pax
+            +4 // float Pby
+            +4 // float Pcz
+            );
         }
 
 
@@ -6153,71 +6790,180 @@ false),
             BinSerialize.WriteFloat(ref buffer,Pcz);
             /* PayloadByteSize = 48 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,VxField, VxField.DataType, ref _vx);    
+            FloatType.Accept(visitor,VyField, VyField.DataType, ref _vy);    
+            FloatType.Accept(visitor,VzField, VzField.DataType, ref _vz);    
+            FloatType.Accept(visitor,DiffPressureField, DiffPressureField.DataType, ref _diffPressure);    
+            FloatType.Accept(visitor,Eas2tasField, Eas2tasField.DataType, ref _eas2tas);    
+            FloatType.Accept(visitor,RatioField, RatioField.DataType, ref _ratio);    
+            FloatType.Accept(visitor,StateXField, StateXField.DataType, ref _stateX);    
+            FloatType.Accept(visitor,StateYField, StateYField.DataType, ref _stateY);    
+            FloatType.Accept(visitor,StateZField, StateZField.DataType, ref _stateZ);    
+            FloatType.Accept(visitor,PaxField, PaxField.DataType, ref _pax);    
+            FloatType.Accept(visitor,PbyField, PbyField.DataType, ref _pby);    
+            FloatType.Accept(visitor,PczField, PczField.DataType, ref _pcz);    
 
+        }
 
         /// <summary>
         /// GPS velocity north.
         /// OriginName: vx, Units: m/s, IsExtended: false
         /// </summary>
-        public float Vx { get; set; }
+        public static readonly Field VxField = new Field.Builder()
+            .Name(nameof(Vx))
+            .Title("vx")
+            .Description("GPS velocity north.")
+.Units(@"m/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _vx;
+        public float Vx { get => _vx; set => _vx = value; }
         /// <summary>
         /// GPS velocity east.
         /// OriginName: vy, Units: m/s, IsExtended: false
         /// </summary>
-        public float Vy { get; set; }
+        public static readonly Field VyField = new Field.Builder()
+            .Name(nameof(Vy))
+            .Title("vy")
+            .Description("GPS velocity east.")
+.Units(@"m/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _vy;
+        public float Vy { get => _vy; set => _vy = value; }
         /// <summary>
         /// GPS velocity down.
         /// OriginName: vz, Units: m/s, IsExtended: false
         /// </summary>
-        public float Vz { get; set; }
+        public static readonly Field VzField = new Field.Builder()
+            .Name(nameof(Vz))
+            .Title("vz")
+            .Description("GPS velocity down.")
+.Units(@"m/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _vz;
+        public float Vz { get => _vz; set => _vz = value; }
         /// <summary>
         /// Differential pressure.
         /// OriginName: diff_pressure, Units: Pa, IsExtended: false
         /// </summary>
-        public float DiffPressure { get; set; }
+        public static readonly Field DiffPressureField = new Field.Builder()
+            .Name(nameof(DiffPressure))
+            .Title("diff_pressure")
+            .Description("Differential pressure.")
+.Units(@"Pa")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _diffPressure;
+        public float DiffPressure { get => _diffPressure; set => _diffPressure = value; }
         /// <summary>
         /// Estimated to true airspeed ratio.
         /// OriginName: EAS2TAS, Units: , IsExtended: false
         /// </summary>
-        public float Eas2tas { get; set; }
+        public static readonly Field Eas2tasField = new Field.Builder()
+            .Name(nameof(Eas2tas))
+            .Title("EAS2TAS")
+            .Description("Estimated to true airspeed ratio.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _eas2tas;
+        public float Eas2tas { get => _eas2tas; set => _eas2tas = value; }
         /// <summary>
         /// Airspeed ratio.
         /// OriginName: ratio, Units: , IsExtended: false
         /// </summary>
-        public float Ratio { get; set; }
+        public static readonly Field RatioField = new Field.Builder()
+            .Name(nameof(Ratio))
+            .Title("ratio")
+            .Description("Airspeed ratio.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _ratio;
+        public float Ratio { get => _ratio; set => _ratio = value; }
         /// <summary>
         /// EKF state x.
         /// OriginName: state_x, Units: , IsExtended: false
         /// </summary>
-        public float StateX { get; set; }
+        public static readonly Field StateXField = new Field.Builder()
+            .Name(nameof(StateX))
+            .Title("state_x")
+            .Description("EKF state x.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _stateX;
+        public float StateX { get => _stateX; set => _stateX = value; }
         /// <summary>
         /// EKF state y.
         /// OriginName: state_y, Units: , IsExtended: false
         /// </summary>
-        public float StateY { get; set; }
+        public static readonly Field StateYField = new Field.Builder()
+            .Name(nameof(StateY))
+            .Title("state_y")
+            .Description("EKF state y.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _stateY;
+        public float StateY { get => _stateY; set => _stateY = value; }
         /// <summary>
         /// EKF state z.
         /// OriginName: state_z, Units: , IsExtended: false
         /// </summary>
-        public float StateZ { get; set; }
+        public static readonly Field StateZField = new Field.Builder()
+            .Name(nameof(StateZ))
+            .Title("state_z")
+            .Description("EKF state z.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _stateZ;
+        public float StateZ { get => _stateZ; set => _stateZ = value; }
         /// <summary>
         /// EKF Pax.
         /// OriginName: Pax, Units: , IsExtended: false
         /// </summary>
-        public float Pax { get; set; }
+        public static readonly Field PaxField = new Field.Builder()
+            .Name(nameof(Pax))
+            .Title("Pax")
+            .Description("EKF Pax.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _pax;
+        public float Pax { get => _pax; set => _pax = value; }
         /// <summary>
         /// EKF Pby.
         /// OriginName: Pby, Units: , IsExtended: false
         /// </summary>
-        public float Pby { get; set; }
+        public static readonly Field PbyField = new Field.Builder()
+            .Name(nameof(Pby))
+            .Title("Pby")
+            .Description("EKF Pby.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _pby;
+        public float Pby { get => _pby; set => _pby = value; }
         /// <summary>
         /// EKF Pcz.
         /// OriginName: Pcz, Units: , IsExtended: false
         /// </summary>
-        public float Pcz { get; set; }
+        public static readonly Field PczField = new Field.Builder()
+            .Name(nameof(Pcz))
+            .Title("Pcz")
+            .Description("EKF Pcz.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _pcz;
+        public float Pcz { get => _pcz; set => _pcz = value; }
     }
     /// <summary>
     /// A rally point. Used to set a point when from GCS -> MAV. Also used to return a point from MAV -> GCS.
@@ -6239,114 +6985,6 @@ false),
         public override RallyPointPayload Payload { get; } = new();
 
         public override string Name => "RALLY_POINT";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("lat",
-"Latitude of point.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("lng",
-"Longitude of point.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("alt",
-"Transit / loiter altitude relative to home.",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("break_alt",
-"Break altitude relative to home.",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("land_dir",
-"Heading to aim for when landing.",
-string.Empty, 
-@"cdeg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("idx",
-"Point index (first point is 0).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("count",
-"Total number of points (for sanity checking).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("flags",
-"Configuration flags.",
-string.Empty, 
-string.Empty, 
-"bitmask", 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "RALLY_POINT:"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        + "int16_t alt;"
-        + "int16_t break_alt;"
-        + "uint16_t land_dir;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t idx;"
-        + "uint8_t count;"
-        + "uint8_t flags;"
-        ;
     }
 
     /// <summary>
@@ -6358,21 +6996,21 @@ false),
         public byte GetMaxByteSize() => 19; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 19; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Lat
-            sum+=4; //Lng
-            sum+=2; //Alt
-            sum+=2; //BreakAlt
-            sum+=2; //LandDir
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Idx
-            sum+=1; //Count
-            sum+= 1; // Flags
-            return (byte)sum;
+            return (byte)(
+            +4 // int32_t lat
+            +4 // int32_t lng
+            +2 // int16_t alt
+            +2 // int16_t break_alt
+            +2 // uint16_t land_dir
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t idx
+            +1 // uint8_t count
+            + 1 // uint8_t flags
+            );
         }
 
 
@@ -6406,61 +7044,154 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Flags);
             /* PayloadByteSize = 19 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            Int16Type.Accept(visitor,AltField, AltField.DataType, ref _alt);
+            Int16Type.Accept(visitor,BreakAltField, BreakAltField.DataType, ref _breakAlt);
+            UInt16Type.Accept(visitor,LandDirField, LandDirField.DataType, ref _landDir);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            var tmpFlags = (byte)Flags;
+            UInt8Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (RallyFlags)tmpFlags;
 
+        }
 
         /// <summary>
         /// Latitude of point.
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude of point.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lat;
+        public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
         /// Longitude of point.
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude of point.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lng;
+        public int Lng { get => _lng; set => _lng = value; }
         /// <summary>
         /// Transit / loiter altitude relative to home.
         /// OriginName: alt, Units: m, IsExtended: false
         /// </summary>
-        public short Alt { get; set; }
+        public static readonly Field AltField = new Field.Builder()
+            .Name(nameof(Alt))
+            .Title("alt")
+            .Description("Transit / loiter altitude relative to home.")
+.Units(@"m")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _alt;
+        public short Alt { get => _alt; set => _alt = value; }
         /// <summary>
         /// Break altitude relative to home.
         /// OriginName: break_alt, Units: m, IsExtended: false
         /// </summary>
-        public short BreakAlt { get; set; }
+        public static readonly Field BreakAltField = new Field.Builder()
+            .Name(nameof(BreakAlt))
+            .Title("break_alt")
+            .Description("Break altitude relative to home.")
+.Units(@"m")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _breakAlt;
+        public short BreakAlt { get => _breakAlt; set => _breakAlt = value; }
         /// <summary>
         /// Heading to aim for when landing.
         /// OriginName: land_dir, Units: cdeg, IsExtended: false
         /// </summary>
-        public ushort LandDir { get; set; }
+        public static readonly Field LandDirField = new Field.Builder()
+            .Name(nameof(LandDir))
+            .Title("land_dir")
+            .Description("Heading to aim for when landing.")
+.Units(@"cdeg")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _landDir;
+        public ushort LandDir { get => _landDir; set => _landDir = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Point index (first point is 0).
         /// OriginName: idx, Units: , IsExtended: false
         /// </summary>
-        public byte Idx { get; set; }
+        public static readonly Field IdxField = new Field.Builder()
+            .Name(nameof(Idx))
+            .Title("idx")
+            .Description("Point index (first point is 0).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _idx;
+        public byte Idx { get => _idx; set => _idx = value; }
         /// <summary>
         /// Total number of points (for sanity checking).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Total number of points (for sanity checking).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _count;
+        public byte Count { get => _count; set => _count = value; }
         /// <summary>
         /// Configuration flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public RallyFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("bitmask")
+            .Description("Configuration flags.")
+            .DataType(new UInt8Type(RallyFlagsHelper.GetValues(x=>(byte)x).Min(),RallyFlagsHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(RallyFlagsHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private RallyFlags _flags;
+        public RallyFlags Flags { get => _flags; set => _flags = value; } 
     }
     /// <summary>
     /// Request a current rally point from MAV. MAV should respond with a RALLY_POINT message. MAV should not respond if the request is invalid.
@@ -6482,44 +7213,6 @@ false),
         public override RallyFetchPointPayload Payload { get; } = new();
 
         public override string Name => "RALLY_FETCH_POINT";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("idx",
-"Point index (first point is 0).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "RALLY_FETCH_POINT:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t idx;"
-        ;
     }
 
     /// <summary>
@@ -6531,14 +7224,14 @@ false),
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Idx
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t idx
+            );
         }
 
 
@@ -6558,26 +7251,54 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Idx);
             /* PayloadByteSize = 3 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Point index (first point is 0).
         /// OriginName: idx, Units: , IsExtended: false
         /// </summary>
-        public byte Idx { get; set; }
+        public static readonly Field IdxField = new Field.Builder()
+            .Name(nameof(Idx))
+            .Title("idx")
+            .Description("Point index (first point is 0).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _idx;
+        public byte Idx { get => _idx; set => _idx = value; }
     }
     /// <summary>
     /// Status of compassmot calibration.
@@ -6599,74 +7320,6 @@ false),
         public override CompassmotStatusPayload Payload { get; } = new();
 
         public override string Name => "COMPASSMOT_STATUS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("current",
-"Current.",
-string.Empty, 
-@"A", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("CompensationX",
-"Motor Compensation X.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("CompensationY",
-"Motor Compensation Y.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("CompensationZ",
-"Motor Compensation Z.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("throttle",
-"Throttle.",
-string.Empty, 
-@"d%", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("interference",
-"Interference.",
-string.Empty, 
-@"%", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "COMPASSMOT_STATUS:"
-        + "float current;"
-        + "float CompensationX;"
-        + "float CompensationY;"
-        + "float CompensationZ;"
-        + "uint16_t throttle;"
-        + "uint16_t interference;"
-        ;
     }
 
     /// <summary>
@@ -6678,17 +7331,17 @@ false),
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Current
-            sum+=4; //Compensationx
-            sum+=4; //Compensationy
-            sum+=4; //Compensationz
-            sum+=2; //Throttle
-            sum+=2; //Interference
-            return (byte)sum;
+            return (byte)(
+            +4 // float current
+            +4 // float CompensationX
+            +4 // float CompensationY
+            +4 // float CompensationZ
+            +2 // uint16_t throttle
+            +2 // uint16_t interference
+            );
         }
 
 
@@ -6714,41 +7367,96 @@ false),
             BinSerialize.WriteUShort(ref buffer,Interference);
             /* PayloadByteSize = 20 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,CurrentField, CurrentField.DataType, ref _current);    
+            FloatType.Accept(visitor,CompensationxField, CompensationxField.DataType, ref _compensationx);    
+            FloatType.Accept(visitor,CompensationyField, CompensationyField.DataType, ref _compensationy);    
+            FloatType.Accept(visitor,CompensationzField, CompensationzField.DataType, ref _compensationz);    
+            UInt16Type.Accept(visitor,ThrottleField, ThrottleField.DataType, ref _throttle);    
+            UInt16Type.Accept(visitor,InterferenceField, InterferenceField.DataType, ref _interference);    
 
+        }
 
         /// <summary>
         /// Current.
         /// OriginName: current, Units: A, IsExtended: false
         /// </summary>
-        public float Current { get; set; }
+        public static readonly Field CurrentField = new Field.Builder()
+            .Name(nameof(Current))
+            .Title("current")
+            .Description("Current.")
+.Units(@"A")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _current;
+        public float Current { get => _current; set => _current = value; }
         /// <summary>
         /// Motor Compensation X.
         /// OriginName: CompensationX, Units: , IsExtended: false
         /// </summary>
-        public float Compensationx { get; set; }
+        public static readonly Field CompensationxField = new Field.Builder()
+            .Name(nameof(Compensationx))
+            .Title("CompensationX")
+            .Description("Motor Compensation X.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _compensationx;
+        public float Compensationx { get => _compensationx; set => _compensationx = value; }
         /// <summary>
         /// Motor Compensation Y.
         /// OriginName: CompensationY, Units: , IsExtended: false
         /// </summary>
-        public float Compensationy { get; set; }
+        public static readonly Field CompensationyField = new Field.Builder()
+            .Name(nameof(Compensationy))
+            .Title("CompensationY")
+            .Description("Motor Compensation Y.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _compensationy;
+        public float Compensationy { get => _compensationy; set => _compensationy = value; }
         /// <summary>
         /// Motor Compensation Z.
         /// OriginName: CompensationZ, Units: , IsExtended: false
         /// </summary>
-        public float Compensationz { get; set; }
+        public static readonly Field CompensationzField = new Field.Builder()
+            .Name(nameof(Compensationz))
+            .Title("CompensationZ")
+            .Description("Motor Compensation Z.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _compensationz;
+        public float Compensationz { get => _compensationz; set => _compensationz = value; }
         /// <summary>
         /// Throttle.
         /// OriginName: throttle, Units: d%, IsExtended: false
         /// </summary>
-        public ushort Throttle { get; set; }
+        public static readonly Field ThrottleField = new Field.Builder()
+            .Name(nameof(Throttle))
+            .Title("throttle")
+            .Description("Throttle.")
+.Units(@"d%")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _throttle;
+        public ushort Throttle { get => _throttle; set => _throttle = value; }
         /// <summary>
         /// Interference.
         /// OriginName: interference, Units: %, IsExtended: false
         /// </summary>
-        public ushort Interference { get; set; }
+        public static readonly Field InterferenceField = new Field.Builder()
+            .Name(nameof(Interference))
+            .Title("interference")
+            .Description("Interference.")
+.Units(@"%")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _interference;
+        public ushort Interference { get => _interference; set => _interference = value; }
     }
     /// <summary>
     /// Status of secondary AHRS filter if available.
@@ -6770,74 +7478,6 @@ false),
         public override Ahrs2Payload Payload { get; } = new();
 
         public override string Name => "AHRS2";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("roll",
-"Roll angle.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("pitch",
-"Pitch angle.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("yaw",
-"Yaw angle.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("altitude",
-"Altitude (MSL).",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("lat",
-"Latitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("lng",
-"Longitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "AHRS2:"
-        + "float roll;"
-        + "float pitch;"
-        + "float yaw;"
-        + "float altitude;"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        ;
     }
 
     /// <summary>
@@ -6849,17 +7489,17 @@ false),
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //Altitude
-            sum+=4; //Lat
-            sum+=4; //Lng
-            return (byte)sum;
+            return (byte)(
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float altitude
+            +4 // int32_t lat
+            +4 // int32_t lng
+            );
         }
 
 
@@ -6885,41 +7525,96 @@ false),
             BinSerialize.WriteInt(ref buffer,Lng);
             /* PayloadByteSize = 24 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,AltitudeField, AltitudeField.DataType, ref _altitude);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
 
+        }
 
         /// <summary>
         /// Roll angle.
         /// OriginName: roll, Units: rad, IsExtended: false
         /// </summary>
-        public float Roll { get; set; }
+        public static readonly Field RollField = new Field.Builder()
+            .Name(nameof(Roll))
+            .Title("roll")
+            .Description("Roll angle.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _roll;
+        public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
         /// Pitch angle.
         /// OriginName: pitch, Units: rad, IsExtended: false
         /// </summary>
-        public float Pitch { get; set; }
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Pitch angle.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _pitch;
+        public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
         /// Yaw angle.
         /// OriginName: yaw, Units: rad, IsExtended: false
         /// </summary>
-        public float Yaw { get; set; }
+        public static readonly Field YawField = new Field.Builder()
+            .Name(nameof(Yaw))
+            .Title("yaw")
+            .Description("Yaw angle.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _yaw;
+        public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
         /// Altitude (MSL).
         /// OriginName: altitude, Units: m, IsExtended: false
         /// </summary>
-        public float Altitude { get; set; }
+        public static readonly Field AltitudeField = new Field.Builder()
+            .Name(nameof(Altitude))
+            .Title("altitude")
+            .Description("Altitude (MSL).")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _altitude;
+        public float Altitude { get => _altitude; set => _altitude = value; }
         /// <summary>
         /// Latitude.
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lat;
+        public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
         /// Longitude.
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lng;
+        public int Lng { get => _lng; set => _lng = value; }
     }
     /// <summary>
     /// Camera Event.
@@ -6941,104 +7636,6 @@ false),
         public override CameraStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_STATUS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_usec",
-"Image timestamp (since UNIX epoch, according to camera clock).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("p1",
-"Parameter 1 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("p2",
-"Parameter 2 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("p3",
-"Parameter 3 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("p4",
-"Parameter 4 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("img_idx",
-"Image index.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("cam_idx",
-"Camera ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("event_id",
-"Event type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "CAMERA_STATUS:"
-        + "uint64_t time_usec;"
-        + "float p1;"
-        + "float p2;"
-        + "float p3;"
-        + "float p4;"
-        + "uint16_t img_idx;"
-        + "uint8_t target_system;"
-        + "uint8_t cam_idx;"
-        + "uint8_t event_id;"
-        ;
     }
 
     /// <summary>
@@ -7050,20 +7647,20 @@ false),
         public byte GetMaxByteSize() => 29; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUsec
-            sum+=4; //P1
-            sum+=4; //P2
-            sum+=4; //P3
-            sum+=4; //P4
-            sum+=2; //ImgIdx
-            sum+=1; //TargetSystem
-            sum+=1; //CamIdx
-            sum+= 1; // EventId
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_usec
+            +4 // float p1
+            +4 // float p2
+            +4 // float p3
+            +4 // float p4
+            +2 // uint16_t img_idx
+            +1 // uint8_t target_system
+            +1 // uint8_t cam_idx
+            + 1 // uint8_t event_id
+            );
         }
 
 
@@ -7095,56 +7692,140 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)EventId);
             /* PayloadByteSize = 29 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
+            FloatType.Accept(visitor,P1Field, P1Field.DataType, ref _p1);    
+            FloatType.Accept(visitor,P2Field, P2Field.DataType, ref _p2);    
+            FloatType.Accept(visitor,P3Field, P3Field.DataType, ref _p3);    
+            FloatType.Accept(visitor,P4Field, P4Field.DataType, ref _p4);    
+            UInt16Type.Accept(visitor,ImgIdxField, ImgIdxField.DataType, ref _imgIdx);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,CamIdxField, CamIdxField.DataType, ref _camIdx);    
+            var tmpEventId = (byte)EventId;
+            UInt8Type.Accept(visitor,EventIdField, EventIdField.DataType, ref tmpEventId);
+            EventId = (CameraStatusTypes)tmpEventId;
 
+        }
 
         /// <summary>
         /// Image timestamp (since UNIX epoch, according to camera clock).
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUsec { get; set; }
+        public static readonly Field TimeUsecField = new Field.Builder()
+            .Name(nameof(TimeUsec))
+            .Title("time_usec")
+            .Description("Image timestamp (since UNIX epoch, according to camera clock).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUsec;
+        public ulong TimeUsec { get => _timeUsec; set => _timeUsec = value; }
         /// <summary>
         /// Parameter 1 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).
         /// OriginName: p1, Units: , IsExtended: false
         /// </summary>
-        public float P1 { get; set; }
+        public static readonly Field P1Field = new Field.Builder()
+            .Name(nameof(P1))
+            .Title("p1")
+            .Description("Parameter 1 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _p1;
+        public float P1 { get => _p1; set => _p1 = value; }
         /// <summary>
         /// Parameter 2 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).
         /// OriginName: p2, Units: , IsExtended: false
         /// </summary>
-        public float P2 { get; set; }
+        public static readonly Field P2Field = new Field.Builder()
+            .Name(nameof(P2))
+            .Title("p2")
+            .Description("Parameter 2 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _p2;
+        public float P2 { get => _p2; set => _p2 = value; }
         /// <summary>
         /// Parameter 3 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).
         /// OriginName: p3, Units: , IsExtended: false
         /// </summary>
-        public float P3 { get; set; }
+        public static readonly Field P3Field = new Field.Builder()
+            .Name(nameof(P3))
+            .Title("p3")
+            .Description("Parameter 3 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _p3;
+        public float P3 { get => _p3; set => _p3 = value; }
         /// <summary>
         /// Parameter 4 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).
         /// OriginName: p4, Units: , IsExtended: false
         /// </summary>
-        public float P4 { get; set; }
+        public static readonly Field P4Field = new Field.Builder()
+            .Name(nameof(P4))
+            .Title("p4")
+            .Description("Parameter 4 (meaning depends on event_id, see CAMERA_STATUS_TYPES enum).")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _p4;
+        public float P4 { get => _p4; set => _p4 = value; }
         /// <summary>
         /// Image index.
         /// OriginName: img_idx, Units: , IsExtended: false
         /// </summary>
-        public ushort ImgIdx { get; set; }
+        public static readonly Field ImgIdxField = new Field.Builder()
+            .Name(nameof(ImgIdx))
+            .Title("img_idx")
+            .Description("Image index.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _imgIdx;
+        public ushort ImgIdx { get => _imgIdx; set => _imgIdx = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Camera ID.
         /// OriginName: cam_idx, Units: , IsExtended: false
         /// </summary>
-        public byte CamIdx { get; set; }
+        public static readonly Field CamIdxField = new Field.Builder()
+            .Name(nameof(CamIdx))
+            .Title("cam_idx")
+            .Description("Camera ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _camIdx;
+        public byte CamIdx { get => _camIdx; set => _camIdx = value; }
         /// <summary>
         /// Event type.
         /// OriginName: event_id, Units: , IsExtended: false
         /// </summary>
-        public CameraStatusTypes EventId { get; set; }
+        public static readonly Field EventIdField = new Field.Builder()
+            .Name(nameof(EventId))
+            .Title("event_id")
+            .Description("Event type.")
+            .DataType(new UInt8Type(CameraStatusTypesHelper.GetValues(x=>(byte)x).Min(),CameraStatusTypesHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(CameraStatusTypesHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private CameraStatusTypes _eventId;
+        public CameraStatusTypes EventId { get => _eventId; set => _eventId = value; } 
     }
     /// <summary>
     /// Camera Capture Feedback.
@@ -7166,154 +7847,6 @@ false),
         public override CameraFeedbackPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_FEEDBACK";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_usec",
-"Image timestamp (since UNIX epoch), as passed in by CAMERA_STATUS message (or autopilot if no CCB).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("lat",
-"Latitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("lng",
-"Longitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("alt_msl",
-"Altitude (MSL).",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("alt_rel",
-"Altitude (Relative to HOME location).",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("roll",
-"Camera Roll angle (earth frame, +-180).",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("pitch",
-"Camera Pitch angle (earth frame, +-180).",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("yaw",
-"Camera Yaw (earth frame, 0-360, true).",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("foc_len",
-"Focal Length.",
-string.Empty, 
-@"mm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("img_idx",
-"Image index.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("cam_idx",
-"Camera ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("flags",
-"Feedback flags.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("completed_captures",
-"Completed image captures.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-true),
-        ];
-        public const string FormatMessage = "CAMERA_FEEDBACK:"
-        + "uint64_t time_usec;"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        + "float alt_msl;"
-        + "float alt_rel;"
-        + "float roll;"
-        + "float pitch;"
-        + "float yaw;"
-        + "float foc_len;"
-        + "uint16_t img_idx;"
-        + "uint8_t target_system;"
-        + "uint8_t cam_idx;"
-        + "uint8_t flags;"
-        + "uint16_t completed_captures;"
-        ;
     }
 
     /// <summary>
@@ -7325,25 +7858,25 @@ true),
         public byte GetMaxByteSize() => 47; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 47; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUsec
-            sum+=4; //Lat
-            sum+=4; //Lng
-            sum+=4; //AltMsl
-            sum+=4; //AltRel
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //FocLen
-            sum+=2; //ImgIdx
-            sum+=1; //TargetSystem
-            sum+=1; //CamIdx
-            sum+= 1; // Flags
-            sum+=2; //CompletedCaptures
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_usec
+            +4 // int32_t lat
+            +4 // int32_t lng
+            +4 // float alt_msl
+            +4 // float alt_rel
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float foc_len
+            +2 // uint16_t img_idx
+            +1 // uint8_t target_system
+            +1 // uint8_t cam_idx
+            + 1 // uint8_t flags
+            +2 // uint16_t completed_captures
+            );
         }
 
 
@@ -7387,81 +7920,210 @@ true),
             BinSerialize.WriteUShort(ref buffer,CompletedCaptures);
             /* PayloadByteSize = 47 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            FloatType.Accept(visitor,AltMslField, AltMslField.DataType, ref _altMsl);    
+            FloatType.Accept(visitor,AltRelField, AltRelField.DataType, ref _altRel);    
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,FocLenField, FocLenField.DataType, ref _focLen);    
+            UInt16Type.Accept(visitor,ImgIdxField, ImgIdxField.DataType, ref _imgIdx);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,CamIdxField, CamIdxField.DataType, ref _camIdx);    
+            var tmpFlags = (byte)Flags;
+            UInt8Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (CameraFeedbackFlags)tmpFlags;
+            UInt16Type.Accept(visitor,CompletedCapturesField, CompletedCapturesField.DataType, ref _completedCaptures);    
 
+        }
 
         /// <summary>
         /// Image timestamp (since UNIX epoch), as passed in by CAMERA_STATUS message (or autopilot if no CCB).
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUsec { get; set; }
+        public static readonly Field TimeUsecField = new Field.Builder()
+            .Name(nameof(TimeUsec))
+            .Title("time_usec")
+            .Description("Image timestamp (since UNIX epoch), as passed in by CAMERA_STATUS message (or autopilot if no CCB).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUsec;
+        public ulong TimeUsec { get => _timeUsec; set => _timeUsec = value; }
         /// <summary>
         /// Latitude.
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lat;
+        public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
         /// Longitude.
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lng;
+        public int Lng { get => _lng; set => _lng = value; }
         /// <summary>
         /// Altitude (MSL).
         /// OriginName: alt_msl, Units: m, IsExtended: false
         /// </summary>
-        public float AltMsl { get; set; }
+        public static readonly Field AltMslField = new Field.Builder()
+            .Name(nameof(AltMsl))
+            .Title("alt_msl")
+            .Description("Altitude (MSL).")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _altMsl;
+        public float AltMsl { get => _altMsl; set => _altMsl = value; }
         /// <summary>
         /// Altitude (Relative to HOME location).
         /// OriginName: alt_rel, Units: m, IsExtended: false
         /// </summary>
-        public float AltRel { get; set; }
+        public static readonly Field AltRelField = new Field.Builder()
+            .Name(nameof(AltRel))
+            .Title("alt_rel")
+            .Description("Altitude (Relative to HOME location).")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _altRel;
+        public float AltRel { get => _altRel; set => _altRel = value; }
         /// <summary>
         /// Camera Roll angle (earth frame, +-180).
         /// OriginName: roll, Units: deg, IsExtended: false
         /// </summary>
-        public float Roll { get; set; }
+        public static readonly Field RollField = new Field.Builder()
+            .Name(nameof(Roll))
+            .Title("roll")
+            .Description("Camera Roll angle (earth frame, +-180).")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _roll;
+        public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
         /// Camera Pitch angle (earth frame, +-180).
         /// OriginName: pitch, Units: deg, IsExtended: false
         /// </summary>
-        public float Pitch { get; set; }
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Camera Pitch angle (earth frame, +-180).")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _pitch;
+        public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
         /// Camera Yaw (earth frame, 0-360, true).
         /// OriginName: yaw, Units: deg, IsExtended: false
         /// </summary>
-        public float Yaw { get; set; }
+        public static readonly Field YawField = new Field.Builder()
+            .Name(nameof(Yaw))
+            .Title("yaw")
+            .Description("Camera Yaw (earth frame, 0-360, true).")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _yaw;
+        public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
         /// Focal Length.
         /// OriginName: foc_len, Units: mm, IsExtended: false
         /// </summary>
-        public float FocLen { get; set; }
+        public static readonly Field FocLenField = new Field.Builder()
+            .Name(nameof(FocLen))
+            .Title("foc_len")
+            .Description("Focal Length.")
+.Units(@"mm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _focLen;
+        public float FocLen { get => _focLen; set => _focLen = value; }
         /// <summary>
         /// Image index.
         /// OriginName: img_idx, Units: , IsExtended: false
         /// </summary>
-        public ushort ImgIdx { get; set; }
+        public static readonly Field ImgIdxField = new Field.Builder()
+            .Name(nameof(ImgIdx))
+            .Title("img_idx")
+            .Description("Image index.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _imgIdx;
+        public ushort ImgIdx { get => _imgIdx; set => _imgIdx = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Camera ID.
         /// OriginName: cam_idx, Units: , IsExtended: false
         /// </summary>
-        public byte CamIdx { get; set; }
+        public static readonly Field CamIdxField = new Field.Builder()
+            .Name(nameof(CamIdx))
+            .Title("cam_idx")
+            .Description("Camera ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _camIdx;
+        public byte CamIdx { get => _camIdx; set => _camIdx = value; }
         /// <summary>
         /// Feedback flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public CameraFeedbackFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Feedback flags.")
+            .DataType(new UInt8Type(CameraFeedbackFlagsHelper.GetValues(x=>(byte)x).Min(),CameraFeedbackFlagsHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(CameraFeedbackFlagsHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private CameraFeedbackFlags _flags;
+        public CameraFeedbackFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Completed image captures.
         /// OriginName: completed_captures, Units: , IsExtended: true
         /// </summary>
-        public ushort CompletedCaptures { get; set; }
+        public static readonly Field CompletedCapturesField = new Field.Builder()
+            .Name(nameof(CompletedCaptures))
+            .Title("completed_captures")
+            .Description("Completed image captures.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _completedCaptures;
+        public ushort CompletedCaptures { get => _completedCaptures; set => _completedCaptures = value; }
     }
     /// <summary>
     /// 2nd Battery status
@@ -7483,34 +8145,6 @@ true),
         public override Battery2Payload Payload { get; } = new();
 
         public override string Name => "BATTERY2";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("voltage",
-"Voltage.",
-string.Empty, 
-@"mV", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("current_battery",
-"Battery current, -1: autopilot does not measure the current.",
-string.Empty, 
-@"cA", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "BATTERY2:"
-        + "uint16_t voltage;"
-        + "int16_t current_battery;"
-        ;
     }
 
     /// <summary>
@@ -7522,13 +8156,13 @@ false),
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //Voltage
-            sum+=2; //CurrentBattery
-            return (byte)sum;
+            return (byte)(
+            +2 // uint16_t voltage
+            +2 // int16_t current_battery
+            );
         }
 
 
@@ -7546,21 +8180,40 @@ false),
             BinSerialize.WriteShort(ref buffer,CurrentBattery);
             /* PayloadByteSize = 4 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt16Type.Accept(visitor,VoltageField, VoltageField.DataType, ref _voltage);    
+            Int16Type.Accept(visitor,CurrentBatteryField, CurrentBatteryField.DataType, ref _currentBattery);
 
+        }
 
         /// <summary>
         /// Voltage.
         /// OriginName: voltage, Units: mV, IsExtended: false
         /// </summary>
-        public ushort Voltage { get; set; }
+        public static readonly Field VoltageField = new Field.Builder()
+            .Name(nameof(Voltage))
+            .Title("voltage")
+            .Description("Voltage.")
+.Units(@"mV")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _voltage;
+        public ushort Voltage { get => _voltage; set => _voltage = value; }
         /// <summary>
         /// Battery current, -1: autopilot does not measure the current.
         /// OriginName: current_battery, Units: cA, IsExtended: false
         /// </summary>
-        public short CurrentBattery { get; set; }
+        public static readonly Field CurrentBatteryField = new Field.Builder()
+            .Name(nameof(CurrentBattery))
+            .Title("current_battery")
+            .Description("Battery current, -1: autopilot does not measure the current.")
+.Units(@"cA")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _currentBattery;
+        public short CurrentBattery { get => _currentBattery; set => _currentBattery = value; }
     }
     /// <summary>
     /// Status of third AHRS filter if available. This is for ANU research group (Ali and Sean).
@@ -7582,114 +8235,6 @@ false),
         public override Ahrs3Payload Payload { get; } = new();
 
         public override string Name => "AHRS3";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("roll",
-"Roll angle.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("pitch",
-"Pitch angle.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("yaw",
-"Yaw angle.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("altitude",
-"Altitude (MSL).",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("lat",
-"Latitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("lng",
-"Longitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("v1",
-"Test variable1.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("v2",
-"Test variable2.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("v3",
-"Test variable3.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("v4",
-"Test variable4.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "AHRS3:"
-        + "float roll;"
-        + "float pitch;"
-        + "float yaw;"
-        + "float altitude;"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        + "float v1;"
-        + "float v2;"
-        + "float v3;"
-        + "float v4;"
-        ;
     }
 
     /// <summary>
@@ -7701,21 +8246,21 @@ false),
         public byte GetMaxByteSize() => 40; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //Altitude
-            sum+=4; //Lat
-            sum+=4; //Lng
-            sum+=4; //V1
-            sum+=4; //V2
-            sum+=4; //V3
-            sum+=4; //V4
-            return (byte)sum;
+            return (byte)(
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float altitude
+            +4 // int32_t lat
+            +4 // int32_t lng
+            +4 // float v1
+            +4 // float v2
+            +4 // float v3
+            +4 // float v4
+            );
         }
 
 
@@ -7749,61 +8294,152 @@ false),
             BinSerialize.WriteFloat(ref buffer,V4);
             /* PayloadByteSize = 40 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,AltitudeField, AltitudeField.DataType, ref _altitude);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            FloatType.Accept(visitor,V1Field, V1Field.DataType, ref _v1);    
+            FloatType.Accept(visitor,V2Field, V2Field.DataType, ref _v2);    
+            FloatType.Accept(visitor,V3Field, V3Field.DataType, ref _v3);    
+            FloatType.Accept(visitor,V4Field, V4Field.DataType, ref _v4);    
 
+        }
 
         /// <summary>
         /// Roll angle.
         /// OriginName: roll, Units: rad, IsExtended: false
         /// </summary>
-        public float Roll { get; set; }
+        public static readonly Field RollField = new Field.Builder()
+            .Name(nameof(Roll))
+            .Title("roll")
+            .Description("Roll angle.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _roll;
+        public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
         /// Pitch angle.
         /// OriginName: pitch, Units: rad, IsExtended: false
         /// </summary>
-        public float Pitch { get; set; }
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Pitch angle.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _pitch;
+        public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
         /// Yaw angle.
         /// OriginName: yaw, Units: rad, IsExtended: false
         /// </summary>
-        public float Yaw { get; set; }
+        public static readonly Field YawField = new Field.Builder()
+            .Name(nameof(Yaw))
+            .Title("yaw")
+            .Description("Yaw angle.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _yaw;
+        public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
         /// Altitude (MSL).
         /// OriginName: altitude, Units: m, IsExtended: false
         /// </summary>
-        public float Altitude { get; set; }
+        public static readonly Field AltitudeField = new Field.Builder()
+            .Name(nameof(Altitude))
+            .Title("altitude")
+            .Description("Altitude (MSL).")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _altitude;
+        public float Altitude { get => _altitude; set => _altitude = value; }
         /// <summary>
         /// Latitude.
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lat;
+        public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
         /// Longitude.
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lng;
+        public int Lng { get => _lng; set => _lng = value; }
         /// <summary>
         /// Test variable1.
         /// OriginName: v1, Units: , IsExtended: false
         /// </summary>
-        public float V1 { get; set; }
+        public static readonly Field V1Field = new Field.Builder()
+            .Name(nameof(V1))
+            .Title("v1")
+            .Description("Test variable1.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _v1;
+        public float V1 { get => _v1; set => _v1 = value; }
         /// <summary>
         /// Test variable2.
         /// OriginName: v2, Units: , IsExtended: false
         /// </summary>
-        public float V2 { get; set; }
+        public static readonly Field V2Field = new Field.Builder()
+            .Name(nameof(V2))
+            .Title("v2")
+            .Description("Test variable2.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _v2;
+        public float V2 { get => _v2; set => _v2 = value; }
         /// <summary>
         /// Test variable3.
         /// OriginName: v3, Units: , IsExtended: false
         /// </summary>
-        public float V3 { get; set; }
+        public static readonly Field V3Field = new Field.Builder()
+            .Name(nameof(V3))
+            .Title("v3")
+            .Description("Test variable3.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _v3;
+        public float V3 { get => _v3; set => _v3 = value; }
         /// <summary>
         /// Test variable4.
         /// OriginName: v4, Units: , IsExtended: false
         /// </summary>
-        public float V4 { get; set; }
+        public static readonly Field V4Field = new Field.Builder()
+            .Name(nameof(V4))
+            .Title("v4")
+            .Description("Test variable4.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _v4;
+        public float V4 { get => _v4; set => _v4 = value; }
     }
     /// <summary>
     /// Request the autopilot version from the system/component.
@@ -7825,34 +8461,6 @@ false),
         public override AutopilotVersionRequestPayload Payload { get; } = new();
 
         public override string Name => "AUTOPILOT_VERSION_REQUEST";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "AUTOPILOT_VERSION_REQUEST:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
     }
 
     /// <summary>
@@ -7864,13 +8472,13 @@ false),
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -7888,21 +8496,40 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 2 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
     /// <summary>
     /// Send a block of log data to remote location.
@@ -7924,54 +8551,6 @@ false),
         public override RemoteLogDataBlockPayload Payload { get; } = new();
 
         public override string Name => "REMOTE_LOG_DATA_BLOCK";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("seqno",
-"LoggerFactory data block sequence number.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("data",
-"LoggerFactory data block.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            200, 
-false),
-        ];
-        public const string FormatMessage = "REMOTE_LOG_DATA_BLOCK:"
-        + "uint32_t seqno;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t[200] data;"
-        ;
     }
 
     /// <summary>
@@ -7983,15 +8562,15 @@ false),
         public byte GetMaxByteSize() => 206; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 206; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 4; // Seqno
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=Data.Length; //Data
-            return (byte)sum;
+            return (byte)(
+            + 4 // uint32_t seqno
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +Data.Length // uint8_t[200] data
+            );
         }
 
 
@@ -8004,7 +8583,7 @@ false),
             TargetSystem = (byte)BinSerialize.ReadByte(ref buffer);
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/206 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -8023,32 +8602,71 @@ false),
             }
             /* PayloadByteSize = 206 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            var tmpSeqno = (uint)Seqno;
+            UInt32Type.Accept(visitor,SeqnoField, SeqnoField.DataType, ref tmpSeqno);
+            Seqno = (MavRemoteLogDataBlockCommands)tmpSeqno;
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 200,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
+        }
 
         /// <summary>
         /// LoggerFactory data block sequence number.
         /// OriginName: seqno, Units: , IsExtended: false
         /// </summary>
-        public MavRemoteLogDataBlockCommands Seqno { get; set; }
+        public static readonly Field SeqnoField = new Field.Builder()
+            .Name(nameof(Seqno))
+            .Title("seqno")
+            .Description("LoggerFactory data block sequence number.")
+            .DataType(new UInt32Type(MavRemoteLogDataBlockCommandsHelper.GetValues(x=>(uint)x).Min(),MavRemoteLogDataBlockCommandsHelper.GetValues(x=>(uint)x).Max()))
+            .Enum(MavRemoteLogDataBlockCommandsHelper.GetEnumValues(x=>(uint)x))
+            .Build();
+        private MavRemoteLogDataBlockCommands _seqno;
+        public MavRemoteLogDataBlockCommands Seqno { get => _seqno; set => _seqno = value; } 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// LoggerFactory data block.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("LoggerFactory data block.")
+
+            .DataType(new ArrayType(UInt8Type.Default,200))
+        .Build();
         public const int DataMaxItemsCount = 200;
-        public byte[] Data { get; set; } = new byte[200];
+        public byte[] Data { get; } = new byte[200];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 200;
     }
@@ -8072,54 +8690,6 @@ false),
         public override RemoteLogBlockStatusPayload Payload { get; } = new();
 
         public override string Name => "REMOTE_LOG_BLOCK_STATUS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("seqno",
-"LoggerFactory data block sequence number.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("status",
-"LoggerFactory data block status.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "REMOTE_LOG_BLOCK_STATUS:"
-        + "uint32_t seqno;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t status;"
-        ;
     }
 
     /// <summary>
@@ -8131,15 +8701,15 @@ false),
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Seqno
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // Status
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t seqno
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t status
+            );
         }
 
 
@@ -8161,31 +8731,70 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Status);
             /* PayloadByteSize = 7 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,SeqnoField, SeqnoField.DataType, ref _seqno);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            var tmpStatus = (byte)Status;
+            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
+            Status = (MavRemoteLogDataBlockStatuses)tmpStatus;
 
+        }
 
         /// <summary>
         /// LoggerFactory data block sequence number.
         /// OriginName: seqno, Units: , IsExtended: false
         /// </summary>
-        public uint Seqno { get; set; }
+        public static readonly Field SeqnoField = new Field.Builder()
+            .Name(nameof(Seqno))
+            .Title("seqno")
+            .Description("LoggerFactory data block sequence number.")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _seqno;
+        public uint Seqno { get => _seqno; set => _seqno = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// LoggerFactory data block status.
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
-        public MavRemoteLogDataBlockStatuses Status { get; set; }
+        public static readonly Field StatusField = new Field.Builder()
+            .Name(nameof(Status))
+            .Title("status")
+            .Description("LoggerFactory data block status.")
+            .DataType(new UInt8Type(MavRemoteLogDataBlockStatusesHelper.GetValues(x=>(byte)x).Min(),MavRemoteLogDataBlockStatusesHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavRemoteLogDataBlockStatusesHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private MavRemoteLogDataBlockStatuses _status;
+        public MavRemoteLogDataBlockStatuses Status { get => _status; set => _status = value; } 
     }
     /// <summary>
     /// Control vehicle LEDs.
@@ -8207,74 +8816,6 @@ false),
         public override LedControlPayload Payload { get; } = new();
 
         public override string Name => "LED_CONTROL";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("instance",
-"Instance (LED instance to control or 255 for all LEDs).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("pattern",
-"Pattern (see LED_PATTERN_ENUM).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("custom_len",
-"Custom Byte Length.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("custom_bytes",
-"Custom Bytes.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            24, 
-false),
-        ];
-        public const string FormatMessage = "LED_CONTROL:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t instance;"
-        + "uint8_t pattern;"
-        + "uint8_t custom_len;"
-        + "uint8_t[24] custom_bytes;"
-        ;
     }
 
     /// <summary>
@@ -8286,17 +8827,17 @@ false),
         public byte GetMaxByteSize() => 29; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //Instance
-            sum+=1; //Pattern
-            sum+=1; //CustomLen
-            sum+=CustomBytes.Length; //CustomBytes
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t instance
+            +1 // uint8_t pattern
+            +1 // uint8_t custom_len
+            +CustomBytes.Length // uint8_t[24] custom_bytes
+            );
         }
 
 
@@ -8311,7 +8852,7 @@ false),
             Pattern = (byte)BinSerialize.ReadByte(ref buffer);
             CustomLen = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/24 - Math.Max(0,((/*PayloadByteSize*/29 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            CustomBytes = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 CustomBytes[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -8332,42 +8873,97 @@ false),
             }
             /* PayloadByteSize = 29 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,InstanceField, InstanceField.DataType, ref _instance);    
+            UInt8Type.Accept(visitor,PatternField, PatternField.DataType, ref _pattern);    
+            UInt8Type.Accept(visitor,CustomLenField, CustomLenField.DataType, ref _customLen);    
+            ArrayType.Accept(visitor,CustomBytesField, CustomBytesField.DataType, 24,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref CustomBytes[index]));    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Instance (LED instance to control or 255 for all LEDs).
         /// OriginName: instance, Units: , IsExtended: false
         /// </summary>
-        public byte Instance { get; set; }
+        public static readonly Field InstanceField = new Field.Builder()
+            .Name(nameof(Instance))
+            .Title("instance")
+            .Description("Instance (LED instance to control or 255 for all LEDs).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _instance;
+        public byte Instance { get => _instance; set => _instance = value; }
         /// <summary>
         /// Pattern (see LED_PATTERN_ENUM).
         /// OriginName: pattern, Units: , IsExtended: false
         /// </summary>
-        public byte Pattern { get; set; }
+        public static readonly Field PatternField = new Field.Builder()
+            .Name(nameof(Pattern))
+            .Title("pattern")
+            .Description("Pattern (see LED_PATTERN_ENUM).")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _pattern;
+        public byte Pattern { get => _pattern; set => _pattern = value; }
         /// <summary>
         /// Custom Byte Length.
         /// OriginName: custom_len, Units: , IsExtended: false
         /// </summary>
-        public byte CustomLen { get; set; }
+        public static readonly Field CustomLenField = new Field.Builder()
+            .Name(nameof(CustomLen))
+            .Title("custom_len")
+            .Description("Custom Byte Length.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _customLen;
+        public byte CustomLen { get => _customLen; set => _customLen = value; }
         /// <summary>
         /// Custom Bytes.
         /// OriginName: custom_bytes, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CustomBytesField = new Field.Builder()
+            .Name(nameof(CustomBytes))
+            .Title("custom_bytes")
+            .Description("Custom Bytes.")
+
+            .DataType(new ArrayType(UInt8Type.Default,24))
+        .Build();
         public const int CustomBytesMaxItemsCount = 24;
-        public byte[] CustomBytes { get; set; } = new byte[24];
+        public byte[] CustomBytes { get; } = new byte[24];
         [Obsolete("This method is deprecated. Use GetCustomBytesMaxItemsCount instead.")]
         public byte GetCustomBytesMaxItemsCount() => 24;
     }
@@ -8391,104 +8987,6 @@ false),
         public override MagCalProgressPayload Payload { get; } = new();
 
         public override string Name => "MAG_CAL_PROGRESS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("direction_x",
-"Body frame direction vector for display.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("direction_y",
-"Body frame direction vector for display.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("direction_z",
-"Body frame direction vector for display.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("compass_id",
-"Compass being calibrated.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("cal_mask",
-"Bitmask of compasses being calibrated.",
-string.Empty, 
-string.Empty, 
-"bitmask", 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("cal_status",
-"Calibration Status.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("attempt",
-"Attempt number.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("completion_pct",
-"Completion percentage.",
-string.Empty, 
-@"%", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("completion_mask",
-"Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            10, 
-false),
-        ];
-        public const string FormatMessage = "MAG_CAL_PROGRESS:"
-        + "float direction_x;"
-        + "float direction_y;"
-        + "float direction_z;"
-        + "uint8_t compass_id;"
-        + "uint8_t cal_mask;"
-        + "uint8_t cal_status;"
-        + "uint8_t attempt;"
-        + "uint8_t completion_pct;"
-        + "uint8_t[10] completion_mask;"
-        ;
     }
 
     /// <summary>
@@ -8500,20 +8998,20 @@ false),
         public byte GetMaxByteSize() => 27; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //DirectionX
-            sum+=4; //DirectionY
-            sum+=4; //DirectionZ
-            sum+=1; //CompassId
-            sum+=1; //CalMask
-            sum+= 1; // CalStatus
-            sum+=1; //Attempt
-            sum+=1; //CompletionPct
-            sum+=CompletionMask.Length; //CompletionMask
-            return (byte)sum;
+            return (byte)(
+            +4 // float direction_x
+            +4 // float direction_y
+            +4 // float direction_z
+            +1 // uint8_t compass_id
+            +1 // uint8_t cal_mask
+            + 1 // uint8_t cal_status
+            +1 // uint8_t attempt
+            +1 // uint8_t completion_pct
+            +CompletionMask.Length // uint8_t[10] completion_mask
+            );
         }
 
 
@@ -8531,7 +9029,7 @@ false),
             Attempt = (byte)BinSerialize.ReadByte(ref buffer);
             CompletionPct = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/10 - Math.Max(0,((/*PayloadByteSize*/27 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            CompletionMask = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 CompletionMask[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -8555,57 +9053,141 @@ false),
             }
             /* PayloadByteSize = 27 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DirectionXField, DirectionXField.DataType, ref _directionX);    
+            FloatType.Accept(visitor,DirectionYField, DirectionYField.DataType, ref _directionY);    
+            FloatType.Accept(visitor,DirectionZField, DirectionZField.DataType, ref _directionZ);    
+            UInt8Type.Accept(visitor,CompassIdField, CompassIdField.DataType, ref _compassId);    
+            UInt8Type.Accept(visitor,CalMaskField, CalMaskField.DataType, ref _calMask);    
+            var tmpCalStatus = (byte)CalStatus;
+            UInt8Type.Accept(visitor,CalStatusField, CalStatusField.DataType, ref tmpCalStatus);
+            CalStatus = (MagCalStatus)tmpCalStatus;
+            UInt8Type.Accept(visitor,AttemptField, AttemptField.DataType, ref _attempt);    
+            UInt8Type.Accept(visitor,CompletionPctField, CompletionPctField.DataType, ref _completionPct);    
+            ArrayType.Accept(visitor,CompletionMaskField, CompletionMaskField.DataType, 10,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref CompletionMask[index]));    
 
+        }
 
         /// <summary>
         /// Body frame direction vector for display.
         /// OriginName: direction_x, Units: , IsExtended: false
         /// </summary>
-        public float DirectionX { get; set; }
+        public static readonly Field DirectionXField = new Field.Builder()
+            .Name(nameof(DirectionX))
+            .Title("direction_x")
+            .Description("Body frame direction vector for display.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _directionX;
+        public float DirectionX { get => _directionX; set => _directionX = value; }
         /// <summary>
         /// Body frame direction vector for display.
         /// OriginName: direction_y, Units: , IsExtended: false
         /// </summary>
-        public float DirectionY { get; set; }
+        public static readonly Field DirectionYField = new Field.Builder()
+            .Name(nameof(DirectionY))
+            .Title("direction_y")
+            .Description("Body frame direction vector for display.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _directionY;
+        public float DirectionY { get => _directionY; set => _directionY = value; }
         /// <summary>
         /// Body frame direction vector for display.
         /// OriginName: direction_z, Units: , IsExtended: false
         /// </summary>
-        public float DirectionZ { get; set; }
+        public static readonly Field DirectionZField = new Field.Builder()
+            .Name(nameof(DirectionZ))
+            .Title("direction_z")
+            .Description("Body frame direction vector for display.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _directionZ;
+        public float DirectionZ { get => _directionZ; set => _directionZ = value; }
         /// <summary>
         /// Compass being calibrated.
         /// OriginName: compass_id, Units: , IsExtended: false
         /// </summary>
-        public byte CompassId { get; set; }
+        public static readonly Field CompassIdField = new Field.Builder()
+            .Name(nameof(CompassId))
+            .Title("compass_id")
+            .Description("Compass being calibrated.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _compassId;
+        public byte CompassId { get => _compassId; set => _compassId = value; }
         /// <summary>
         /// Bitmask of compasses being calibrated.
         /// OriginName: cal_mask, Units: , IsExtended: false
         /// </summary>
-        public byte CalMask { get; set; }
+        public static readonly Field CalMaskField = new Field.Builder()
+            .Name(nameof(CalMask))
+            .Title("bitmask")
+            .Description("Bitmask of compasses being calibrated.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _calMask;
+        public byte CalMask { get => _calMask; set => _calMask = value; }
         /// <summary>
         /// Calibration Status.
         /// OriginName: cal_status, Units: , IsExtended: false
         /// </summary>
-        public MagCalStatus CalStatus { get; set; }
+        public static readonly Field CalStatusField = new Field.Builder()
+            .Name(nameof(CalStatus))
+            .Title("cal_status")
+            .Description("Calibration Status.")
+            .DataType(new UInt8Type(MagCalStatusHelper.GetValues(x=>(byte)x).Min(),MagCalStatusHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MagCalStatusHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private MagCalStatus _calStatus;
+        public MagCalStatus CalStatus { get => _calStatus; set => _calStatus = value; } 
         /// <summary>
         /// Attempt number.
         /// OriginName: attempt, Units: , IsExtended: false
         /// </summary>
-        public byte Attempt { get; set; }
+        public static readonly Field AttemptField = new Field.Builder()
+            .Name(nameof(Attempt))
+            .Title("attempt")
+            .Description("Attempt number.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _attempt;
+        public byte Attempt { get => _attempt; set => _attempt = value; }
         /// <summary>
         /// Completion percentage.
         /// OriginName: completion_pct, Units: %, IsExtended: false
         /// </summary>
-        public byte CompletionPct { get; set; }
+        public static readonly Field CompletionPctField = new Field.Builder()
+            .Name(nameof(CompletionPct))
+            .Title("completion_pct")
+            .Description("Completion percentage.")
+.Units(@"%")
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _completionPct;
+        public byte CompletionPct { get => _completionPct; set => _completionPct = value; }
         /// <summary>
         /// Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).
         /// OriginName: completion_mask, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CompletionMaskField = new Field.Builder()
+            .Name(nameof(CompletionMask))
+            .Title("completion_mask")
+            .Description("Bitmask of sphere sections (see http://en.wikipedia.org/wiki/Geodesic_grid).")
+
+            .DataType(new ArrayType(UInt8Type.Default,10))
+        .Build();
         public const int CompletionMaskMaxItemsCount = 10;
-        public byte[] CompletionMask { get; set; } = new byte[10];
+        public byte[] CompletionMask { get; } = new byte[10];
         [Obsolete("This method is deprecated. Use GetCompletionMaskMaxItemsCount instead.")]
         public byte GetCompletionMaskMaxItemsCount() => 10;
     }
@@ -8629,84 +9211,6 @@ false),
         public override EkfStatusReportPayload Payload { get; } = new();
 
         public override string Name => "EKF_STATUS_REPORT";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("velocity_variance",
-"Velocity variance.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("pos_horiz_variance",
-"Horizontal Position variance.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("pos_vert_variance",
-"Vertical Position variance.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("compass_variance",
-"Compass variance.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("terrain_alt_variance",
-"Terrain Altitude variance.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("flags",
-"Flags.",
-string.Empty, 
-string.Empty, 
-"bitmask", 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("airspeed_variance",
-"Airspeed variance.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-true),
-        ];
-        public const string FormatMessage = "EKF_STATUS_REPORT:"
-        + "float velocity_variance;"
-        + "float pos_horiz_variance;"
-        + "float pos_vert_variance;"
-        + "float compass_variance;"
-        + "float terrain_alt_variance;"
-        + "uint16_t flags;"
-        + "float airspeed_variance;"
-        ;
     }
 
     /// <summary>
@@ -8718,18 +9222,18 @@ true),
         public byte GetMaxByteSize() => 26; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //VelocityVariance
-            sum+=4; //PosHorizVariance
-            sum+=4; //PosVertVariance
-            sum+=4; //CompassVariance
-            sum+=4; //TerrainAltVariance
-            sum+= 2; // Flags
-            sum+=4; //AirspeedVariance
-            return (byte)sum;
+            return (byte)(
+            +4 // float velocity_variance
+            +4 // float pos_horiz_variance
+            +4 // float pos_vert_variance
+            +4 // float compass_variance
+            +4 // float terrain_alt_variance
+            + 2 // uint16_t flags
+            +4 // float airspeed_variance
+            );
         }
 
 
@@ -8759,46 +9263,112 @@ true),
             BinSerialize.WriteFloat(ref buffer,AirspeedVariance);
             /* PayloadByteSize = 26 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,VelocityVarianceField, VelocityVarianceField.DataType, ref _velocityVariance);    
+            FloatType.Accept(visitor,PosHorizVarianceField, PosHorizVarianceField.DataType, ref _posHorizVariance);    
+            FloatType.Accept(visitor,PosVertVarianceField, PosVertVarianceField.DataType, ref _posVertVariance);    
+            FloatType.Accept(visitor,CompassVarianceField, CompassVarianceField.DataType, ref _compassVariance);    
+            FloatType.Accept(visitor,TerrainAltVarianceField, TerrainAltVarianceField.DataType, ref _terrainAltVariance);    
+            var tmpFlags = (ushort)Flags;
+            UInt16Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (EkfStatusFlags)tmpFlags;
+            FloatType.Accept(visitor,AirspeedVarianceField, AirspeedVarianceField.DataType, ref _airspeedVariance);    
 
+        }
 
         /// <summary>
         /// Velocity variance.
         /// OriginName: velocity_variance, Units: , IsExtended: false
         /// </summary>
-        public float VelocityVariance { get; set; }
+        public static readonly Field VelocityVarianceField = new Field.Builder()
+            .Name(nameof(VelocityVariance))
+            .Title("velocity_variance")
+            .Description("Velocity variance.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _velocityVariance;
+        public float VelocityVariance { get => _velocityVariance; set => _velocityVariance = value; }
         /// <summary>
         /// Horizontal Position variance.
         /// OriginName: pos_horiz_variance, Units: , IsExtended: false
         /// </summary>
-        public float PosHorizVariance { get; set; }
+        public static readonly Field PosHorizVarianceField = new Field.Builder()
+            .Name(nameof(PosHorizVariance))
+            .Title("pos_horiz_variance")
+            .Description("Horizontal Position variance.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _posHorizVariance;
+        public float PosHorizVariance { get => _posHorizVariance; set => _posHorizVariance = value; }
         /// <summary>
         /// Vertical Position variance.
         /// OriginName: pos_vert_variance, Units: , IsExtended: false
         /// </summary>
-        public float PosVertVariance { get; set; }
+        public static readonly Field PosVertVarianceField = new Field.Builder()
+            .Name(nameof(PosVertVariance))
+            .Title("pos_vert_variance")
+            .Description("Vertical Position variance.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _posVertVariance;
+        public float PosVertVariance { get => _posVertVariance; set => _posVertVariance = value; }
         /// <summary>
         /// Compass variance.
         /// OriginName: compass_variance, Units: , IsExtended: false
         /// </summary>
-        public float CompassVariance { get; set; }
+        public static readonly Field CompassVarianceField = new Field.Builder()
+            .Name(nameof(CompassVariance))
+            .Title("compass_variance")
+            .Description("Compass variance.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _compassVariance;
+        public float CompassVariance { get => _compassVariance; set => _compassVariance = value; }
         /// <summary>
         /// Terrain Altitude variance.
         /// OriginName: terrain_alt_variance, Units: , IsExtended: false
         /// </summary>
-        public float TerrainAltVariance { get; set; }
+        public static readonly Field TerrainAltVarianceField = new Field.Builder()
+            .Name(nameof(TerrainAltVariance))
+            .Title("terrain_alt_variance")
+            .Description("Terrain Altitude variance.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _terrainAltVariance;
+        public float TerrainAltVariance { get => _terrainAltVariance; set => _terrainAltVariance = value; }
         /// <summary>
         /// Flags.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public EkfStatusFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("bitmask")
+            .Description("Flags.")
+            .DataType(new UInt16Type(EkfStatusFlagsHelper.GetValues(x=>(ushort)x).Min(),EkfStatusFlagsHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(EkfStatusFlagsHelper.GetEnumValues(x=>(ushort)x))
+            .Build();
+        private EkfStatusFlags _flags;
+        public EkfStatusFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
         /// Airspeed variance.
         /// OriginName: airspeed_variance, Units: , IsExtended: true
         /// </summary>
-        public float AirspeedVariance { get; set; }
+        public static readonly Field AirspeedVarianceField = new Field.Builder()
+            .Name(nameof(AirspeedVariance))
+            .Title("airspeed_variance")
+            .Description("Airspeed variance.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _airspeedVariance;
+        public float AirspeedVariance { get => _airspeedVariance; set => _airspeedVariance = value; }
     }
     /// <summary>
     /// PID tuning information.
@@ -8820,104 +9390,6 @@ true),
         public override PidTuningPayload Payload { get; } = new();
 
         public override string Name => "PID_TUNING";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("desired",
-"Desired rate.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("achieved",
-"Achieved rate.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("FF",
-"FF component.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("P",
-"P component.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("I",
-"I component.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("D",
-"D component.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("axis",
-"Axis.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("SRate",
-"Slew rate.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-true),
-            new("PDmod",
-"P/D oscillation modifier.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-true),
-        ];
-        public const string FormatMessage = "PID_TUNING:"
-        + "float desired;"
-        + "float achieved;"
-        + "float FF;"
-        + "float P;"
-        + "float I;"
-        + "float D;"
-        + "uint8_t axis;"
-        + "float SRate;"
-        + "float PDmod;"
-        ;
     }
 
     /// <summary>
@@ -8929,20 +9401,20 @@ true),
         public byte GetMaxByteSize() => 33; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 33; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Desired
-            sum+=4; //Achieved
-            sum+=4; //Ff
-            sum+=4; //P
-            sum+=4; //I
-            sum+=4; //D
-            sum+= 1; // Axis
-            sum+=4; //Srate
-            sum+=4; //Pdmod
-            return (byte)sum;
+            return (byte)(
+            +4 // float desired
+            +4 // float achieved
+            +4 // float FF
+            +4 // float P
+            +4 // float I
+            +4 // float D
+            + 1 // uint8_t axis
+            +4 // float SRate
+            +4 // float PDmod
+            );
         }
 
 
@@ -8978,56 +9450,140 @@ true),
             BinSerialize.WriteFloat(ref buffer,Pdmod);
             /* PayloadByteSize = 33 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DesiredField, DesiredField.DataType, ref _desired);    
+            FloatType.Accept(visitor,AchievedField, AchievedField.DataType, ref _achieved);    
+            FloatType.Accept(visitor,FfField, FfField.DataType, ref _ff);    
+            FloatType.Accept(visitor,PField, PField.DataType, ref _p);    
+            FloatType.Accept(visitor,IField, IField.DataType, ref _i);    
+            FloatType.Accept(visitor,DField, DField.DataType, ref _d);    
+            var tmpAxis = (byte)Axis;
+            UInt8Type.Accept(visitor,AxisField, AxisField.DataType, ref tmpAxis);
+            Axis = (PidTuningAxis)tmpAxis;
+            FloatType.Accept(visitor,SrateField, SrateField.DataType, ref _srate);    
+            FloatType.Accept(visitor,PdmodField, PdmodField.DataType, ref _pdmod);    
 
+        }
 
         /// <summary>
         /// Desired rate.
         /// OriginName: desired, Units: , IsExtended: false
         /// </summary>
-        public float Desired { get; set; }
+        public static readonly Field DesiredField = new Field.Builder()
+            .Name(nameof(Desired))
+            .Title("desired")
+            .Description("Desired rate.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _desired;
+        public float Desired { get => _desired; set => _desired = value; }
         /// <summary>
         /// Achieved rate.
         /// OriginName: achieved, Units: , IsExtended: false
         /// </summary>
-        public float Achieved { get; set; }
+        public static readonly Field AchievedField = new Field.Builder()
+            .Name(nameof(Achieved))
+            .Title("achieved")
+            .Description("Achieved rate.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _achieved;
+        public float Achieved { get => _achieved; set => _achieved = value; }
         /// <summary>
         /// FF component.
         /// OriginName: FF, Units: , IsExtended: false
         /// </summary>
-        public float Ff { get; set; }
+        public static readonly Field FfField = new Field.Builder()
+            .Name(nameof(Ff))
+            .Title("FF")
+            .Description("FF component.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _ff;
+        public float Ff { get => _ff; set => _ff = value; }
         /// <summary>
         /// P component.
         /// OriginName: P, Units: , IsExtended: false
         /// </summary>
-        public float P { get; set; }
+        public static readonly Field PField = new Field.Builder()
+            .Name(nameof(P))
+            .Title("P")
+            .Description("P component.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _p;
+        public float P { get => _p; set => _p = value; }
         /// <summary>
         /// I component.
         /// OriginName: I, Units: , IsExtended: false
         /// </summary>
-        public float I { get; set; }
+        public static readonly Field IField = new Field.Builder()
+            .Name(nameof(I))
+            .Title("I")
+            .Description("I component.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _i;
+        public float I { get => _i; set => _i = value; }
         /// <summary>
         /// D component.
         /// OriginName: D, Units: , IsExtended: false
         /// </summary>
-        public float D { get; set; }
+        public static readonly Field DField = new Field.Builder()
+            .Name(nameof(D))
+            .Title("D")
+            .Description("D component.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _d;
+        public float D { get => _d; set => _d = value; }
         /// <summary>
         /// Axis.
         /// OriginName: axis, Units: , IsExtended: false
         /// </summary>
-        public PidTuningAxis Axis { get; set; }
+        public static readonly Field AxisField = new Field.Builder()
+            .Name(nameof(Axis))
+            .Title("axis")
+            .Description("Axis.")
+            .DataType(new UInt8Type(PidTuningAxisHelper.GetValues(x=>(byte)x).Min(),PidTuningAxisHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(PidTuningAxisHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private PidTuningAxis _axis;
+        public PidTuningAxis Axis { get => _axis; set => _axis = value; } 
         /// <summary>
         /// Slew rate.
         /// OriginName: SRate, Units: , IsExtended: true
         /// </summary>
-        public float Srate { get; set; }
+        public static readonly Field SrateField = new Field.Builder()
+            .Name(nameof(Srate))
+            .Title("SRate")
+            .Description("Slew rate.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _srate;
+        public float Srate { get => _srate; set => _srate = value; }
         /// <summary>
         /// P/D oscillation modifier.
         /// OriginName: PDmod, Units: , IsExtended: true
         /// </summary>
-        public float Pdmod { get; set; }
+        public static readonly Field PdmodField = new Field.Builder()
+            .Name(nameof(Pdmod))
+            .Title("PDmod")
+            .Description("P/D oscillation modifier.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _pdmod;
+        public float Pdmod { get => _pdmod; set => _pdmod = value; }
     }
     /// <summary>
     /// Deepstall path planning.
@@ -9049,114 +9605,6 @@ true),
         public override DeepstallPayload Payload { get; } = new();
 
         public override string Name => "DEEPSTALL";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("landing_lat",
-"Landing latitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("landing_lon",
-"Landing longitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("path_lat",
-"Final heading start point, latitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("path_lon",
-"Final heading start point, longitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("arc_entry_lat",
-"Arc entry point, latitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("arc_entry_lon",
-"Arc entry point, longitude.",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("altitude",
-"Altitude.",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("expected_travel_distance",
-"Distance the aircraft expects to travel during the deepstall.",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("cross_track_error",
-"Deepstall cross track error (only valid when in DEEPSTALL_STAGE_LAND).",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("stage",
-"Deepstall stage.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "DEEPSTALL:"
-        + "int32_t landing_lat;"
-        + "int32_t landing_lon;"
-        + "int32_t path_lat;"
-        + "int32_t path_lon;"
-        + "int32_t arc_entry_lat;"
-        + "int32_t arc_entry_lon;"
-        + "float altitude;"
-        + "float expected_travel_distance;"
-        + "float cross_track_error;"
-        + "uint8_t stage;"
-        ;
     }
 
     /// <summary>
@@ -9168,21 +9616,21 @@ false),
         public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //LandingLat
-            sum+=4; //LandingLon
-            sum+=4; //PathLat
-            sum+=4; //PathLon
-            sum+=4; //ArcEntryLat
-            sum+=4; //ArcEntryLon
-            sum+=4; //Altitude
-            sum+=4; //ExpectedTravelDistance
-            sum+=4; //CrossTrackError
-            sum+= 1; // Stage
-            return (byte)sum;
+            return (byte)(
+            +4 // int32_t landing_lat
+            +4 // int32_t landing_lon
+            +4 // int32_t path_lat
+            +4 // int32_t path_lon
+            +4 // int32_t arc_entry_lat
+            +4 // int32_t arc_entry_lon
+            +4 // float altitude
+            +4 // float expected_travel_distance
+            +4 // float cross_track_error
+            + 1 // uint8_t stage
+            );
         }
 
 
@@ -9216,61 +9664,154 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Stage);
             /* PayloadByteSize = 37 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            Int32Type.Accept(visitor,LandingLatField, LandingLatField.DataType, ref _landingLat);    
+            Int32Type.Accept(visitor,LandingLonField, LandingLonField.DataType, ref _landingLon);    
+            Int32Type.Accept(visitor,PathLatField, PathLatField.DataType, ref _pathLat);    
+            Int32Type.Accept(visitor,PathLonField, PathLonField.DataType, ref _pathLon);    
+            Int32Type.Accept(visitor,ArcEntryLatField, ArcEntryLatField.DataType, ref _arcEntryLat);    
+            Int32Type.Accept(visitor,ArcEntryLonField, ArcEntryLonField.DataType, ref _arcEntryLon);    
+            FloatType.Accept(visitor,AltitudeField, AltitudeField.DataType, ref _altitude);    
+            FloatType.Accept(visitor,ExpectedTravelDistanceField, ExpectedTravelDistanceField.DataType, ref _expectedTravelDistance);    
+            FloatType.Accept(visitor,CrossTrackErrorField, CrossTrackErrorField.DataType, ref _crossTrackError);    
+            var tmpStage = (byte)Stage;
+            UInt8Type.Accept(visitor,StageField, StageField.DataType, ref tmpStage);
+            Stage = (DeepstallStage)tmpStage;
 
+        }
 
         /// <summary>
         /// Landing latitude.
         /// OriginName: landing_lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int LandingLat { get; set; }
+        public static readonly Field LandingLatField = new Field.Builder()
+            .Name(nameof(LandingLat))
+            .Title("landing_lat")
+            .Description("Landing latitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _landingLat;
+        public int LandingLat { get => _landingLat; set => _landingLat = value; }
         /// <summary>
         /// Landing longitude.
         /// OriginName: landing_lon, Units: degE7, IsExtended: false
         /// </summary>
-        public int LandingLon { get; set; }
+        public static readonly Field LandingLonField = new Field.Builder()
+            .Name(nameof(LandingLon))
+            .Title("landing_lon")
+            .Description("Landing longitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _landingLon;
+        public int LandingLon { get => _landingLon; set => _landingLon = value; }
         /// <summary>
         /// Final heading start point, latitude.
         /// OriginName: path_lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int PathLat { get; set; }
+        public static readonly Field PathLatField = new Field.Builder()
+            .Name(nameof(PathLat))
+            .Title("path_lat")
+            .Description("Final heading start point, latitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _pathLat;
+        public int PathLat { get => _pathLat; set => _pathLat = value; }
         /// <summary>
         /// Final heading start point, longitude.
         /// OriginName: path_lon, Units: degE7, IsExtended: false
         /// </summary>
-        public int PathLon { get; set; }
+        public static readonly Field PathLonField = new Field.Builder()
+            .Name(nameof(PathLon))
+            .Title("path_lon")
+            .Description("Final heading start point, longitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _pathLon;
+        public int PathLon { get => _pathLon; set => _pathLon = value; }
         /// <summary>
         /// Arc entry point, latitude.
         /// OriginName: arc_entry_lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int ArcEntryLat { get; set; }
+        public static readonly Field ArcEntryLatField = new Field.Builder()
+            .Name(nameof(ArcEntryLat))
+            .Title("arc_entry_lat")
+            .Description("Arc entry point, latitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _arcEntryLat;
+        public int ArcEntryLat { get => _arcEntryLat; set => _arcEntryLat = value; }
         /// <summary>
         /// Arc entry point, longitude.
         /// OriginName: arc_entry_lon, Units: degE7, IsExtended: false
         /// </summary>
-        public int ArcEntryLon { get; set; }
+        public static readonly Field ArcEntryLonField = new Field.Builder()
+            .Name(nameof(ArcEntryLon))
+            .Title("arc_entry_lon")
+            .Description("Arc entry point, longitude.")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _arcEntryLon;
+        public int ArcEntryLon { get => _arcEntryLon; set => _arcEntryLon = value; }
         /// <summary>
         /// Altitude.
         /// OriginName: altitude, Units: m, IsExtended: false
         /// </summary>
-        public float Altitude { get; set; }
+        public static readonly Field AltitudeField = new Field.Builder()
+            .Name(nameof(Altitude))
+            .Title("altitude")
+            .Description("Altitude.")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _altitude;
+        public float Altitude { get => _altitude; set => _altitude = value; }
         /// <summary>
         /// Distance the aircraft expects to travel during the deepstall.
         /// OriginName: expected_travel_distance, Units: m, IsExtended: false
         /// </summary>
-        public float ExpectedTravelDistance { get; set; }
+        public static readonly Field ExpectedTravelDistanceField = new Field.Builder()
+            .Name(nameof(ExpectedTravelDistance))
+            .Title("expected_travel_distance")
+            .Description("Distance the aircraft expects to travel during the deepstall.")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _expectedTravelDistance;
+        public float ExpectedTravelDistance { get => _expectedTravelDistance; set => _expectedTravelDistance = value; }
         /// <summary>
         /// Deepstall cross track error (only valid when in DEEPSTALL_STAGE_LAND).
         /// OriginName: cross_track_error, Units: m, IsExtended: false
         /// </summary>
-        public float CrossTrackError { get; set; }
+        public static readonly Field CrossTrackErrorField = new Field.Builder()
+            .Name(nameof(CrossTrackError))
+            .Title("cross_track_error")
+            .Description("Deepstall cross track error (only valid when in DEEPSTALL_STAGE_LAND).")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _crossTrackError;
+        public float CrossTrackError { get => _crossTrackError; set => _crossTrackError = value; }
         /// <summary>
         /// Deepstall stage.
         /// OriginName: stage, Units: , IsExtended: false
         /// </summary>
-        public DeepstallStage Stage { get; set; }
+        public static readonly Field StageField = new Field.Builder()
+            .Name(nameof(Stage))
+            .Title("stage")
+            .Description("Deepstall stage.")
+            .DataType(new UInt8Type(DeepstallStageHelper.GetValues(x=>(byte)x).Min(),DeepstallStageHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(DeepstallStageHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private DeepstallStage _stage;
+        public DeepstallStage Stage { get => _stage; set => _stage = value; } 
     }
     /// <summary>
     /// 3 axis gimbal measurements.
@@ -9292,134 +9833,6 @@ false),
         public override GimbalReportPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_REPORT";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("delta_time",
-"Time since last update.",
-string.Empty, 
-@"s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("delta_angle_x",
-"Delta angle X.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("delta_angle_y",
-"Delta angle Y.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("delta_angle_z",
-"Delta angle X.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("delta_velocity_x",
-"Delta velocity X.",
-string.Empty, 
-@"m/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("delta_velocity_y",
-"Delta velocity Y.",
-string.Empty, 
-@"m/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("delta_velocity_z",
-"Delta velocity Z.",
-string.Empty, 
-@"m/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("joint_roll",
-"Joint ROLL.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("joint_el",
-"Joint EL.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("joint_az",
-"Joint AZ.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "GIMBAL_REPORT:"
-        + "float delta_time;"
-        + "float delta_angle_x;"
-        + "float delta_angle_y;"
-        + "float delta_angle_z;"
-        + "float delta_velocity_x;"
-        + "float delta_velocity_y;"
-        + "float delta_velocity_z;"
-        + "float joint_roll;"
-        + "float joint_el;"
-        + "float joint_az;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
     }
 
     /// <summary>
@@ -9431,23 +9844,23 @@ false),
         public byte GetMaxByteSize() => 42; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 42; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //DeltaTime
-            sum+=4; //DeltaAngleX
-            sum+=4; //DeltaAngleY
-            sum+=4; //DeltaAngleZ
-            sum+=4; //DeltaVelocityX
-            sum+=4; //DeltaVelocityY
-            sum+=4; //DeltaVelocityZ
-            sum+=4; //JointRoll
-            sum+=4; //JointEl
-            sum+=4; //JointAz
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +4 // float delta_time
+            +4 // float delta_angle_x
+            +4 // float delta_angle_y
+            +4 // float delta_angle_z
+            +4 // float delta_velocity_x
+            +4 // float delta_velocity_y
+            +4 // float delta_velocity_z
+            +4 // float joint_roll
+            +4 // float joint_el
+            +4 // float joint_az
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -9485,71 +9898,180 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 42 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DeltaTimeField, DeltaTimeField.DataType, ref _deltaTime);    
+            FloatType.Accept(visitor,DeltaAngleXField, DeltaAngleXField.DataType, ref _deltaAngleX);    
+            FloatType.Accept(visitor,DeltaAngleYField, DeltaAngleYField.DataType, ref _deltaAngleY);    
+            FloatType.Accept(visitor,DeltaAngleZField, DeltaAngleZField.DataType, ref _deltaAngleZ);    
+            FloatType.Accept(visitor,DeltaVelocityXField, DeltaVelocityXField.DataType, ref _deltaVelocityX);    
+            FloatType.Accept(visitor,DeltaVelocityYField, DeltaVelocityYField.DataType, ref _deltaVelocityY);    
+            FloatType.Accept(visitor,DeltaVelocityZField, DeltaVelocityZField.DataType, ref _deltaVelocityZ);    
+            FloatType.Accept(visitor,JointRollField, JointRollField.DataType, ref _jointRoll);    
+            FloatType.Accept(visitor,JointElField, JointElField.DataType, ref _jointEl);    
+            FloatType.Accept(visitor,JointAzField, JointAzField.DataType, ref _jointAz);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
+        }
 
         /// <summary>
         /// Time since last update.
         /// OriginName: delta_time, Units: s, IsExtended: false
         /// </summary>
-        public float DeltaTime { get; set; }
+        public static readonly Field DeltaTimeField = new Field.Builder()
+            .Name(nameof(DeltaTime))
+            .Title("delta_time")
+            .Description("Time since last update.")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _deltaTime;
+        public float DeltaTime { get => _deltaTime; set => _deltaTime = value; }
         /// <summary>
         /// Delta angle X.
         /// OriginName: delta_angle_x, Units: rad, IsExtended: false
         /// </summary>
-        public float DeltaAngleX { get; set; }
+        public static readonly Field DeltaAngleXField = new Field.Builder()
+            .Name(nameof(DeltaAngleX))
+            .Title("delta_angle_x")
+            .Description("Delta angle X.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _deltaAngleX;
+        public float DeltaAngleX { get => _deltaAngleX; set => _deltaAngleX = value; }
         /// <summary>
         /// Delta angle Y.
         /// OriginName: delta_angle_y, Units: rad, IsExtended: false
         /// </summary>
-        public float DeltaAngleY { get; set; }
+        public static readonly Field DeltaAngleYField = new Field.Builder()
+            .Name(nameof(DeltaAngleY))
+            .Title("delta_angle_y")
+            .Description("Delta angle Y.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _deltaAngleY;
+        public float DeltaAngleY { get => _deltaAngleY; set => _deltaAngleY = value; }
         /// <summary>
         /// Delta angle X.
         /// OriginName: delta_angle_z, Units: rad, IsExtended: false
         /// </summary>
-        public float DeltaAngleZ { get; set; }
+        public static readonly Field DeltaAngleZField = new Field.Builder()
+            .Name(nameof(DeltaAngleZ))
+            .Title("delta_angle_z")
+            .Description("Delta angle X.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _deltaAngleZ;
+        public float DeltaAngleZ { get => _deltaAngleZ; set => _deltaAngleZ = value; }
         /// <summary>
         /// Delta velocity X.
         /// OriginName: delta_velocity_x, Units: m/s, IsExtended: false
         /// </summary>
-        public float DeltaVelocityX { get; set; }
+        public static readonly Field DeltaVelocityXField = new Field.Builder()
+            .Name(nameof(DeltaVelocityX))
+            .Title("delta_velocity_x")
+            .Description("Delta velocity X.")
+.Units(@"m/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _deltaVelocityX;
+        public float DeltaVelocityX { get => _deltaVelocityX; set => _deltaVelocityX = value; }
         /// <summary>
         /// Delta velocity Y.
         /// OriginName: delta_velocity_y, Units: m/s, IsExtended: false
         /// </summary>
-        public float DeltaVelocityY { get; set; }
+        public static readonly Field DeltaVelocityYField = new Field.Builder()
+            .Name(nameof(DeltaVelocityY))
+            .Title("delta_velocity_y")
+            .Description("Delta velocity Y.")
+.Units(@"m/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _deltaVelocityY;
+        public float DeltaVelocityY { get => _deltaVelocityY; set => _deltaVelocityY = value; }
         /// <summary>
         /// Delta velocity Z.
         /// OriginName: delta_velocity_z, Units: m/s, IsExtended: false
         /// </summary>
-        public float DeltaVelocityZ { get; set; }
+        public static readonly Field DeltaVelocityZField = new Field.Builder()
+            .Name(nameof(DeltaVelocityZ))
+            .Title("delta_velocity_z")
+            .Description("Delta velocity Z.")
+.Units(@"m/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _deltaVelocityZ;
+        public float DeltaVelocityZ { get => _deltaVelocityZ; set => _deltaVelocityZ = value; }
         /// <summary>
         /// Joint ROLL.
         /// OriginName: joint_roll, Units: rad, IsExtended: false
         /// </summary>
-        public float JointRoll { get; set; }
+        public static readonly Field JointRollField = new Field.Builder()
+            .Name(nameof(JointRoll))
+            .Title("joint_roll")
+            .Description("Joint ROLL.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _jointRoll;
+        public float JointRoll { get => _jointRoll; set => _jointRoll = value; }
         /// <summary>
         /// Joint EL.
         /// OriginName: joint_el, Units: rad, IsExtended: false
         /// </summary>
-        public float JointEl { get; set; }
+        public static readonly Field JointElField = new Field.Builder()
+            .Name(nameof(JointEl))
+            .Title("joint_el")
+            .Description("Joint EL.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _jointEl;
+        public float JointEl { get => _jointEl; set => _jointEl = value; }
         /// <summary>
         /// Joint AZ.
         /// OriginName: joint_az, Units: rad, IsExtended: false
         /// </summary>
-        public float JointAz { get; set; }
+        public static readonly Field JointAzField = new Field.Builder()
+            .Name(nameof(JointAz))
+            .Title("joint_az")
+            .Description("Joint AZ.")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _jointAz;
+        public float JointAz { get => _jointAz; set => _jointAz = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
     /// <summary>
     /// Control message for rate gimbal.
@@ -9571,64 +10093,6 @@ false),
         public override GimbalControlPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_CONTROL";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("demanded_rate_x",
-"Demanded angular rate X.",
-string.Empty, 
-@"rad/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("demanded_rate_y",
-"Demanded angular rate Y.",
-string.Empty, 
-@"rad/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("demanded_rate_z",
-"Demanded angular rate Z.",
-string.Empty, 
-@"rad/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "GIMBAL_CONTROL:"
-        + "float demanded_rate_x;"
-        + "float demanded_rate_y;"
-        + "float demanded_rate_z;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
     }
 
     /// <summary>
@@ -9640,16 +10104,16 @@ false),
         public byte GetMaxByteSize() => 14; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //DemandedRateX
-            sum+=4; //DemandedRateY
-            sum+=4; //DemandedRateZ
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +4 // float demanded_rate_x
+            +4 // float demanded_rate_y
+            +4 // float demanded_rate_z
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -9673,36 +10137,82 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 14 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DemandedRateXField, DemandedRateXField.DataType, ref _demandedRateX);    
+            FloatType.Accept(visitor,DemandedRateYField, DemandedRateYField.DataType, ref _demandedRateY);    
+            FloatType.Accept(visitor,DemandedRateZField, DemandedRateZField.DataType, ref _demandedRateZ);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
+        }
 
         /// <summary>
         /// Demanded angular rate X.
         /// OriginName: demanded_rate_x, Units: rad/s, IsExtended: false
         /// </summary>
-        public float DemandedRateX { get; set; }
+        public static readonly Field DemandedRateXField = new Field.Builder()
+            .Name(nameof(DemandedRateX))
+            .Title("demanded_rate_x")
+            .Description("Demanded angular rate X.")
+.Units(@"rad/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _demandedRateX;
+        public float DemandedRateX { get => _demandedRateX; set => _demandedRateX = value; }
         /// <summary>
         /// Demanded angular rate Y.
         /// OriginName: demanded_rate_y, Units: rad/s, IsExtended: false
         /// </summary>
-        public float DemandedRateY { get; set; }
+        public static readonly Field DemandedRateYField = new Field.Builder()
+            .Name(nameof(DemandedRateY))
+            .Title("demanded_rate_y")
+            .Description("Demanded angular rate Y.")
+.Units(@"rad/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _demandedRateY;
+        public float DemandedRateY { get => _demandedRateY; set => _demandedRateY = value; }
         /// <summary>
         /// Demanded angular rate Z.
         /// OriginName: demanded_rate_z, Units: rad/s, IsExtended: false
         /// </summary>
-        public float DemandedRateZ { get; set; }
+        public static readonly Field DemandedRateZField = new Field.Builder()
+            .Name(nameof(DemandedRateZ))
+            .Title("demanded_rate_z")
+            .Description("Demanded angular rate Z.")
+.Units(@"rad/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _demandedRateZ;
+        public float DemandedRateZ { get => _demandedRateZ; set => _demandedRateZ = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
     /// <summary>
     /// 100 Hz gimbal torque command telemetry.
@@ -9724,64 +10234,6 @@ false),
         public override GimbalTorqueCmdReportPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_TORQUE_CMD_REPORT";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("rl_torque_cmd",
-"Roll Torque Command.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("el_torque_cmd",
-"Elevation Torque Command.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("az_torque_cmd",
-"Azimuth Torque Command.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "GIMBAL_TORQUE_CMD_REPORT:"
-        + "int16_t rl_torque_cmd;"
-        + "int16_t el_torque_cmd;"
-        + "int16_t az_torque_cmd;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        ;
     }
 
     /// <summary>
@@ -9793,16 +10245,16 @@ false),
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //RlTorqueCmd
-            sum+=2; //ElTorqueCmd
-            sum+=2; //AzTorqueCmd
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            return (byte)sum;
+            return (byte)(
+            +2 // int16_t rl_torque_cmd
+            +2 // int16_t el_torque_cmd
+            +2 // int16_t az_torque_cmd
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            );
         }
 
 
@@ -9826,36 +10278,82 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)TargetComponent);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            Int16Type.Accept(visitor,RlTorqueCmdField, RlTorqueCmdField.DataType, ref _rlTorqueCmd);
+            Int16Type.Accept(visitor,ElTorqueCmdField, ElTorqueCmdField.DataType, ref _elTorqueCmd);
+            Int16Type.Accept(visitor,AzTorqueCmdField, AzTorqueCmdField.DataType, ref _azTorqueCmd);
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
 
+        }
 
         /// <summary>
         /// Roll Torque Command.
         /// OriginName: rl_torque_cmd, Units: , IsExtended: false
         /// </summary>
-        public short RlTorqueCmd { get; set; }
+        public static readonly Field RlTorqueCmdField = new Field.Builder()
+            .Name(nameof(RlTorqueCmd))
+            .Title("rl_torque_cmd")
+            .Description("Roll Torque Command.")
+
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _rlTorqueCmd;
+        public short RlTorqueCmd { get => _rlTorqueCmd; set => _rlTorqueCmd = value; }
         /// <summary>
         /// Elevation Torque Command.
         /// OriginName: el_torque_cmd, Units: , IsExtended: false
         /// </summary>
-        public short ElTorqueCmd { get; set; }
+        public static readonly Field ElTorqueCmdField = new Field.Builder()
+            .Name(nameof(ElTorqueCmd))
+            .Title("el_torque_cmd")
+            .Description("Elevation Torque Command.")
+
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _elTorqueCmd;
+        public short ElTorqueCmd { get => _elTorqueCmd; set => _elTorqueCmd = value; }
         /// <summary>
         /// Azimuth Torque Command.
         /// OriginName: az_torque_cmd, Units: , IsExtended: false
         /// </summary>
-        public short AzTorqueCmd { get; set; }
+        public static readonly Field AzTorqueCmdField = new Field.Builder()
+            .Name(nameof(AzTorqueCmd))
+            .Title("az_torque_cmd")
+            .Description("Azimuth Torque Command.")
+
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _azTorqueCmd;
+        public short AzTorqueCmd { get => _azTorqueCmd; set => _azTorqueCmd = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
     }
     /// <summary>
     /// Heartbeat from a HeroBus attached GoPro.
@@ -9877,44 +10375,6 @@ false),
         public override GoproHeartbeatPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_HEARTBEAT";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("status",
-"Status.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("capture_mode",
-"Current capture mode.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("flags",
-"Additional status bits.",
-string.Empty, 
-string.Empty, 
-"bitmask", 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "GOPRO_HEARTBEAT:"
-        + "uint8_t status;"
-        + "uint8_t capture_mode;"
-        + "uint8_t flags;"
-        ;
     }
 
     /// <summary>
@@ -9926,14 +10386,14 @@ false),
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // Status
-            sum+= 1; // CaptureMode
-            sum+= 1; // Flags
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t status
+            + 1 // uint8_t capture_mode
+            + 1 // uint8_t flags
+            );
         }
 
 
@@ -9953,26 +10413,60 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Flags);
             /* PayloadByteSize = 3 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            var tmpStatus = (byte)Status;
+            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
+            Status = (GoproHeartbeatStatus)tmpStatus;
+            var tmpCaptureMode = (byte)CaptureMode;
+            UInt8Type.Accept(visitor,CaptureModeField, CaptureModeField.DataType, ref tmpCaptureMode);
+            CaptureMode = (GoproCaptureMode)tmpCaptureMode;
+            var tmpFlags = (byte)Flags;
+            UInt8Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (GoproHeartbeatFlags)tmpFlags;
 
+        }
 
         /// <summary>
         /// Status.
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
-        public GoproHeartbeatStatus Status { get; set; }
+        public static readonly Field StatusField = new Field.Builder()
+            .Name(nameof(Status))
+            .Title("status")
+            .Description("Status.")
+            .DataType(new UInt8Type(GoproHeartbeatStatusHelper.GetValues(x=>(byte)x).Min(),GoproHeartbeatStatusHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproHeartbeatStatusHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private GoproHeartbeatStatus _status;
+        public GoproHeartbeatStatus Status { get => _status; set => _status = value; } 
         /// <summary>
         /// Current capture mode.
         /// OriginName: capture_mode, Units: , IsExtended: false
         /// </summary>
-        public GoproCaptureMode CaptureMode { get; set; }
+        public static readonly Field CaptureModeField = new Field.Builder()
+            .Name(nameof(CaptureMode))
+            .Title("capture_mode")
+            .Description("Current capture mode.")
+            .DataType(new UInt8Type(GoproCaptureModeHelper.GetValues(x=>(byte)x).Min(),GoproCaptureModeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproCaptureModeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private GoproCaptureMode _captureMode;
+        public GoproCaptureMode CaptureMode { get => _captureMode; set => _captureMode = value; } 
         /// <summary>
         /// Additional status bits.
         /// OriginName: flags, Units: , IsExtended: false
         /// </summary>
-        public GoproHeartbeatFlags Flags { get; set; }
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("bitmask")
+            .Description("Additional status bits.")
+            .DataType(new UInt8Type(GoproHeartbeatFlagsHelper.GetValues(x=>(byte)x).Min(),GoproHeartbeatFlagsHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproHeartbeatFlagsHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private GoproHeartbeatFlags _flags;
+        public GoproHeartbeatFlags Flags { get => _flags; set => _flags = value; } 
     }
     /// <summary>
     /// Request a GOPRO_COMMAND response from the GoPro.
@@ -9994,44 +10488,6 @@ false),
         public override GoproGetRequestPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_GET_REQUEST";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("cmd_id",
-"Command ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "GOPRO_GET_REQUEST:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t cmd_id;"
-        ;
     }
 
     /// <summary>
@@ -10043,14 +10499,14 @@ false),
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // CmdId
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t cmd_id
+            );
         }
 
 
@@ -10070,26 +10526,56 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)CmdId);
             /* PayloadByteSize = 3 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            var tmpCmdId = (byte)CmdId;
+            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
+            CmdId = (GoproCommand)tmpCmdId;
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Command ID.
         /// OriginName: cmd_id, Units: , IsExtended: false
         /// </summary>
-        public GoproCommand CmdId { get; set; }
+        public static readonly Field CmdIdField = new Field.Builder()
+            .Name(nameof(CmdId))
+            .Title("cmd_id")
+            .Description("Command ID.")
+            .DataType(new UInt8Type(GoproCommandHelper.GetValues(x=>(byte)x).Min(),GoproCommandHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproCommandHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private GoproCommand _cmdId;
+        public GoproCommand CmdId { get => _cmdId; set => _cmdId = value; } 
     }
     /// <summary>
     /// Response from a GOPRO_COMMAND get request.
@@ -10111,44 +10597,6 @@ false),
         public override GoproGetResponsePayload Payload { get; } = new();
 
         public override string Name => "GOPRO_GET_RESPONSE";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("cmd_id",
-"Command ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("status",
-"Status.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("value",
-"Value.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            4, 
-false),
-        ];
-        public const string FormatMessage = "GOPRO_GET_RESPONSE:"
-        + "uint8_t cmd_id;"
-        + "uint8_t status;"
-        + "uint8_t[4] value;"
-        ;
     }
 
     /// <summary>
@@ -10160,14 +10608,14 @@ false),
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // CmdId
-            sum+= 1; // Status
-            sum+=Value.Length; //Value
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t cmd_id
+            + 1 // uint8_t status
+            +Value.Length // uint8_t[4] value
+            );
         }
 
 
@@ -10179,7 +10627,7 @@ false),
             CmdId = (GoproCommand)BinSerialize.ReadByte(ref buffer);
             Status = (GoproRequestStatus)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/6 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Value = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Value[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -10197,27 +10645,59 @@ false),
             }
             /* PayloadByteSize = 6 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            var tmpCmdId = (byte)CmdId;
+            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
+            CmdId = (GoproCommand)tmpCmdId;
+            var tmpStatus = (byte)Status;
+            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
+            Status = (GoproRequestStatus)tmpStatus;
+            ArrayType.Accept(visitor,ValueField, ValueField.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Value[index]));    
 
+        }
 
         /// <summary>
         /// Command ID.
         /// OriginName: cmd_id, Units: , IsExtended: false
         /// </summary>
-        public GoproCommand CmdId { get; set; }
+        public static readonly Field CmdIdField = new Field.Builder()
+            .Name(nameof(CmdId))
+            .Title("cmd_id")
+            .Description("Command ID.")
+            .DataType(new UInt8Type(GoproCommandHelper.GetValues(x=>(byte)x).Min(),GoproCommandHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproCommandHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private GoproCommand _cmdId;
+        public GoproCommand CmdId { get => _cmdId; set => _cmdId = value; } 
         /// <summary>
         /// Status.
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
-        public GoproRequestStatus Status { get; set; }
+        public static readonly Field StatusField = new Field.Builder()
+            .Name(nameof(Status))
+            .Title("status")
+            .Description("Status.")
+            .DataType(new UInt8Type(GoproRequestStatusHelper.GetValues(x=>(byte)x).Min(),GoproRequestStatusHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproRequestStatusHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private GoproRequestStatus _status;
+        public GoproRequestStatus Status { get => _status; set => _status = value; } 
         /// <summary>
         /// Value.
         /// OriginName: value, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ValueField = new Field.Builder()
+            .Name(nameof(Value))
+            .Title("value")
+            .Description("Value.")
+
+            .DataType(new ArrayType(UInt8Type.Default,4))
+        .Build();
         public const int ValueMaxItemsCount = 4;
-        public byte[] Value { get; set; } = new byte[4];
+        public byte[] Value { get; } = new byte[4];
         [Obsolete("This method is deprecated. Use GetValueMaxItemsCount instead.")]
         public byte GetValueMaxItemsCount() => 4;
     }
@@ -10241,54 +10721,6 @@ false),
         public override GoproSetRequestPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_SET_REQUEST";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("cmd_id",
-"Command ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("value",
-"Value.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            4, 
-false),
-        ];
-        public const string FormatMessage = "GOPRO_SET_REQUEST:"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t cmd_id;"
-        + "uint8_t[4] value;"
-        ;
     }
 
     /// <summary>
@@ -10300,15 +10732,15 @@ false),
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // CmdId
-            sum+=Value.Length; //Value
-            return (byte)sum;
+            return (byte)(
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t cmd_id
+            +Value.Length // uint8_t[4] value
+            );
         }
 
 
@@ -10321,7 +10753,7 @@ false),
             TargetComponent = (byte)BinSerialize.ReadByte(ref buffer);
             CmdId = (GoproCommand)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/7 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            Value = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Value[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -10340,32 +10772,71 @@ false),
             }
             /* PayloadByteSize = 7 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            var tmpCmdId = (byte)CmdId;
+            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
+            CmdId = (GoproCommand)tmpCmdId;
+            ArrayType.Accept(visitor,ValueField, ValueField.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Value[index]));    
 
+        }
 
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// Command ID.
         /// OriginName: cmd_id, Units: , IsExtended: false
         /// </summary>
-        public GoproCommand CmdId { get; set; }
+        public static readonly Field CmdIdField = new Field.Builder()
+            .Name(nameof(CmdId))
+            .Title("cmd_id")
+            .Description("Command ID.")
+            .DataType(new UInt8Type(GoproCommandHelper.GetValues(x=>(byte)x).Min(),GoproCommandHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproCommandHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private GoproCommand _cmdId;
+        public GoproCommand CmdId { get => _cmdId; set => _cmdId = value; } 
         /// <summary>
         /// Value.
         /// OriginName: value, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ValueField = new Field.Builder()
+            .Name(nameof(Value))
+            .Title("value")
+            .Description("Value.")
+
+            .DataType(new ArrayType(UInt8Type.Default,4))
+        .Build();
         public const int ValueMaxItemsCount = 4;
-        public byte[] Value { get; set; } = new byte[4];
+        public byte[] Value { get; } = new byte[4];
         [Obsolete("This method is deprecated. Use GetValueMaxItemsCount instead.")]
         public byte GetValueMaxItemsCount() => 4;
     }
@@ -10389,34 +10860,6 @@ false),
         public override GoproSetResponsePayload Payload { get; } = new();
 
         public override string Name => "GOPRO_SET_RESPONSE";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("cmd_id",
-"Command ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("status",
-"Status.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "GOPRO_SET_RESPONSE:"
-        + "uint8_t cmd_id;"
-        + "uint8_t status;"
-        ;
     }
 
     /// <summary>
@@ -10428,13 +10871,13 @@ false),
         public byte GetMaxByteSize() => 2; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+= 1; // CmdId
-            sum+= 1; // Status
-            return (byte)sum;
+            return (byte)(
+            + 1 // uint8_t cmd_id
+            + 1 // uint8_t status
+            );
         }
 
 
@@ -10452,21 +10895,44 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Status);
             /* PayloadByteSize = 2 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            var tmpCmdId = (byte)CmdId;
+            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
+            CmdId = (GoproCommand)tmpCmdId;
+            var tmpStatus = (byte)Status;
+            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
+            Status = (GoproRequestStatus)tmpStatus;
 
+        }
 
         /// <summary>
         /// Command ID.
         /// OriginName: cmd_id, Units: , IsExtended: false
         /// </summary>
-        public GoproCommand CmdId { get; set; }
+        public static readonly Field CmdIdField = new Field.Builder()
+            .Name(nameof(CmdId))
+            .Title("cmd_id")
+            .Description("Command ID.")
+            .DataType(new UInt8Type(GoproCommandHelper.GetValues(x=>(byte)x).Min(),GoproCommandHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproCommandHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private GoproCommand _cmdId;
+        public GoproCommand CmdId { get => _cmdId; set => _cmdId = value; } 
         /// <summary>
         /// Status.
         /// OriginName: status, Units: , IsExtended: false
         /// </summary>
-        public GoproRequestStatus Status { get; set; }
+        public static readonly Field StatusField = new Field.Builder()
+            .Name(nameof(Status))
+            .Title("status")
+            .Description("Status.")
+            .DataType(new UInt8Type(GoproRequestStatusHelper.GetValues(x=>(byte)x).Min(),GoproRequestStatusHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(GoproRequestStatusHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private GoproRequestStatus _status;
+        public GoproRequestStatus Status { get => _status; set => _status = value; } 
     }
     /// <summary>
     /// RPM sensor output.
@@ -10488,34 +10954,6 @@ false),
         public override RpmPayload Payload { get; } = new();
 
         public override string Name => "RPM";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("rpm1",
-"RPM Sensor1.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("rpm2",
-"RPM Sensor2.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "RPM:"
-        + "float rpm1;"
-        + "float rpm2;"
-        ;
     }
 
     /// <summary>
@@ -10527,13 +10965,13 @@ false),
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Rpm1
-            sum+=4; //Rpm2
-            return (byte)sum;
+            return (byte)(
+            +4 // float rpm1
+            +4 // float rpm2
+            );
         }
 
 
@@ -10551,21 +10989,40 @@ false),
             BinSerialize.WriteFloat(ref buffer,Rpm2);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,Rpm1Field, Rpm1Field.DataType, ref _rpm1);    
+            FloatType.Accept(visitor,Rpm2Field, Rpm2Field.DataType, ref _rpm2);    
 
+        }
 
         /// <summary>
         /// RPM Sensor1.
         /// OriginName: rpm1, Units: , IsExtended: false
         /// </summary>
-        public float Rpm1 { get; set; }
+        public static readonly Field Rpm1Field = new Field.Builder()
+            .Name(nameof(Rpm1))
+            .Title("rpm1")
+            .Description("RPM Sensor1.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rpm1;
+        public float Rpm1 { get => _rpm1; set => _rpm1 = value; }
         /// <summary>
         /// RPM Sensor2.
         /// OriginName: rpm2, Units: , IsExtended: false
         /// </summary>
-        public float Rpm2 { get; set; }
+        public static readonly Field Rpm2Field = new Field.Builder()
+            .Name(nameof(Rpm2))
+            .Title("rpm2")
+            .Description("RPM Sensor2.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rpm2;
+        public float Rpm2 { get => _rpm2; set => _rpm2 = value; }
     }
     /// <summary>
     /// Read registers for a device.
@@ -10587,114 +11044,6 @@ false),
         public override DeviceOpReadPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_READ";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("request_id",
-"Request ID - copied to reply.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("bustype",
-"The bus type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("bus",
-"Bus number.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("address",
-"Bus address.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("busname",
-"Name of device on bus (for SPI).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            40, 
-false),
-            new("regstart",
-"First register to read.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("count",
-"Count of registers to read.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("bank",
-"Bank number.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-true),
-        ];
-        public const string FormatMessage = "DEVICE_OP_READ:"
-        + "uint32_t request_id;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t bustype;"
-        + "uint8_t bus;"
-        + "uint8_t address;"
-        + "char[40] busname;"
-        + "uint8_t regstart;"
-        + "uint8_t count;"
-        + "uint8_t bank;"
-        ;
     }
 
     /// <summary>
@@ -10706,21 +11055,21 @@ true),
         public byte GetMaxByteSize() => 52; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 52; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // Bustype
-            sum+=1; //Bus
-            sum+=1; //Address
-            sum+=Busname.Length; //Busname
-            sum+=1; //Regstart
-            sum+=1; //Count
-            sum+=1; //Bank
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t bustype
+            +1 // uint8_t bus
+            +1 // uint8_t address
+            +Busname.Length // char[40] busname
+            +1 // uint8_t regstart
+            +1 // uint8_t count
+            +1 // uint8_t bank
+            );
         }
 
 
@@ -10736,7 +11085,7 @@ true),
             Bus = (byte)BinSerialize.ReadByte(ref buffer);
             Address = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/40 - Math.Max(0,((/*PayloadByteSize*/52 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
-            Busname = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -10745,7 +11094,7 @@ true),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Busname.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             Regstart = (byte)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
@@ -10778,64 +11127,157 @@ true),
             BinSerialize.WriteByte(ref buffer,(byte)Bank);
             /* PayloadByteSize = 52 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            var tmpBustype = (byte)Bustype;
+            UInt8Type.Accept(visitor,BustypeField, BustypeField.DataType, ref tmpBustype);
+            Bustype = (DeviceOpBustype)tmpBustype;
+            UInt8Type.Accept(visitor,BusField, BusField.DataType, ref _bus);    
+            UInt8Type.Accept(visitor,AddressField, AddressField.DataType, ref _address);    
+            ArrayType.Accept(visitor,BusnameField, BusnameField.DataType, 40, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Busname[index]));
+            UInt8Type.Accept(visitor,RegstartField, RegstartField.DataType, ref _regstart);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            UInt8Type.Accept(visitor,BankField, BankField.DataType, ref _bank);    
 
+        }
 
         /// <summary>
         /// Request ID - copied to reply.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied to reply.")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _requestId;
+        public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// The bus type.
         /// OriginName: bustype, Units: , IsExtended: false
         /// </summary>
-        public DeviceOpBustype Bustype { get; set; }
+        public static readonly Field BustypeField = new Field.Builder()
+            .Name(nameof(Bustype))
+            .Title("bustype")
+            .Description("The bus type.")
+            .DataType(new UInt8Type(DeviceOpBustypeHelper.GetValues(x=>(byte)x).Min(),DeviceOpBustypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(DeviceOpBustypeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private DeviceOpBustype _bustype;
+        public DeviceOpBustype Bustype { get => _bustype; set => _bustype = value; } 
         /// <summary>
         /// Bus number.
         /// OriginName: bus, Units: , IsExtended: false
         /// </summary>
-        public byte Bus { get; set; }
+        public static readonly Field BusField = new Field.Builder()
+            .Name(nameof(Bus))
+            .Title("bus")
+            .Description("Bus number.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _bus;
+        public byte Bus { get => _bus; set => _bus = value; }
         /// <summary>
         /// Bus address.
         /// OriginName: address, Units: , IsExtended: false
         /// </summary>
-        public byte Address { get; set; }
+        public static readonly Field AddressField = new Field.Builder()
+            .Name(nameof(Address))
+            .Title("address")
+            .Description("Bus address.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _address;
+        public byte Address { get => _address; set => _address = value; }
         /// <summary>
         /// Name of device on bus (for SPI).
         /// OriginName: busname, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field BusnameField = new Field.Builder()
+            .Name(nameof(Busname))
+            .Title("busname")
+            .Description("Name of device on bus (for SPI).")
+
+            .DataType(new ArrayType(CharType.Ascii,40))
+        .Build();
         public const int BusnameMaxItemsCount = 40;
-        public char[] Busname { get; set; } = new char[40];
+        public char[] Busname { get; } = new char[40];
         [Obsolete("This method is deprecated. Use GetBusnameMaxItemsCount instead.")]
         public byte GetBusnameMaxItemsCount() => 40;
         /// <summary>
         /// First register to read.
         /// OriginName: regstart, Units: , IsExtended: false
         /// </summary>
-        public byte Regstart { get; set; }
+        public static readonly Field RegstartField = new Field.Builder()
+            .Name(nameof(Regstart))
+            .Title("regstart")
+            .Description("First register to read.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _regstart;
+        public byte Regstart { get => _regstart; set => _regstart = value; }
         /// <summary>
         /// Count of registers to read.
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Count of registers to read.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _count;
+        public byte Count { get => _count; set => _count = value; }
         /// <summary>
         /// Bank number.
         /// OriginName: bank, Units: , IsExtended: true
         /// </summary>
-        public byte Bank { get; set; }
+        public static readonly Field BankField = new Field.Builder()
+            .Name(nameof(Bank))
+            .Title("bank")
+            .Description("Bank number.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _bank;
+        public byte Bank { get => _bank; set => _bank = value; }
     }
     /// <summary>
     /// Read registers reply.
@@ -10857,74 +11299,6 @@ true),
         public override DeviceOpReadReplyPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_READ_REPLY";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("request_id",
-"Request ID - copied from request.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("result",
-"0 for success, anything else is failure code.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("regstart",
-"Starting register.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("count",
-"Count of bytes read.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("data",
-"Reply data.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            128, 
-false),
-            new("bank",
-"Bank number.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-true),
-        ];
-        public const string FormatMessage = "DEVICE_OP_READ_REPLY:"
-        + "uint32_t request_id;"
-        + "uint8_t result;"
-        + "uint8_t regstart;"
-        + "uint8_t count;"
-        + "uint8_t[128] data;"
-        + "uint8_t bank;"
-        ;
     }
 
     /// <summary>
@@ -10936,17 +11310,17 @@ true),
         public byte GetMaxByteSize() => 136; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 136; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=1; //Result
-            sum+=1; //Regstart
-            sum+=1; //Count
-            sum+=Data.Length; //Data
-            sum+=1; //Bank
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +1 // uint8_t result
+            +1 // uint8_t regstart
+            +1 // uint8_t count
+            +Data.Length // uint8_t[128] data
+            +1 // uint8_t bank
+            );
         }
 
 
@@ -10960,7 +11334,7 @@ true),
             Regstart = (byte)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/136 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -10984,44 +11358,99 @@ true),
             BinSerialize.WriteByte(ref buffer,(byte)Bank);
             /* PayloadByteSize = 136 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref _result);    
+            UInt8Type.Accept(visitor,RegstartField, RegstartField.DataType, ref _regstart);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 128,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
+            UInt8Type.Accept(visitor,BankField, BankField.DataType, ref _bank);    
 
+        }
 
         /// <summary>
         /// Request ID - copied from request.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied from request.")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _requestId;
+        public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// 0 for success, anything else is failure code.
         /// OriginName: result, Units: , IsExtended: false
         /// </summary>
-        public byte Result { get; set; }
+        public static readonly Field ResultField = new Field.Builder()
+            .Name(nameof(Result))
+            .Title("result")
+            .Description("0 for success, anything else is failure code.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _result;
+        public byte Result { get => _result; set => _result = value; }
         /// <summary>
         /// Starting register.
         /// OriginName: regstart, Units: , IsExtended: false
         /// </summary>
-        public byte Regstart { get; set; }
+        public static readonly Field RegstartField = new Field.Builder()
+            .Name(nameof(Regstart))
+            .Title("regstart")
+            .Description("Starting register.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _regstart;
+        public byte Regstart { get => _regstart; set => _regstart = value; }
         /// <summary>
         /// Count of bytes read.
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Count of bytes read.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _count;
+        public byte Count { get => _count; set => _count = value; }
         /// <summary>
         /// Reply data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Reply data.")
+
+            .DataType(new ArrayType(UInt8Type.Default,128))
+        .Build();
         public const int DataMaxItemsCount = 128;
-        public byte[] Data { get; set; } = new byte[128];
+        public byte[] Data { get; } = new byte[128];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 128;
         /// <summary>
         /// Bank number.
         /// OriginName: bank, Units: , IsExtended: true
         /// </summary>
-        public byte Bank { get; set; }
+        public static readonly Field BankField = new Field.Builder()
+            .Name(nameof(Bank))
+            .Title("bank")
+            .Description("Bank number.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _bank;
+        public byte Bank { get => _bank; set => _bank = value; }
     }
     /// <summary>
     /// Write registers for a device.
@@ -11043,124 +11472,6 @@ true),
         public override DeviceOpWritePayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_WRITE";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("request_id",
-"Request ID - copied to reply.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("bustype",
-"The bus type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("bus",
-"Bus number.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("address",
-"Bus address.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("busname",
-"Name of device on bus (for SPI).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            40, 
-false),
-            new("regstart",
-"First register to write.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("count",
-"Count of registers to write.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("data",
-"Write data.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            128, 
-false),
-            new("bank",
-"Bank number.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-true),
-        ];
-        public const string FormatMessage = "DEVICE_OP_WRITE:"
-        + "uint32_t request_id;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t bustype;"
-        + "uint8_t bus;"
-        + "uint8_t address;"
-        + "char[40] busname;"
-        + "uint8_t regstart;"
-        + "uint8_t count;"
-        + "uint8_t[128] data;"
-        + "uint8_t bank;"
-        ;
     }
 
     /// <summary>
@@ -11172,22 +11483,22 @@ true),
         public byte GetMaxByteSize() => 180; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 180; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+= 1; // Bustype
-            sum+=1; //Bus
-            sum+=1; //Address
-            sum+=Busname.Length; //Busname
-            sum+=1; //Regstart
-            sum+=1; //Count
-            sum+=Data.Length; //Data
-            sum+=1; //Bank
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            + 1 // uint8_t bustype
+            +1 // uint8_t bus
+            +1 // uint8_t address
+            +Busname.Length // char[40] busname
+            +1 // uint8_t regstart
+            +1 // uint8_t count
+            +Data.Length // uint8_t[128] data
+            +1 // uint8_t bank
+            );
         }
 
 
@@ -11211,12 +11522,12 @@ true),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Busname.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             Regstart = (byte)BinSerialize.ReadByte(ref buffer);
             Count = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/128 - Math.Max(0,((/*PayloadByteSize*/180 - payloadSize - /*ExtendedFieldsLength*/1)/1 /*FieldTypeByteSize*/));
-            Data = new byte[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
@@ -11254,70 +11565,172 @@ true),
             BinSerialize.WriteByte(ref buffer,(byte)Bank);
             /* PayloadByteSize = 180 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            var tmpBustype = (byte)Bustype;
+            UInt8Type.Accept(visitor,BustypeField, BustypeField.DataType, ref tmpBustype);
+            Bustype = (DeviceOpBustype)tmpBustype;
+            UInt8Type.Accept(visitor,BusField, BusField.DataType, ref _bus);    
+            UInt8Type.Accept(visitor,AddressField, AddressField.DataType, ref _address);    
+            ArrayType.Accept(visitor,BusnameField, BusnameField.DataType, 40, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Busname[index]));
+            UInt8Type.Accept(visitor,RegstartField, RegstartField.DataType, ref _regstart);    
+            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            ArrayType.Accept(visitor,DataField, DataField.DataType, 128,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
+            UInt8Type.Accept(visitor,BankField, BankField.DataType, ref _bank);    
 
+        }
 
         /// <summary>
         /// Request ID - copied to reply.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied to reply.")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _requestId;
+        public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// The bus type.
         /// OriginName: bustype, Units: , IsExtended: false
         /// </summary>
-        public DeviceOpBustype Bustype { get; set; }
+        public static readonly Field BustypeField = new Field.Builder()
+            .Name(nameof(Bustype))
+            .Title("bustype")
+            .Description("The bus type.")
+            .DataType(new UInt8Type(DeviceOpBustypeHelper.GetValues(x=>(byte)x).Min(),DeviceOpBustypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(DeviceOpBustypeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private DeviceOpBustype _bustype;
+        public DeviceOpBustype Bustype { get => _bustype; set => _bustype = value; } 
         /// <summary>
         /// Bus number.
         /// OriginName: bus, Units: , IsExtended: false
         /// </summary>
-        public byte Bus { get; set; }
+        public static readonly Field BusField = new Field.Builder()
+            .Name(nameof(Bus))
+            .Title("bus")
+            .Description("Bus number.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _bus;
+        public byte Bus { get => _bus; set => _bus = value; }
         /// <summary>
         /// Bus address.
         /// OriginName: address, Units: , IsExtended: false
         /// </summary>
-        public byte Address { get; set; }
+        public static readonly Field AddressField = new Field.Builder()
+            .Name(nameof(Address))
+            .Title("address")
+            .Description("Bus address.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _address;
+        public byte Address { get => _address; set => _address = value; }
         /// <summary>
         /// Name of device on bus (for SPI).
         /// OriginName: busname, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field BusnameField = new Field.Builder()
+            .Name(nameof(Busname))
+            .Title("busname")
+            .Description("Name of device on bus (for SPI).")
+
+            .DataType(new ArrayType(CharType.Ascii,40))
+        .Build();
         public const int BusnameMaxItemsCount = 40;
         public char[] Busname { get; } = new char[40];
         /// <summary>
         /// First register to write.
         /// OriginName: regstart, Units: , IsExtended: false
         /// </summary>
-        public byte Regstart { get; set; }
+        public static readonly Field RegstartField = new Field.Builder()
+            .Name(nameof(Regstart))
+            .Title("regstart")
+            .Description("First register to write.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _regstart;
+        public byte Regstart { get => _regstart; set => _regstart = value; }
         /// <summary>
         /// Count of registers to write.
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
-        public byte Count { get; set; }
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("Count of registers to write.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _count;
+        public byte Count { get => _count; set => _count = value; }
         /// <summary>
         /// Write data.
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Write data.")
+
+            .DataType(new ArrayType(UInt8Type.Default,128))
+        .Build();
         public const int DataMaxItemsCount = 128;
-        public byte[] Data { get; set; } = new byte[128];
+        public byte[] Data { get; } = new byte[128];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
         public byte GetDataMaxItemsCount() => 128;
         /// <summary>
         /// Bank number.
         /// OriginName: bank, Units: , IsExtended: true
         /// </summary>
-        public byte Bank { get; set; }
+        public static readonly Field BankField = new Field.Builder()
+            .Name(nameof(Bank))
+            .Title("bank")
+            .Description("Bank number.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _bank;
+        public byte Bank { get => _bank; set => _bank = value; }
     }
     /// <summary>
     /// Write registers reply.
@@ -11339,34 +11752,6 @@ true),
         public override DeviceOpWriteReplyPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_WRITE_REPLY";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("request_id",
-"Request ID - copied from request.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("result",
-"0 for success, anything else is failure code.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "DEVICE_OP_WRITE_REPLY:"
-        + "uint32_t request_id;"
-        + "uint8_t result;"
-        ;
     }
 
     /// <summary>
@@ -11378,13 +11763,13 @@ false),
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=1; //Result
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +1 // uint8_t result
+            );
         }
 
 
@@ -11402,21 +11787,40 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Result);
             /* PayloadByteSize = 5 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref _result);    
 
+        }
 
         /// <summary>
         /// Request ID - copied from request.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied from request.")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _requestId;
+        public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// 0 for success, anything else is failure code.
         /// OriginName: result, Units: , IsExtended: false
         /// </summary>
-        public byte Result { get; set; }
+        public static readonly Field ResultField = new Field.Builder()
+            .Name(nameof(Result))
+            .Title("result")
+            .Description("0 for success, anything else is failure code.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _result;
+        public byte Result { get => _result; set => _result = value; }
     }
     /// <summary>
     /// Adaptive Controller tuning information.
@@ -11438,144 +11842,6 @@ false),
         public override AdapTuningPayload Payload { get; } = new();
 
         public override string Name => "ADAP_TUNING";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("desired",
-"Desired rate.",
-string.Empty, 
-@"deg/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("achieved",
-"Achieved rate.",
-string.Empty, 
-@"deg/s", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("error",
-"Error between model and vehicle.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("theta",
-"Theta estimated state predictor.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("omega",
-"Omega estimated state predictor.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("sigma",
-"Sigma estimated state predictor.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("theta_dot",
-"Theta derivative.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("omega_dot",
-"Omega derivative.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("sigma_dot",
-"Sigma derivative.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("f",
-"Projection operator value.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("f_dot",
-"Projection operator derivative.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("u",
-"u adaptive controlled output command.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("axis",
-"Axis.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "ADAP_TUNING:"
-        + "float desired;"
-        + "float achieved;"
-        + "float error;"
-        + "float theta;"
-        + "float omega;"
-        + "float sigma;"
-        + "float theta_dot;"
-        + "float omega_dot;"
-        + "float sigma_dot;"
-        + "float f;"
-        + "float f_dot;"
-        + "float u;"
-        + "uint8_t axis;"
-        ;
     }
 
     /// <summary>
@@ -11587,24 +11853,24 @@ false),
         public byte GetMaxByteSize() => 49; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 49; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //Desired
-            sum+=4; //Achieved
-            sum+=4; //Error
-            sum+=4; //Theta
-            sum+=4; //Omega
-            sum+=4; //Sigma
-            sum+=4; //ThetaDot
-            sum+=4; //OmegaDot
-            sum+=4; //SigmaDot
-            sum+=4; //F
-            sum+=4; //FDot
-            sum+=4; //U
-            sum+= 1; // Axis
-            return (byte)sum;
+            return (byte)(
+            +4 // float desired
+            +4 // float achieved
+            +4 // float error
+            +4 // float theta
+            +4 // float omega
+            +4 // float sigma
+            +4 // float theta_dot
+            +4 // float omega_dot
+            +4 // float sigma_dot
+            +4 // float f
+            +4 // float f_dot
+            +4 // float u
+            + 1 // uint8_t axis
+            );
         }
 
 
@@ -11644,76 +11910,196 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Axis);
             /* PayloadByteSize = 49 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            FloatType.Accept(visitor,DesiredField, DesiredField.DataType, ref _desired);    
+            FloatType.Accept(visitor,AchievedField, AchievedField.DataType, ref _achieved);    
+            FloatType.Accept(visitor,ErrorField, ErrorField.DataType, ref _error);    
+            FloatType.Accept(visitor,ThetaField, ThetaField.DataType, ref _theta);    
+            FloatType.Accept(visitor,OmegaField, OmegaField.DataType, ref _omega);    
+            FloatType.Accept(visitor,SigmaField, SigmaField.DataType, ref _sigma);    
+            FloatType.Accept(visitor,ThetaDotField, ThetaDotField.DataType, ref _thetaDot);    
+            FloatType.Accept(visitor,OmegaDotField, OmegaDotField.DataType, ref _omegaDot);    
+            FloatType.Accept(visitor,SigmaDotField, SigmaDotField.DataType, ref _sigmaDot);    
+            FloatType.Accept(visitor,FField, FField.DataType, ref _f);    
+            FloatType.Accept(visitor,FDotField, FDotField.DataType, ref _fDot);    
+            FloatType.Accept(visitor,UField, UField.DataType, ref _u);    
+            var tmpAxis = (byte)Axis;
+            UInt8Type.Accept(visitor,AxisField, AxisField.DataType, ref tmpAxis);
+            Axis = (PidTuningAxis)tmpAxis;
 
+        }
 
         /// <summary>
         /// Desired rate.
         /// OriginName: desired, Units: deg/s, IsExtended: false
         /// </summary>
-        public float Desired { get; set; }
+        public static readonly Field DesiredField = new Field.Builder()
+            .Name(nameof(Desired))
+            .Title("desired")
+            .Description("Desired rate.")
+.Units(@"deg/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _desired;
+        public float Desired { get => _desired; set => _desired = value; }
         /// <summary>
         /// Achieved rate.
         /// OriginName: achieved, Units: deg/s, IsExtended: false
         /// </summary>
-        public float Achieved { get; set; }
+        public static readonly Field AchievedField = new Field.Builder()
+            .Name(nameof(Achieved))
+            .Title("achieved")
+            .Description("Achieved rate.")
+.Units(@"deg/s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _achieved;
+        public float Achieved { get => _achieved; set => _achieved = value; }
         /// <summary>
         /// Error between model and vehicle.
         /// OriginName: error, Units: , IsExtended: false
         /// </summary>
-        public float Error { get; set; }
+        public static readonly Field ErrorField = new Field.Builder()
+            .Name(nameof(Error))
+            .Title("error")
+            .Description("Error between model and vehicle.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _error;
+        public float Error { get => _error; set => _error = value; }
         /// <summary>
         /// Theta estimated state predictor.
         /// OriginName: theta, Units: , IsExtended: false
         /// </summary>
-        public float Theta { get; set; }
+        public static readonly Field ThetaField = new Field.Builder()
+            .Name(nameof(Theta))
+            .Title("theta")
+            .Description("Theta estimated state predictor.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _theta;
+        public float Theta { get => _theta; set => _theta = value; }
         /// <summary>
         /// Omega estimated state predictor.
         /// OriginName: omega, Units: , IsExtended: false
         /// </summary>
-        public float Omega { get; set; }
+        public static readonly Field OmegaField = new Field.Builder()
+            .Name(nameof(Omega))
+            .Title("omega")
+            .Description("Omega estimated state predictor.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _omega;
+        public float Omega { get => _omega; set => _omega = value; }
         /// <summary>
         /// Sigma estimated state predictor.
         /// OriginName: sigma, Units: , IsExtended: false
         /// </summary>
-        public float Sigma { get; set; }
+        public static readonly Field SigmaField = new Field.Builder()
+            .Name(nameof(Sigma))
+            .Title("sigma")
+            .Description("Sigma estimated state predictor.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _sigma;
+        public float Sigma { get => _sigma; set => _sigma = value; }
         /// <summary>
         /// Theta derivative.
         /// OriginName: theta_dot, Units: , IsExtended: false
         /// </summary>
-        public float ThetaDot { get; set; }
+        public static readonly Field ThetaDotField = new Field.Builder()
+            .Name(nameof(ThetaDot))
+            .Title("theta_dot")
+            .Description("Theta derivative.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _thetaDot;
+        public float ThetaDot { get => _thetaDot; set => _thetaDot = value; }
         /// <summary>
         /// Omega derivative.
         /// OriginName: omega_dot, Units: , IsExtended: false
         /// </summary>
-        public float OmegaDot { get; set; }
+        public static readonly Field OmegaDotField = new Field.Builder()
+            .Name(nameof(OmegaDot))
+            .Title("omega_dot")
+            .Description("Omega derivative.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _omegaDot;
+        public float OmegaDot { get => _omegaDot; set => _omegaDot = value; }
         /// <summary>
         /// Sigma derivative.
         /// OriginName: sigma_dot, Units: , IsExtended: false
         /// </summary>
-        public float SigmaDot { get; set; }
+        public static readonly Field SigmaDotField = new Field.Builder()
+            .Name(nameof(SigmaDot))
+            .Title("sigma_dot")
+            .Description("Sigma derivative.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _sigmaDot;
+        public float SigmaDot { get => _sigmaDot; set => _sigmaDot = value; }
         /// <summary>
         /// Projection operator value.
         /// OriginName: f, Units: , IsExtended: false
         /// </summary>
-        public float F { get; set; }
+        public static readonly Field FField = new Field.Builder()
+            .Name(nameof(F))
+            .Title("f")
+            .Description("Projection operator value.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _f;
+        public float F { get => _f; set => _f = value; }
         /// <summary>
         /// Projection operator derivative.
         /// OriginName: f_dot, Units: , IsExtended: false
         /// </summary>
-        public float FDot { get; set; }
+        public static readonly Field FDotField = new Field.Builder()
+            .Name(nameof(FDot))
+            .Title("f_dot")
+            .Description("Projection operator derivative.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _fDot;
+        public float FDot { get => _fDot; set => _fDot = value; }
         /// <summary>
         /// u adaptive controlled output command.
         /// OriginName: u, Units: , IsExtended: false
         /// </summary>
-        public float U { get; set; }
+        public static readonly Field UField = new Field.Builder()
+            .Name(nameof(U))
+            .Title("u")
+            .Description("u adaptive controlled output command.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _u;
+        public float U { get => _u; set => _u = value; }
         /// <summary>
         /// Axis.
         /// OriginName: axis, Units: , IsExtended: false
         /// </summary>
-        public PidTuningAxis Axis { get; set; }
+        public static readonly Field AxisField = new Field.Builder()
+            .Name(nameof(Axis))
+            .Title("axis")
+            .Description("Axis.")
+            .DataType(new UInt8Type(PidTuningAxisHelper.GetValues(x=>(byte)x).Min(),PidTuningAxisHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(PidTuningAxisHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private PidTuningAxis _axis;
+        public PidTuningAxis Axis { get => _axis; set => _axis = value; } 
     }
     /// <summary>
     /// Camera vision based attitude and position deltas.
@@ -11735,64 +12121,6 @@ false),
         public override VisionPositionDeltaPayload Payload { get; } = new();
 
         public override string Name => "VISION_POSITION_DELTA";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_usec",
-"Timestamp (synced to UNIX time or since system boot).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("time_delta_usec",
-"Time since the last reported camera frame.",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("angle_delta",
-"Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            3, 
-false),
-            new("position_delta",
-"Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            3, 
-false),
-            new("confidence",
-"Normalised confidence value from 0 to 100.",
-string.Empty, 
-@"%", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "VISION_POSITION_DELTA:"
-        + "uint64_t time_usec;"
-        + "uint64_t time_delta_usec;"
-        + "float[3] angle_delta;"
-        + "float[3] position_delta;"
-        + "float confidence;"
-        ;
     }
 
     /// <summary>
@@ -11804,16 +12132,16 @@ false),
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUsec
-            sum+=8; //TimeDeltaUsec
-            sum+=AngleDelta.Length * 4; //AngleDelta
-            sum+=PositionDelta.Length * 4; //PositionDelta
-            sum+=4; //Confidence
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_usec
+            +8 // uint64_t time_delta_usec
+            +AngleDelta.Length * 4 // float[3] angle_delta
+            +PositionDelta.Length * 4 // float[3] position_delta
+            +4 // float confidence
+            );
         }
 
 
@@ -11825,7 +12153,7 @@ false),
             TimeUsec = BinSerialize.ReadULong(ref buffer);
             TimeDeltaUsec = BinSerialize.ReadULong(ref buffer);
             arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/4 /*FieldTypeByteSize*/));
-            AngleDelta = new float[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 AngleDelta[i] = BinSerialize.ReadFloat(ref buffer);
@@ -11854,40 +12182,86 @@ false),
             BinSerialize.WriteFloat(ref buffer,Confidence);
             /* PayloadByteSize = 44 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
+            UInt64Type.Accept(visitor,TimeDeltaUsecField, TimeDeltaUsecField.DataType, ref _timeDeltaUsec);    
+            ArrayType.Accept(visitor,AngleDeltaField, AngleDeltaField.DataType, 3,
+                (index, v, f, t) => FloatType.Accept(v, f, t, ref AngleDelta[index]));
+            ArrayType.Accept(visitor,PositionDeltaField, PositionDeltaField.DataType, 3,
+                (index, v, f, t) => FloatType.Accept(v, f, t, ref PositionDelta[index]));
+            FloatType.Accept(visitor,ConfidenceField, ConfidenceField.DataType, ref _confidence);    
 
+        }
 
         /// <summary>
         /// Timestamp (synced to UNIX time or since system boot).
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUsec { get; set; }
+        public static readonly Field TimeUsecField = new Field.Builder()
+            .Name(nameof(TimeUsec))
+            .Title("time_usec")
+            .Description("Timestamp (synced to UNIX time or since system boot).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUsec;
+        public ulong TimeUsec { get => _timeUsec; set => _timeUsec = value; }
         /// <summary>
         /// Time since the last reported camera frame.
         /// OriginName: time_delta_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeDeltaUsec { get; set; }
+        public static readonly Field TimeDeltaUsecField = new Field.Builder()
+            .Name(nameof(TimeDeltaUsec))
+            .Title("time_delta_usec")
+            .Description("Time since the last reported camera frame.")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeDeltaUsec;
+        public ulong TimeDeltaUsec { get => _timeDeltaUsec; set => _timeDeltaUsec = value; }
         /// <summary>
         /// Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.
         /// OriginName: angle_delta, Units: rad, IsExtended: false
         /// </summary>
+        public static readonly Field AngleDeltaField = new Field.Builder()
+            .Name(nameof(AngleDelta))
+            .Title("angle_delta")
+            .Description("Defines a rotation vector [roll, pitch, yaw] to the current MAV_FRAME_BODY_FRD from the previous MAV_FRAME_BODY_FRD.")
+.Units(@"rad")
+            .DataType(new ArrayType(FloatType.Default,3))        
+        .Build();
         public const int AngleDeltaMaxItemsCount = 3;
-        public float[] AngleDelta { get; set; } = new float[3];
+        public float[] AngleDelta { get; } = new float[3];
         [Obsolete("This method is deprecated. Use GetAngleDeltaMaxItemsCount instead.")]
         public byte GetAngleDeltaMaxItemsCount() => 3;
         /// <summary>
         /// Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.
         /// OriginName: position_delta, Units: m, IsExtended: false
         /// </summary>
+        public static readonly Field PositionDeltaField = new Field.Builder()
+            .Name(nameof(PositionDelta))
+            .Title("position_delta")
+            .Description("Change in position to the current MAV_FRAME_BODY_FRD from the previous FRAME_BODY_FRD rotated to the current MAV_FRAME_BODY_FRD.")
+.Units(@"m")
+            .DataType(new ArrayType(FloatType.Default,3))        
+        .Build();
         public const int PositionDeltaMaxItemsCount = 3;
         public float[] PositionDelta { get; } = new float[3];
         /// <summary>
         /// Normalised confidence value from 0 to 100.
         /// OriginName: confidence, Units: %, IsExtended: false
         /// </summary>
-        public float Confidence { get; set; }
+        public static readonly Field ConfidenceField = new Field.Builder()
+            .Name(nameof(Confidence))
+            .Title("confidence")
+            .Description("Normalised confidence value from 0 to 100.")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _confidence;
+        public float Confidence { get => _confidence; set => _confidence = value; }
     }
     /// <summary>
     /// Angle of Attack and Side Slip Angle.
@@ -11909,44 +12283,6 @@ false),
         public override AoaSsaPayload Payload { get; } = new();
 
         public override string Name => "AOA_SSA";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_usec",
-"Timestamp (since boot or Unix epoch).",
-string.Empty, 
-@"us", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint64, 
-            0, 
-false),
-            new("AOA",
-"Angle of Attack.",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("SSA",
-"Side Slip Angle.",
-string.Empty, 
-@"deg", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "AOA_SSA:"
-        + "uint64_t time_usec;"
-        + "float AOA;"
-        + "float SSA;"
-        ;
     }
 
     /// <summary>
@@ -11958,14 +12294,14 @@ false),
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=8; //TimeUsec
-            sum+=4; //Aoa
-            sum+=4; //Ssa
-            return (byte)sum;
+            return (byte)(
+            +8 // uint64_t time_usec
+            +4 // float AOA
+            +4 // float SSA
+            );
         }
 
 
@@ -11985,26 +12321,54 @@ false),
             BinSerialize.WriteFloat(ref buffer,Ssa);
             /* PayloadByteSize = 16 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
+            FloatType.Accept(visitor,AoaField, AoaField.DataType, ref _aoa);    
+            FloatType.Accept(visitor,SsaField, SsaField.DataType, ref _ssa);    
 
+        }
 
         /// <summary>
         /// Timestamp (since boot or Unix epoch).
         /// OriginName: time_usec, Units: us, IsExtended: false
         /// </summary>
-        public ulong TimeUsec { get; set; }
+        public static readonly Field TimeUsecField = new Field.Builder()
+            .Name(nameof(TimeUsec))
+            .Title("time_usec")
+            .Description("Timestamp (since boot or Unix epoch).")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUsec;
+        public ulong TimeUsec { get => _timeUsec; set => _timeUsec = value; }
         /// <summary>
         /// Angle of Attack.
         /// OriginName: AOA, Units: deg, IsExtended: false
         /// </summary>
-        public float Aoa { get; set; }
+        public static readonly Field AoaField = new Field.Builder()
+            .Name(nameof(Aoa))
+            .Title("AOA")
+            .Description("Angle of Attack.")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _aoa;
+        public float Aoa { get => _aoa; set => _aoa = value; }
         /// <summary>
         /// Side Slip Angle.
         /// OriginName: SSA, Units: deg, IsExtended: false
         /// </summary>
-        public float Ssa { get; set; }
+        public static readonly Field SsaField = new Field.Builder()
+            .Name(nameof(Ssa))
+            .Title("SSA")
+            .Description("Side Slip Angle.")
+.Units(@"deg")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _ssa;
+        public float Ssa { get => _ssa; set => _ssa = value; }
     }
     /// <summary>
     /// ESC Telemetry Data for ESCs 1 to 4, matching data sent by BLHeli ESCs.
@@ -12026,74 +12390,6 @@ false),
         public override EscTelemetry1To4Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_1_TO_4";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("voltage",
-"Voltage.",
-string.Empty, 
-@"cV", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("current",
-"Current.",
-string.Empty, 
-@"cA", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("totalcurrent",
-"Total current.",
-string.Empty, 
-@"mAh", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("rpm",
-"RPM (eRPM).",
-string.Empty, 
-@"rpm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("count",
-"count of telemetry packets received (wraps at 65535).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("temperature",
-"Temperature.",
-string.Empty, 
-@"degC", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            4, 
-false),
-        ];
-        public const string FormatMessage = "ESC_TELEMETRY_1_TO_4:"
-        + "uint16_t[4] voltage;"
-        + "uint16_t[4] current;"
-        + "uint16_t[4] totalcurrent;"
-        + "uint16_t[4] rpm;"
-        + "uint16_t[4] count;"
-        + "uint8_t[4] temperature;"
-        ;
     }
 
     /// <summary>
@@ -12105,17 +12401,17 @@ false),
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=Voltage.Length * 2; //Voltage
-            sum+=Current.Length * 2; //Current
-            sum+=Totalcurrent.Length * 2; //Totalcurrent
-            sum+=Rpm.Length * 2; //Rpm
-            sum+=Count.Length * 2; //Count
-            sum+=Temperature.Length; //Temperature
-            return (byte)sum;
+            return (byte)(
+            +Voltage.Length * 2 // uint16_t[4] voltage
+            +Current.Length * 2 // uint16_t[4] current
+            +Totalcurrent.Length * 2 // uint16_t[4] totalcurrent
+            +Rpm.Length * 2 // uint16_t[4] rpm
+            +Count.Length * 2 // uint16_t[4] count
+            +Temperature.Length // uint8_t[4] temperature
+            );
         }
 
 
@@ -12125,7 +12421,7 @@ false),
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
-            Voltage = new ushort[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Voltage[i] = BinSerialize.ReadUShort(ref buffer);
@@ -12186,47 +12482,102 @@ false),
             }
             /* PayloadByteSize = 44 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,VoltageField, VoltageField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Voltage[index]));    
+            ArrayType.Accept(visitor,CurrentField, CurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Current[index]));    
+            ArrayType.Accept(visitor,TotalcurrentField, TotalcurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Totalcurrent[index]));    
+            ArrayType.Accept(visitor,RpmField, RpmField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rpm[index]));    
+            ArrayType.Accept(visitor,CountField, CountField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Count[index]));    
+            ArrayType.Accept(visitor,TemperatureField, TemperatureField.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Temperature[index]));    
 
+        }
 
         /// <summary>
         /// Voltage.
         /// OriginName: voltage, Units: cV, IsExtended: false
         /// </summary>
+        public static readonly Field VoltageField = new Field.Builder()
+            .Name(nameof(Voltage))
+            .Title("voltage")
+            .Description("Voltage.")
+.Units(@"cV")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int VoltageMaxItemsCount = 4;
-        public ushort[] Voltage { get; set; } = new ushort[4];
+        public ushort[] Voltage { get; } = new ushort[4];
         [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
         public byte GetVoltageMaxItemsCount() => 4;
         /// <summary>
         /// Current.
         /// OriginName: current, Units: cA, IsExtended: false
         /// </summary>
+        public static readonly Field CurrentField = new Field.Builder()
+            .Name(nameof(Current))
+            .Title("current")
+            .Description("Current.")
+.Units(@"cA")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
         /// Total current.
         /// OriginName: totalcurrent, Units: mAh, IsExtended: false
         /// </summary>
+        public static readonly Field TotalcurrentField = new Field.Builder()
+            .Name(nameof(Totalcurrent))
+            .Title("totalcurrent")
+            .Description("Total current.")
+.Units(@"mAh")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
         /// RPM (eRPM).
         /// OriginName: rpm, Units: rpm, IsExtended: false
         /// </summary>
+        public static readonly Field RpmField = new Field.Builder()
+            .Name(nameof(Rpm))
+            .Title("rpm")
+            .Description("RPM (eRPM).")
+.Units(@"rpm")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
         /// count of telemetry packets received (wraps at 65535).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("count of telemetry packets received (wraps at 65535).")
+
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
         /// Temperature.
         /// OriginName: temperature, Units: degC, IsExtended: false
         /// </summary>
+        public static readonly Field TemperatureField = new Field.Builder()
+            .Name(nameof(Temperature))
+            .Title("temperature")
+            .Description("Temperature.")
+.Units(@"degC")
+            .DataType(new ArrayType(UInt8Type.Default,4))
+        .Build();
         public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
@@ -12250,74 +12601,6 @@ false),
         public override EscTelemetry5To8Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_5_TO_8";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("voltage",
-"Voltage.",
-string.Empty, 
-@"cV", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("current",
-"Current.",
-string.Empty, 
-@"cA", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("totalcurrent",
-"Total current.",
-string.Empty, 
-@"mAh", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("rpm",
-"RPM (eRPM).",
-string.Empty, 
-@"rpm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("count",
-"count of telemetry packets received (wraps at 65535).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("temperature",
-"Temperature.",
-string.Empty, 
-@"degC", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            4, 
-false),
-        ];
-        public const string FormatMessage = "ESC_TELEMETRY_5_TO_8:"
-        + "uint16_t[4] voltage;"
-        + "uint16_t[4] current;"
-        + "uint16_t[4] totalcurrent;"
-        + "uint16_t[4] rpm;"
-        + "uint16_t[4] count;"
-        + "uint8_t[4] temperature;"
-        ;
     }
 
     /// <summary>
@@ -12329,17 +12612,17 @@ false),
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=Voltage.Length * 2; //Voltage
-            sum+=Current.Length * 2; //Current
-            sum+=Totalcurrent.Length * 2; //Totalcurrent
-            sum+=Rpm.Length * 2; //Rpm
-            sum+=Count.Length * 2; //Count
-            sum+=Temperature.Length; //Temperature
-            return (byte)sum;
+            return (byte)(
+            +Voltage.Length * 2 // uint16_t[4] voltage
+            +Current.Length * 2 // uint16_t[4] current
+            +Totalcurrent.Length * 2 // uint16_t[4] totalcurrent
+            +Rpm.Length * 2 // uint16_t[4] rpm
+            +Count.Length * 2 // uint16_t[4] count
+            +Temperature.Length // uint8_t[4] temperature
+            );
         }
 
 
@@ -12349,7 +12632,7 @@ false),
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
-            Voltage = new ushort[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Voltage[i] = BinSerialize.ReadUShort(ref buffer);
@@ -12410,47 +12693,102 @@ false),
             }
             /* PayloadByteSize = 44 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,VoltageField, VoltageField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Voltage[index]));    
+            ArrayType.Accept(visitor,CurrentField, CurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Current[index]));    
+            ArrayType.Accept(visitor,TotalcurrentField, TotalcurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Totalcurrent[index]));    
+            ArrayType.Accept(visitor,RpmField, RpmField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rpm[index]));    
+            ArrayType.Accept(visitor,CountField, CountField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Count[index]));    
+            ArrayType.Accept(visitor,TemperatureField, TemperatureField.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Temperature[index]));    
 
+        }
 
         /// <summary>
         /// Voltage.
         /// OriginName: voltage, Units: cV, IsExtended: false
         /// </summary>
+        public static readonly Field VoltageField = new Field.Builder()
+            .Name(nameof(Voltage))
+            .Title("voltage")
+            .Description("Voltage.")
+.Units(@"cV")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int VoltageMaxItemsCount = 4;
-        public ushort[] Voltage { get; set; } = new ushort[4];
+        public ushort[] Voltage { get; } = new ushort[4];
         [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
         public byte GetVoltageMaxItemsCount() => 4;
         /// <summary>
         /// Current.
         /// OriginName: current, Units: cA, IsExtended: false
         /// </summary>
+        public static readonly Field CurrentField = new Field.Builder()
+            .Name(nameof(Current))
+            .Title("current")
+            .Description("Current.")
+.Units(@"cA")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
         /// Total current.
         /// OriginName: totalcurrent, Units: mAh, IsExtended: false
         /// </summary>
+        public static readonly Field TotalcurrentField = new Field.Builder()
+            .Name(nameof(Totalcurrent))
+            .Title("totalcurrent")
+            .Description("Total current.")
+.Units(@"mAh")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
         /// RPM (eRPM).
         /// OriginName: rpm, Units: rpm, IsExtended: false
         /// </summary>
+        public static readonly Field RpmField = new Field.Builder()
+            .Name(nameof(Rpm))
+            .Title("rpm")
+            .Description("RPM (eRPM).")
+.Units(@"rpm")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
         /// count of telemetry packets received (wraps at 65535).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("count of telemetry packets received (wraps at 65535).")
+
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
         /// Temperature.
         /// OriginName: temperature, Units: degC, IsExtended: false
         /// </summary>
+        public static readonly Field TemperatureField = new Field.Builder()
+            .Name(nameof(Temperature))
+            .Title("temperature")
+            .Description("Temperature.")
+.Units(@"degC")
+            .DataType(new ArrayType(UInt8Type.Default,4))
+        .Build();
         public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
@@ -12474,74 +12812,6 @@ false),
         public override EscTelemetry9To12Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_9_TO_12";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("voltage",
-"Voltage.",
-string.Empty, 
-@"cV", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("current",
-"Current.",
-string.Empty, 
-@"cA", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("totalcurrent",
-"Total current.",
-string.Empty, 
-@"mAh", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("rpm",
-"RPM (eRPM).",
-string.Empty, 
-@"rpm", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("count",
-"count of telemetry packets received (wraps at 65535).",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            4, 
-false),
-            new("temperature",
-"Temperature.",
-string.Empty, 
-@"degC", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            4, 
-false),
-        ];
-        public const string FormatMessage = "ESC_TELEMETRY_9_TO_12:"
-        + "uint16_t[4] voltage;"
-        + "uint16_t[4] current;"
-        + "uint16_t[4] totalcurrent;"
-        + "uint16_t[4] rpm;"
-        + "uint16_t[4] count;"
-        + "uint8_t[4] temperature;"
-        ;
     }
 
     /// <summary>
@@ -12553,17 +12823,17 @@ false),
         public byte GetMaxByteSize() => 44; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=Voltage.Length * 2; //Voltage
-            sum+=Current.Length * 2; //Current
-            sum+=Totalcurrent.Length * 2; //Totalcurrent
-            sum+=Rpm.Length * 2; //Rpm
-            sum+=Count.Length * 2; //Count
-            sum+=Temperature.Length; //Temperature
-            return (byte)sum;
+            return (byte)(
+            +Voltage.Length * 2 // uint16_t[4] voltage
+            +Current.Length * 2 // uint16_t[4] current
+            +Totalcurrent.Length * 2 // uint16_t[4] totalcurrent
+            +Rpm.Length * 2 // uint16_t[4] rpm
+            +Count.Length * 2 // uint16_t[4] count
+            +Temperature.Length // uint8_t[4] temperature
+            );
         }
 
 
@@ -12573,7 +12843,7 @@ false),
             var arraySize = 0;
             var payloadSize = buffer.Length;
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/44 - payloadSize - /*ExtendedFieldsLength*/0)/2 /*FieldTypeByteSize*/));
-            Voltage = new ushort[arraySize];
+            
             for(var i=0;i<arraySize;i++)
             {
                 Voltage[i] = BinSerialize.ReadUShort(ref buffer);
@@ -12634,47 +12904,102 @@ false),
             }
             /* PayloadByteSize = 44 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            ArrayType.Accept(visitor,VoltageField, VoltageField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Voltage[index]));    
+            ArrayType.Accept(visitor,CurrentField, CurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Current[index]));    
+            ArrayType.Accept(visitor,TotalcurrentField, TotalcurrentField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Totalcurrent[index]));    
+            ArrayType.Accept(visitor,RpmField, RpmField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rpm[index]));    
+            ArrayType.Accept(visitor,CountField, CountField.DataType, 4,
+                (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Count[index]));    
+            ArrayType.Accept(visitor,TemperatureField, TemperatureField.DataType, 4,
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Temperature[index]));    
 
+        }
 
         /// <summary>
         /// Voltage.
         /// OriginName: voltage, Units: cV, IsExtended: false
         /// </summary>
+        public static readonly Field VoltageField = new Field.Builder()
+            .Name(nameof(Voltage))
+            .Title("voltage")
+            .Description("Voltage.")
+.Units(@"cV")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int VoltageMaxItemsCount = 4;
-        public ushort[] Voltage { get; set; } = new ushort[4];
+        public ushort[] Voltage { get; } = new ushort[4];
         [Obsolete("This method is deprecated. Use GetVoltageMaxItemsCount instead.")]
         public byte GetVoltageMaxItemsCount() => 4;
         /// <summary>
         /// Current.
         /// OriginName: current, Units: cA, IsExtended: false
         /// </summary>
+        public static readonly Field CurrentField = new Field.Builder()
+            .Name(nameof(Current))
+            .Title("current")
+            .Description("Current.")
+.Units(@"cA")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int CurrentMaxItemsCount = 4;
         public ushort[] Current { get; } = new ushort[4];
         /// <summary>
         /// Total current.
         /// OriginName: totalcurrent, Units: mAh, IsExtended: false
         /// </summary>
+        public static readonly Field TotalcurrentField = new Field.Builder()
+            .Name(nameof(Totalcurrent))
+            .Title("totalcurrent")
+            .Description("Total current.")
+.Units(@"mAh")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int TotalcurrentMaxItemsCount = 4;
         public ushort[] Totalcurrent { get; } = new ushort[4];
         /// <summary>
         /// RPM (eRPM).
         /// OriginName: rpm, Units: rpm, IsExtended: false
         /// </summary>
+        public static readonly Field RpmField = new Field.Builder()
+            .Name(nameof(Rpm))
+            .Title("rpm")
+            .Description("RPM (eRPM).")
+.Units(@"rpm")
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int RpmMaxItemsCount = 4;
         public ushort[] Rpm { get; } = new ushort[4];
         /// <summary>
         /// count of telemetry packets received (wraps at 65535).
         /// OriginName: count, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field CountField = new Field.Builder()
+            .Name(nameof(Count))
+            .Title("count")
+            .Description("count of telemetry packets received (wraps at 65535).")
+
+            .DataType(new ArrayType(UInt16Type.Default,4))
+        .Build();
         public const int CountMaxItemsCount = 4;
         public ushort[] Count { get; } = new ushort[4];
         /// <summary>
         /// Temperature.
         /// OriginName: temperature, Units: degC, IsExtended: false
         /// </summary>
+        public static readonly Field TemperatureField = new Field.Builder()
+            .Name(nameof(Temperature))
+            .Title("temperature")
+            .Description("Temperature.")
+.Units(@"degC")
+            .DataType(new ArrayType(UInt8Type.Default,4))
+        .Build();
         public const int TemperatureMaxItemsCount = 4;
         public byte[] Temperature { get; } = new byte[4];
     }
@@ -12698,114 +13023,6 @@ false),
         public override OsdParamConfigPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_CONFIG";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("request_id",
-"Request ID - copied to reply.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("min_value",
-"OSD parameter minimum value.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("max_value",
-"OSD parameter maximum value.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("increment",
-"OSD parameter increment.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("osd_screen",
-"OSD parameter screen index.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("osd_index",
-"OSD parameter display index.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("param_id",
-"Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            16, 
-false),
-            new("config_type",
-"Config type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "OSD_PARAM_CONFIG:"
-        + "uint32_t request_id;"
-        + "float min_value;"
-        + "float max_value;"
-        + "float increment;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t osd_screen;"
-        + "uint8_t osd_index;"
-        + "char[16] param_id;"
-        + "uint8_t config_type;"
-        ;
     }
 
     /// <summary>
@@ -12817,21 +13034,21 @@ false),
         public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=4; //MinValue
-            sum+=4; //MaxValue
-            sum+=4; //Increment
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //OsdScreen
-            sum+=1; //OsdIndex
-            sum+=ParamId.Length; //ParamId
-            sum+= 1; // ConfigType
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +4 // float min_value
+            +4 // float max_value
+            +4 // float increment
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t osd_screen
+            +1 // uint8_t osd_index
+            +ParamId.Length // char[16] param_id
+            + 1 // uint8_t config_type
+            );
         }
 
 
@@ -12849,7 +13066,7 @@ false),
             OsdScreen = (byte)BinSerialize.ReadByte(ref buffer);
             OsdIndex = (byte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/37 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            ParamId = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -12858,7 +13075,7 @@ false),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, ParamId.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             ConfigType = (OsdParamConfigType)BinSerialize.ReadByte(ref buffer);
 
@@ -12887,64 +13104,157 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)ConfigType);
             /* PayloadByteSize = 37 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            FloatType.Accept(visitor,MinValueField, MinValueField.DataType, ref _minValue);    
+            FloatType.Accept(visitor,MaxValueField, MaxValueField.DataType, ref _maxValue);    
+            FloatType.Accept(visitor,IncrementField, IncrementField.DataType, ref _increment);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,OsdScreenField, OsdScreenField.DataType, ref _osdScreen);    
+            UInt8Type.Accept(visitor,OsdIndexField, OsdIndexField.DataType, ref _osdIndex);    
+            ArrayType.Accept(visitor,ParamIdField, ParamIdField.DataType, 16, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref ParamId[index]));
+            var tmpConfigType = (byte)ConfigType;
+            UInt8Type.Accept(visitor,ConfigTypeField, ConfigTypeField.DataType, ref tmpConfigType);
+            ConfigType = (OsdParamConfigType)tmpConfigType;
 
+        }
 
         /// <summary>
         /// Request ID - copied to reply.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied to reply.")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _requestId;
+        public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// OSD parameter minimum value.
         /// OriginName: min_value, Units: , IsExtended: false
         /// </summary>
-        public float MinValue { get; set; }
+        public static readonly Field MinValueField = new Field.Builder()
+            .Name(nameof(MinValue))
+            .Title("min_value")
+            .Description("OSD parameter minimum value.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _minValue;
+        public float MinValue { get => _minValue; set => _minValue = value; }
         /// <summary>
         /// OSD parameter maximum value.
         /// OriginName: max_value, Units: , IsExtended: false
         /// </summary>
-        public float MaxValue { get; set; }
+        public static readonly Field MaxValueField = new Field.Builder()
+            .Name(nameof(MaxValue))
+            .Title("max_value")
+            .Description("OSD parameter maximum value.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _maxValue;
+        public float MaxValue { get => _maxValue; set => _maxValue = value; }
         /// <summary>
         /// OSD parameter increment.
         /// OriginName: increment, Units: , IsExtended: false
         /// </summary>
-        public float Increment { get; set; }
+        public static readonly Field IncrementField = new Field.Builder()
+            .Name(nameof(Increment))
+            .Title("increment")
+            .Description("OSD parameter increment.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _increment;
+        public float Increment { get => _increment; set => _increment = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// OSD parameter screen index.
         /// OriginName: osd_screen, Units: , IsExtended: false
         /// </summary>
-        public byte OsdScreen { get; set; }
+        public static readonly Field OsdScreenField = new Field.Builder()
+            .Name(nameof(OsdScreen))
+            .Title("osd_screen")
+            .Description("OSD parameter screen index.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _osdScreen;
+        public byte OsdScreen { get => _osdScreen; set => _osdScreen = value; }
         /// <summary>
         /// OSD parameter display index.
         /// OriginName: osd_index, Units: , IsExtended: false
         /// </summary>
-        public byte OsdIndex { get; set; }
+        public static readonly Field OsdIndexField = new Field.Builder()
+            .Name(nameof(OsdIndex))
+            .Title("osd_index")
+            .Description("OSD parameter display index.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _osdIndex;
+        public byte OsdIndex { get => _osdIndex; set => _osdIndex = value; }
         /// <summary>
         /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ParamIdField = new Field.Builder()
+            .Name(nameof(ParamId))
+            .Title("param_id")
+            .Description("Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
+
+            .DataType(new ArrayType(CharType.Ascii,16))
+        .Build();
         public const int ParamIdMaxItemsCount = 16;
-        public char[] ParamId { get; set; } = new char[16];
+        public char[] ParamId { get; } = new char[16];
         [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
         public byte GetParamIdMaxItemsCount() => 16;
         /// <summary>
         /// Config type.
         /// OriginName: config_type, Units: , IsExtended: false
         /// </summary>
-        public OsdParamConfigType ConfigType { get; set; }
+        public static readonly Field ConfigTypeField = new Field.Builder()
+            .Name(nameof(ConfigType))
+            .Title("config_type")
+            .Description("Config type.")
+            .DataType(new UInt8Type(OsdParamConfigTypeHelper.GetValues(x=>(byte)x).Min(),OsdParamConfigTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(OsdParamConfigTypeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private OsdParamConfigType _configType;
+        public OsdParamConfigType ConfigType { get => _configType; set => _configType = value; } 
     }
     /// <summary>
     /// Configure OSD parameter reply.
@@ -12966,34 +13276,6 @@ false),
         public override OsdParamConfigReplyPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_CONFIG_REPLY";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("request_id",
-"Request ID - copied from request.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("result",
-"Config error type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "OSD_PARAM_CONFIG_REPLY:"
-        + "uint32_t request_id;"
-        + "uint8_t result;"
-        ;
     }
 
     /// <summary>
@@ -13005,13 +13287,13 @@ false),
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+= 1; // Result
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            + 1 // uint8_t result
+            );
         }
 
 
@@ -13029,21 +13311,42 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Result);
             /* PayloadByteSize = 5 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            var tmpResult = (byte)Result;
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            Result = (OsdParamConfigError)tmpResult;
 
+        }
 
         /// <summary>
         /// Request ID - copied from request.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied from request.")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _requestId;
+        public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// Config error type.
         /// OriginName: result, Units: , IsExtended: false
         /// </summary>
-        public OsdParamConfigError Result { get; set; }
+        public static readonly Field ResultField = new Field.Builder()
+            .Name(nameof(Result))
+            .Title("result")
+            .Description("Config error type.")
+            .DataType(new UInt8Type(OsdParamConfigErrorHelper.GetValues(x=>(byte)x).Min(),OsdParamConfigErrorHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(OsdParamConfigErrorHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private OsdParamConfigError _result;
+        public OsdParamConfigError Result { get => _result; set => _result = value; } 
     }
     /// <summary>
     /// Read a configured an OSD parameter slot.
@@ -13065,64 +13368,6 @@ false),
         public override OsdParamShowConfigPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_SHOW_CONFIG";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("request_id",
-"Request ID - copied to reply.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("target_system",
-"System ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("target_component",
-"Component ID.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("osd_screen",
-"OSD parameter screen index.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("osd_index",
-"OSD parameter display index.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "OSD_PARAM_SHOW_CONFIG:"
-        + "uint32_t request_id;"
-        + "uint8_t target_system;"
-        + "uint8_t target_component;"
-        + "uint8_t osd_screen;"
-        + "uint8_t osd_index;"
-        ;
     }
 
     /// <summary>
@@ -13134,16 +13379,16 @@ false),
         public byte GetMaxByteSize() => 8; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=1; //TargetSystem
-            sum+=1; //TargetComponent
-            sum+=1; //OsdScreen
-            sum+=1; //OsdIndex
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +1 // uint8_t target_system
+            +1 // uint8_t target_component
+            +1 // uint8_t osd_screen
+            +1 // uint8_t osd_index
+            );
         }
 
 
@@ -13167,36 +13412,82 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)OsdIndex);
             /* PayloadByteSize = 8 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,OsdScreenField, OsdScreenField.DataType, ref _osdScreen);    
+            UInt8Type.Accept(visitor,OsdIndexField, OsdIndexField.DataType, ref _osdIndex);    
 
+        }
 
         /// <summary>
         /// Request ID - copied to reply.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied to reply.")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _requestId;
+        public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// System ID.
         /// OriginName: target_system, Units: , IsExtended: false
         /// </summary>
-        public byte TargetSystem { get; set; }
+        public static readonly Field TargetSystemField = new Field.Builder()
+            .Name(nameof(TargetSystem))
+            .Title("target_system")
+            .Description("System ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetSystem;
+        public byte TargetSystem { get => _targetSystem; set => _targetSystem = value; }
         /// <summary>
         /// Component ID.
         /// OriginName: target_component, Units: , IsExtended: false
         /// </summary>
-        public byte TargetComponent { get; set; }
+        public static readonly Field TargetComponentField = new Field.Builder()
+            .Name(nameof(TargetComponent))
+            .Title("target_component")
+            .Description("Component ID.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _targetComponent;
+        public byte TargetComponent { get => _targetComponent; set => _targetComponent = value; }
         /// <summary>
         /// OSD parameter screen index.
         /// OriginName: osd_screen, Units: , IsExtended: false
         /// </summary>
-        public byte OsdScreen { get; set; }
+        public static readonly Field OsdScreenField = new Field.Builder()
+            .Name(nameof(OsdScreen))
+            .Title("osd_screen")
+            .Description("OSD parameter screen index.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _osdScreen;
+        public byte OsdScreen { get => _osdScreen; set => _osdScreen = value; }
         /// <summary>
         /// OSD parameter display index.
         /// OriginName: osd_index, Units: , IsExtended: false
         /// </summary>
-        public byte OsdIndex { get; set; }
+        public static readonly Field OsdIndexField = new Field.Builder()
+            .Name(nameof(OsdIndex))
+            .Title("osd_index")
+            .Description("OSD parameter display index.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _osdIndex;
+        public byte OsdIndex { get => _osdIndex; set => _osdIndex = value; }
     }
     /// <summary>
     /// Read configured OSD parameter reply.
@@ -13218,84 +13509,6 @@ false),
         public override OsdParamShowConfigReplyPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_SHOW_CONFIG_REPLY";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("request_id",
-"Request ID - copied from request.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("min_value",
-"OSD parameter minimum value.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("max_value",
-"OSD parameter maximum value.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("increment",
-"OSD parameter increment.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("result",
-"Config error type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("param_id",
-"Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Char, 
-            16, 
-false),
-            new("config_type",
-"Config type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "OSD_PARAM_SHOW_CONFIG_REPLY:"
-        + "uint32_t request_id;"
-        + "float min_value;"
-        + "float max_value;"
-        + "float increment;"
-        + "uint8_t result;"
-        + "char[16] param_id;"
-        + "uint8_t config_type;"
-        ;
     }
 
     /// <summary>
@@ -13307,18 +13520,18 @@ false),
         public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //RequestId
-            sum+=4; //MinValue
-            sum+=4; //MaxValue
-            sum+=4; //Increment
-            sum+= 1; // Result
-            sum+=ParamId.Length; //ParamId
-            sum+= 1; // ConfigType
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t request_id
+            +4 // float min_value
+            +4 // float max_value
+            +4 // float increment
+            + 1 // uint8_t result
+            +ParamId.Length // char[16] param_id
+            + 1 // uint8_t config_type
+            );
         }
 
 
@@ -13333,7 +13546,7 @@ false),
             Increment = BinSerialize.ReadFloat(ref buffer);
             Result = (OsdParamConfigError)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/16 - Math.Max(0,((/*PayloadByteSize*/34 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
-            ParamId = new char[arraySize];
+            
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -13342,7 +13555,7 @@ false),
                     Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, ParamId.Length);
                 }
             }
-            buffer = buffer.Slice(arraySize);
+            buffer = buffer[arraySize..];
            
             ConfigType = (OsdParamConfigType)BinSerialize.ReadByte(ref buffer);
 
@@ -13368,49 +13581,117 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)ConfigType);
             /* PayloadByteSize = 34 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            FloatType.Accept(visitor,MinValueField, MinValueField.DataType, ref _minValue);    
+            FloatType.Accept(visitor,MaxValueField, MaxValueField.DataType, ref _maxValue);    
+            FloatType.Accept(visitor,IncrementField, IncrementField.DataType, ref _increment);    
+            var tmpResult = (byte)Result;
+            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            Result = (OsdParamConfigError)tmpResult;
+            ArrayType.Accept(visitor,ParamIdField, ParamIdField.DataType, 16, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref ParamId[index]));
+            var tmpConfigType = (byte)ConfigType;
+            UInt8Type.Accept(visitor,ConfigTypeField, ConfigTypeField.DataType, ref tmpConfigType);
+            ConfigType = (OsdParamConfigType)tmpConfigType;
 
+        }
 
         /// <summary>
         /// Request ID - copied from request.
         /// OriginName: request_id, Units: , IsExtended: false
         /// </summary>
-        public uint RequestId { get; set; }
+        public static readonly Field RequestIdField = new Field.Builder()
+            .Name(nameof(RequestId))
+            .Title("request_id")
+            .Description("Request ID - copied from request.")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _requestId;
+        public uint RequestId { get => _requestId; set => _requestId = value; }
         /// <summary>
         /// OSD parameter minimum value.
         /// OriginName: min_value, Units: , IsExtended: false
         /// </summary>
-        public float MinValue { get; set; }
+        public static readonly Field MinValueField = new Field.Builder()
+            .Name(nameof(MinValue))
+            .Title("min_value")
+            .Description("OSD parameter minimum value.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _minValue;
+        public float MinValue { get => _minValue; set => _minValue = value; }
         /// <summary>
         /// OSD parameter maximum value.
         /// OriginName: max_value, Units: , IsExtended: false
         /// </summary>
-        public float MaxValue { get; set; }
+        public static readonly Field MaxValueField = new Field.Builder()
+            .Name(nameof(MaxValue))
+            .Title("max_value")
+            .Description("OSD parameter maximum value.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _maxValue;
+        public float MaxValue { get => _maxValue; set => _maxValue = value; }
         /// <summary>
         /// OSD parameter increment.
         /// OriginName: increment, Units: , IsExtended: false
         /// </summary>
-        public float Increment { get; set; }
+        public static readonly Field IncrementField = new Field.Builder()
+            .Name(nameof(Increment))
+            .Title("increment")
+            .Description("OSD parameter increment.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _increment;
+        public float Increment { get => _increment; set => _increment = value; }
         /// <summary>
         /// Config error type.
         /// OriginName: result, Units: , IsExtended: false
         /// </summary>
-        public OsdParamConfigError Result { get; set; }
+        public static readonly Field ResultField = new Field.Builder()
+            .Name(nameof(Result))
+            .Title("result")
+            .Description("Config error type.")
+            .DataType(new UInt8Type(OsdParamConfigErrorHelper.GetValues(x=>(byte)x).Min(),OsdParamConfigErrorHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(OsdParamConfigErrorHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private OsdParamConfigError _result;
+        public OsdParamConfigError Result { get => _result; set => _result = value; } 
         /// <summary>
         /// Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string
         /// OriginName: param_id, Units: , IsExtended: false
         /// </summary>
+        public static readonly Field ParamIdField = new Field.Builder()
+            .Name(nameof(ParamId))
+            .Title("param_id")
+            .Description("Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string")
+
+            .DataType(new ArrayType(CharType.Ascii,16))
+        .Build();
         public const int ParamIdMaxItemsCount = 16;
-        public char[] ParamId { get; set; } = new char[16];
+        public char[] ParamId { get; } = new char[16];
         [Obsolete("This method is deprecated. Use GetParamIdMaxItemsCount instead.")]
         public byte GetParamIdMaxItemsCount() => 16;
         /// <summary>
         /// Config type.
         /// OriginName: config_type, Units: , IsExtended: false
         /// </summary>
-        public OsdParamConfigType ConfigType { get; set; }
+        public static readonly Field ConfigTypeField = new Field.Builder()
+            .Name(nameof(ConfigType))
+            .Title("config_type")
+            .Description("Config type.")
+            .DataType(new UInt8Type(OsdParamConfigTypeHelper.GetValues(x=>(byte)x).Min(),OsdParamConfigTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(OsdParamConfigTypeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private OsdParamConfigType _configType;
+        public OsdParamConfigType ConfigType { get => _configType; set => _configType = value; } 
     }
     /// <summary>
     /// Obstacle located as a 3D vector.
@@ -13432,104 +13713,6 @@ false),
         public override ObstacleDistance3dPayload Payload { get; } = new();
 
         public override string Name => "OBSTACLE_DISTANCE_3D";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_boot_ms",
-"Timestamp (time since system boot).",
-string.Empty, 
-@"ms", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("x",
-" X position of the obstacle.",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("y",
-" Y position of the obstacle.",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("z",
-" Z position of the obstacle.",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("min_distance",
-"Minimum distance the sensor can measure.",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("max_distance",
-"Maximum distance the sensor can measure.",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("obstacle_id",
-" Unique ID given to each obstacle so that its movement can be tracked. Use UINT16_MAX if object ID is unknown or cannot be determined.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("sensor_type",
-"Class id of the distance sensor type.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("frame",
-"Coordinate frame of reference.",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "OBSTACLE_DISTANCE_3D:"
-        + "uint32_t time_boot_ms;"
-        + "float x;"
-        + "float y;"
-        + "float z;"
-        + "float min_distance;"
-        + "float max_distance;"
-        + "uint16_t obstacle_id;"
-        + "uint8_t sensor_type;"
-        + "uint8_t frame;"
-        ;
     }
 
     /// <summary>
@@ -13541,20 +13724,20 @@ false),
         public byte GetMaxByteSize() => 28; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 28; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //TimeBootMs
-            sum+=4; //X
-            sum+=4; //Y
-            sum+=4; //Z
-            sum+=4; //MinDistance
-            sum+=4; //MaxDistance
-            sum+=2; //ObstacleId
-            sum+= 1; // SensorType
-            sum+= 1; // Frame
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t time_boot_ms
+            +4 // float x
+            +4 // float y
+            +4 // float z
+            +4 // float min_distance
+            +4 // float max_distance
+            +2 // uint16_t obstacle_id
+            + 1 // uint8_t sensor_type
+            + 1 // uint8_t frame
+            );
         }
 
 
@@ -13586,56 +13769,142 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Frame);
             /* PayloadByteSize = 28 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
+            FloatType.Accept(visitor,XField, XField.DataType, ref _x);    
+            FloatType.Accept(visitor,YField, YField.DataType, ref _y);    
+            FloatType.Accept(visitor,ZField, ZField.DataType, ref _z);    
+            FloatType.Accept(visitor,MinDistanceField, MinDistanceField.DataType, ref _minDistance);    
+            FloatType.Accept(visitor,MaxDistanceField, MaxDistanceField.DataType, ref _maxDistance);    
+            UInt16Type.Accept(visitor,ObstacleIdField, ObstacleIdField.DataType, ref _obstacleId);    
+            var tmpSensorType = (byte)SensorType;
+            UInt8Type.Accept(visitor,SensorTypeField, SensorTypeField.DataType, ref tmpSensorType);
+            SensorType = (MavDistanceSensor)tmpSensorType;
+            var tmpFrame = (byte)Frame;
+            UInt8Type.Accept(visitor,FrameField, FrameField.DataType, ref tmpFrame);
+            Frame = (MavFrame)tmpFrame;
 
+        }
 
         /// <summary>
         /// Timestamp (time since system boot).
         /// OriginName: time_boot_ms, Units: ms, IsExtended: false
         /// </summary>
-        public uint TimeBootMs { get; set; }
+        public static readonly Field TimeBootMsField = new Field.Builder()
+            .Name(nameof(TimeBootMs))
+            .Title("time_boot_ms")
+            .Description("Timestamp (time since system boot).")
+.Units(@"ms")
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _timeBootMs;
+        public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
         ///  X position of the obstacle.
         /// OriginName: x, Units: m, IsExtended: false
         /// </summary>
-        public float X { get; set; }
+        public static readonly Field XField = new Field.Builder()
+            .Name(nameof(X))
+            .Title("x")
+            .Description(" X position of the obstacle.")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _x;
+        public float X { get => _x; set => _x = value; }
         /// <summary>
         ///  Y position of the obstacle.
         /// OriginName: y, Units: m, IsExtended: false
         /// </summary>
-        public float Y { get; set; }
+        public static readonly Field YField = new Field.Builder()
+            .Name(nameof(Y))
+            .Title("y")
+            .Description(" Y position of the obstacle.")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _y;
+        public float Y { get => _y; set => _y = value; }
         /// <summary>
         ///  Z position of the obstacle.
         /// OriginName: z, Units: m, IsExtended: false
         /// </summary>
-        public float Z { get; set; }
+        public static readonly Field ZField = new Field.Builder()
+            .Name(nameof(Z))
+            .Title("z")
+            .Description(" Z position of the obstacle.")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _z;
+        public float Z { get => _z; set => _z = value; }
         /// <summary>
         /// Minimum distance the sensor can measure.
         /// OriginName: min_distance, Units: m, IsExtended: false
         /// </summary>
-        public float MinDistance { get; set; }
+        public static readonly Field MinDistanceField = new Field.Builder()
+            .Name(nameof(MinDistance))
+            .Title("min_distance")
+            .Description("Minimum distance the sensor can measure.")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _minDistance;
+        public float MinDistance { get => _minDistance; set => _minDistance = value; }
         /// <summary>
         /// Maximum distance the sensor can measure.
         /// OriginName: max_distance, Units: m, IsExtended: false
         /// </summary>
-        public float MaxDistance { get; set; }
+        public static readonly Field MaxDistanceField = new Field.Builder()
+            .Name(nameof(MaxDistance))
+            .Title("max_distance")
+            .Description("Maximum distance the sensor can measure.")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _maxDistance;
+        public float MaxDistance { get => _maxDistance; set => _maxDistance = value; }
         /// <summary>
         ///  Unique ID given to each obstacle so that its movement can be tracked. Use UINT16_MAX if object ID is unknown or cannot be determined.
         /// OriginName: obstacle_id, Units: , IsExtended: false
         /// </summary>
-        public ushort ObstacleId { get; set; }
+        public static readonly Field ObstacleIdField = new Field.Builder()
+            .Name(nameof(ObstacleId))
+            .Title("obstacle_id")
+            .Description(" Unique ID given to each obstacle so that its movement can be tracked. Use UINT16_MAX if object ID is unknown or cannot be determined.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _obstacleId;
+        public ushort ObstacleId { get => _obstacleId; set => _obstacleId = value; }
         /// <summary>
         /// Class id of the distance sensor type.
         /// OriginName: sensor_type, Units: , IsExtended: false
         /// </summary>
-        public MavDistanceSensor SensorType { get; set; }
+        public static readonly Field SensorTypeField = new Field.Builder()
+            .Name(nameof(SensorType))
+            .Title("sensor_type")
+            .Description("Class id of the distance sensor type.")
+            .DataType(new UInt8Type(MavDistanceSensorHelper.GetValues(x=>(byte)x).Min(),MavDistanceSensorHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavDistanceSensorHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private MavDistanceSensor _sensorType;
+        public MavDistanceSensor SensorType { get => _sensorType; set => _sensorType = value; } 
         /// <summary>
         /// Coordinate frame of reference.
         /// OriginName: frame, Units: , IsExtended: false
         /// </summary>
-        public MavFrame Frame { get; set; }
+        public static readonly Field FrameField = new Field.Builder()
+            .Name(nameof(Frame))
+            .Title("frame")
+            .Description("Coordinate frame of reference.")
+            .DataType(new UInt8Type(MavFrameHelper.GetValues(x=>(byte)x).Min(),MavFrameHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(MavFrameHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private MavFrame _frame;
+        public MavFrame Frame { get => _frame; set => _frame = value; } 
     }
     /// <summary>
     /// Water depth
@@ -13657,124 +13926,6 @@ false),
         public override WaterDepthPayload Payload { get; } = new();
 
         public override string Name => "WATER_DEPTH";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("time_boot_ms",
-"Timestamp (time since system boot)",
-string.Empty, 
-@"ms", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint32, 
-            0, 
-false),
-            new("lat",
-"Latitude",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("lng",
-"Longitude",
-string.Empty, 
-@"degE7", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int32, 
-            0, 
-false),
-            new("alt",
-"Altitude (MSL) of vehicle",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("roll",
-"Roll angle",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("pitch",
-"Pitch angle",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("yaw",
-"Yaw angle",
-string.Empty, 
-@"rad", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("distance",
-"Distance (uncorrected)",
-string.Empty, 
-@"m", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("temperature",
-"Water temperature",
-string.Empty, 
-@"degC", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Float32, 
-            0, 
-false),
-            new("id",
-"Onboard ID of the sensor",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-            new("healthy",
-"Sensor data healthy (0=unhealthy, 1=healthy)",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "WATER_DEPTH:"
-        + "uint32_t time_boot_ms;"
-        + "int32_t lat;"
-        + "int32_t lng;"
-        + "float alt;"
-        + "float roll;"
-        + "float pitch;"
-        + "float yaw;"
-        + "float distance;"
-        + "float temperature;"
-        + "uint8_t id;"
-        + "uint8_t healthy;"
-        ;
     }
 
     /// <summary>
@@ -13786,22 +13937,22 @@ false),
         public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=4; //TimeBootMs
-            sum+=4; //Lat
-            sum+=4; //Lng
-            sum+=4; //Alt
-            sum+=4; //Roll
-            sum+=4; //Pitch
-            sum+=4; //Yaw
-            sum+=4; //Distance
-            sum+=4; //Temperature
-            sum+=1; //Id
-            sum+=1; //Healthy
-            return (byte)sum;
+            return (byte)(
+            +4 // uint32_t time_boot_ms
+            +4 // int32_t lat
+            +4 // int32_t lng
+            +4 // float alt
+            +4 // float roll
+            +4 // float pitch
+            +4 // float yaw
+            +4 // float distance
+            +4 // float temperature
+            +1 // uint8_t id
+            +1 // uint8_t healthy
+            );
         }
 
 
@@ -13837,66 +13988,166 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Healthy);
             /* PayloadByteSize = 38 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
+            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
+            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            FloatType.Accept(visitor,AltField, AltField.DataType, ref _alt);    
+            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
+            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
+            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
+            FloatType.Accept(visitor,DistanceField, DistanceField.DataType, ref _distance);    
+            FloatType.Accept(visitor,TemperatureField, TemperatureField.DataType, ref _temperature);    
+            UInt8Type.Accept(visitor,IdField, IdField.DataType, ref _id);    
+            UInt8Type.Accept(visitor,HealthyField, HealthyField.DataType, ref _healthy);    
 
+        }
 
         /// <summary>
         /// Timestamp (time since system boot)
         /// OriginName: time_boot_ms, Units: ms, IsExtended: false
         /// </summary>
-        public uint TimeBootMs { get; set; }
+        public static readonly Field TimeBootMsField = new Field.Builder()
+            .Name(nameof(TimeBootMs))
+            .Title("time_boot_ms")
+            .Description("Timestamp (time since system boot)")
+.Units(@"ms")
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _timeBootMs;
+        public uint TimeBootMs { get => _timeBootMs; set => _timeBootMs = value; }
         /// <summary>
         /// Latitude
         /// OriginName: lat, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lat { get; set; }
+        public static readonly Field LatField = new Field.Builder()
+            .Name(nameof(Lat))
+            .Title("lat")
+            .Description("Latitude")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lat;
+        public int Lat { get => _lat; set => _lat = value; }
         /// <summary>
         /// Longitude
         /// OriginName: lng, Units: degE7, IsExtended: false
         /// </summary>
-        public int Lng { get; set; }
+        public static readonly Field LngField = new Field.Builder()
+            .Name(nameof(Lng))
+            .Title("lng")
+            .Description("Longitude")
+.Units(@"degE7")
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _lng;
+        public int Lng { get => _lng; set => _lng = value; }
         /// <summary>
         /// Altitude (MSL) of vehicle
         /// OriginName: alt, Units: m, IsExtended: false
         /// </summary>
-        public float Alt { get; set; }
+        public static readonly Field AltField = new Field.Builder()
+            .Name(nameof(Alt))
+            .Title("alt")
+            .Description("Altitude (MSL) of vehicle")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _alt;
+        public float Alt { get => _alt; set => _alt = value; }
         /// <summary>
         /// Roll angle
         /// OriginName: roll, Units: rad, IsExtended: false
         /// </summary>
-        public float Roll { get; set; }
+        public static readonly Field RollField = new Field.Builder()
+            .Name(nameof(Roll))
+            .Title("roll")
+            .Description("Roll angle")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _roll;
+        public float Roll { get => _roll; set => _roll = value; }
         /// <summary>
         /// Pitch angle
         /// OriginName: pitch, Units: rad, IsExtended: false
         /// </summary>
-        public float Pitch { get; set; }
+        public static readonly Field PitchField = new Field.Builder()
+            .Name(nameof(Pitch))
+            .Title("pitch")
+            .Description("Pitch angle")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _pitch;
+        public float Pitch { get => _pitch; set => _pitch = value; }
         /// <summary>
         /// Yaw angle
         /// OriginName: yaw, Units: rad, IsExtended: false
         /// </summary>
-        public float Yaw { get; set; }
+        public static readonly Field YawField = new Field.Builder()
+            .Name(nameof(Yaw))
+            .Title("yaw")
+            .Description("Yaw angle")
+.Units(@"rad")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _yaw;
+        public float Yaw { get => _yaw; set => _yaw = value; }
         /// <summary>
         /// Distance (uncorrected)
         /// OriginName: distance, Units: m, IsExtended: false
         /// </summary>
-        public float Distance { get; set; }
+        public static readonly Field DistanceField = new Field.Builder()
+            .Name(nameof(Distance))
+            .Title("distance")
+            .Description("Distance (uncorrected)")
+.Units(@"m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _distance;
+        public float Distance { get => _distance; set => _distance = value; }
         /// <summary>
         /// Water temperature
         /// OriginName: temperature, Units: degC, IsExtended: false
         /// </summary>
-        public float Temperature { get; set; }
+        public static readonly Field TemperatureField = new Field.Builder()
+            .Name(nameof(Temperature))
+            .Title("temperature")
+            .Description("Water temperature")
+.Units(@"degC")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _temperature;
+        public float Temperature { get => _temperature; set => _temperature = value; }
         /// <summary>
         /// Onboard ID of the sensor
         /// OriginName: id, Units: , IsExtended: false
         /// </summary>
-        public byte Id { get; set; }
+        public static readonly Field IdField = new Field.Builder()
+            .Name(nameof(Id))
+            .Title("id")
+            .Description("Onboard ID of the sensor")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _id;
+        public byte Id { get => _id; set => _id = value; }
         /// <summary>
         /// Sensor data healthy (0=unhealthy, 1=healthy)
         /// OriginName: healthy, Units: , IsExtended: false
         /// </summary>
-        public byte Healthy { get; set; }
+        public static readonly Field HealthyField = new Field.Builder()
+            .Name(nameof(Healthy))
+            .Title("healthy")
+            .Description("Sensor data healthy (0=unhealthy, 1=healthy)")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _healthy;
+        public byte Healthy { get => _healthy; set => _healthy = value; }
     }
     /// <summary>
     /// The MCU status, giving MCU temperature and voltage. The min and max voltages are to allow for detecting power supply instability.
@@ -13918,64 +14169,6 @@ false),
         public override McuStatusPayload Payload { get; } = new();
 
         public override string Name => "MCU_STATUS";
-        
-        public override MavlinkFieldInfo[] Fields => StaticFields;
-                
-        public static readonly MavlinkFieldInfo[] StaticFields =
-        [
-            new("MCU_temperature",
-"MCU Internal temperature",
-string.Empty, 
-@"cdegC", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Int16, 
-            0, 
-false),
-            new("MCU_voltage",
-"MCU voltage",
-string.Empty, 
-@"mV", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("MCU_voltage_min",
-"MCU voltage minimum",
-string.Empty, 
-@"mV", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("MCU_voltage_max",
-"MCU voltage maximum",
-string.Empty, 
-@"mV", 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint16, 
-            0, 
-false),
-            new("id",
-"MCU instance",
-string.Empty, 
-string.Empty, 
-string.Empty, 
-string.Empty, 
-            MessageFieldType.Uint8, 
-            0, 
-false),
-        ];
-        public const string FormatMessage = "MCU_STATUS:"
-        + "int16_t MCU_temperature;"
-        + "uint16_t MCU_voltage;"
-        + "uint16_t MCU_voltage_min;"
-        + "uint16_t MCU_voltage_max;"
-        + "uint8_t id;"
-        ;
     }
 
     /// <summary>
@@ -13987,16 +14180,16 @@ false),
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
-        
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
-            var sum = 0;
-            sum+=2; //McuTemperature
-            sum+=2; //McuVoltage
-            sum+=2; //McuVoltageMin
-            sum+=2; //McuVoltageMax
-            sum+=1; //Id
-            return (byte)sum;
+            return (byte)(
+            +2 // int16_t MCU_temperature
+            +2 // uint16_t MCU_voltage
+            +2 // uint16_t MCU_voltage_min
+            +2 // uint16_t MCU_voltage_max
+            +1 // uint8_t id
+            );
         }
 
 
@@ -14020,37 +14213,88 @@ false),
             BinSerialize.WriteByte(ref buffer,(byte)Id);
             /* PayloadByteSize = 9 */;
         }
-        
-        
 
+        public void Accept(IVisitor visitor)
+        {
+            Int16Type.Accept(visitor,McuTemperatureField, McuTemperatureField.DataType, ref _mcuTemperature);
+            UInt16Type.Accept(visitor,McuVoltageField, McuVoltageField.DataType, ref _mcuVoltage);    
+            UInt16Type.Accept(visitor,McuVoltageMinField, McuVoltageMinField.DataType, ref _mcuVoltageMin);    
+            UInt16Type.Accept(visitor,McuVoltageMaxField, McuVoltageMaxField.DataType, ref _mcuVoltageMax);    
+            UInt8Type.Accept(visitor,IdField, IdField.DataType, ref _id);    
 
+        }
 
         /// <summary>
         /// MCU Internal temperature
         /// OriginName: MCU_temperature, Units: cdegC, IsExtended: false
         /// </summary>
-        public short McuTemperature { get; set; }
+        public static readonly Field McuTemperatureField = new Field.Builder()
+            .Name(nameof(McuTemperature))
+            .Title("MCU_temperature")
+            .Description("MCU Internal temperature")
+.Units(@"cdegC")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _mcuTemperature;
+        public short McuTemperature { get => _mcuTemperature; set => _mcuTemperature = value; }
         /// <summary>
         /// MCU voltage
         /// OriginName: MCU_voltage, Units: mV, IsExtended: false
         /// </summary>
-        public ushort McuVoltage { get; set; }
+        public static readonly Field McuVoltageField = new Field.Builder()
+            .Name(nameof(McuVoltage))
+            .Title("MCU_voltage")
+            .Description("MCU voltage")
+.Units(@"mV")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _mcuVoltage;
+        public ushort McuVoltage { get => _mcuVoltage; set => _mcuVoltage = value; }
         /// <summary>
         /// MCU voltage minimum
         /// OriginName: MCU_voltage_min, Units: mV, IsExtended: false
         /// </summary>
-        public ushort McuVoltageMin { get; set; }
+        public static readonly Field McuVoltageMinField = new Field.Builder()
+            .Name(nameof(McuVoltageMin))
+            .Title("MCU_voltage_min")
+            .Description("MCU voltage minimum")
+.Units(@"mV")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _mcuVoltageMin;
+        public ushort McuVoltageMin { get => _mcuVoltageMin; set => _mcuVoltageMin = value; }
         /// <summary>
         /// MCU voltage maximum
         /// OriginName: MCU_voltage_max, Units: mV, IsExtended: false
         /// </summary>
-        public ushort McuVoltageMax { get; set; }
+        public static readonly Field McuVoltageMaxField = new Field.Builder()
+            .Name(nameof(McuVoltageMax))
+            .Title("MCU_voltage_max")
+            .Description("MCU voltage maximum")
+.Units(@"mV")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _mcuVoltageMax;
+        public ushort McuVoltageMax { get => _mcuVoltageMax; set => _mcuVoltageMax = value; }
         /// <summary>
         /// MCU instance
         /// OriginName: id, Units: , IsExtended: false
         /// </summary>
-        public byte Id { get; set; }
+        public static readonly Field IdField = new Field.Builder()
+            .Name(nameof(Id))
+            .Title("id")
+            .Description("MCU instance")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _id;
+        public byte Id { get => _id; set => _id = value; }
     }
+
+
+
+
+        
 
 
 #endregion
