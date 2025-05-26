@@ -7,8 +7,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Asv.Cfg;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.Diagnostic.Server;
-
 
 namespace Asv.Mavlink;
 
@@ -65,7 +63,7 @@ public static class MavlinkFtpHelper
         }
 
         var directoryName = span[(index + 1)..].ToString();
-        var parentPath = span[..index].ToString();
+        var parentPath = $"{span[..index].ToString()}{DirectorySeparator}";
         if (parentPath == string.Empty && path.StartsWith(DirectorySeparator))
         {
             parentPath = DirectorySeparator.ToString();
@@ -98,6 +96,77 @@ public static class MavlinkFtpHelper
                     return true;
             }
         }
+    }
+    
+    /// <summary>
+    /// Returns canonical absolute path guaranteed to stay inside <paramref name="root"/>.
+    /// Throws <see cref="ArgumentException"/> when the result points outside the root.
+    /// </summary>
+    /// <param name="fs">IFileSystem abstraction (allows easy mocking in unit tests).</param>
+    /// <param name="root">Root (jail) directory.</param>
+    /// <param name="relative">User‑supplied path. May start with '/'.</param>
+    /// <returns>Full, normalized path under <paramref name="root"/>.</returns>
+    public static string MakeFullPath(this IFileSystem fs, string relative, string root)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        ArgumentException.ThrowIfNullOrWhiteSpace(relative);
+
+        var rootFull = fs.Path.GetFullPath(root).TrimEnd(
+            fs.Path.DirectorySeparatorChar,
+            fs.Path.AltDirectorySeparatorChar);
+
+        var rel = relative.TrimStart(
+            fs.Path.DirectorySeparatorChar,
+            fs.Path.AltDirectorySeparatorChar);
+
+        var combined = fs.Path.Combine(rootFull, rel);
+        var full = fs.Path.GetFullPath(combined);
+
+        if (!full.StartsWith(rootFull, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException(
+                new StringBuilder().Append("Path '")
+                    .Append(relative)
+                    .Append("' escapes root directory '")
+                    .Append(root)
+                    .Append("'.")
+                    .ToString(), nameof(relative));
+        }
+
+        return full;
+    }
+    
+    public static string Combine(string path1, string path2)
+    {
+        if (string.IsNullOrEmpty(path1)) return path2;
+        if (string.IsNullOrEmpty(path2)) return path1;
+
+        if (path1.EndsWith(DirectorySeparator) && path2.StartsWith(DirectorySeparator))
+        {
+            return path1 + path2[1..];
+        }
+
+        if (!path1.EndsWith(DirectorySeparator) && !path2.StartsWith(DirectorySeparator))
+        {
+            return path1 + DirectorySeparator + path2;
+        }
+
+        return path1 + path2;
+    }
+
+    public static string GetFileName(string path)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return string.Empty;
+        }
+        var index = path.LastIndexOf(DirectorySeparator);
+        if (index == -1)
+        {
+            return path;
+        }
+        return path[(index + 1)..];
     }
 
     public static Encoding FtpEncoding { get; } = Encoding.ASCII;
