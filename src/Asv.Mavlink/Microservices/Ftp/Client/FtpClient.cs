@@ -72,9 +72,10 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogInformation($"{Id} {FtpOpcode.WriteFile:G} {request.ToString()}");
         var result = await InternalFtpCall(FtpOpcode.WriteFile, p =>
         {
-            p.WriteData(buffer.Span[..request.Take]);
+            p.WriteSession(request.Session);
             p.WriteSize(request.Take);
             p.WriteOffset(request.Skip);
+            p.WriteData(buffer.Span[..request.Take]);
         }, cancellationToken).ConfigureAwait(false);
         _logger
             .ZLogInformation($"{Id} {FtpOpcode.WriteFile:G} size: {request.Take}, offset: {request.Skip}, session: {request.Session}");
@@ -96,7 +97,7 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         {
             throw new ArgumentOutOfRangeException(nameof(request.Take), $"Max data size is {MavlinkFtpHelper.MaxDataSize}");
         }
-        var totalRead = 0U;
+        const uint totalRead = 0U;
         _logger.ZLogInformation($"{Id} {FtpOpcode.BurstReadFile:G} {request}");
         
         var tcs = new TaskCompletionSource();
@@ -185,7 +186,11 @@ public class FtpClient : MavlinkMicroserviceClient, IFtpClient
         _logger.ZLogInformation($"{Id} {FtpOpcode.CreateFile:G}({path})");
         var result = await InternalFtpCall(
                 FtpOpcode.CreateFile,
-                p => p.WriteDataAsString(path), 
+                p =>
+                {
+                    p.WriteDataAsString(path);
+                    p.WriteSize((byte)path.Length);
+                }, 
                 cancellationToken)
             .ConfigureAwait(false);
         return result;
