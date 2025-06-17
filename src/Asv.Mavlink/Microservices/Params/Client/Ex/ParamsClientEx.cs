@@ -183,7 +183,7 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
         var tcs = new TaskCompletionSource<bool>();
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         var lastUpdate = Base.Core.TimeProvider.GetTimestamp();
-        using var c2 = Base.OnParamValue.Subscribe(p =>
+        using var c2 = Base.OnParamValue.Subscribe(c1.Token,(p,c) =>
         {
             _ = p.ParamCount;
             if (_paramsSource.Count == p.ParamCount)
@@ -192,7 +192,10 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
             }
 
             var progressPercent = (double)_paramsSource.Count / p.ParamCount;
-            progress.Report(progressPercent);
+            if (c.IsCancellationRequested == false)
+            {
+                progress.Report(progressPercent);    
+            }
             Interlocked.Exchange(ref lastUpdate, Base.Core.TimeProvider.GetTimestamp());
         });
         var timeout = TimeSpan.FromMilliseconds(_config.ReadTimeouMs * _config.ReadAttemptCount);
