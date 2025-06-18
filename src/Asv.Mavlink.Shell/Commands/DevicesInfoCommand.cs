@@ -118,14 +118,14 @@ private async Task RunAsync(string connectionString, uint? iterations, uint devi
             }
 
             table.AddRow(
-                $"{Markup.Escape(device.View.DeviceFullId.ToString())}",
+                $"[red]{Markup.Escape(device.View.DeviceFullId.ToString())}[/]",
                 $"{Markup.Escape(device.View.Type)}",
                 $"{Markup.Escape(device.View.SystemId.ToString())}",
                 $"{Markup.Escape(device.View.ComponentId.ToString())}",
                 $"{Markup.Escape(device.View.MavlinkVersion.ToString())}",
                 $"{Markup.Escape(device.View.BaseModeText)}",
                 $"{Markup.Escape(device.View.SystemStatusText)}",
-                $"{Markup.Escape(device.View.RateText)}"
+                $"[green]{Markup.Escape(device.View.RateText)}[/]"
             );
         }
     }
@@ -135,9 +135,11 @@ private async Task RunAsync(string connectionString, uint? iterations, uint devi
         private uint _rate;
         private long _lastUpdate;
         private uint _lastRate;
-        public bool IsInitialized;
+        private bool _isInitialized;
         private readonly CompositeDisposable _disposables = new();
         private bool _disposed;
+        
+        public bool IsInitialized => _isInitialized;
 
 
 #pragma warning disable CS8618, CS9264
@@ -150,12 +152,12 @@ private async Task RunAsync(string connectionString, uint? iterations, uint devi
                .Take(1)
                .Subscribe(_ =>
                {
-                   if (IsInitialized)
+                   if (_isInitialized)
                    {
                        return;
                    }
                    
-                   IsInitialized = true;
+                   _isInitialized = true;
 
                    var heartbeat = info.GetMicroservice<IHeartbeatClient>() 
                                    ?? throw new Exception("Heartbeat client not initialized");
@@ -213,12 +215,12 @@ private async Task RunAsync(string connectionString, uint? iterations, uint devi
         public void Dispose()
         {
             if (_disposed) return;
-            _disposed = true;
 
             _disposables.Dispose();
+            _disposed = true;
         }
         
-        public MavlinkIdentity DeviceFullId { get; set; }
+        public MavlinkIdentity DeviceFullId { get; private set; }
         public string Type { get; private set;}
         public byte SystemId { get; private set;}
         public byte ComponentId { get; private set;}
