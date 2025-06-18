@@ -85,6 +85,17 @@ using System;
              return OnValueChanged.Where(x => x.Item1.Equals(name, StringComparison.InvariantCultureIgnoreCase))
                  .Select(x => x.Item2);
          }
+
+         /// <summary>
+         /// Try to get parameter from local cache or read it once from remote device.
+         /// </summary>
+         /// <param name="name"></param>
+         /// <param name="cancel"></param>
+         /// <returns></returns>
+         public ValueTask<MavParamValue> GetFromCacheOrReadOnce(string name, CancellationToken cancel = default)
+         {
+             return Items.TryGetValue(name, out var item) ? new ValueTask<MavParamValue>(item.Value.Value) : new ValueTask<MavParamValue>(ReadOnce(name, cancel));
+         }
      }
  }
 
