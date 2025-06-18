@@ -5,12 +5,9 @@ Asv.Mavlink.Shell.exe print-vehicle-state --connection tcp://127.0.0.1:5762
 ```
 This command starts the console implementation of UAV controls and Telemetry
 
-<note>
-<format color="Yellow" style="bold">
-    WARNING! Use this command only with a simulator. It does not provide the full functionality required for safe flight. 
-    Use this command only for education or introductory purposes.
-</format>
-</note>
+>Use this command only with a simulator. It does not provide the full functionality required for safe flight.
+>Use this command only for education or introductory purposes.
+>{style="warning"}
 
 
 
