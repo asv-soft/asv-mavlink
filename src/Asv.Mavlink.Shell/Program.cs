@@ -24,15 +24,13 @@ class Program
         // app.Add<MavProxy>();
         app.Add<BenchmarkBinSerializationCommand>();
         app.Add<BenchmarkSerializationPacket>();
-        //app.Add<BenchmarkFtpServerExCommand>();
-        //app.Add<ShowParams>();
         app.Add<GenerateCommand>();
         app.Add<MavlinkCommand>();
         app.Add<PacketViewerCommand>();
         app.Add<CreateVirtualFtpServerCommand>();
         app.Add<GenerateDiagnostics>();
         app.Add<TestGenerateDiagnosticsCommand>();
-        app.Add<PrintVehicleState>();
+        app.Add<PrintVehicleStateCommand>();
         app.Add<ParamsCommand>();
         app.Add<DownloadMissionItemsCommand>();
         
