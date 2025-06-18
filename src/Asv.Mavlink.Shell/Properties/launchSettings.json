@@ -2,7 +2,7 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "litedb-test"
+      "commandLineArgs": "print-vehicle-state --connection tcp://127.0.0.1:7341"
     }
   }
 }
