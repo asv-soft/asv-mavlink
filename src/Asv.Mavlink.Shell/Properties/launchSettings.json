@@ -2,6 +2,7 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "devices-info --connection-string tcp://127.0.0.1:5760 -r 30 -i 5"    }
+      "commandLineArgs": "print-vehicle-state --connection tcp://127.0.0.1:7341"
+    }
   }
 }

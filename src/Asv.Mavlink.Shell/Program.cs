@@ -32,7 +32,7 @@ class Program
         app.Add<CreateVirtualFtpServerCommand>();
         app.Add<GenerateDiagnostics>();
         app.Add<TestGenerateDiagnosticsCommand>();
-        app.Add<PrintVehicleState>();
+        app.Add<PrintVehicleStateCommand>();
         app.Add<ParamsCommand>();
         app.Add<DownloadMissionItemsCommand>();
         
