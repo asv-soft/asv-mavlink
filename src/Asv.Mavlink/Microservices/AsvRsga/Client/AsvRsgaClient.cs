@@ -31,6 +31,9 @@ public class AsvRsgaClient: MavlinkMicroserviceClient, IAsvRsgaClient
                     x.Payload.RequestId = reqId;
                 }, x => x.Payload.RequestId == reqId, x => x.Payload, cancel: cancel);
     }
+
+    public Observable<MavlinkMessage> DeviceMessages => InternalFilteredDeviceMessages;
+
     private ushort GenerateRequestIndex()
     {
         return (ushort)(Interlocked.Increment(ref _requestCounter)%ushort.MaxValue);
