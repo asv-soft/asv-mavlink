@@ -4121,7 +4121,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13463;
         
-        public const byte CrcExtra = 132;
+        public const byte CrcExtra = 54;
         
         public override int Id => MessageId;
         
@@ -4141,17 +4141,17 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttRxVorPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 70; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 66; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 70; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 66; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
             return (byte)(
             +8 // uint64_t time_unix_usec
             + 8 // uint64_t flags
-            +8 // uint64_t total_freq
             +4 // uint32_t index
+            +4 // uint32_t total_freq
             +4 // float azimuth
             +4 // float power
             +4 // float field_strength
@@ -4176,8 +4176,8 @@ namespace Asv.Mavlink.AsvRsga
             var payloadSize = buffer.Length;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
-            TotalFreq = BinSerialize.ReadULong(ref buffer);
             Index = BinSerialize.ReadUInt(ref buffer);
+            TotalFreq = BinSerialize.ReadUInt(ref buffer);
             Azimuth = BinSerialize.ReadFloat(ref buffer);
             Power = BinSerialize.ReadFloat(ref buffer);
             FieldStrength = BinSerialize.ReadFloat(ref buffer);
@@ -4190,7 +4190,7 @@ namespace Asv.Mavlink.AsvRsga
             Freq9960 = BinSerialize.ReadShort(ref buffer);
             CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/70 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/66 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             unsafe
             {
@@ -4209,8 +4209,8 @@ namespace Asv.Mavlink.AsvRsga
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
-            BinSerialize.WriteULong(ref buffer,TotalFreq);
             BinSerialize.WriteUInt(ref buffer,Index);
+            BinSerialize.WriteUInt(ref buffer,TotalFreq);
             BinSerialize.WriteFloat(ref buffer,Azimuth);
             BinSerialize.WriteFloat(ref buffer,Power);
             BinSerialize.WriteFloat(ref buffer,FieldStrength);
@@ -4233,7 +4233,7 @@ namespace Asv.Mavlink.AsvRsga
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 70 */;
+            /* PayloadByteSize = 66 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -4242,8 +4242,8 @@ namespace Asv.Mavlink.AsvRsga
             var tmpFlags = (ulong)Flags;
             UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
             UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
             FloatType.Accept(visitor,AzimuthField, AzimuthField.DataType, ref _azimuth);    
             FloatType.Accept(visitor,PowerField, PowerField.DataType, ref _power);    
             FloatType.Accept(visitor,FieldStrengthField, FieldStrengthField.DataType, ref _fieldStrength);    
@@ -4288,19 +4288,6 @@ namespace Asv.Mavlink.AsvRsga
         private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
-        /// Measured frequency.
-        /// OriginName: total_freq, Units: Hz, IsExtended: false
-        /// </summary>
-        public static readonly Field TotalFreqField = new Field.Builder()
-            .Name(nameof(TotalFreq))
-            .Title("total_freq")
-            .Description("Measured frequency.")
-.Units(@"Hz")
-            .DataType(UInt64Type.Default)
-        .Build();
-        private ulong _totalFreq;
-        public ulong TotalFreq { get => _totalFreq; set => _totalFreq = value; }
-        /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
@@ -4313,6 +4300,19 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
+        /// <summary>
+        /// Measured frequency.
+        /// OriginName: total_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field TotalFreqField = new Field.Builder()
+            .Name(nameof(TotalFreq))
+            .Title("total_freq")
+            .Description("Measured frequency.")
+.Units(@"Hz")
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _totalFreq;
+        public uint TotalFreq { get => _totalFreq; set => _totalFreq = value; }
         /// <summary>
         /// Measured azimuth.
         /// OriginName: azimuth, Units: deg, IsExtended: false
@@ -4493,7 +4493,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13464;
         
-        public const byte CrcExtra = 194;
+        public const byte CrcExtra = 27;
         
         public override int Id => MessageId;
         
@@ -4513,9 +4513,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttRxMarkerPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 74; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 80; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 74; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 80; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -4523,6 +4523,7 @@ namespace Asv.Mavlink.AsvRsga
             +8 // uint64_t time_unix_usec
             + 8 // uint64_t flags
             +4 // uint32_t index
+            +4 // uint32_t total_freq
             +4 // float power
             +4 // float field_strength
             +4 // float am_400
@@ -4538,6 +4539,7 @@ namespace Asv.Mavlink.AsvRsga
             +2 // int16_t freq_400
             +2 // int16_t freq_1300
             +2 // int16_t freq_3000
+            +2 // int16_t measure_time
             );
         }
 
@@ -4548,6 +4550,7 @@ namespace Asv.Mavlink.AsvRsga
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
             Index = BinSerialize.ReadUInt(ref buffer);
+            TotalFreq = BinSerialize.ReadUInt(ref buffer);
             Power = BinSerialize.ReadFloat(ref buffer);
             FieldStrength = BinSerialize.ReadFloat(ref buffer);
             Am400 = BinSerialize.ReadFloat(ref buffer);
@@ -4563,6 +4566,7 @@ namespace Asv.Mavlink.AsvRsga
             Freq400 = BinSerialize.ReadShort(ref buffer);
             Freq1300 = BinSerialize.ReadShort(ref buffer);
             Freq3000 = BinSerialize.ReadShort(ref buffer);
+            MeasureTime = BinSerialize.ReadShort(ref buffer);
 
         }
 
@@ -4571,6 +4575,7 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
             BinSerialize.WriteUInt(ref buffer,Index);
+            BinSerialize.WriteUInt(ref buffer,TotalFreq);
             BinSerialize.WriteFloat(ref buffer,Power);
             BinSerialize.WriteFloat(ref buffer,FieldStrength);
             BinSerialize.WriteFloat(ref buffer,Am400);
@@ -4586,7 +4591,8 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteShort(ref buffer,Freq400);
             BinSerialize.WriteShort(ref buffer,Freq1300);
             BinSerialize.WriteShort(ref buffer,Freq3000);
-            /* PayloadByteSize = 74 */;
+            BinSerialize.WriteShort(ref buffer,MeasureTime);
+            /* PayloadByteSize = 80 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -4596,6 +4602,7 @@ namespace Asv.Mavlink.AsvRsga
             UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
             UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
             FloatType.Accept(visitor,PowerField, PowerField.DataType, ref _power);    
             FloatType.Accept(visitor,FieldStrengthField, FieldStrengthField.DataType, ref _fieldStrength);    
             FloatType.Accept(visitor,Am400Field, Am400Field.DataType, ref _am400);    
@@ -4611,6 +4618,7 @@ namespace Asv.Mavlink.AsvRsga
             Int16Type.Accept(visitor,Freq400Field, Freq400Field.DataType, ref _freq400);
             Int16Type.Accept(visitor,Freq1300Field, Freq1300Field.DataType, ref _freq1300);
             Int16Type.Accept(visitor,Freq3000Field, Freq3000Field.DataType, ref _freq3000);
+            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
 
         }
 
@@ -4653,6 +4661,19 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
+        /// <summary>
+        /// Measured frequency.
+        /// OriginName: total_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field TotalFreqField = new Field.Builder()
+            .Name(nameof(TotalFreq))
+            .Title("total_freq")
+            .Description("Measured frequency.")
+.Units(@"Hz")
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _totalFreq;
+        public uint TotalFreq { get => _totalFreq; set => _totalFreq = value; }
         /// <summary>
         /// Total input power.
         /// OriginName: power, Units: dBm, IsExtended: false
@@ -4848,6 +4869,19 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private short _freq3000;
         public short Freq3000 { get => _freq3000; set => _freq3000 = value; }
+        /// <summary>
+        /// Measure time.
+        /// OriginName: measure_time, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field MeasureTimeField = new Field.Builder()
+            .Name(nameof(MeasureTime))
+            .Title("measure_time")
+            .Description("Measure time.")
+.Units(@"ms")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _measureTime;
+        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_GBAS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]

@@ -644,7 +644,7 @@
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
             <!-- Total measure data -->
-            <field type="uint64_t" name="total_freq" units="Hz">Measured frequency.</field>
+            <field type="uint32_t" name="total_freq" units="Hz">Measured frequency.</field>
             <field type="int16_t" name="carrier_offset" units="Hz">Total carrier frequency offset.</field>
             <field type="float" name="azimuth" units="deg">Measured azimuth.</field>
             <field type="float" name="power" units="dBm">Total input power.</field>
@@ -672,6 +672,7 @@
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
             <!-- Total measure data -->
+            <field type="uint32_t" name="total_freq" units="Hz">Measured frequency.</field>
             <field type="float" name="power" units="dBm">Total input power.</field>
             <field type="float" name="field_strength" units="uV/m">Total field strength.</field>
             <!-- 400 Hz component (Outer marker) -->
@@ -690,6 +691,8 @@
             <field type="int16_t" name="freq_3000" units="Hz">Frequency of the 3000 Hz component.</field>
             <field type="float" name="dot_3000" units="ms">Length of a dot for the inner marker.</field>
             <field type="float" name="gap_3000" units="ms">Gap between two dashes for the inner marker.</field>
+
+            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
         </message>
         
         <message id="13465" name="ASV_RSGA_RTT_RX_GBAS">
