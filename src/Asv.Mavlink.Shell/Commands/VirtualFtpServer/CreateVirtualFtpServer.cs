@@ -2,7 +2,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Asv.IO;
 using ConsoleAppFramework;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Spectre.Console;
 
@@ -10,56 +9,64 @@ namespace Asv.Mavlink.Shell;
 
 public class CreateVirtualFtpServerCommand
 {
-    private string _file = "exampleVirtualFtpServerConfig.json";
-    
+    private const string DefaultConfigFilePath = "exampleVirtualFtpServerConfig.json";
+
     /// <summary>
-    /// Command creates virtual ftp server.
+    ///     Command creates virtual ftp server.
     /// </summary>
     /// <param name="cfgPath">-cfg, location of the config file</param>
     /// <returns></returns>
     [Command("run-ftp-server")]
-    public int Run(string? cfgPath = null)
+    public async Task<int> Run(string? cfgPath = null)
     {
-        _file = cfgPath ?? _file;
-        RunAsync().Wait();
-        ConsoleAppHelper.WaitCancelPressOrProcessExit();
-        return 0;
-    }
+        var configFilePath = cfgPath ?? DefaultConfigFilePath;
 
-    private async Task RunAsync()
-    {
-        AnsiConsole.MarkupLine($"[blue]info[/]: Check config file exist: [green]{_file}[/]");
-        
-        if (!File.Exists(_file))
+        AnsiConsole.MarkupLine($"[blue]info[/]: Check config file exist: [green]{configFilePath}[/]");
+
+        if (!File.Exists(configFilePath))
         {
-            AnsiConsole.MarkupLine($"[yellow]warn[/]: Creating default config file: {_file}");
+            AnsiConsole.MarkupLine($"[yellow]warn[/]: Creating default config file: {configFilePath}");
             var json = JsonConvert.SerializeObject(VirtualFtpServerConfig.Default, Formatting.Indented);
-            await File.WriteAllTextAsync(_file, json);
+            await File.WriteAllTextAsync(configFilePath, json);
         }
 
-        var cfg = JsonConvert.DeserializeObject<VirtualFtpServerConfig>(await File.ReadAllTextAsync(_file));
-
+        var fileTextContent = await File.ReadAllTextAsync(configFilePath);
+        var cfg = JsonConvert.DeserializeObject<VirtualFtpServerConfig>(fileTextContent);
         if (cfg is null)
         {
             AnsiConsole.MarkupLine("[red]error[/]: Unable to load cfg[/]");
-            return;
+            return 1;
+        }
+        
+        AnsiConsole.MarkupLine(
+            $"[blue]info[/]: Check root directory exist: [green]{cfg.FtpServerExConfig.RootDirectory}[/]");
+
+        if (!Directory.Exists(cfg.FtpServerExConfig.RootDirectory))
+        {
+            AnsiConsole.MarkupLine($"[yellow]warn[/]: Creating root directory: {cfg.FtpServerExConfig.RootDirectory}");
+            Directory.CreateDirectory(cfg.FtpServerExConfig.RootDirectory);
         }
 
-        var router = Protocol.Create(builder =>
-        {
-            builder.RegisterMavlinkV2Protocol();
-        }).CreateRouter("ROUTER");
+        await using var router = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(); })
+            .CreateRouter("ROUTER");
         
+        AnsiConsole.MarkupLine("[green]Note[/]: The actual connection strings may differ from those shown below"); 
+
         foreach (var port in cfg.Ports)
         {
-            AnsiConsole.MarkupLine($"[green]Add connection port [/]: [yellow]{port}[/]");
+            AnsiConsole.MarkupLine($"[blue]info[/]: Add connection port: [yellow]{port}[/]");
             router.AddPort(port);
         }
+
         var core = new CoreServices(router);
-        var device = ServerDevice.Create(new MavlinkIdentity(cfg.SystemId, cfg.ComponentId), core, config =>
-        {
-            config.RegisterFtp(cfg.FtpServerConfig);
-            config.RegisterFtpEx(cfg.FtpServerExConfig);
-        });
+        await using var device = ServerDevice.Create(
+            new MavlinkIdentity(cfg.SystemId, cfg.ComponentId), core, config =>
+            {
+                config.RegisterFtp(cfg.FtpServerConfig);
+                config.RegisterFtpEx(cfg.FtpServerExConfig);
+            });
+
+        ConsoleAppHelper.WaitCancelPressOrProcessExit();
+        return 0;
     }
 }

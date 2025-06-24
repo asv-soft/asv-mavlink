@@ -9,20 +9,21 @@ public class VirtualFtpServerConfig
     {
         Ports =
         [
-            "tcp://127.0.0.1:7343"
+            "tcps://127.0.0.1:7343"
         ],
         FtpServerConfig = new MavlinkFtpServerConfig
-        { 
-            NetworkId = 0, 
+        {
+            NetworkId = 0,
             BurstReadChunkDelayMs = 30
         },
         FtpServerExConfig = new MavlinkFtpServerExConfig
         {
-            RootDirectory = Path.Combine($"{AppDomain.CurrentDomain.BaseDirectory}","temp")
+            RootDirectory = Path.Combine($"{AppDomain.CurrentDomain.BaseDirectory}", "temp")
         },
         SystemId = 1,
-        ComponentId = 1,
+        ComponentId = 1
     };
+
     public required string[] Ports { get; set; }
     public required MavlinkFtpServerConfig FtpServerConfig { get; set; }
     public required MavlinkFtpServerExConfig FtpServerExConfig { get; set; }

@@ -103,14 +103,15 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
         var result = new List<string>();
         foreach (var entry in infos)
         {
-            if (entry.Extension.Length > 0)
+            if (entry.Attributes.HasFlag(FileAttributes.Directory))
+            {
+                result.Add($"D{entry.Name}\0");
+            }
+            else
             {
                 var file = (IFileInfo)entry;
                 result.Add($"F{file.Name}\t{file.Length}\0");
-                continue;
             }
-
-            result.Add($"D{entry.Name}\0");
         }
 
         var sb = new StringBuilder(0, MavlinkFtpHelper.MaxDataSize);

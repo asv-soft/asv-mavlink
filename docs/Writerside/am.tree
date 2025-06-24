@@ -24,6 +24,7 @@
         <toc-element topic="export-sdr-data.md"/>
         <toc-element topic="ftp-browser.md"/>
         <toc-element topic="ftp-tree.md"/>
+        <toc-element topic="ftp-server.md"/>
         <toc-element topic="generate-fake-diagnostic-data.md"/>
         <toc-element topic="download-mission-items.md"/>
     </toc-element>
