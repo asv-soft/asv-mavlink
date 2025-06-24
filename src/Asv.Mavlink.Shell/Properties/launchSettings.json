@@ -2,6 +2,9 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "devices-info --connection-string tcp://127.0.0.1:5760 -r 30 -i 5"    }
+      "commandLineArgs": "ftp-browser -cs tcp://127.0.0.1:7343"    },
+    "Second": {
+      "commandName": "Project",
+      "commandLineArgs": "run-ftp-server"    }
   }
 }

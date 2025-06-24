@@ -1,4 +1,4 @@
-# Ftp tree
+# FTP tree
 
 This command provides a tree representation of all available files and directories on the drone's FTP server. It allows users to see the entire file structure in a hierarchical format, making it easy to browse and understand the file layout without navigating through individual folders.
 
@@ -15,10 +15,14 @@ You may also use some parameters in the command.
 ```bash
 Usage: ftp-tree [options...] [-h|--help] [--version]
 
-Tree representation of all available files and directories on the drones FTP server
+Tree representation of all available files and directories on the drone's FTP server
 
 Options:
--cs|--connection <string>    The address of the connection to the mavlink device (Required)
+  -cs|--connection <string>          The address of the connection to the mavlink device, e.g. tcp://127.0.0.1:5760 (Required)
+  -t|--timeout-ms <int>              The connection timeout in ms (Default: 1000)
+  --command-attempt-count <int>      The command attempts count (Default: 5)
+  -tid|--target-network-id <byte>    The target id of the network (Default: 0)
+  --burst-timeout-ms <int>           The burst timeout in ms (Default: 1000)
 ````
 
 ![image](asv-drones-mavlink-ftp-tree-command.png)
