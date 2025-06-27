@@ -17,7 +17,8 @@ public class RsgaClientDeviceConfig:MavlinkClientDeviceConfig
     public AsvChartClientConfig Charts { get; set; } = new();
     public CommandProtocolConfig Command { get; set; } = new();
     public DiagnosticClientConfig Diagnostics { get; set; } = new();
-    
+    public MavlinkFtpClientConfig Ftp { get; set; } = new();
+
     public override void Load(string key, IConfiguration configuration)
     {
         base.Load(key, configuration);
@@ -81,6 +82,9 @@ public class RsgaClientDevice : MavlinkClientDevice
         yield return rsgaBase;
         if (heartBeat == null) throw new Exception("Heartbeat microservice not found");
         yield return new AsvRsgaClientEx(rsgaBase, command, heartBeat);
+        var ftp = new FtpClient(Identity, _config.Ftp, Core);
+        yield return ftp;
+        yield return new FtpClientEx(ftp);
     }
 
 

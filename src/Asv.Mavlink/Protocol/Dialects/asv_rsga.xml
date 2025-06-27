@@ -89,6 +89,9 @@
             <entry value="81" name="ASV_RSGA_CUSTOM_MODE_RX_GNSS">
                 <description>GNSS analyzer mode.</description>
             </entry>
+            <entry value="82" name="ASV_RSGA_CUSTOM_MODE_RDF">
+                <description>RDF mode.</description>
+            </entry>
             <!--==================================================-->
             <!--          SPECIAL MODES (100-124)                 -->
             <!--==================================================-->

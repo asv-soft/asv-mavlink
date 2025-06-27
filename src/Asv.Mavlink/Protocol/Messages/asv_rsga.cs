@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.0+849d957bf89c7f2ba3f65f6f687553476c1c6f67 25-05-22.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.2+82bde669fa8b85517700c6d12362e9f17d819d33 25-06-27.
 
 using System;
 using System.Text;
@@ -186,6 +186,11 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaCustomModeRxGnss = 81,
         /// <summary>
+        /// RDF mode.
+        /// ASV_RSGA_CUSTOM_MODE_RDF
+        /// </summary>
+        AsvRsgaCustomModeRdf = 82,
+        /// <summary>
         /// Audio radio station mode.
         /// ASV_RSGA_CUSTOM_MODE_RADIO
         /// </summary>
@@ -218,6 +223,7 @@ namespace Asv.Mavlink.AsvRsga
             yield return converter(79);
             yield return converter(80);
             yield return converter(81);
+            yield return converter(82);
             yield return converter(100);
             yield return converter(255);
         }
@@ -241,6 +247,7 @@ namespace Asv.Mavlink.AsvRsga
             yield return new EnumValue<T>(converter(79),"ASV_RSGA_CUSTOM_MODE_RX_GBAS");
             yield return new EnumValue<T>(converter(80),"ASV_RSGA_CUSTOM_MODE_ADSB_REP");
             yield return new EnumValue<T>(converter(81),"ASV_RSGA_CUSTOM_MODE_RX_GNSS");
+            yield return new EnumValue<T>(converter(82),"ASV_RSGA_CUSTOM_MODE_RDF");
             yield return new EnumValue<T>(converter(100),"ASV_RSGA_CUSTOM_MODE_RADIO");
             yield return new EnumValue<T>(converter(255),"ASV_RSGA_CUSTOM_MODE_RESERVED");
         }
