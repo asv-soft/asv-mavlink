@@ -530,34 +530,32 @@
             <field type="uint32_t" name="index">Data index in record</field>
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
-            <!--TX-->
-            <field type="uint64_t" name="tx_freq" units="Hz">TX frequency</field>
-            <field type="float" name="tx_power" units="dBm">Output power</field>
-            <field type="float" name="tx_gain" units="%">Percent of total TX gain level (0.0 - 1.0)</field>
+            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
             <!--RX-->
             <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
             <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
             <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
             <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
-            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong).</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).</field>
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
-            <!--Distance-->
+            <!--TX-->
+            <field type="uint64_t" name="tx_freq" units="Hz">TX frequency</field>
+            <field type="float" name="tx_power" units="dBm">Output power</field>
+            <field type="float" name="tx_gain" units="%">Percent of total TX gain level (0.0 - 1.0)</field>
+            <!--Specific measure-->
             <field type="float" name="distance" units="m">Measured distance</field>
             <!--Pulse shape-->
             <field type="uint16_t" name="pulse_shape_rise" units="ns">Pulse shape: rise time (≤3 μs)</field>
             <field type="uint16_t" name="pulse_shape_duration" units="ns">Pulse shape: rise time (3.5 μs, ±0.5 μs)</field>
             <field type="uint16_t" name="pulse_shape_decay" units="ns">Pulse shape: rise time (≤3.5 μs)</field>
             <field type="int8_t" name="pulse_shape_amplitude" units="%">Pulse shape: amplitude (between 95% rise/fall amplitudes, ≥95% of maximum amplitude)</field>
-
             <field type="uint16_t" name="pulse_spacing" units="ns">Pulse spacing (X channel 12 ±0.25 us, Y channel: 30 ±0.25 us)</field>
-
             <field type="char[4]" name="code_id" units="Letters">Code identification</field>
-
             <field type="uint16_t" name="req_freq" units="pps">Number of our request</field>
             <field type="uint16_t" name="hip_freq" units="pps">Measured number of all replies, that was recognised as beacon HIP</field>
             <field type="float" name="reply_efficiency" units="%">Reply efficiency request\response (between 0% - 100%)</field>
 
-            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+            
         </message>
 
         <message id="13461" name="ASV_RSGA_RTT_RX_LLZ">
@@ -566,40 +564,42 @@
             <field type="uint32_t" name="index">Data index in record</field>
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
-            <!-- Course measure data -->
-            <field type="float" name="crs_power" units="dBm">Input power of course.</field>
-            <field type="int16_t" name="crs_carrier_offset" units="Hz">Carrier frequency offset of course.</field>
-            <field type="float" name="crs_am_90" units="%">Aplitude modulation of 90Hz of course.</field>
-            <field type="int16_t" name="crs_freq_90" units="Hz">Frequency offset of signal 90 Hz of course.</field>
-            <field type="float" name="crs_am_150" units="%">Aplitude modulation of 150Hz of course.</field>
-            <field type="int16_t" name="crs_freq_150" units="Hz">Frequency offset of signal 150 Hz of course.</field>
-            <!-- Clearance measure data -->
-            <field type="float" name="clr_power" units="dBm">Input power of clearance.</field>
-            <field type="int16_t" name="clr_carrier_offset" units="Hz">Carrier frequency offset of clearance.</field>
-            <field type="float" name="clr_am_90" units="%">Aplitude modulation of 90Hz of clearance.</field>
-            <field type="int16_t" name="clr_freq_90" units="Hz">Frequency offset of signal 90 Hz of clearance.</field>
-            <field type="float" name="clr_am_150" units="% E2">Aplitude modulation of 150Hz of clearance.</field>
-            <field type="int16_t" name="clr_freq_150" units="Hz">Frequency offset of signal 150 Hz of clearance.</field>
+            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+            <!--RX-->
+            <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
+            <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
+            <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
+            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).</field>
+            <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             <!-- Total measure data -->
-            <field type="uint64_t" name="total_freq" units="Hz">Measured frequency.</field>
-            <field type="int16_t" name="total_carrier_offset" units="Hz">Total carrier frequency offset.</field>
-            <field type="float" name="total_power" units="dBm">Total input power.</field>
-            <field type="float" name="total_field_strength" units="uV/m">Total field strength.</field>
-
-            <field type="float" name="total_am_90" units="%">Total aplitude modulation of 90Hz.</field>
-            <field type="int16_t" name="total_freq_90" units="Hz">Total frequency offset of signal 90 Hz.</field>
-
-            <field type="float" name="total_am_150" units="%">Total aplitude modulation of 150Hz.</field>
-            <field type="int16_t" name="total_freq_150" units="Hz">Total frequency offset of signal 150 Hz.</field>
-
-            <field type="float" name="phi_90_crs_vs_clr" units="deg"> Phase difference 90 Hz clearance and cource</field>
-            <field type="float" name="phi_150_crs_vs_clr" units="deg">Phase difference 150 Hz clearance and cource.</field>
-
+            <field type="float" name="am_90" units="%">Total aplitude modulation of 90Hz.</field>
+            <field type="int16_t" name="freq_90" units="Hz">Total frequency offset of signal 90 Hz.</field>
+            <field type="float" name="am_150" units="%">Total aplitude modulation of 150Hz.</field>
+            <field type="int16_t" name="freq_150" units="Hz">Total frequency offset of signal 150 Hz.</field>
             <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz.</field>
             <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz.</field>
             <field type="char[4]" name="code_id" units="Letters">Code identification</field>
+            
+            <field type="float" name="phi_90_low_vs_high" units="deg"> Phase difference 90 Hz low and high freq channel</field>
+            <field type="float" name="phi_150_low_vs_high" units="deg">Phase difference 150 Hz low and high.</field>
+            
+            <!-- Course measure data -->
+            <field type="float" name="low_power" units="dBm">Input power of low freq channel.</field>
+            <field type="int16_t" name="low_carrier_offset" units="Hz">Carrier frequency offset of low freq channel.</field>
+            <field type="float" name="low_am_90" units="%">Aplitude modulation of 90Hz of low freq channel.</field>
+            <field type="int16_t" name="low_freq_90" units="Hz">Frequency offset of signal 90 Hz of low freq channel.</field>
+            <field type="float" name="low_am_150" units="%">Aplitude modulation of 150Hz of low freq channel.</field>
+            <field type="int16_t" name="low_freq_150" units="Hz">Frequency offset of signal 150 Hz of low freq channel.</field>
+            <!-- Clearance measure data -->
+            <field type="float" name="high_power" units="dBm">Input power of high freq channel.</field>
+            <field type="int16_t" name="high_carrier_offset" units="Hz">Carrier frequency offset of high freq channel.</field>
+            <field type="float" name="high_am_90" units="%">Aplitude modulation of 90Hz of high freq channel.</field>
+            <field type="int16_t" name="high_freq_90" units="Hz">Frequency offset of signal 90 Hz of high freq channel.</field>
+            <field type="float" name="high_am_150" units="% E2">Aplitude modulation of 150Hz of high freq channel.</field>
+            <field type="int16_t" name="high_freq_150" units="Hz">Frequency offset of signal 150 Hz of high freq channel.</field>
 
-            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+            
         </message>
 
         <message id="13462" name="ASV_RSGA_RTT_RX_GP">
@@ -608,36 +608,39 @@
             <field type="uint32_t" name="index">Data index in record</field>
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
-            <!-- Course measure data -->
-            <field type="float" name="crs_power" units="dBm">Input power of course.</field>
-            <field type="int16_t" name="crs_carrier_offset" units="Hz">Carrier frequency offset of course.</field>
-            <field type="float" name="crs_am_90" units="%">Aplitude modulation of 90Hz of course.</field>
-            <field type="int16_t" name="crs_freq_90" units="Hz">Frequency offset of signal 90 Hz of course.</field>
-            <field type="float" name="crs_am_150" units="%">Aplitude modulation of 150Hz of course.</field>
-            <field type="int16_t" name="crs_freq_150" units="Hz">Frequency offset of signal 150 Hz of course.</field>
-            <!-- Clearance measure data -->
-            <field type="float" name="clr_power" units="dBm">Input power of clearance.</field>
-            <field type="int16_t" name="clr_carrier_offset" units="Hz">Carrier frequency offset of clearance.</field>
-            <field type="float" name="clr_am_90" units="%">Aplitude modulation of 90Hz of clearance.</field>
-            <field type="int16_t" name="clr_freq_90" units="Hz">Frequency offset of signal 90 Hz of clearance.</field>
-            <field type="float" name="clr_am_150" units="% E2">Aplitude modulation of 150Hz of clearance.</field>
-            <field type="int16_t" name="clr_freq_150" units="Hz">Frequency offset of signal 150 Hz of clearance.</field>
-            <!-- Total measure data -->
-            <field type="uint64_t" name="total_freq" units="Hz">Measured frequency.</field>
-            <field type="int16_t" name="total_carrier_offset" units="Hz">Total carrier frequency offset.</field>
-            <field type="float" name="total_power" units="dBm">Total input power.</field>
-            <field type="float" name="total_field_strength" units="uV/m">Total field strength.</field>
-
-            <field type="float" name="total_am_90" units="%">Total aplitude modulation of 90Hz.</field>
-            <field type="int16_t" name="total_freq_90" units="Hz">Total frequency offset of signal 90 Hz.</field>
-
-            <field type="float" name="total_am_150" units="%">Total aplitude modulation of 150Hz.</field>
-            <field type="int16_t" name="total_freq_150" units="Hz">Total frequency offset of signal 150 Hz.</field>
-
-            <field type="float" name="phi_90_crs_vs_clr" units="deg"> Phase difference 90 Hz clearance and cource</field>
-            <field type="float" name="phi_150_crs_vs_clr" units="deg">Phase difference 150 Hz clearance and cource.</field>
-
             <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+            <!--RX-->
+            <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
+            <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
+            <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
+            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).</field>
+            <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
+            <!-- High measure data -->
+            <field type="float" name="low_power" units="dBm">Input power of low freq channel.</field>
+            <field type="int16_t" name="low_carrier_offset" units="Hz">Carrier frequency offset of low freq channel.</field>
+            <field type="float" name="low_am_90" units="%">Aplitude modulation of 90Hz of low freq channel.</field>
+            <field type="int16_t" name="low_freq_90" units="Hz">Frequency offset of signal 90 Hz of low freq channel.</field>
+            <field type="float" name="low_am_150" units="%">Aplitude modulation of 150Hz of low freq channel.</field>
+            <field type="int16_t" name="low_freq_150" units="Hz">Frequency offset of signal 150 Hz of low freq channel.</field>
+            <!-- Low measure data -->
+            <field type="float" name="high_power" units="dBm">Input power of high freq channel.</field>
+            <field type="int16_t" name="high_carrier_offset" units="Hz">Carrier frequency offset of high freq channel.</field>
+            <field type="float" name="high_am_90" units="%">Aplitude modulation of 90Hz of high freq channel.</field>
+            <field type="int16_t" name="high_freq_90" units="Hz">Frequency offset of signal 90 Hz of high freq channel.</field>
+            <field type="float" name="high_am_150" units="% E2">Aplitude modulation of 150Hz of high freq channel.</field>
+            <field type="int16_t" name="high_freq_150" units="Hz">Frequency offset of signal 150 Hz of high freq channel.</field>
+            <!-- Total measure data -->
+
+            <field type="float" name="am_90" units="%">Total aplitude modulation of 90Hz.</field>
+            <field type="int16_t" name="freq_90" units="Hz">Total frequency offset of signal 90 Hz.</field>
+
+            <field type="float" name="am_150" units="%">Total aplitude modulation of 150Hz.</field>
+            <field type="int16_t" name="freq_150" units="Hz">Total frequency offset of signal 150 Hz.</field>
+
+            <field type="float" name="phi_90_low_vs_clr" units="deg"> Phase difference 90 Hz high freq channel and cource</field>
+            <field type="float" name="phi_150_low_vs_clr" units="deg">Phase difference 150 Hz high freq channel and cource.</field>
+
         </message>
         
         <message id="13463" name="ASV_RSGA_RTT_RX_VOR">
@@ -646,9 +649,15 @@
             <field type="uint32_t" name="index">Data index in record</field>
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
-            <!-- Total measure data -->
-            <field type="uint32_t" name="total_freq" units="Hz">Measured frequency.</field>
-            <field type="int16_t" name="carrier_offset" units="Hz">Total carrier frequency offset.</field>
+            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+            <!--RX-->
+            <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
+            <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
+            <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
+            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).</field>
+            <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
+            
             <field type="float" name="azimuth" units="deg">Measured azimuth.</field>
             <field type="float" name="power" units="dBm">Total input power.</field>
             <field type="float" name="field_strength" units="uV/m">Total field strength.</field>
@@ -665,7 +674,6 @@
             <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz.</field>
             <field type="char[4]" name="code_id" units="Letters">Code identification</field>
 
-            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
         </message>
         
         <message id="13464" name="ASV_RSGA_RTT_RX_MARKER">
@@ -674,10 +682,14 @@
             <field type="uint32_t" name="index">Data index in record</field>
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
-            <!-- Total measure data -->
-            <field type="uint32_t" name="total_freq" units="Hz">Measured frequency.</field>
-            <field type="float" name="power" units="dBm">Total input power.</field>
-            <field type="float" name="field_strength" units="uV/m">Total field strength.</field>
+            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+            <!--RX-->
+            <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
+            <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
+            <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
+            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).</field>
+            <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             <!-- 400 Hz component (Outer marker) -->
             <field type="float" name="am_400" units="%">Current AM modulation depth of the 400 Hz component.</field>
             <field type="float" name="am_400_max" units="%">Max AM modulation depth of the 400 Hz component.</field>
@@ -701,7 +713,6 @@
             <field type="float" name="dot_3000" units="ms">Length of a dot for the inner marker.</field>
             <field type="float" name="gap_3000" units="ms">Gap between two dashes for the inner marker.</field>
 
-            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
         </message>
         
         <message id="13465" name="ASV_RSGA_RTT_RX_GBAS">

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.2+82bde669fa8b85517700c6d12362e9f17d819d33 25-06-27.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.7+d9484f9f5540dd80d5a77d3c443060e81294469d 25-06-29.
 
 using System;
 using System.Text;
@@ -2578,7 +2578,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13460;
         
-        public const byte CrcExtra = 187;
+        public const byte CrcExtra = 243;
         
         public override int Id => MessageId;
         
@@ -2607,17 +2607,18 @@ namespace Asv.Mavlink.AsvRsga
             return (byte)(
             +8 // uint64_t time_unix_usec
             + 8 // uint64_t flags
-            +8 // uint64_t tx_freq
             +8 // uint64_t rx_freq
+            +8 // uint64_t tx_freq
             +4 // uint32_t index
-            +4 // float tx_power
-            +4 // float tx_gain
             +4 // float rx_power
             +4 // float rx_field_strength
             +4 // float rx_signal_overflow
             +4 // float rx_gain
+            +4 // float tx_power
+            +4 // float tx_gain
             +4 // float distance
             +4 // float reply_efficiency
+            +2 // int16_t measure_time
             +2 // int16_t rx_freq_offset
             +2 // uint16_t pulse_shape_rise
             +2 // uint16_t pulse_shape_duration
@@ -2625,7 +2626,6 @@ namespace Asv.Mavlink.AsvRsga
             +2 // uint16_t pulse_spacing
             +2 // uint16_t req_freq
             +2 // uint16_t hip_freq
-            +2 // int16_t measure_time
             +1 // int8_t pulse_shape_amplitude
             +CodeId.Length // char[4] code_id
             );
@@ -2639,17 +2639,18 @@ namespace Asv.Mavlink.AsvRsga
             var payloadSize = buffer.Length;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
-            TxFreq = BinSerialize.ReadULong(ref buffer);
             RxFreq = BinSerialize.ReadULong(ref buffer);
+            TxFreq = BinSerialize.ReadULong(ref buffer);
             Index = BinSerialize.ReadUInt(ref buffer);
-            TxPower = BinSerialize.ReadFloat(ref buffer);
-            TxGain = BinSerialize.ReadFloat(ref buffer);
             RxPower = BinSerialize.ReadFloat(ref buffer);
             RxFieldStrength = BinSerialize.ReadFloat(ref buffer);
             RxSignalOverflow = BinSerialize.ReadFloat(ref buffer);
             RxGain = BinSerialize.ReadFloat(ref buffer);
+            TxPower = BinSerialize.ReadFloat(ref buffer);
+            TxGain = BinSerialize.ReadFloat(ref buffer);
             Distance = BinSerialize.ReadFloat(ref buffer);
             ReplyEfficiency = BinSerialize.ReadFloat(ref buffer);
+            MeasureTime = BinSerialize.ReadShort(ref buffer);
             RxFreqOffset = BinSerialize.ReadShort(ref buffer);
             PulseShapeRise = BinSerialize.ReadUShort(ref buffer);
             PulseShapeDuration = BinSerialize.ReadUShort(ref buffer);
@@ -2657,7 +2658,6 @@ namespace Asv.Mavlink.AsvRsga
             PulseSpacing = BinSerialize.ReadUShort(ref buffer);
             ReqFreq = BinSerialize.ReadUShort(ref buffer);
             HipFreq = BinSerialize.ReadUShort(ref buffer);
-            MeasureTime = BinSerialize.ReadShort(ref buffer);
             PulseShapeAmplitude = (sbyte)BinSerialize.ReadByte(ref buffer);
             arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/89 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
@@ -2678,17 +2678,18 @@ namespace Asv.Mavlink.AsvRsga
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
-            BinSerialize.WriteULong(ref buffer,TxFreq);
             BinSerialize.WriteULong(ref buffer,RxFreq);
+            BinSerialize.WriteULong(ref buffer,TxFreq);
             BinSerialize.WriteUInt(ref buffer,Index);
-            BinSerialize.WriteFloat(ref buffer,TxPower);
-            BinSerialize.WriteFloat(ref buffer,TxGain);
             BinSerialize.WriteFloat(ref buffer,RxPower);
             BinSerialize.WriteFloat(ref buffer,RxFieldStrength);
             BinSerialize.WriteFloat(ref buffer,RxSignalOverflow);
             BinSerialize.WriteFloat(ref buffer,RxGain);
+            BinSerialize.WriteFloat(ref buffer,TxPower);
+            BinSerialize.WriteFloat(ref buffer,TxGain);
             BinSerialize.WriteFloat(ref buffer,Distance);
             BinSerialize.WriteFloat(ref buffer,ReplyEfficiency);
+            BinSerialize.WriteShort(ref buffer,MeasureTime);
             BinSerialize.WriteShort(ref buffer,RxFreqOffset);
             BinSerialize.WriteUShort(ref buffer,PulseShapeRise);
             BinSerialize.WriteUShort(ref buffer,PulseShapeDuration);
@@ -2696,7 +2697,6 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteUShort(ref buffer,PulseSpacing);
             BinSerialize.WriteUShort(ref buffer,ReqFreq);
             BinSerialize.WriteUShort(ref buffer,HipFreq);
-            BinSerialize.WriteShort(ref buffer,MeasureTime);
             BinSerialize.WriteByte(ref buffer,(byte)PulseShapeAmplitude);
             unsafe
             {
@@ -2717,17 +2717,18 @@ namespace Asv.Mavlink.AsvRsga
             var tmpFlags = (ulong)Flags;
             UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,TxFreqField, TxFreqField.DataType, ref _txFreq);    
             UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
+            UInt64Type.Accept(visitor,TxFreqField, TxFreqField.DataType, ref _txFreq);    
             UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
-            FloatType.Accept(visitor,TxPowerField, TxPowerField.DataType, ref _txPower);    
-            FloatType.Accept(visitor,TxGainField, TxGainField.DataType, ref _txGain);    
             FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
             FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
             FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
             FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
+            FloatType.Accept(visitor,TxPowerField, TxPowerField.DataType, ref _txPower);    
+            FloatType.Accept(visitor,TxGainField, TxGainField.DataType, ref _txGain);    
             FloatType.Accept(visitor,DistanceField, DistanceField.DataType, ref _distance);    
             FloatType.Accept(visitor,ReplyEfficiencyField, ReplyEfficiencyField.DataType, ref _replyEfficiency);    
+            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
             Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
             UInt16Type.Accept(visitor,PulseShapeRiseField, PulseShapeRiseField.DataType, ref _pulseShapeRise);    
             UInt16Type.Accept(visitor,PulseShapeDurationField, PulseShapeDurationField.DataType, ref _pulseShapeDuration);    
@@ -2735,7 +2736,6 @@ namespace Asv.Mavlink.AsvRsga
             UInt16Type.Accept(visitor,PulseSpacingField, PulseSpacingField.DataType, ref _pulseSpacing);    
             UInt16Type.Accept(visitor,ReqFreqField, ReqFreqField.DataType, ref _reqFreq);    
             UInt16Type.Accept(visitor,HipFreqField, HipFreqField.DataType, ref _hipFreq);    
-            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
             Int8Type.Accept(visitor,PulseShapeAmplitudeField, PulseShapeAmplitudeField.DataType, ref _pulseShapeAmplitude);                
             ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
@@ -2769,19 +2769,6 @@ namespace Asv.Mavlink.AsvRsga
         private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
-        /// TX frequency
-        /// OriginName: tx_freq, Units: Hz, IsExtended: false
-        /// </summary>
-        public static readonly Field TxFreqField = new Field.Builder()
-            .Name(nameof(TxFreq))
-            .Title("tx_freq")
-            .Description("TX frequency")
-.Units(@"Hz")
-            .DataType(UInt64Type.Default)
-        .Build();
-        private ulong _txFreq;
-        public ulong TxFreq { get => _txFreq; set => _txFreq = value; }
-        /// <summary>
         /// RX frequency
         /// OriginName: rx_freq, Units: Hz, IsExtended: false
         /// </summary>
@@ -2795,6 +2782,19 @@ namespace Asv.Mavlink.AsvRsga
         private ulong _rxFreq;
         public ulong RxFreq { get => _rxFreq; set => _rxFreq = value; }
         /// <summary>
+        /// TX frequency
+        /// OriginName: tx_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field TxFreqField = new Field.Builder()
+            .Name(nameof(TxFreq))
+            .Title("tx_freq")
+            .Description("TX frequency")
+.Units(@"Hz")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _txFreq;
+        public ulong TxFreq { get => _txFreq; set => _txFreq = value; }
+        /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
@@ -2807,32 +2807,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
-        /// <summary>
-        /// Output power
-        /// OriginName: tx_power, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field TxPowerField = new Field.Builder()
-            .Name(nameof(TxPower))
-            .Title("tx_power")
-            .Description("Output power")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _txPower;
-        public float TxPower { get => _txPower; set => _txPower = value; }
-        /// <summary>
-        /// Percent of total TX gain level (0.0 - 1.0)
-        /// OriginName: tx_gain, Units: %, IsExtended: false
-        /// </summary>
-        public static readonly Field TxGainField = new Field.Builder()
-            .Name(nameof(TxGain))
-            .Title("tx_gain")
-            .Description("Percent of total TX gain level (0.0 - 1.0)")
-.Units(@"%")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _txGain;
-        public float TxGain { get => _txGain; set => _txGain = value; }
         /// <summary>
         /// Receive power (peak)
         /// OriginName: rx_power, Units: dBm, IsExtended: false
@@ -2860,13 +2834,13 @@ namespace Asv.Mavlink.AsvRsga
         private float _rxFieldStrength;
         public float RxFieldStrength { get => _rxFieldStrength; set => _rxFieldStrength = value; }
         /// <summary>
-        /// Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong).
+        /// Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).
         /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
         /// </summary>
         public static readonly Field RxSignalOverflowField = new Field.Builder()
             .Name(nameof(RxSignalOverflow))
             .Title("rx_signal_overflow")
-            .Description("Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).")
+            .Description("Signal overflow indicator (\u22640.2 \u2014 too low, \u22650.8 \u2014 too high).")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
@@ -2885,6 +2859,32 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private float _rxGain;
         public float RxGain { get => _rxGain; set => _rxGain = value; }
+        /// <summary>
+        /// Output power
+        /// OriginName: tx_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field TxPowerField = new Field.Builder()
+            .Name(nameof(TxPower))
+            .Title("tx_power")
+            .Description("Output power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _txPower;
+        public float TxPower { get => _txPower; set => _txPower = value; }
+        /// <summary>
+        /// Percent of total TX gain level (0.0 - 1.0)
+        /// OriginName: tx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field TxGainField = new Field.Builder()
+            .Name(nameof(TxGain))
+            .Title("tx_gain")
+            .Description("Percent of total TX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _txGain;
+        public float TxGain { get => _txGain; set => _txGain = value; }
         /// <summary>
         /// Measured distance
         /// OriginName: distance, Units: m, IsExtended: false
@@ -2911,6 +2911,19 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private float _replyEfficiency;
         public float ReplyEfficiency { get => _replyEfficiency; set => _replyEfficiency = value; }
+        /// <summary>
+        /// Measure time.
+        /// OriginName: measure_time, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field MeasureTimeField = new Field.Builder()
+            .Name(nameof(MeasureTime))
+            .Title("measure_time")
+            .Description("Measure time.")
+.Units(@"ms")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _measureTime;
+        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
         /// <summary>
         /// RX frequency offset
         /// OriginName: rx_freq_offset, Units: Hz, IsExtended: false
@@ -3003,19 +3016,6 @@ namespace Asv.Mavlink.AsvRsga
         private ushort _hipFreq;
         public ushort HipFreq { get => _hipFreq; set => _hipFreq = value; }
         /// <summary>
-        /// Measure time.
-        /// OriginName: measure_time, Units: ms, IsExtended: false
-        /// </summary>
-        public static readonly Field MeasureTimeField = new Field.Builder()
-            .Name(nameof(MeasureTime))
-            .Title("measure_time")
-            .Description("Measure time.")
-.Units(@"ms")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _measureTime;
-        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
-        /// <summary>
         /// Pulse shape: amplitude (between 95% rise/fall amplitudes, ≥95% of maximum amplitude)
         /// OriginName: pulse_shape_amplitude, Units: %, IsExtended: false
         /// </summary>
@@ -3052,7 +3052,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13461;
         
-        public const byte CrcExtra = 50;
+        public const byte CrcExtra = 111;
         
         public override int Id => MessageId;
         
@@ -3072,41 +3072,43 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttRxLlzPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 106; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 114; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 106; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 114; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
             return (byte)(
             +8 // uint64_t time_unix_usec
             + 8 // uint64_t flags
-            +8 // uint64_t total_freq
+            +8 // uint64_t rx_freq
             +4 // uint32_t index
-            +4 // float crs_power
-            +4 // float crs_am_90
-            +4 // float crs_am_150
-            +4 // float clr_power
-            +4 // float clr_am_90
-            +4 // float clr_am_150
-            +4 // float total_power
-            +4 // float total_field_strength
-            +4 // float total_am_90
-            +4 // float total_am_150
-            +4 // float phi_90_crs_vs_clr
-            +4 // float phi_150_crs_vs_clr
+            +4 // float rx_power
+            +4 // float rx_field_strength
+            +4 // float rx_signal_overflow
+            +4 // float rx_gain
+            +4 // float am_90
+            +4 // float am_150
             +4 // float code_id_am_1020
-            +2 // int16_t crs_carrier_offset
-            +2 // int16_t crs_freq_90
-            +2 // int16_t crs_freq_150
-            +2 // int16_t clr_carrier_offset
-            +2 // int16_t clr_freq_90
-            +2 // int16_t clr_freq_150
-            +2 // int16_t total_carrier_offset
-            +2 // int16_t total_freq_90
-            +2 // int16_t total_freq_150
-            +2 // int16_t code_id_freq_1020
+            +4 // float phi_90_low_vs_high
+            +4 // float phi_150_low_vs_high
+            +4 // float low_power
+            +4 // float low_am_90
+            +4 // float low_am_150
+            +4 // float high_power
+            +4 // float high_am_90
+            +4 // float high_am_150
             +2 // int16_t measure_time
+            +2 // int16_t rx_freq_offset
+            +2 // int16_t freq_90
+            +2 // int16_t freq_150
+            +2 // int16_t code_id_freq_1020
+            +2 // int16_t low_carrier_offset
+            +2 // int16_t low_freq_90
+            +2 // int16_t low_freq_150
+            +2 // int16_t high_carrier_offset
+            +2 // int16_t high_freq_90
+            +2 // int16_t high_freq_150
             +CodeId.Length // char[4] code_id
             );
         }
@@ -3119,33 +3121,35 @@ namespace Asv.Mavlink.AsvRsga
             var payloadSize = buffer.Length;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
-            TotalFreq = BinSerialize.ReadULong(ref buffer);
+            RxFreq = BinSerialize.ReadULong(ref buffer);
             Index = BinSerialize.ReadUInt(ref buffer);
-            CrsPower = BinSerialize.ReadFloat(ref buffer);
-            CrsAm90 = BinSerialize.ReadFloat(ref buffer);
-            CrsAm150 = BinSerialize.ReadFloat(ref buffer);
-            ClrPower = BinSerialize.ReadFloat(ref buffer);
-            ClrAm90 = BinSerialize.ReadFloat(ref buffer);
-            ClrAm150 = BinSerialize.ReadFloat(ref buffer);
-            TotalPower = BinSerialize.ReadFloat(ref buffer);
-            TotalFieldStrength = BinSerialize.ReadFloat(ref buffer);
-            TotalAm90 = BinSerialize.ReadFloat(ref buffer);
-            TotalAm150 = BinSerialize.ReadFloat(ref buffer);
-            Phi90CrsVsClr = BinSerialize.ReadFloat(ref buffer);
-            Phi150CrsVsClr = BinSerialize.ReadFloat(ref buffer);
+            RxPower = BinSerialize.ReadFloat(ref buffer);
+            RxFieldStrength = BinSerialize.ReadFloat(ref buffer);
+            RxSignalOverflow = BinSerialize.ReadFloat(ref buffer);
+            RxGain = BinSerialize.ReadFloat(ref buffer);
+            Am90 = BinSerialize.ReadFloat(ref buffer);
+            Am150 = BinSerialize.ReadFloat(ref buffer);
             CodeIdAm1020 = BinSerialize.ReadFloat(ref buffer);
-            CrsCarrierOffset = BinSerialize.ReadShort(ref buffer);
-            CrsFreq90 = BinSerialize.ReadShort(ref buffer);
-            CrsFreq150 = BinSerialize.ReadShort(ref buffer);
-            ClrCarrierOffset = BinSerialize.ReadShort(ref buffer);
-            ClrFreq90 = BinSerialize.ReadShort(ref buffer);
-            ClrFreq150 = BinSerialize.ReadShort(ref buffer);
-            TotalCarrierOffset = BinSerialize.ReadShort(ref buffer);
-            TotalFreq90 = BinSerialize.ReadShort(ref buffer);
-            TotalFreq150 = BinSerialize.ReadShort(ref buffer);
-            CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
+            Phi90LowVsHigh = BinSerialize.ReadFloat(ref buffer);
+            Phi150LowVsHigh = BinSerialize.ReadFloat(ref buffer);
+            LowPower = BinSerialize.ReadFloat(ref buffer);
+            LowAm90 = BinSerialize.ReadFloat(ref buffer);
+            LowAm150 = BinSerialize.ReadFloat(ref buffer);
+            HighPower = BinSerialize.ReadFloat(ref buffer);
+            HighAm90 = BinSerialize.ReadFloat(ref buffer);
+            HighAm150 = BinSerialize.ReadFloat(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/106 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RxFreqOffset = BinSerialize.ReadShort(ref buffer);
+            Freq90 = BinSerialize.ReadShort(ref buffer);
+            Freq150 = BinSerialize.ReadShort(ref buffer);
+            CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
+            LowCarrierOffset = BinSerialize.ReadShort(ref buffer);
+            LowFreq90 = BinSerialize.ReadShort(ref buffer);
+            LowFreq150 = BinSerialize.ReadShort(ref buffer);
+            HighCarrierOffset = BinSerialize.ReadShort(ref buffer);
+            HighFreq90 = BinSerialize.ReadShort(ref buffer);
+            HighFreq150 = BinSerialize.ReadShort(ref buffer);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/114 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             unsafe
             {
@@ -3164,32 +3168,34 @@ namespace Asv.Mavlink.AsvRsga
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
-            BinSerialize.WriteULong(ref buffer,TotalFreq);
+            BinSerialize.WriteULong(ref buffer,RxFreq);
             BinSerialize.WriteUInt(ref buffer,Index);
-            BinSerialize.WriteFloat(ref buffer,CrsPower);
-            BinSerialize.WriteFloat(ref buffer,CrsAm90);
-            BinSerialize.WriteFloat(ref buffer,CrsAm150);
-            BinSerialize.WriteFloat(ref buffer,ClrPower);
-            BinSerialize.WriteFloat(ref buffer,ClrAm90);
-            BinSerialize.WriteFloat(ref buffer,ClrAm150);
-            BinSerialize.WriteFloat(ref buffer,TotalPower);
-            BinSerialize.WriteFloat(ref buffer,TotalFieldStrength);
-            BinSerialize.WriteFloat(ref buffer,TotalAm90);
-            BinSerialize.WriteFloat(ref buffer,TotalAm150);
-            BinSerialize.WriteFloat(ref buffer,Phi90CrsVsClr);
-            BinSerialize.WriteFloat(ref buffer,Phi150CrsVsClr);
+            BinSerialize.WriteFloat(ref buffer,RxPower);
+            BinSerialize.WriteFloat(ref buffer,RxFieldStrength);
+            BinSerialize.WriteFloat(ref buffer,RxSignalOverflow);
+            BinSerialize.WriteFloat(ref buffer,RxGain);
+            BinSerialize.WriteFloat(ref buffer,Am90);
+            BinSerialize.WriteFloat(ref buffer,Am150);
             BinSerialize.WriteFloat(ref buffer,CodeIdAm1020);
-            BinSerialize.WriteShort(ref buffer,CrsCarrierOffset);
-            BinSerialize.WriteShort(ref buffer,CrsFreq90);
-            BinSerialize.WriteShort(ref buffer,CrsFreq150);
-            BinSerialize.WriteShort(ref buffer,ClrCarrierOffset);
-            BinSerialize.WriteShort(ref buffer,ClrFreq90);
-            BinSerialize.WriteShort(ref buffer,ClrFreq150);
-            BinSerialize.WriteShort(ref buffer,TotalCarrierOffset);
-            BinSerialize.WriteShort(ref buffer,TotalFreq90);
-            BinSerialize.WriteShort(ref buffer,TotalFreq150);
-            BinSerialize.WriteShort(ref buffer,CodeIdFreq1020);
+            BinSerialize.WriteFloat(ref buffer,Phi90LowVsHigh);
+            BinSerialize.WriteFloat(ref buffer,Phi150LowVsHigh);
+            BinSerialize.WriteFloat(ref buffer,LowPower);
+            BinSerialize.WriteFloat(ref buffer,LowAm90);
+            BinSerialize.WriteFloat(ref buffer,LowAm150);
+            BinSerialize.WriteFloat(ref buffer,HighPower);
+            BinSerialize.WriteFloat(ref buffer,HighAm90);
+            BinSerialize.WriteFloat(ref buffer,HighAm150);
             BinSerialize.WriteShort(ref buffer,MeasureTime);
+            BinSerialize.WriteShort(ref buffer,RxFreqOffset);
+            BinSerialize.WriteShort(ref buffer,Freq90);
+            BinSerialize.WriteShort(ref buffer,Freq150);
+            BinSerialize.WriteShort(ref buffer,CodeIdFreq1020);
+            BinSerialize.WriteShort(ref buffer,LowCarrierOffset);
+            BinSerialize.WriteShort(ref buffer,LowFreq90);
+            BinSerialize.WriteShort(ref buffer,LowFreq150);
+            BinSerialize.WriteShort(ref buffer,HighCarrierOffset);
+            BinSerialize.WriteShort(ref buffer,HighFreq90);
+            BinSerialize.WriteShort(ref buffer,HighFreq150);
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -3200,7 +3206,7 @@ namespace Asv.Mavlink.AsvRsga
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 106 */;
+            /* PayloadByteSize = 114 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -3209,32 +3215,34 @@ namespace Asv.Mavlink.AsvRsga
             var tmpFlags = (ulong)Flags;
             UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
+            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
             UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
-            FloatType.Accept(visitor,CrsPowerField, CrsPowerField.DataType, ref _crsPower);    
-            FloatType.Accept(visitor,CrsAm90Field, CrsAm90Field.DataType, ref _crsAm90);    
-            FloatType.Accept(visitor,CrsAm150Field, CrsAm150Field.DataType, ref _crsAm150);    
-            FloatType.Accept(visitor,ClrPowerField, ClrPowerField.DataType, ref _clrPower);    
-            FloatType.Accept(visitor,ClrAm90Field, ClrAm90Field.DataType, ref _clrAm90);    
-            FloatType.Accept(visitor,ClrAm150Field, ClrAm150Field.DataType, ref _clrAm150);    
-            FloatType.Accept(visitor,TotalPowerField, TotalPowerField.DataType, ref _totalPower);    
-            FloatType.Accept(visitor,TotalFieldStrengthField, TotalFieldStrengthField.DataType, ref _totalFieldStrength);    
-            FloatType.Accept(visitor,TotalAm90Field, TotalAm90Field.DataType, ref _totalAm90);    
-            FloatType.Accept(visitor,TotalAm150Field, TotalAm150Field.DataType, ref _totalAm150);    
-            FloatType.Accept(visitor,Phi90CrsVsClrField, Phi90CrsVsClrField.DataType, ref _phi90CrsVsClr);    
-            FloatType.Accept(visitor,Phi150CrsVsClrField, Phi150CrsVsClrField.DataType, ref _phi150CrsVsClr);    
+            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
+            FloatType.Accept(visitor,Am90Field, Am90Field.DataType, ref _am90);    
+            FloatType.Accept(visitor,Am150Field, Am150Field.DataType, ref _am150);    
             FloatType.Accept(visitor,CodeIdAm1020Field, CodeIdAm1020Field.DataType, ref _codeIdAm1020);    
-            Int16Type.Accept(visitor,CrsCarrierOffsetField, CrsCarrierOffsetField.DataType, ref _crsCarrierOffset);
-            Int16Type.Accept(visitor,CrsFreq90Field, CrsFreq90Field.DataType, ref _crsFreq90);
-            Int16Type.Accept(visitor,CrsFreq150Field, CrsFreq150Field.DataType, ref _crsFreq150);
-            Int16Type.Accept(visitor,ClrCarrierOffsetField, ClrCarrierOffsetField.DataType, ref _clrCarrierOffset);
-            Int16Type.Accept(visitor,ClrFreq90Field, ClrFreq90Field.DataType, ref _clrFreq90);
-            Int16Type.Accept(visitor,ClrFreq150Field, ClrFreq150Field.DataType, ref _clrFreq150);
-            Int16Type.Accept(visitor,TotalCarrierOffsetField, TotalCarrierOffsetField.DataType, ref _totalCarrierOffset);
-            Int16Type.Accept(visitor,TotalFreq90Field, TotalFreq90Field.DataType, ref _totalFreq90);
-            Int16Type.Accept(visitor,TotalFreq150Field, TotalFreq150Field.DataType, ref _totalFreq150);
-            Int16Type.Accept(visitor,CodeIdFreq1020Field, CodeIdFreq1020Field.DataType, ref _codeIdFreq1020);
+            FloatType.Accept(visitor,Phi90LowVsHighField, Phi90LowVsHighField.DataType, ref _phi90LowVsHigh);    
+            FloatType.Accept(visitor,Phi150LowVsHighField, Phi150LowVsHighField.DataType, ref _phi150LowVsHigh);    
+            FloatType.Accept(visitor,LowPowerField, LowPowerField.DataType, ref _lowPower);    
+            FloatType.Accept(visitor,LowAm90Field, LowAm90Field.DataType, ref _lowAm90);    
+            FloatType.Accept(visitor,LowAm150Field, LowAm150Field.DataType, ref _lowAm150);    
+            FloatType.Accept(visitor,HighPowerField, HighPowerField.DataType, ref _highPower);    
+            FloatType.Accept(visitor,HighAm90Field, HighAm90Field.DataType, ref _highAm90);    
+            FloatType.Accept(visitor,HighAm150Field, HighAm150Field.DataType, ref _highAm150);    
             Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
+            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
+            Int16Type.Accept(visitor,Freq90Field, Freq90Field.DataType, ref _freq90);
+            Int16Type.Accept(visitor,Freq150Field, Freq150Field.DataType, ref _freq150);
+            Int16Type.Accept(visitor,CodeIdFreq1020Field, CodeIdFreq1020Field.DataType, ref _codeIdFreq1020);
+            Int16Type.Accept(visitor,LowCarrierOffsetField, LowCarrierOffsetField.DataType, ref _lowCarrierOffset);
+            Int16Type.Accept(visitor,LowFreq90Field, LowFreq90Field.DataType, ref _lowFreq90);
+            Int16Type.Accept(visitor,LowFreq150Field, LowFreq150Field.DataType, ref _lowFreq150);
+            Int16Type.Accept(visitor,HighCarrierOffsetField, HighCarrierOffsetField.DataType, ref _highCarrierOffset);
+            Int16Type.Accept(visitor,HighFreq90Field, HighFreq90Field.DataType, ref _highFreq90);
+            Int16Type.Accept(visitor,HighFreq150Field, HighFreq150Field.DataType, ref _highFreq150);
             ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
@@ -3267,18 +3275,18 @@ namespace Asv.Mavlink.AsvRsga
         private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
-        /// Measured frequency.
-        /// OriginName: total_freq, Units: Hz, IsExtended: false
+        /// RX frequency
+        /// OriginName: rx_freq, Units: Hz, IsExtended: false
         /// </summary>
-        public static readonly Field TotalFreqField = new Field.Builder()
-            .Name(nameof(TotalFreq))
-            .Title("total_freq")
-            .Description("Measured frequency.")
+        public static readonly Field RxFreqField = new Field.Builder()
+            .Name(nameof(RxFreq))
+            .Title("rx_freq")
+            .Description("RX frequency")
 .Units(@"Hz")
             .DataType(UInt64Type.Default)
         .Build();
-        private ulong _totalFreq;
-        public ulong TotalFreq { get => _totalFreq; set => _totalFreq = value; }
+        private ulong _rxFreq;
+        public ulong RxFreq { get => _rxFreq; set => _rxFreq = value; }
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
@@ -3293,161 +3301,83 @@ namespace Asv.Mavlink.AsvRsga
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
         /// <summary>
-        /// Input power of course.
-        /// OriginName: crs_power, Units: dBm, IsExtended: false
+        /// Receive power (peak)
+        /// OriginName: rx_power, Units: dBm, IsExtended: false
         /// </summary>
-        public static readonly Field CrsPowerField = new Field.Builder()
-            .Name(nameof(CrsPower))
-            .Title("crs_power")
-            .Description("Input power of course.")
+        public static readonly Field RxPowerField = new Field.Builder()
+            .Name(nameof(RxPower))
+            .Title("rx_power")
+            .Description("Receive power (peak)")
 .Units(@"dBm")
             .DataType(FloatType.Default)
         .Build();
-        private float _crsPower;
-        public float CrsPower { get => _crsPower; set => _crsPower = value; }
+        private float _rxPower;
+        public float RxPower { get => _rxPower; set => _rxPower = value; }
         /// <summary>
-        /// Aplitude modulation of 90Hz of course.
-        /// OriginName: crs_am_90, Units: %, IsExtended: false
+        /// Receive power field strength.
+        /// OriginName: rx_field_strength, Units: uV/m, IsExtended: false
         /// </summary>
-        public static readonly Field CrsAm90Field = new Field.Builder()
-            .Name(nameof(CrsAm90))
-            .Title("crs_am_90")
-            .Description("Aplitude modulation of 90Hz of course.")
-.Units(@"%")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _crsAm90;
-        public float CrsAm90 { get => _crsAm90; set => _crsAm90 = value; }
-        /// <summary>
-        /// Aplitude modulation of 150Hz of course.
-        /// OriginName: crs_am_150, Units: %, IsExtended: false
-        /// </summary>
-        public static readonly Field CrsAm150Field = new Field.Builder()
-            .Name(nameof(CrsAm150))
-            .Title("crs_am_150")
-            .Description("Aplitude modulation of 150Hz of course.")
-.Units(@"%")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _crsAm150;
-        public float CrsAm150 { get => _crsAm150; set => _crsAm150 = value; }
-        /// <summary>
-        /// Input power of clearance.
-        /// OriginName: clr_power, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field ClrPowerField = new Field.Builder()
-            .Name(nameof(ClrPower))
-            .Title("clr_power")
-            .Description("Input power of clearance.")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _clrPower;
-        public float ClrPower { get => _clrPower; set => _clrPower = value; }
-        /// <summary>
-        /// Aplitude modulation of 90Hz of clearance.
-        /// OriginName: clr_am_90, Units: %, IsExtended: false
-        /// </summary>
-        public static readonly Field ClrAm90Field = new Field.Builder()
-            .Name(nameof(ClrAm90))
-            .Title("clr_am_90")
-            .Description("Aplitude modulation of 90Hz of clearance.")
-.Units(@"%")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _clrAm90;
-        public float ClrAm90 { get => _clrAm90; set => _clrAm90 = value; }
-        /// <summary>
-        /// Aplitude modulation of 150Hz of clearance.
-        /// OriginName: clr_am_150, Units: % E2, IsExtended: false
-        /// </summary>
-        public static readonly Field ClrAm150Field = new Field.Builder()
-            .Name(nameof(ClrAm150))
-            .Title("clr_am_150")
-            .Description("Aplitude modulation of 150Hz of clearance.")
-.Units(@"% E2")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _clrAm150;
-        public float ClrAm150 { get => _clrAm150; set => _clrAm150 = value; }
-        /// <summary>
-        /// Total input power.
-        /// OriginName: total_power, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field TotalPowerField = new Field.Builder()
-            .Name(nameof(TotalPower))
-            .Title("total_power")
-            .Description("Total input power.")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _totalPower;
-        public float TotalPower { get => _totalPower; set => _totalPower = value; }
-        /// <summary>
-        /// Total field strength.
-        /// OriginName: total_field_strength, Units: uV/m, IsExtended: false
-        /// </summary>
-        public static readonly Field TotalFieldStrengthField = new Field.Builder()
-            .Name(nameof(TotalFieldStrength))
-            .Title("total_field_strength")
-            .Description("Total field strength.")
+        public static readonly Field RxFieldStrengthField = new Field.Builder()
+            .Name(nameof(RxFieldStrength))
+            .Title("rx_field_strength")
+            .Description("Receive power field strength.")
 .Units(@"uV/m")
             .DataType(FloatType.Default)
         .Build();
-        private float _totalFieldStrength;
-        public float TotalFieldStrength { get => _totalFieldStrength; set => _totalFieldStrength = value; }
+        private float _rxFieldStrength;
+        public float RxFieldStrength { get => _rxFieldStrength; set => _rxFieldStrength = value; }
+        /// <summary>
+        /// Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).
+        /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxSignalOverflowField = new Field.Builder()
+            .Name(nameof(RxSignalOverflow))
+            .Title("rx_signal_overflow")
+            .Description("Signal overflow indicator (\u22640.2 \u2014 too low, \u22650.8 \u2014 too high).")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxSignalOverflow;
+        public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
+        /// <summary>
+        /// Percent of total RX gain level (0.0 - 1.0)
+        /// OriginName: rx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxGainField = new Field.Builder()
+            .Name(nameof(RxGain))
+            .Title("rx_gain")
+            .Description("Percent of total RX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxGain;
+        public float RxGain { get => _rxGain; set => _rxGain = value; }
         /// <summary>
         /// Total aplitude modulation of 90Hz.
-        /// OriginName: total_am_90, Units: %, IsExtended: false
+        /// OriginName: am_90, Units: %, IsExtended: false
         /// </summary>
-        public static readonly Field TotalAm90Field = new Field.Builder()
-            .Name(nameof(TotalAm90))
-            .Title("total_am_90")
+        public static readonly Field Am90Field = new Field.Builder()
+            .Name(nameof(Am90))
+            .Title("am_90")
             .Description("Total aplitude modulation of 90Hz.")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
-        private float _totalAm90;
-        public float TotalAm90 { get => _totalAm90; set => _totalAm90 = value; }
+        private float _am90;
+        public float Am90 { get => _am90; set => _am90 = value; }
         /// <summary>
         /// Total aplitude modulation of 150Hz.
-        /// OriginName: total_am_150, Units: %, IsExtended: false
+        /// OriginName: am_150, Units: %, IsExtended: false
         /// </summary>
-        public static readonly Field TotalAm150Field = new Field.Builder()
-            .Name(nameof(TotalAm150))
-            .Title("total_am_150")
+        public static readonly Field Am150Field = new Field.Builder()
+            .Name(nameof(Am150))
+            .Title("am_150")
             .Description("Total aplitude modulation of 150Hz.")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
-        private float _totalAm150;
-        public float TotalAm150 { get => _totalAm150; set => _totalAm150 = value; }
-        /// <summary>
-        ///  Phase difference 90 Hz clearance and cource
-        /// OriginName: phi_90_crs_vs_clr, Units: deg, IsExtended: false
-        /// </summary>
-        public static readonly Field Phi90CrsVsClrField = new Field.Builder()
-            .Name(nameof(Phi90CrsVsClr))
-            .Title("phi_90_crs_vs_clr")
-            .Description(" Phase difference 90 Hz clearance and cource")
-.Units(@"deg")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _phi90CrsVsClr;
-        public float Phi90CrsVsClr { get => _phi90CrsVsClr; set => _phi90CrsVsClr = value; }
-        /// <summary>
-        /// Phase difference 150 Hz clearance and cource.
-        /// OriginName: phi_150_crs_vs_clr, Units: deg, IsExtended: false
-        /// </summary>
-        public static readonly Field Phi150CrsVsClrField = new Field.Builder()
-            .Name(nameof(Phi150CrsVsClr))
-            .Title("phi_150_crs_vs_clr")
-            .Description("Phase difference 150 Hz clearance and cource.")
-.Units(@"deg")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _phi150CrsVsClr;
-        public float Phi150CrsVsClr { get => _phi150CrsVsClr; set => _phi150CrsVsClr = value; }
+        private float _am150;
+        public float Am150 { get => _am150; set => _am150 = value; }
         /// <summary>
         /// Total aplitude modulation of 90Hz.
         /// OriginName: code_id_am_1020, Units: %, IsExtended: false
@@ -3462,122 +3392,161 @@ namespace Asv.Mavlink.AsvRsga
         private float _codeIdAm1020;
         public float CodeIdAm1020 { get => _codeIdAm1020; set => _codeIdAm1020 = value; }
         /// <summary>
-        /// Carrier frequency offset of course.
-        /// OriginName: crs_carrier_offset, Units: Hz, IsExtended: false
+        ///  Phase difference 90 Hz low and high freq channel
+        /// OriginName: phi_90_low_vs_high, Units: deg, IsExtended: false
         /// </summary>
-        public static readonly Field CrsCarrierOffsetField = new Field.Builder()
-            .Name(nameof(CrsCarrierOffset))
-            .Title("crs_carrier_offset")
-            .Description("Carrier frequency offset of course.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
+        public static readonly Field Phi90LowVsHighField = new Field.Builder()
+            .Name(nameof(Phi90LowVsHigh))
+            .Title("phi_90_low_vs_high")
+            .Description(" Phase difference 90 Hz low and high freq channel")
+.Units(@"deg")
+            .DataType(FloatType.Default)
         .Build();
-        private short _crsCarrierOffset;
-        public short CrsCarrierOffset { get => _crsCarrierOffset; set => _crsCarrierOffset = value; }
+        private float _phi90LowVsHigh;
+        public float Phi90LowVsHigh { get => _phi90LowVsHigh; set => _phi90LowVsHigh = value; }
         /// <summary>
-        /// Frequency offset of signal 90 Hz of course.
-        /// OriginName: crs_freq_90, Units: Hz, IsExtended: false
+        /// Phase difference 150 Hz low and high.
+        /// OriginName: phi_150_low_vs_high, Units: deg, IsExtended: false
         /// </summary>
-        public static readonly Field CrsFreq90Field = new Field.Builder()
-            .Name(nameof(CrsFreq90))
-            .Title("crs_freq_90")
-            .Description("Frequency offset of signal 90 Hz of course.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
+        public static readonly Field Phi150LowVsHighField = new Field.Builder()
+            .Name(nameof(Phi150LowVsHigh))
+            .Title("phi_150_low_vs_high")
+            .Description("Phase difference 150 Hz low and high.")
+.Units(@"deg")
+            .DataType(FloatType.Default)
         .Build();
-        private short _crsFreq90;
-        public short CrsFreq90 { get => _crsFreq90; set => _crsFreq90 = value; }
+        private float _phi150LowVsHigh;
+        public float Phi150LowVsHigh { get => _phi150LowVsHigh; set => _phi150LowVsHigh = value; }
         /// <summary>
-        /// Frequency offset of signal 150 Hz of course.
-        /// OriginName: crs_freq_150, Units: Hz, IsExtended: false
+        /// Input power of low freq channel.
+        /// OriginName: low_power, Units: dBm, IsExtended: false
         /// </summary>
-        public static readonly Field CrsFreq150Field = new Field.Builder()
-            .Name(nameof(CrsFreq150))
-            .Title("crs_freq_150")
-            .Description("Frequency offset of signal 150 Hz of course.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
+        public static readonly Field LowPowerField = new Field.Builder()
+            .Name(nameof(LowPower))
+            .Title("low_power")
+            .Description("Input power of low freq channel.")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
         .Build();
-        private short _crsFreq150;
-        public short CrsFreq150 { get => _crsFreq150; set => _crsFreq150 = value; }
+        private float _lowPower;
+        public float LowPower { get => _lowPower; set => _lowPower = value; }
         /// <summary>
-        /// Carrier frequency offset of clearance.
-        /// OriginName: clr_carrier_offset, Units: Hz, IsExtended: false
+        /// Aplitude modulation of 90Hz of low freq channel.
+        /// OriginName: low_am_90, Units: %, IsExtended: false
         /// </summary>
-        public static readonly Field ClrCarrierOffsetField = new Field.Builder()
-            .Name(nameof(ClrCarrierOffset))
-            .Title("clr_carrier_offset")
-            .Description("Carrier frequency offset of clearance.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
+        public static readonly Field LowAm90Field = new Field.Builder()
+            .Name(nameof(LowAm90))
+            .Title("low_am_90")
+            .Description("Aplitude modulation of 90Hz of low freq channel.")
+.Units(@"%")
+            .DataType(FloatType.Default)
         .Build();
-        private short _clrCarrierOffset;
-        public short ClrCarrierOffset { get => _clrCarrierOffset; set => _clrCarrierOffset = value; }
+        private float _lowAm90;
+        public float LowAm90 { get => _lowAm90; set => _lowAm90 = value; }
         /// <summary>
-        /// Frequency offset of signal 90 Hz of clearance.
-        /// OriginName: clr_freq_90, Units: Hz, IsExtended: false
+        /// Aplitude modulation of 150Hz of low freq channel.
+        /// OriginName: low_am_150, Units: %, IsExtended: false
         /// </summary>
-        public static readonly Field ClrFreq90Field = new Field.Builder()
-            .Name(nameof(ClrFreq90))
-            .Title("clr_freq_90")
-            .Description("Frequency offset of signal 90 Hz of clearance.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
+        public static readonly Field LowAm150Field = new Field.Builder()
+            .Name(nameof(LowAm150))
+            .Title("low_am_150")
+            .Description("Aplitude modulation of 150Hz of low freq channel.")
+.Units(@"%")
+            .DataType(FloatType.Default)
         .Build();
-        private short _clrFreq90;
-        public short ClrFreq90 { get => _clrFreq90; set => _clrFreq90 = value; }
+        private float _lowAm150;
+        public float LowAm150 { get => _lowAm150; set => _lowAm150 = value; }
         /// <summary>
-        /// Frequency offset of signal 150 Hz of clearance.
-        /// OriginName: clr_freq_150, Units: Hz, IsExtended: false
+        /// Input power of high freq channel.
+        /// OriginName: high_power, Units: dBm, IsExtended: false
         /// </summary>
-        public static readonly Field ClrFreq150Field = new Field.Builder()
-            .Name(nameof(ClrFreq150))
-            .Title("clr_freq_150")
-            .Description("Frequency offset of signal 150 Hz of clearance.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
+        public static readonly Field HighPowerField = new Field.Builder()
+            .Name(nameof(HighPower))
+            .Title("high_power")
+            .Description("Input power of high freq channel.")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
         .Build();
-        private short _clrFreq150;
-        public short ClrFreq150 { get => _clrFreq150; set => _clrFreq150 = value; }
+        private float _highPower;
+        public float HighPower { get => _highPower; set => _highPower = value; }
         /// <summary>
-        /// Total carrier frequency offset.
-        /// OriginName: total_carrier_offset, Units: Hz, IsExtended: false
+        /// Aplitude modulation of 90Hz of high freq channel.
+        /// OriginName: high_am_90, Units: %, IsExtended: false
         /// </summary>
-        public static readonly Field TotalCarrierOffsetField = new Field.Builder()
-            .Name(nameof(TotalCarrierOffset))
-            .Title("total_carrier_offset")
-            .Description("Total carrier frequency offset.")
+        public static readonly Field HighAm90Field = new Field.Builder()
+            .Name(nameof(HighAm90))
+            .Title("high_am_90")
+            .Description("Aplitude modulation of 90Hz of high freq channel.")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _highAm90;
+        public float HighAm90 { get => _highAm90; set => _highAm90 = value; }
+        /// <summary>
+        /// Aplitude modulation of 150Hz of high freq channel.
+        /// OriginName: high_am_150, Units: % E2, IsExtended: false
+        /// </summary>
+        public static readonly Field HighAm150Field = new Field.Builder()
+            .Name(nameof(HighAm150))
+            .Title("high_am_150")
+            .Description("Aplitude modulation of 150Hz of high freq channel.")
+.Units(@"% E2")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _highAm150;
+        public float HighAm150 { get => _highAm150; set => _highAm150 = value; }
+        /// <summary>
+        /// Measure time.
+        /// OriginName: measure_time, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field MeasureTimeField = new Field.Builder()
+            .Name(nameof(MeasureTime))
+            .Title("measure_time")
+            .Description("Measure time.")
+.Units(@"ms")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _measureTime;
+        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
+        /// <summary>
+        /// RX frequency offset
+        /// OriginName: rx_freq_offset, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field RxFreqOffsetField = new Field.Builder()
+            .Name(nameof(RxFreqOffset))
+            .Title("rx_freq_offset")
+            .Description("RX frequency offset")
 .Units(@"Hz")
             .DataType(Int16Type.Default)
         .Build();
-        private short _totalCarrierOffset;
-        public short TotalCarrierOffset { get => _totalCarrierOffset; set => _totalCarrierOffset = value; }
+        private short _rxFreqOffset;
+        public short RxFreqOffset { get => _rxFreqOffset; set => _rxFreqOffset = value; }
         /// <summary>
         /// Total frequency offset of signal 90 Hz.
-        /// OriginName: total_freq_90, Units: Hz, IsExtended: false
+        /// OriginName: freq_90, Units: Hz, IsExtended: false
         /// </summary>
-        public static readonly Field TotalFreq90Field = new Field.Builder()
-            .Name(nameof(TotalFreq90))
-            .Title("total_freq_90")
+        public static readonly Field Freq90Field = new Field.Builder()
+            .Name(nameof(Freq90))
+            .Title("freq_90")
             .Description("Total frequency offset of signal 90 Hz.")
 .Units(@"Hz")
             .DataType(Int16Type.Default)
         .Build();
-        private short _totalFreq90;
-        public short TotalFreq90 { get => _totalFreq90; set => _totalFreq90 = value; }
+        private short _freq90;
+        public short Freq90 { get => _freq90; set => _freq90 = value; }
         /// <summary>
         /// Total frequency offset of signal 150 Hz.
-        /// OriginName: total_freq_150, Units: Hz, IsExtended: false
+        /// OriginName: freq_150, Units: Hz, IsExtended: false
         /// </summary>
-        public static readonly Field TotalFreq150Field = new Field.Builder()
-            .Name(nameof(TotalFreq150))
-            .Title("total_freq_150")
+        public static readonly Field Freq150Field = new Field.Builder()
+            .Name(nameof(Freq150))
+            .Title("freq_150")
             .Description("Total frequency offset of signal 150 Hz.")
 .Units(@"Hz")
             .DataType(Int16Type.Default)
         .Build();
-        private short _totalFreq150;
-        public short TotalFreq150 { get => _totalFreq150; set => _totalFreq150 = value; }
+        private short _freq150;
+        public short Freq150 { get => _freq150; set => _freq150 = value; }
         /// <summary>
         /// Total frequency offset of signal 90 Hz.
         /// OriginName: code_id_freq_1020, Units: Hz, IsExtended: false
@@ -3592,18 +3561,83 @@ namespace Asv.Mavlink.AsvRsga
         private short _codeIdFreq1020;
         public short CodeIdFreq1020 { get => _codeIdFreq1020; set => _codeIdFreq1020 = value; }
         /// <summary>
-        /// Measure time.
-        /// OriginName: measure_time, Units: ms, IsExtended: false
+        /// Carrier frequency offset of low freq channel.
+        /// OriginName: low_carrier_offset, Units: Hz, IsExtended: false
         /// </summary>
-        public static readonly Field MeasureTimeField = new Field.Builder()
-            .Name(nameof(MeasureTime))
-            .Title("measure_time")
-            .Description("Measure time.")
-.Units(@"ms")
+        public static readonly Field LowCarrierOffsetField = new Field.Builder()
+            .Name(nameof(LowCarrierOffset))
+            .Title("low_carrier_offset")
+            .Description("Carrier frequency offset of low freq channel.")
+.Units(@"Hz")
             .DataType(Int16Type.Default)
         .Build();
-        private short _measureTime;
-        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
+        private short _lowCarrierOffset;
+        public short LowCarrierOffset { get => _lowCarrierOffset; set => _lowCarrierOffset = value; }
+        /// <summary>
+        /// Frequency offset of signal 90 Hz of low freq channel.
+        /// OriginName: low_freq_90, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field LowFreq90Field = new Field.Builder()
+            .Name(nameof(LowFreq90))
+            .Title("low_freq_90")
+            .Description("Frequency offset of signal 90 Hz of low freq channel.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _lowFreq90;
+        public short LowFreq90 { get => _lowFreq90; set => _lowFreq90 = value; }
+        /// <summary>
+        /// Frequency offset of signal 150 Hz of low freq channel.
+        /// OriginName: low_freq_150, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field LowFreq150Field = new Field.Builder()
+            .Name(nameof(LowFreq150))
+            .Title("low_freq_150")
+            .Description("Frequency offset of signal 150 Hz of low freq channel.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _lowFreq150;
+        public short LowFreq150 { get => _lowFreq150; set => _lowFreq150 = value; }
+        /// <summary>
+        /// Carrier frequency offset of high freq channel.
+        /// OriginName: high_carrier_offset, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field HighCarrierOffsetField = new Field.Builder()
+            .Name(nameof(HighCarrierOffset))
+            .Title("high_carrier_offset")
+            .Description("Carrier frequency offset of high freq channel.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _highCarrierOffset;
+        public short HighCarrierOffset { get => _highCarrierOffset; set => _highCarrierOffset = value; }
+        /// <summary>
+        /// Frequency offset of signal 90 Hz of high freq channel.
+        /// OriginName: high_freq_90, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field HighFreq90Field = new Field.Builder()
+            .Name(nameof(HighFreq90))
+            .Title("high_freq_90")
+            .Description("Frequency offset of signal 90 Hz of high freq channel.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _highFreq90;
+        public short HighFreq90 { get => _highFreq90; set => _highFreq90 = value; }
+        /// <summary>
+        /// Frequency offset of signal 150 Hz of high freq channel.
+        /// OriginName: high_freq_150, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field HighFreq150Field = new Field.Builder()
+            .Name(nameof(HighFreq150))
+            .Title("high_freq_150")
+            .Description("Frequency offset of signal 150 Hz of high freq channel.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _highFreq150;
+        public short HighFreq150 { get => _highFreq150; set => _highFreq150 = value; }
         /// <summary>
         /// Code identification
         /// OriginName: code_id, Units: Letters, IsExtended: false
@@ -3628,7 +3662,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13462;
         
-        public const byte CrcExtra = 191;
+        public const byte CrcExtra = 126;
         
         public override int Id => MessageId;
         
@@ -3648,39 +3682,41 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttRxGpPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 96; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 104; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 96; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 104; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
             return (byte)(
             +8 // uint64_t time_unix_usec
             + 8 // uint64_t flags
-            +8 // uint64_t total_freq
+            +8 // uint64_t rx_freq
             +4 // uint32_t index
-            +4 // float crs_power
-            +4 // float crs_am_90
-            +4 // float crs_am_150
-            +4 // float clr_power
-            +4 // float clr_am_90
-            +4 // float clr_am_150
-            +4 // float total_power
-            +4 // float total_field_strength
-            +4 // float total_am_90
-            +4 // float total_am_150
-            +4 // float phi_90_crs_vs_clr
-            +4 // float phi_150_crs_vs_clr
-            +2 // int16_t crs_carrier_offset
-            +2 // int16_t crs_freq_90
-            +2 // int16_t crs_freq_150
-            +2 // int16_t clr_carrier_offset
-            +2 // int16_t clr_freq_90
-            +2 // int16_t clr_freq_150
-            +2 // int16_t total_carrier_offset
-            +2 // int16_t total_freq_90
-            +2 // int16_t total_freq_150
+            +4 // float rx_power
+            +4 // float rx_field_strength
+            +4 // float rx_signal_overflow
+            +4 // float rx_gain
+            +4 // float low_power
+            +4 // float low_am_90
+            +4 // float low_am_150
+            +4 // float high_power
+            +4 // float high_am_90
+            +4 // float high_am_150
+            +4 // float am_90
+            +4 // float am_150
+            +4 // float phi_90_low_vs_clr
+            +4 // float phi_150_low_vs_clr
             +2 // int16_t measure_time
+            +2 // int16_t rx_freq_offset
+            +2 // int16_t low_carrier_offset
+            +2 // int16_t low_freq_90
+            +2 // int16_t low_freq_150
+            +2 // int16_t high_carrier_offset
+            +2 // int16_t high_freq_90
+            +2 // int16_t high_freq_150
+            +2 // int16_t freq_90
+            +2 // int16_t freq_150
             );
         }
 
@@ -3690,30 +3726,32 @@ namespace Asv.Mavlink.AsvRsga
         {
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
-            TotalFreq = BinSerialize.ReadULong(ref buffer);
+            RxFreq = BinSerialize.ReadULong(ref buffer);
             Index = BinSerialize.ReadUInt(ref buffer);
-            CrsPower = BinSerialize.ReadFloat(ref buffer);
-            CrsAm90 = BinSerialize.ReadFloat(ref buffer);
-            CrsAm150 = BinSerialize.ReadFloat(ref buffer);
-            ClrPower = BinSerialize.ReadFloat(ref buffer);
-            ClrAm90 = BinSerialize.ReadFloat(ref buffer);
-            ClrAm150 = BinSerialize.ReadFloat(ref buffer);
-            TotalPower = BinSerialize.ReadFloat(ref buffer);
-            TotalFieldStrength = BinSerialize.ReadFloat(ref buffer);
-            TotalAm90 = BinSerialize.ReadFloat(ref buffer);
-            TotalAm150 = BinSerialize.ReadFloat(ref buffer);
-            Phi90CrsVsClr = BinSerialize.ReadFloat(ref buffer);
-            Phi150CrsVsClr = BinSerialize.ReadFloat(ref buffer);
-            CrsCarrierOffset = BinSerialize.ReadShort(ref buffer);
-            CrsFreq90 = BinSerialize.ReadShort(ref buffer);
-            CrsFreq150 = BinSerialize.ReadShort(ref buffer);
-            ClrCarrierOffset = BinSerialize.ReadShort(ref buffer);
-            ClrFreq90 = BinSerialize.ReadShort(ref buffer);
-            ClrFreq150 = BinSerialize.ReadShort(ref buffer);
-            TotalCarrierOffset = BinSerialize.ReadShort(ref buffer);
-            TotalFreq90 = BinSerialize.ReadShort(ref buffer);
-            TotalFreq150 = BinSerialize.ReadShort(ref buffer);
+            RxPower = BinSerialize.ReadFloat(ref buffer);
+            RxFieldStrength = BinSerialize.ReadFloat(ref buffer);
+            RxSignalOverflow = BinSerialize.ReadFloat(ref buffer);
+            RxGain = BinSerialize.ReadFloat(ref buffer);
+            LowPower = BinSerialize.ReadFloat(ref buffer);
+            LowAm90 = BinSerialize.ReadFloat(ref buffer);
+            LowAm150 = BinSerialize.ReadFloat(ref buffer);
+            HighPower = BinSerialize.ReadFloat(ref buffer);
+            HighAm90 = BinSerialize.ReadFloat(ref buffer);
+            HighAm150 = BinSerialize.ReadFloat(ref buffer);
+            Am90 = BinSerialize.ReadFloat(ref buffer);
+            Am150 = BinSerialize.ReadFloat(ref buffer);
+            Phi90LowVsClr = BinSerialize.ReadFloat(ref buffer);
+            Phi150LowVsClr = BinSerialize.ReadFloat(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
+            RxFreqOffset = BinSerialize.ReadShort(ref buffer);
+            LowCarrierOffset = BinSerialize.ReadShort(ref buffer);
+            LowFreq90 = BinSerialize.ReadShort(ref buffer);
+            LowFreq150 = BinSerialize.ReadShort(ref buffer);
+            HighCarrierOffset = BinSerialize.ReadShort(ref buffer);
+            HighFreq90 = BinSerialize.ReadShort(ref buffer);
+            HighFreq150 = BinSerialize.ReadShort(ref buffer);
+            Freq90 = BinSerialize.ReadShort(ref buffer);
+            Freq150 = BinSerialize.ReadShort(ref buffer);
 
         }
 
@@ -3721,31 +3759,33 @@ namespace Asv.Mavlink.AsvRsga
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
-            BinSerialize.WriteULong(ref buffer,TotalFreq);
+            BinSerialize.WriteULong(ref buffer,RxFreq);
             BinSerialize.WriteUInt(ref buffer,Index);
-            BinSerialize.WriteFloat(ref buffer,CrsPower);
-            BinSerialize.WriteFloat(ref buffer,CrsAm90);
-            BinSerialize.WriteFloat(ref buffer,CrsAm150);
-            BinSerialize.WriteFloat(ref buffer,ClrPower);
-            BinSerialize.WriteFloat(ref buffer,ClrAm90);
-            BinSerialize.WriteFloat(ref buffer,ClrAm150);
-            BinSerialize.WriteFloat(ref buffer,TotalPower);
-            BinSerialize.WriteFloat(ref buffer,TotalFieldStrength);
-            BinSerialize.WriteFloat(ref buffer,TotalAm90);
-            BinSerialize.WriteFloat(ref buffer,TotalAm150);
-            BinSerialize.WriteFloat(ref buffer,Phi90CrsVsClr);
-            BinSerialize.WriteFloat(ref buffer,Phi150CrsVsClr);
-            BinSerialize.WriteShort(ref buffer,CrsCarrierOffset);
-            BinSerialize.WriteShort(ref buffer,CrsFreq90);
-            BinSerialize.WriteShort(ref buffer,CrsFreq150);
-            BinSerialize.WriteShort(ref buffer,ClrCarrierOffset);
-            BinSerialize.WriteShort(ref buffer,ClrFreq90);
-            BinSerialize.WriteShort(ref buffer,ClrFreq150);
-            BinSerialize.WriteShort(ref buffer,TotalCarrierOffset);
-            BinSerialize.WriteShort(ref buffer,TotalFreq90);
-            BinSerialize.WriteShort(ref buffer,TotalFreq150);
+            BinSerialize.WriteFloat(ref buffer,RxPower);
+            BinSerialize.WriteFloat(ref buffer,RxFieldStrength);
+            BinSerialize.WriteFloat(ref buffer,RxSignalOverflow);
+            BinSerialize.WriteFloat(ref buffer,RxGain);
+            BinSerialize.WriteFloat(ref buffer,LowPower);
+            BinSerialize.WriteFloat(ref buffer,LowAm90);
+            BinSerialize.WriteFloat(ref buffer,LowAm150);
+            BinSerialize.WriteFloat(ref buffer,HighPower);
+            BinSerialize.WriteFloat(ref buffer,HighAm90);
+            BinSerialize.WriteFloat(ref buffer,HighAm150);
+            BinSerialize.WriteFloat(ref buffer,Am90);
+            BinSerialize.WriteFloat(ref buffer,Am150);
+            BinSerialize.WriteFloat(ref buffer,Phi90LowVsClr);
+            BinSerialize.WriteFloat(ref buffer,Phi150LowVsClr);
             BinSerialize.WriteShort(ref buffer,MeasureTime);
-            /* PayloadByteSize = 96 */;
+            BinSerialize.WriteShort(ref buffer,RxFreqOffset);
+            BinSerialize.WriteShort(ref buffer,LowCarrierOffset);
+            BinSerialize.WriteShort(ref buffer,LowFreq90);
+            BinSerialize.WriteShort(ref buffer,LowFreq150);
+            BinSerialize.WriteShort(ref buffer,HighCarrierOffset);
+            BinSerialize.WriteShort(ref buffer,HighFreq90);
+            BinSerialize.WriteShort(ref buffer,HighFreq150);
+            BinSerialize.WriteShort(ref buffer,Freq90);
+            BinSerialize.WriteShort(ref buffer,Freq150);
+            /* PayloadByteSize = 104 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -3754,30 +3794,32 @@ namespace Asv.Mavlink.AsvRsga
             var tmpFlags = (ulong)Flags;
             UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
+            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
             UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
-            FloatType.Accept(visitor,CrsPowerField, CrsPowerField.DataType, ref _crsPower);    
-            FloatType.Accept(visitor,CrsAm90Field, CrsAm90Field.DataType, ref _crsAm90);    
-            FloatType.Accept(visitor,CrsAm150Field, CrsAm150Field.DataType, ref _crsAm150);    
-            FloatType.Accept(visitor,ClrPowerField, ClrPowerField.DataType, ref _clrPower);    
-            FloatType.Accept(visitor,ClrAm90Field, ClrAm90Field.DataType, ref _clrAm90);    
-            FloatType.Accept(visitor,ClrAm150Field, ClrAm150Field.DataType, ref _clrAm150);    
-            FloatType.Accept(visitor,TotalPowerField, TotalPowerField.DataType, ref _totalPower);    
-            FloatType.Accept(visitor,TotalFieldStrengthField, TotalFieldStrengthField.DataType, ref _totalFieldStrength);    
-            FloatType.Accept(visitor,TotalAm90Field, TotalAm90Field.DataType, ref _totalAm90);    
-            FloatType.Accept(visitor,TotalAm150Field, TotalAm150Field.DataType, ref _totalAm150);    
-            FloatType.Accept(visitor,Phi90CrsVsClrField, Phi90CrsVsClrField.DataType, ref _phi90CrsVsClr);    
-            FloatType.Accept(visitor,Phi150CrsVsClrField, Phi150CrsVsClrField.DataType, ref _phi150CrsVsClr);    
-            Int16Type.Accept(visitor,CrsCarrierOffsetField, CrsCarrierOffsetField.DataType, ref _crsCarrierOffset);
-            Int16Type.Accept(visitor,CrsFreq90Field, CrsFreq90Field.DataType, ref _crsFreq90);
-            Int16Type.Accept(visitor,CrsFreq150Field, CrsFreq150Field.DataType, ref _crsFreq150);
-            Int16Type.Accept(visitor,ClrCarrierOffsetField, ClrCarrierOffsetField.DataType, ref _clrCarrierOffset);
-            Int16Type.Accept(visitor,ClrFreq90Field, ClrFreq90Field.DataType, ref _clrFreq90);
-            Int16Type.Accept(visitor,ClrFreq150Field, ClrFreq150Field.DataType, ref _clrFreq150);
-            Int16Type.Accept(visitor,TotalCarrierOffsetField, TotalCarrierOffsetField.DataType, ref _totalCarrierOffset);
-            Int16Type.Accept(visitor,TotalFreq90Field, TotalFreq90Field.DataType, ref _totalFreq90);
-            Int16Type.Accept(visitor,TotalFreq150Field, TotalFreq150Field.DataType, ref _totalFreq150);
+            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
+            FloatType.Accept(visitor,LowPowerField, LowPowerField.DataType, ref _lowPower);    
+            FloatType.Accept(visitor,LowAm90Field, LowAm90Field.DataType, ref _lowAm90);    
+            FloatType.Accept(visitor,LowAm150Field, LowAm150Field.DataType, ref _lowAm150);    
+            FloatType.Accept(visitor,HighPowerField, HighPowerField.DataType, ref _highPower);    
+            FloatType.Accept(visitor,HighAm90Field, HighAm90Field.DataType, ref _highAm90);    
+            FloatType.Accept(visitor,HighAm150Field, HighAm150Field.DataType, ref _highAm150);    
+            FloatType.Accept(visitor,Am90Field, Am90Field.DataType, ref _am90);    
+            FloatType.Accept(visitor,Am150Field, Am150Field.DataType, ref _am150);    
+            FloatType.Accept(visitor,Phi90LowVsClrField, Phi90LowVsClrField.DataType, ref _phi90LowVsClr);    
+            FloatType.Accept(visitor,Phi150LowVsClrField, Phi150LowVsClrField.DataType, ref _phi150LowVsClr);    
             Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
+            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
+            Int16Type.Accept(visitor,LowCarrierOffsetField, LowCarrierOffsetField.DataType, ref _lowCarrierOffset);
+            Int16Type.Accept(visitor,LowFreq90Field, LowFreq90Field.DataType, ref _lowFreq90);
+            Int16Type.Accept(visitor,LowFreq150Field, LowFreq150Field.DataType, ref _lowFreq150);
+            Int16Type.Accept(visitor,HighCarrierOffsetField, HighCarrierOffsetField.DataType, ref _highCarrierOffset);
+            Int16Type.Accept(visitor,HighFreq90Field, HighFreq90Field.DataType, ref _highFreq90);
+            Int16Type.Accept(visitor,HighFreq150Field, HighFreq150Field.DataType, ref _highFreq150);
+            Int16Type.Accept(visitor,Freq90Field, Freq90Field.DataType, ref _freq90);
+            Int16Type.Accept(visitor,Freq150Field, Freq150Field.DataType, ref _freq150);
 
         }
 
@@ -3808,18 +3850,18 @@ namespace Asv.Mavlink.AsvRsga
         private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
-        /// Measured frequency.
-        /// OriginName: total_freq, Units: Hz, IsExtended: false
+        /// RX frequency
+        /// OriginName: rx_freq, Units: Hz, IsExtended: false
         /// </summary>
-        public static readonly Field TotalFreqField = new Field.Builder()
-            .Name(nameof(TotalFreq))
-            .Title("total_freq")
-            .Description("Measured frequency.")
+        public static readonly Field RxFreqField = new Field.Builder()
+            .Name(nameof(RxFreq))
+            .Title("rx_freq")
+            .Description("RX frequency")
 .Units(@"Hz")
             .DataType(UInt64Type.Default)
         .Build();
-        private ulong _totalFreq;
-        public ulong TotalFreq { get => _totalFreq; set => _totalFreq = value; }
+        private ulong _rxFreq;
+        public ulong RxFreq { get => _rxFreq; set => _rxFreq = value; }
         /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
@@ -3834,278 +3876,187 @@ namespace Asv.Mavlink.AsvRsga
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
         /// <summary>
-        /// Input power of course.
-        /// OriginName: crs_power, Units: dBm, IsExtended: false
+        /// Receive power (peak)
+        /// OriginName: rx_power, Units: dBm, IsExtended: false
         /// </summary>
-        public static readonly Field CrsPowerField = new Field.Builder()
-            .Name(nameof(CrsPower))
-            .Title("crs_power")
-            .Description("Input power of course.")
+        public static readonly Field RxPowerField = new Field.Builder()
+            .Name(nameof(RxPower))
+            .Title("rx_power")
+            .Description("Receive power (peak)")
 .Units(@"dBm")
             .DataType(FloatType.Default)
         .Build();
-        private float _crsPower;
-        public float CrsPower { get => _crsPower; set => _crsPower = value; }
+        private float _rxPower;
+        public float RxPower { get => _rxPower; set => _rxPower = value; }
         /// <summary>
-        /// Aplitude modulation of 90Hz of course.
-        /// OriginName: crs_am_90, Units: %, IsExtended: false
+        /// Receive power field strength.
+        /// OriginName: rx_field_strength, Units: uV/m, IsExtended: false
         /// </summary>
-        public static readonly Field CrsAm90Field = new Field.Builder()
-            .Name(nameof(CrsAm90))
-            .Title("crs_am_90")
-            .Description("Aplitude modulation of 90Hz of course.")
-.Units(@"%")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _crsAm90;
-        public float CrsAm90 { get => _crsAm90; set => _crsAm90 = value; }
-        /// <summary>
-        /// Aplitude modulation of 150Hz of course.
-        /// OriginName: crs_am_150, Units: %, IsExtended: false
-        /// </summary>
-        public static readonly Field CrsAm150Field = new Field.Builder()
-            .Name(nameof(CrsAm150))
-            .Title("crs_am_150")
-            .Description("Aplitude modulation of 150Hz of course.")
-.Units(@"%")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _crsAm150;
-        public float CrsAm150 { get => _crsAm150; set => _crsAm150 = value; }
-        /// <summary>
-        /// Input power of clearance.
-        /// OriginName: clr_power, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field ClrPowerField = new Field.Builder()
-            .Name(nameof(ClrPower))
-            .Title("clr_power")
-            .Description("Input power of clearance.")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _clrPower;
-        public float ClrPower { get => _clrPower; set => _clrPower = value; }
-        /// <summary>
-        /// Aplitude modulation of 90Hz of clearance.
-        /// OriginName: clr_am_90, Units: %, IsExtended: false
-        /// </summary>
-        public static readonly Field ClrAm90Field = new Field.Builder()
-            .Name(nameof(ClrAm90))
-            .Title("clr_am_90")
-            .Description("Aplitude modulation of 90Hz of clearance.")
-.Units(@"%")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _clrAm90;
-        public float ClrAm90 { get => _clrAm90; set => _clrAm90 = value; }
-        /// <summary>
-        /// Aplitude modulation of 150Hz of clearance.
-        /// OriginName: clr_am_150, Units: % E2, IsExtended: false
-        /// </summary>
-        public static readonly Field ClrAm150Field = new Field.Builder()
-            .Name(nameof(ClrAm150))
-            .Title("clr_am_150")
-            .Description("Aplitude modulation of 150Hz of clearance.")
-.Units(@"% E2")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _clrAm150;
-        public float ClrAm150 { get => _clrAm150; set => _clrAm150 = value; }
-        /// <summary>
-        /// Total input power.
-        /// OriginName: total_power, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field TotalPowerField = new Field.Builder()
-            .Name(nameof(TotalPower))
-            .Title("total_power")
-            .Description("Total input power.")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _totalPower;
-        public float TotalPower { get => _totalPower; set => _totalPower = value; }
-        /// <summary>
-        /// Total field strength.
-        /// OriginName: total_field_strength, Units: uV/m, IsExtended: false
-        /// </summary>
-        public static readonly Field TotalFieldStrengthField = new Field.Builder()
-            .Name(nameof(TotalFieldStrength))
-            .Title("total_field_strength")
-            .Description("Total field strength.")
+        public static readonly Field RxFieldStrengthField = new Field.Builder()
+            .Name(nameof(RxFieldStrength))
+            .Title("rx_field_strength")
+            .Description("Receive power field strength.")
 .Units(@"uV/m")
             .DataType(FloatType.Default)
         .Build();
-        private float _totalFieldStrength;
-        public float TotalFieldStrength { get => _totalFieldStrength; set => _totalFieldStrength = value; }
+        private float _rxFieldStrength;
+        public float RxFieldStrength { get => _rxFieldStrength; set => _rxFieldStrength = value; }
+        /// <summary>
+        /// Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).
+        /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxSignalOverflowField = new Field.Builder()
+            .Name(nameof(RxSignalOverflow))
+            .Title("rx_signal_overflow")
+            .Description("Signal overflow indicator (\u22640.2 \u2014 too low, \u22650.8 \u2014 too high).")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxSignalOverflow;
+        public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
+        /// <summary>
+        /// Percent of total RX gain level (0.0 - 1.0)
+        /// OriginName: rx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxGainField = new Field.Builder()
+            .Name(nameof(RxGain))
+            .Title("rx_gain")
+            .Description("Percent of total RX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxGain;
+        public float RxGain { get => _rxGain; set => _rxGain = value; }
+        /// <summary>
+        /// Input power of low freq channel.
+        /// OriginName: low_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field LowPowerField = new Field.Builder()
+            .Name(nameof(LowPower))
+            .Title("low_power")
+            .Description("Input power of low freq channel.")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _lowPower;
+        public float LowPower { get => _lowPower; set => _lowPower = value; }
+        /// <summary>
+        /// Aplitude modulation of 90Hz of low freq channel.
+        /// OriginName: low_am_90, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field LowAm90Field = new Field.Builder()
+            .Name(nameof(LowAm90))
+            .Title("low_am_90")
+            .Description("Aplitude modulation of 90Hz of low freq channel.")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _lowAm90;
+        public float LowAm90 { get => _lowAm90; set => _lowAm90 = value; }
+        /// <summary>
+        /// Aplitude modulation of 150Hz of low freq channel.
+        /// OriginName: low_am_150, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field LowAm150Field = new Field.Builder()
+            .Name(nameof(LowAm150))
+            .Title("low_am_150")
+            .Description("Aplitude modulation of 150Hz of low freq channel.")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _lowAm150;
+        public float LowAm150 { get => _lowAm150; set => _lowAm150 = value; }
+        /// <summary>
+        /// Input power of high freq channel.
+        /// OriginName: high_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field HighPowerField = new Field.Builder()
+            .Name(nameof(HighPower))
+            .Title("high_power")
+            .Description("Input power of high freq channel.")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _highPower;
+        public float HighPower { get => _highPower; set => _highPower = value; }
+        /// <summary>
+        /// Aplitude modulation of 90Hz of high freq channel.
+        /// OriginName: high_am_90, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field HighAm90Field = new Field.Builder()
+            .Name(nameof(HighAm90))
+            .Title("high_am_90")
+            .Description("Aplitude modulation of 90Hz of high freq channel.")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _highAm90;
+        public float HighAm90 { get => _highAm90; set => _highAm90 = value; }
+        /// <summary>
+        /// Aplitude modulation of 150Hz of high freq channel.
+        /// OriginName: high_am_150, Units: % E2, IsExtended: false
+        /// </summary>
+        public static readonly Field HighAm150Field = new Field.Builder()
+            .Name(nameof(HighAm150))
+            .Title("high_am_150")
+            .Description("Aplitude modulation of 150Hz of high freq channel.")
+.Units(@"% E2")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _highAm150;
+        public float HighAm150 { get => _highAm150; set => _highAm150 = value; }
         /// <summary>
         /// Total aplitude modulation of 90Hz.
-        /// OriginName: total_am_90, Units: %, IsExtended: false
+        /// OriginName: am_90, Units: %, IsExtended: false
         /// </summary>
-        public static readonly Field TotalAm90Field = new Field.Builder()
-            .Name(nameof(TotalAm90))
-            .Title("total_am_90")
+        public static readonly Field Am90Field = new Field.Builder()
+            .Name(nameof(Am90))
+            .Title("am_90")
             .Description("Total aplitude modulation of 90Hz.")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
-        private float _totalAm90;
-        public float TotalAm90 { get => _totalAm90; set => _totalAm90 = value; }
+        private float _am90;
+        public float Am90 { get => _am90; set => _am90 = value; }
         /// <summary>
         /// Total aplitude modulation of 150Hz.
-        /// OriginName: total_am_150, Units: %, IsExtended: false
+        /// OriginName: am_150, Units: %, IsExtended: false
         /// </summary>
-        public static readonly Field TotalAm150Field = new Field.Builder()
-            .Name(nameof(TotalAm150))
-            .Title("total_am_150")
+        public static readonly Field Am150Field = new Field.Builder()
+            .Name(nameof(Am150))
+            .Title("am_150")
             .Description("Total aplitude modulation of 150Hz.")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
-        private float _totalAm150;
-        public float TotalAm150 { get => _totalAm150; set => _totalAm150 = value; }
+        private float _am150;
+        public float Am150 { get => _am150; set => _am150 = value; }
         /// <summary>
-        ///  Phase difference 90 Hz clearance and cource
-        /// OriginName: phi_90_crs_vs_clr, Units: deg, IsExtended: false
+        ///  Phase difference 90 Hz high freq channel and cource
+        /// OriginName: phi_90_low_vs_clr, Units: deg, IsExtended: false
         /// </summary>
-        public static readonly Field Phi90CrsVsClrField = new Field.Builder()
-            .Name(nameof(Phi90CrsVsClr))
-            .Title("phi_90_crs_vs_clr")
-            .Description(" Phase difference 90 Hz clearance and cource")
+        public static readonly Field Phi90LowVsClrField = new Field.Builder()
+            .Name(nameof(Phi90LowVsClr))
+            .Title("phi_90_low_vs_clr")
+            .Description(" Phase difference 90 Hz high freq channel and cource")
 .Units(@"deg")
             .DataType(FloatType.Default)
         .Build();
-        private float _phi90CrsVsClr;
-        public float Phi90CrsVsClr { get => _phi90CrsVsClr; set => _phi90CrsVsClr = value; }
+        private float _phi90LowVsClr;
+        public float Phi90LowVsClr { get => _phi90LowVsClr; set => _phi90LowVsClr = value; }
         /// <summary>
-        /// Phase difference 150 Hz clearance and cource.
-        /// OriginName: phi_150_crs_vs_clr, Units: deg, IsExtended: false
+        /// Phase difference 150 Hz high freq channel and cource.
+        /// OriginName: phi_150_low_vs_clr, Units: deg, IsExtended: false
         /// </summary>
-        public static readonly Field Phi150CrsVsClrField = new Field.Builder()
-            .Name(nameof(Phi150CrsVsClr))
-            .Title("phi_150_crs_vs_clr")
-            .Description("Phase difference 150 Hz clearance and cource.")
+        public static readonly Field Phi150LowVsClrField = new Field.Builder()
+            .Name(nameof(Phi150LowVsClr))
+            .Title("phi_150_low_vs_clr")
+            .Description("Phase difference 150 Hz high freq channel and cource.")
 .Units(@"deg")
             .DataType(FloatType.Default)
         .Build();
-        private float _phi150CrsVsClr;
-        public float Phi150CrsVsClr { get => _phi150CrsVsClr; set => _phi150CrsVsClr = value; }
-        /// <summary>
-        /// Carrier frequency offset of course.
-        /// OriginName: crs_carrier_offset, Units: Hz, IsExtended: false
-        /// </summary>
-        public static readonly Field CrsCarrierOffsetField = new Field.Builder()
-            .Name(nameof(CrsCarrierOffset))
-            .Title("crs_carrier_offset")
-            .Description("Carrier frequency offset of course.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _crsCarrierOffset;
-        public short CrsCarrierOffset { get => _crsCarrierOffset; set => _crsCarrierOffset = value; }
-        /// <summary>
-        /// Frequency offset of signal 90 Hz of course.
-        /// OriginName: crs_freq_90, Units: Hz, IsExtended: false
-        /// </summary>
-        public static readonly Field CrsFreq90Field = new Field.Builder()
-            .Name(nameof(CrsFreq90))
-            .Title("crs_freq_90")
-            .Description("Frequency offset of signal 90 Hz of course.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _crsFreq90;
-        public short CrsFreq90 { get => _crsFreq90; set => _crsFreq90 = value; }
-        /// <summary>
-        /// Frequency offset of signal 150 Hz of course.
-        /// OriginName: crs_freq_150, Units: Hz, IsExtended: false
-        /// </summary>
-        public static readonly Field CrsFreq150Field = new Field.Builder()
-            .Name(nameof(CrsFreq150))
-            .Title("crs_freq_150")
-            .Description("Frequency offset of signal 150 Hz of course.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _crsFreq150;
-        public short CrsFreq150 { get => _crsFreq150; set => _crsFreq150 = value; }
-        /// <summary>
-        /// Carrier frequency offset of clearance.
-        /// OriginName: clr_carrier_offset, Units: Hz, IsExtended: false
-        /// </summary>
-        public static readonly Field ClrCarrierOffsetField = new Field.Builder()
-            .Name(nameof(ClrCarrierOffset))
-            .Title("clr_carrier_offset")
-            .Description("Carrier frequency offset of clearance.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _clrCarrierOffset;
-        public short ClrCarrierOffset { get => _clrCarrierOffset; set => _clrCarrierOffset = value; }
-        /// <summary>
-        /// Frequency offset of signal 90 Hz of clearance.
-        /// OriginName: clr_freq_90, Units: Hz, IsExtended: false
-        /// </summary>
-        public static readonly Field ClrFreq90Field = new Field.Builder()
-            .Name(nameof(ClrFreq90))
-            .Title("clr_freq_90")
-            .Description("Frequency offset of signal 90 Hz of clearance.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _clrFreq90;
-        public short ClrFreq90 { get => _clrFreq90; set => _clrFreq90 = value; }
-        /// <summary>
-        /// Frequency offset of signal 150 Hz of clearance.
-        /// OriginName: clr_freq_150, Units: Hz, IsExtended: false
-        /// </summary>
-        public static readonly Field ClrFreq150Field = new Field.Builder()
-            .Name(nameof(ClrFreq150))
-            .Title("clr_freq_150")
-            .Description("Frequency offset of signal 150 Hz of clearance.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _clrFreq150;
-        public short ClrFreq150 { get => _clrFreq150; set => _clrFreq150 = value; }
-        /// <summary>
-        /// Total carrier frequency offset.
-        /// OriginName: total_carrier_offset, Units: Hz, IsExtended: false
-        /// </summary>
-        public static readonly Field TotalCarrierOffsetField = new Field.Builder()
-            .Name(nameof(TotalCarrierOffset))
-            .Title("total_carrier_offset")
-            .Description("Total carrier frequency offset.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _totalCarrierOffset;
-        public short TotalCarrierOffset { get => _totalCarrierOffset; set => _totalCarrierOffset = value; }
-        /// <summary>
-        /// Total frequency offset of signal 90 Hz.
-        /// OriginName: total_freq_90, Units: Hz, IsExtended: false
-        /// </summary>
-        public static readonly Field TotalFreq90Field = new Field.Builder()
-            .Name(nameof(TotalFreq90))
-            .Title("total_freq_90")
-            .Description("Total frequency offset of signal 90 Hz.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _totalFreq90;
-        public short TotalFreq90 { get => _totalFreq90; set => _totalFreq90 = value; }
-        /// <summary>
-        /// Total frequency offset of signal 150 Hz.
-        /// OriginName: total_freq_150, Units: Hz, IsExtended: false
-        /// </summary>
-        public static readonly Field TotalFreq150Field = new Field.Builder()
-            .Name(nameof(TotalFreq150))
-            .Title("total_freq_150")
-            .Description("Total frequency offset of signal 150 Hz.")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _totalFreq150;
-        public short TotalFreq150 { get => _totalFreq150; set => _totalFreq150 = value; }
+        private float _phi150LowVsClr;
+        public float Phi150LowVsClr { get => _phi150LowVsClr; set => _phi150LowVsClr = value; }
         /// <summary>
         /// Measure time.
         /// OriginName: measure_time, Units: ms, IsExtended: false
@@ -4119,6 +4070,123 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private short _measureTime;
         public short MeasureTime { get => _measureTime; set => _measureTime = value; }
+        /// <summary>
+        /// RX frequency offset
+        /// OriginName: rx_freq_offset, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field RxFreqOffsetField = new Field.Builder()
+            .Name(nameof(RxFreqOffset))
+            .Title("rx_freq_offset")
+            .Description("RX frequency offset")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _rxFreqOffset;
+        public short RxFreqOffset { get => _rxFreqOffset; set => _rxFreqOffset = value; }
+        /// <summary>
+        /// Carrier frequency offset of low freq channel.
+        /// OriginName: low_carrier_offset, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field LowCarrierOffsetField = new Field.Builder()
+            .Name(nameof(LowCarrierOffset))
+            .Title("low_carrier_offset")
+            .Description("Carrier frequency offset of low freq channel.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _lowCarrierOffset;
+        public short LowCarrierOffset { get => _lowCarrierOffset; set => _lowCarrierOffset = value; }
+        /// <summary>
+        /// Frequency offset of signal 90 Hz of low freq channel.
+        /// OriginName: low_freq_90, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field LowFreq90Field = new Field.Builder()
+            .Name(nameof(LowFreq90))
+            .Title("low_freq_90")
+            .Description("Frequency offset of signal 90 Hz of low freq channel.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _lowFreq90;
+        public short LowFreq90 { get => _lowFreq90; set => _lowFreq90 = value; }
+        /// <summary>
+        /// Frequency offset of signal 150 Hz of low freq channel.
+        /// OriginName: low_freq_150, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field LowFreq150Field = new Field.Builder()
+            .Name(nameof(LowFreq150))
+            .Title("low_freq_150")
+            .Description("Frequency offset of signal 150 Hz of low freq channel.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _lowFreq150;
+        public short LowFreq150 { get => _lowFreq150; set => _lowFreq150 = value; }
+        /// <summary>
+        /// Carrier frequency offset of high freq channel.
+        /// OriginName: high_carrier_offset, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field HighCarrierOffsetField = new Field.Builder()
+            .Name(nameof(HighCarrierOffset))
+            .Title("high_carrier_offset")
+            .Description("Carrier frequency offset of high freq channel.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _highCarrierOffset;
+        public short HighCarrierOffset { get => _highCarrierOffset; set => _highCarrierOffset = value; }
+        /// <summary>
+        /// Frequency offset of signal 90 Hz of high freq channel.
+        /// OriginName: high_freq_90, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field HighFreq90Field = new Field.Builder()
+            .Name(nameof(HighFreq90))
+            .Title("high_freq_90")
+            .Description("Frequency offset of signal 90 Hz of high freq channel.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _highFreq90;
+        public short HighFreq90 { get => _highFreq90; set => _highFreq90 = value; }
+        /// <summary>
+        /// Frequency offset of signal 150 Hz of high freq channel.
+        /// OriginName: high_freq_150, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field HighFreq150Field = new Field.Builder()
+            .Name(nameof(HighFreq150))
+            .Title("high_freq_150")
+            .Description("Frequency offset of signal 150 Hz of high freq channel.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _highFreq150;
+        public short HighFreq150 { get => _highFreq150; set => _highFreq150 = value; }
+        /// <summary>
+        /// Total frequency offset of signal 90 Hz.
+        /// OriginName: freq_90, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field Freq90Field = new Field.Builder()
+            .Name(nameof(Freq90))
+            .Title("freq_90")
+            .Description("Total frequency offset of signal 90 Hz.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _freq90;
+        public short Freq90 { get => _freq90; set => _freq90 = value; }
+        /// <summary>
+        /// Total frequency offset of signal 150 Hz.
+        /// OriginName: freq_150, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field Freq150Field = new Field.Builder()
+            .Name(nameof(Freq150))
+            .Title("freq_150")
+            .Description("Total frequency offset of signal 150 Hz.")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _freq150;
+        public short Freq150 { get => _freq150; set => _freq150 = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_VOR mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -4128,7 +4196,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13463;
         
-        public const byte CrcExtra = 54;
+        public const byte CrcExtra = 178;
         
         public override int Id => MessageId;
         
@@ -4148,17 +4216,21 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttRxVorPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 66; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 86; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 66; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 86; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
             return (byte)(
             +8 // uint64_t time_unix_usec
             + 8 // uint64_t flags
+            +8 // uint64_t rx_freq
             +4 // uint32_t index
-            +4 // uint32_t total_freq
+            +4 // float rx_power
+            +4 // float rx_field_strength
+            +4 // float rx_signal_overflow
+            +4 // float rx_gain
             +4 // float azimuth
             +4 // float power
             +4 // float field_strength
@@ -4166,11 +4238,11 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float am_9960
             +4 // float deviation
             +4 // float code_id_am_1020
-            +2 // int16_t carrier_offset
+            +2 // int16_t measure_time
+            +2 // int16_t rx_freq_offset
             +2 // int16_t freq_30
             +2 // int16_t freq_9960
             +2 // int16_t code_id_freq_1020
-            +2 // int16_t measure_time
             +CodeId.Length // char[4] code_id
             );
         }
@@ -4183,8 +4255,12 @@ namespace Asv.Mavlink.AsvRsga
             var payloadSize = buffer.Length;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
+            RxFreq = BinSerialize.ReadULong(ref buffer);
             Index = BinSerialize.ReadUInt(ref buffer);
-            TotalFreq = BinSerialize.ReadUInt(ref buffer);
+            RxPower = BinSerialize.ReadFloat(ref buffer);
+            RxFieldStrength = BinSerialize.ReadFloat(ref buffer);
+            RxSignalOverflow = BinSerialize.ReadFloat(ref buffer);
+            RxGain = BinSerialize.ReadFloat(ref buffer);
             Azimuth = BinSerialize.ReadFloat(ref buffer);
             Power = BinSerialize.ReadFloat(ref buffer);
             FieldStrength = BinSerialize.ReadFloat(ref buffer);
@@ -4192,12 +4268,12 @@ namespace Asv.Mavlink.AsvRsga
             Am9960 = BinSerialize.ReadFloat(ref buffer);
             Deviation = BinSerialize.ReadFloat(ref buffer);
             CodeIdAm1020 = BinSerialize.ReadFloat(ref buffer);
-            CarrierOffset = BinSerialize.ReadShort(ref buffer);
+            MeasureTime = BinSerialize.ReadShort(ref buffer);
+            RxFreqOffset = BinSerialize.ReadShort(ref buffer);
             Freq30 = BinSerialize.ReadShort(ref buffer);
             Freq9960 = BinSerialize.ReadShort(ref buffer);
             CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
-            MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/66 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/86 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             unsafe
             {
@@ -4216,8 +4292,12 @@ namespace Asv.Mavlink.AsvRsga
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
+            BinSerialize.WriteULong(ref buffer,RxFreq);
             BinSerialize.WriteUInt(ref buffer,Index);
-            BinSerialize.WriteUInt(ref buffer,TotalFreq);
+            BinSerialize.WriteFloat(ref buffer,RxPower);
+            BinSerialize.WriteFloat(ref buffer,RxFieldStrength);
+            BinSerialize.WriteFloat(ref buffer,RxSignalOverflow);
+            BinSerialize.WriteFloat(ref buffer,RxGain);
             BinSerialize.WriteFloat(ref buffer,Azimuth);
             BinSerialize.WriteFloat(ref buffer,Power);
             BinSerialize.WriteFloat(ref buffer,FieldStrength);
@@ -4225,11 +4305,11 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,Am9960);
             BinSerialize.WriteFloat(ref buffer,Deviation);
             BinSerialize.WriteFloat(ref buffer,CodeIdAm1020);
-            BinSerialize.WriteShort(ref buffer,CarrierOffset);
+            BinSerialize.WriteShort(ref buffer,MeasureTime);
+            BinSerialize.WriteShort(ref buffer,RxFreqOffset);
             BinSerialize.WriteShort(ref buffer,Freq30);
             BinSerialize.WriteShort(ref buffer,Freq9960);
             BinSerialize.WriteShort(ref buffer,CodeIdFreq1020);
-            BinSerialize.WriteShort(ref buffer,MeasureTime);
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -4240,7 +4320,7 @@ namespace Asv.Mavlink.AsvRsga
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 66 */;
+            /* PayloadByteSize = 86 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -4249,8 +4329,12 @@ namespace Asv.Mavlink.AsvRsga
             var tmpFlags = (ulong)Flags;
             UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
             UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
-            UInt32Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
+            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
             FloatType.Accept(visitor,AzimuthField, AzimuthField.DataType, ref _azimuth);    
             FloatType.Accept(visitor,PowerField, PowerField.DataType, ref _power);    
             FloatType.Accept(visitor,FieldStrengthField, FieldStrengthField.DataType, ref _fieldStrength);    
@@ -4258,11 +4342,11 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,Am9960Field, Am9960Field.DataType, ref _am9960);    
             FloatType.Accept(visitor,DeviationField, DeviationField.DataType, ref _deviation);    
             FloatType.Accept(visitor,CodeIdAm1020Field, CodeIdAm1020Field.DataType, ref _codeIdAm1020);    
-            Int16Type.Accept(visitor,CarrierOffsetField, CarrierOffsetField.DataType, ref _carrierOffset);
+            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
+            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
             Int16Type.Accept(visitor,Freq30Field, Freq30Field.DataType, ref _freq30);
             Int16Type.Accept(visitor,Freq9960Field, Freq9960Field.DataType, ref _freq9960);
             Int16Type.Accept(visitor,CodeIdFreq1020Field, CodeIdFreq1020Field.DataType, ref _codeIdFreq1020);
-            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
             ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
@@ -4295,6 +4379,19 @@ namespace Asv.Mavlink.AsvRsga
         private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
+        /// RX frequency
+        /// OriginName: rx_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field RxFreqField = new Field.Builder()
+            .Name(nameof(RxFreq))
+            .Title("rx_freq")
+            .Description("RX frequency")
+.Units(@"Hz")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _rxFreq;
+        public ulong RxFreq { get => _rxFreq; set => _rxFreq = value; }
+        /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
@@ -4308,18 +4405,57 @@ namespace Asv.Mavlink.AsvRsga
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
         /// <summary>
-        /// Measured frequency.
-        /// OriginName: total_freq, Units: Hz, IsExtended: false
+        /// Receive power (peak)
+        /// OriginName: rx_power, Units: dBm, IsExtended: false
         /// </summary>
-        public static readonly Field TotalFreqField = new Field.Builder()
-            .Name(nameof(TotalFreq))
-            .Title("total_freq")
-            .Description("Measured frequency.")
-.Units(@"Hz")
-            .DataType(UInt32Type.Default)
+        public static readonly Field RxPowerField = new Field.Builder()
+            .Name(nameof(RxPower))
+            .Title("rx_power")
+            .Description("Receive power (peak)")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
         .Build();
-        private uint _totalFreq;
-        public uint TotalFreq { get => _totalFreq; set => _totalFreq = value; }
+        private float _rxPower;
+        public float RxPower { get => _rxPower; set => _rxPower = value; }
+        /// <summary>
+        /// Receive power field strength.
+        /// OriginName: rx_field_strength, Units: uV/m, IsExtended: false
+        /// </summary>
+        public static readonly Field RxFieldStrengthField = new Field.Builder()
+            .Name(nameof(RxFieldStrength))
+            .Title("rx_field_strength")
+            .Description("Receive power field strength.")
+.Units(@"uV/m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxFieldStrength;
+        public float RxFieldStrength { get => _rxFieldStrength; set => _rxFieldStrength = value; }
+        /// <summary>
+        /// Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).
+        /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxSignalOverflowField = new Field.Builder()
+            .Name(nameof(RxSignalOverflow))
+            .Title("rx_signal_overflow")
+            .Description("Signal overflow indicator (\u22640.2 \u2014 too low, \u22650.8 \u2014 too high).")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxSignalOverflow;
+        public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
+        /// <summary>
+        /// Percent of total RX gain level (0.0 - 1.0)
+        /// OriginName: rx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxGainField = new Field.Builder()
+            .Name(nameof(RxGain))
+            .Title("rx_gain")
+            .Description("Percent of total RX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxGain;
+        public float RxGain { get => _rxGain; set => _rxGain = value; }
         /// <summary>
         /// Measured azimuth.
         /// OriginName: azimuth, Units: deg, IsExtended: false
@@ -4412,18 +4548,31 @@ namespace Asv.Mavlink.AsvRsga
         private float _codeIdAm1020;
         public float CodeIdAm1020 { get => _codeIdAm1020; set => _codeIdAm1020 = value; }
         /// <summary>
-        /// Total carrier frequency offset.
-        /// OriginName: carrier_offset, Units: Hz, IsExtended: false
+        /// Measure time.
+        /// OriginName: measure_time, Units: ms, IsExtended: false
         /// </summary>
-        public static readonly Field CarrierOffsetField = new Field.Builder()
-            .Name(nameof(CarrierOffset))
-            .Title("carrier_offset")
-            .Description("Total carrier frequency offset.")
+        public static readonly Field MeasureTimeField = new Field.Builder()
+            .Name(nameof(MeasureTime))
+            .Title("measure_time")
+            .Description("Measure time.")
+.Units(@"ms")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _measureTime;
+        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
+        /// <summary>
+        /// RX frequency offset
+        /// OriginName: rx_freq_offset, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field RxFreqOffsetField = new Field.Builder()
+            .Name(nameof(RxFreqOffset))
+            .Title("rx_freq_offset")
+            .Description("RX frequency offset")
 .Units(@"Hz")
             .DataType(Int16Type.Default)
         .Build();
-        private short _carrierOffset;
-        public short CarrierOffset { get => _carrierOffset; set => _carrierOffset = value; }
+        private short _rxFreqOffset;
+        public short RxFreqOffset { get => _rxFreqOffset; set => _rxFreqOffset = value; }
         /// <summary>
         /// Total frequency offset of signal 30 Hz.
         /// OriginName: freq_30, Units: Hz, IsExtended: false
@@ -4464,19 +4613,6 @@ namespace Asv.Mavlink.AsvRsga
         private short _codeIdFreq1020;
         public short CodeIdFreq1020 { get => _codeIdFreq1020; set => _codeIdFreq1020 = value; }
         /// <summary>
-        /// Measure time.
-        /// OriginName: measure_time, Units: ms, IsExtended: false
-        /// </summary>
-        public static readonly Field MeasureTimeField = new Field.Builder()
-            .Name(nameof(MeasureTime))
-            .Title("measure_time")
-            .Description("Measure time.")
-.Units(@"ms")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _measureTime;
-        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
-        /// <summary>
         /// Code identification
         /// OriginName: code_id, Units: Letters, IsExtended: false
         /// </summary>
@@ -4500,7 +4636,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13464;
         
-        public const byte CrcExtra = 39;
+        public const byte CrcExtra = 187;
         
         public override int Id => MessageId;
         
@@ -4520,19 +4656,21 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttRxMarkerPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 104; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 118; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 104; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 118; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
             return (byte)(
             +8 // uint64_t time_unix_usec
             + 8 // uint64_t flags
+            +8 // uint64_t rx_freq
             +4 // uint32_t index
-            +4 // uint32_t total_freq
-            +4 // float power
-            +4 // float field_strength
+            +4 // float rx_power
+            +4 // float rx_field_strength
+            +4 // float rx_signal_overflow
+            +4 // float rx_gain
             +4 // float am_400
             +4 // float am_400_max
             +4 // float am_400_min
@@ -4549,10 +4687,11 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float am_3000_min
             +4 // float dot_3000
             +4 // float gap_3000
+            +2 // int16_t measure_time
+            +2 // int16_t rx_freq_offset
             +2 // int16_t freq_400
             +2 // int16_t freq_1300
             +2 // int16_t freq_3000
-            +2 // int16_t measure_time
             );
         }
 
@@ -4562,10 +4701,12 @@ namespace Asv.Mavlink.AsvRsga
         {
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
+            RxFreq = BinSerialize.ReadULong(ref buffer);
             Index = BinSerialize.ReadUInt(ref buffer);
-            TotalFreq = BinSerialize.ReadUInt(ref buffer);
-            Power = BinSerialize.ReadFloat(ref buffer);
-            FieldStrength = BinSerialize.ReadFloat(ref buffer);
+            RxPower = BinSerialize.ReadFloat(ref buffer);
+            RxFieldStrength = BinSerialize.ReadFloat(ref buffer);
+            RxSignalOverflow = BinSerialize.ReadFloat(ref buffer);
+            RxGain = BinSerialize.ReadFloat(ref buffer);
             Am400 = BinSerialize.ReadFloat(ref buffer);
             Am400Max = BinSerialize.ReadFloat(ref buffer);
             Am400Min = BinSerialize.ReadFloat(ref buffer);
@@ -4582,10 +4723,11 @@ namespace Asv.Mavlink.AsvRsga
             Am3000Min = BinSerialize.ReadFloat(ref buffer);
             Dot3000 = BinSerialize.ReadFloat(ref buffer);
             Gap3000 = BinSerialize.ReadFloat(ref buffer);
+            MeasureTime = BinSerialize.ReadShort(ref buffer);
+            RxFreqOffset = BinSerialize.ReadShort(ref buffer);
             Freq400 = BinSerialize.ReadShort(ref buffer);
             Freq1300 = BinSerialize.ReadShort(ref buffer);
             Freq3000 = BinSerialize.ReadShort(ref buffer);
-            MeasureTime = BinSerialize.ReadShort(ref buffer);
 
         }
 
@@ -4593,10 +4735,12 @@ namespace Asv.Mavlink.AsvRsga
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
+            BinSerialize.WriteULong(ref buffer,RxFreq);
             BinSerialize.WriteUInt(ref buffer,Index);
-            BinSerialize.WriteUInt(ref buffer,TotalFreq);
-            BinSerialize.WriteFloat(ref buffer,Power);
-            BinSerialize.WriteFloat(ref buffer,FieldStrength);
+            BinSerialize.WriteFloat(ref buffer,RxPower);
+            BinSerialize.WriteFloat(ref buffer,RxFieldStrength);
+            BinSerialize.WriteFloat(ref buffer,RxSignalOverflow);
+            BinSerialize.WriteFloat(ref buffer,RxGain);
             BinSerialize.WriteFloat(ref buffer,Am400);
             BinSerialize.WriteFloat(ref buffer,Am400Max);
             BinSerialize.WriteFloat(ref buffer,Am400Min);
@@ -4613,11 +4757,12 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,Am3000Min);
             BinSerialize.WriteFloat(ref buffer,Dot3000);
             BinSerialize.WriteFloat(ref buffer,Gap3000);
+            BinSerialize.WriteShort(ref buffer,MeasureTime);
+            BinSerialize.WriteShort(ref buffer,RxFreqOffset);
             BinSerialize.WriteShort(ref buffer,Freq400);
             BinSerialize.WriteShort(ref buffer,Freq1300);
             BinSerialize.WriteShort(ref buffer,Freq3000);
-            BinSerialize.WriteShort(ref buffer,MeasureTime);
-            /* PayloadByteSize = 104 */;
+            /* PayloadByteSize = 118 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -4626,10 +4771,12 @@ namespace Asv.Mavlink.AsvRsga
             var tmpFlags = (ulong)Flags;
             UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
             UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
-            UInt32Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
-            FloatType.Accept(visitor,PowerField, PowerField.DataType, ref _power);    
-            FloatType.Accept(visitor,FieldStrengthField, FieldStrengthField.DataType, ref _fieldStrength);    
+            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
             FloatType.Accept(visitor,Am400Field, Am400Field.DataType, ref _am400);    
             FloatType.Accept(visitor,Am400MaxField, Am400MaxField.DataType, ref _am400Max);    
             FloatType.Accept(visitor,Am400MinField, Am400MinField.DataType, ref _am400Min);    
@@ -4646,10 +4793,11 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,Am3000MinField, Am3000MinField.DataType, ref _am3000Min);    
             FloatType.Accept(visitor,Dot3000Field, Dot3000Field.DataType, ref _dot3000);    
             FloatType.Accept(visitor,Gap3000Field, Gap3000Field.DataType, ref _gap3000);    
+            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
+            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
             Int16Type.Accept(visitor,Freq400Field, Freq400Field.DataType, ref _freq400);
             Int16Type.Accept(visitor,Freq1300Field, Freq1300Field.DataType, ref _freq1300);
             Int16Type.Accept(visitor,Freq3000Field, Freq3000Field.DataType, ref _freq3000);
-            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
 
         }
 
@@ -4680,6 +4828,19 @@ namespace Asv.Mavlink.AsvRsga
         private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
+        /// RX frequency
+        /// OriginName: rx_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field RxFreqField = new Field.Builder()
+            .Name(nameof(RxFreq))
+            .Title("rx_freq")
+            .Description("RX frequency")
+.Units(@"Hz")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _rxFreq;
+        public ulong RxFreq { get => _rxFreq; set => _rxFreq = value; }
+        /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
@@ -4693,44 +4854,57 @@ namespace Asv.Mavlink.AsvRsga
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
         /// <summary>
-        /// Measured frequency.
-        /// OriginName: total_freq, Units: Hz, IsExtended: false
+        /// Receive power (peak)
+        /// OriginName: rx_power, Units: dBm, IsExtended: false
         /// </summary>
-        public static readonly Field TotalFreqField = new Field.Builder()
-            .Name(nameof(TotalFreq))
-            .Title("total_freq")
-            .Description("Measured frequency.")
-.Units(@"Hz")
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _totalFreq;
-        public uint TotalFreq { get => _totalFreq; set => _totalFreq = value; }
-        /// <summary>
-        /// Total input power.
-        /// OriginName: power, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field PowerField = new Field.Builder()
-            .Name(nameof(Power))
-            .Title("power")
-            .Description("Total input power.")
+        public static readonly Field RxPowerField = new Field.Builder()
+            .Name(nameof(RxPower))
+            .Title("rx_power")
+            .Description("Receive power (peak)")
 .Units(@"dBm")
             .DataType(FloatType.Default)
         .Build();
-        private float _power;
-        public float Power { get => _power; set => _power = value; }
+        private float _rxPower;
+        public float RxPower { get => _rxPower; set => _rxPower = value; }
         /// <summary>
-        /// Total field strength.
-        /// OriginName: field_strength, Units: uV/m, IsExtended: false
+        /// Receive power field strength.
+        /// OriginName: rx_field_strength, Units: uV/m, IsExtended: false
         /// </summary>
-        public static readonly Field FieldStrengthField = new Field.Builder()
-            .Name(nameof(FieldStrength))
-            .Title("field_strength")
-            .Description("Total field strength.")
+        public static readonly Field RxFieldStrengthField = new Field.Builder()
+            .Name(nameof(RxFieldStrength))
+            .Title("rx_field_strength")
+            .Description("Receive power field strength.")
 .Units(@"uV/m")
             .DataType(FloatType.Default)
         .Build();
-        private float _fieldStrength;
-        public float FieldStrength { get => _fieldStrength; set => _fieldStrength = value; }
+        private float _rxFieldStrength;
+        public float RxFieldStrength { get => _rxFieldStrength; set => _rxFieldStrength = value; }
+        /// <summary>
+        /// Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).
+        /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxSignalOverflowField = new Field.Builder()
+            .Name(nameof(RxSignalOverflow))
+            .Title("rx_signal_overflow")
+            .Description("Signal overflow indicator (\u22640.2 \u2014 too low, \u22650.8 \u2014 too high).")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxSignalOverflow;
+        public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
+        /// <summary>
+        /// Percent of total RX gain level (0.0 - 1.0)
+        /// OriginName: rx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxGainField = new Field.Builder()
+            .Name(nameof(RxGain))
+            .Title("rx_gain")
+            .Description("Percent of total RX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxGain;
+        public float RxGain { get => _rxGain; set => _rxGain = value; }
         /// <summary>
         /// Current AM modulation depth of the 400 Hz component.
         /// OriginName: am_400, Units: %, IsExtended: false
@@ -4940,6 +5114,32 @@ namespace Asv.Mavlink.AsvRsga
         private float _gap3000;
         public float Gap3000 { get => _gap3000; set => _gap3000 = value; }
         /// <summary>
+        /// Measure time.
+        /// OriginName: measure_time, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field MeasureTimeField = new Field.Builder()
+            .Name(nameof(MeasureTime))
+            .Title("measure_time")
+            .Description("Measure time.")
+.Units(@"ms")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _measureTime;
+        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
+        /// <summary>
+        /// RX frequency offset
+        /// OriginName: rx_freq_offset, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field RxFreqOffsetField = new Field.Builder()
+            .Name(nameof(RxFreqOffset))
+            .Title("rx_freq_offset")
+            .Description("RX frequency offset")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _rxFreqOffset;
+        public short RxFreqOffset { get => _rxFreqOffset; set => _rxFreqOffset = value; }
+        /// <summary>
         /// Frequency of the 400 Hz component.
         /// OriginName: freq_400, Units: Hz, IsExtended: false
         /// </summary>
@@ -4978,19 +5178,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private short _freq3000;
         public short Freq3000 { get => _freq3000; set => _freq3000 = value; }
-        /// <summary>
-        /// Measure time.
-        /// OriginName: measure_time, Units: ms, IsExtended: false
-        /// </summary>
-        public static readonly Field MeasureTimeField = new Field.Builder()
-            .Name(nameof(MeasureTime))
-            .Title("measure_time")
-            .Description("Measure time.")
-.Units(@"ms")
-            .DataType(Int16Type.Default)
-        .Build();
-        private short _measureTime;
-        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_GBAS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
