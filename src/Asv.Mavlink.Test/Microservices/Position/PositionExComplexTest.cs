@@ -965,7 +965,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
                 );    
             }
             
-        }, TaskCreationOptions.LongRunning);
+        });
         
         // Assert
         await Assert.ThrowsAsync<TimeoutException>(async () =>

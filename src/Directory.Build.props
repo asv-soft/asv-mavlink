@@ -1,8 +1,8 @@
 <Project>
   <PropertyGroup>
-    <ProductVersion>4.0.9</ProductVersion>
+    <ProductVersion>4.0.10</ProductVersion>
     <DotNetVersion>9.0.3</DotNetVersion>
-    <AsvCommonVersion>3.2.6</AsvCommonVersion>
+    <AsvCommonVersion>3.2.7</AsvCommonVersion>
     <ZLoggerVersion>2.5.10</ZLoggerVersion>
     <ConsoleAppFrameworkVersion>5.2.4</ConsoleAppFrameworkVersion>
     <SystemIOAbstractionsVersion>21.0.29</SystemIOAbstractionsVersion>
