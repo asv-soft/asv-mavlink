@@ -13,17 +13,17 @@
         <!-- Asv specific MAV_TYPE identity -->
         <enum name="MAV_TYPE">
             <entry value="254" name="MAV_TYPE_ASV_RSGA">
-                <description>Identifies the Radio Signal Generator and Analyzer (RSGA) payload in the HEARTBEAT message.</description>
+                <description>Identifies the Radio Signal Generator and Analyzer (RSGA) payload in the HEARTBEAT message</description>
             </entry>
         </enum>
         <!-- CUSTOM_MODE -->
         <enum name="ASV_RSGA_CUSTOM_MODE">
-            <description>Defines RSGA modes mapped to the custom_mode[0–7] bit field of the HEARTBEAT message. Maximum 255 values.</description>
+            <description>Defines RSGA modes mapped to the custom_mode[0–7] bit field of the HEARTBEAT message. Maximum 255 values</description>
             <!--==================================================-->
             <!--          IDLE MODE (0)                           -->
             <!--==================================================-->
             <entry value="0" name="ASV_RSGA_CUSTOM_MODE_IDLE">
-                <description>Default mode. No operation performed.</description>
+                <description>Default mode. No operation performed</description>
             </entry>
             <!--==================================================-->
             <!--          COMMON GENERATOR MODES (1-24)           -->
@@ -33,73 +33,73 @@
             <!--          COMMON ANALYZER MODES (25-49)           -->
             <!--==================================================-->
             <entry value="25" name="ASV_RSGA_CUSTOM_MODE_SPECTRUM">
-                <description>Spectrum analysis mode.</description>
+                <description>Spectrum analysis mode</description>
             </entry>
             <!--==================================================-->
             <!--          NavAIDs BEACON MODES (50-74)            -->
             <!--==================================================-->
             <entry value="50" name="ASV_RSGA_CUSTOM_MODE_TX_LLZ">
-                <description>Localizer generator mode.</description>
+                <description>Localizer generator mode</description>
             </entry>
             <entry value="51" name="ASV_RSGA_CUSTOM_MODE_TX_GP">
-                <description>Glide Path generator mode.</description>
+                <description>Glide Path generator mode</description>
             </entry>
             <entry value="52" name="ASV_RSGA_CUSTOM_MODE_TX_VOR">
-                <description>VOR generator mode.</description>
+                <description>VOR generator mode</description>
             </entry>
             <entry value="53" name="ASV_RSGA_CUSTOM_MODE_TX_MARKER">
-                <description>Marker generator mode.</description>
+                <description>Marker generator mode</description>
             </entry>
             <entry value="54" name="ASV_RSGA_CUSTOM_MODE_DME_REP">
-                <description>DME beacon (replier) mode.</description>
+                <description>DME beacon (replier) mode</description>
             </entry>
             <entry value="55" name="ASV_RSGA_CUSTOM_MODE_TX_GBAS">
-                <description>GBAS generator mode.</description>
+                <description>GBAS generator mode</description>
             </entry>
             <entry value="56" name="ASV_RSGA_CUSTOM_MODE_ADSB_REQ">
-                <description>ADSB beacon(interrogator) mode.</description>
+                <description>ADSB beacon(interrogator) mode</description>
             </entry>
             <entry value="57" name="ASV_RSGA_CUSTOM_MODE_TX_GNSS">
-                <description>GNSS generator(satellite) mode.</description>
+                <description>GNSS generator(satellite) mode</description>
             </entry>
             <!--==================================================-->
             <!--          NavAIDs PLANE MODES (74-99)             -->
             <!--==================================================-->
             <entry value="74" name="ASV_RSGA_CUSTOM_MODE_DME_REQ">
-                <description>DME air(interrogator) mode.</description>
+                <description>DME air(interrogator) mode</description>
             </entry>
             <entry value="75" name="ASV_RSGA_CUSTOM_MODE_RX_LLZ">
-                <description>Localizer analyzer mode.</description>
+                <description>Localizer analyzer mode</description>
             </entry>
             <entry value="76" name="ASV_RSGA_CUSTOM_MODE_RX_GP">
-                <description>Glide Path analyzer mode.</description>
+                <description>Glide Path analyzer mode</description>
             </entry>
             <entry value="77" name="ASV_RSGA_CUSTOM_MODE_RX_VOR">
-                <description>VOR analyzer mode.</description>
+                <description>VOR analyzer mode</description>
             </entry>
             <entry value="78" name="ASV_RSGA_CUSTOM_MODE_RX_MARKER">
-                <description>Marker analyzer mode.</description>
+                <description>Marker analyzer mode</description>
             </entry>
             <entry value="79" name="ASV_RSGA_CUSTOM_MODE_RX_GBAS">
-                <description>GBAS analyzer mode.</description>
+                <description>GBAS analyzer mode</description>
             </entry>
             <entry value="80" name="ASV_RSGA_CUSTOM_MODE_ADSB_REP">
-                <description>ADSB air(replier) mode.</description>
+                <description>ADSB air(replier) mode</description>
             </entry>
             <entry value="81" name="ASV_RSGA_CUSTOM_MODE_RX_GNSS">
-                <description>GNSS analyzer mode.</description>
+                <description>GNSS analyzer mode</description>
             </entry>
             <entry value="82" name="ASV_RSGA_CUSTOM_MODE_RDF">
-                <description>RDF mode.</description>
+                <description>RDF mode</description>
             </entry>
             <!--==================================================-->
             <!--          SPECIAL MODES (100-124)                 -->
             <!--==================================================-->
             <entry value="100" name="ASV_RSGA_CUSTOM_MODE_RADIO">
-                <description>Audio radio station mode.</description>
+                <description>Audio radio station mode</description>
             </entry>
             <entry value="255" name="ASV_RSGA_CUSTOM_MODE_RESERVED">
-                <description>Max available mode value (Reserved).</description>
+                <description>Max available mode value (Reserved)</description>
             </entry>
             
         </enum>
@@ -109,286 +109,286 @@
             <description>A mapping of RSGA special sub modes for custom_mode[8-15] bits field of heartbeat.[!THIS_IS_ENUM_FLAG!]</description>
             
             <entry value="1" name="ASV_RSGA_CUSTOM_SUB_MODE_RECORD">
-                <description>Recording enabled.</description>
+                <description>Recording enabled</description>
             </entry>
             <entry value="2" name="ASV_RSGA_CUSTOM_SUB_MODE_MISSION">
-                <description>Mission is started.</description>
+                <description>Mission is started</description>
             </entry>
             <entry value="4" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED2">
-                <description>Reserved 2.</description>
+                <description>Reserved 2</description>
             </entry>
             <entry value="8" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED3">
-                <description>Reserved 3.</description>
+                <description>Reserved 3</description>
             </entry>
             <entry value="16" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED4">
-                <description>Reserved 4.</description>
+                <description>Reserved 4</description>
             </entry>
             <entry value="32" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED5">
-                <description>Reserved 5.</description>
+                <description>Reserved 5</description>
             </entry>
             <entry value="64" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED6">
-                <description>Reserved 6.</description>
+                <description>Reserved 6</description>
             </entry>
             <entry value="128" name="ASV_RSGA_CUSTOM_SUB_MODE_RESERVED7">
-                <description>Reserved 7.</description>
+                <description>Reserved 7</description>
             </entry>
         </enum>
 
         <enum name="ASV_RSGA_REQUEST_ACK">
-            <description>ACK / NACK / ERROR values as a result of ASV_RSGA_*_REQUEST commands.</description>
+            <description>ACK / NACK / ERROR values as a result of ASV_RSGA_*_REQUEST commands</description>
             <entry name="ASV_RSGA_REQUEST_ACK_OK">
-                <description>Request is ok.</description>
+                <description>Request is ok</description>
             </entry>
             <entry name="ASV_RSGA_REQUEST_ACK_IN_PROGRESS">
-                <description>Already in progress.</description>
+                <description>Already in progress</description>
             </entry>
             <entry name="ASV_RSGA_REQUEST_ACK_FAIL">
-                <description>Internal error.</description>
+                <description>Internal error</description>
             </entry>
             <entry name="ASV_RSGA_REQUEST_ACK_NOT_SUPPORTED">
-                <description>Not supported.</description>
+                <description>Not supported</description>
             </entry>
             <entry name="ASV_RSGA_REQUEST_ACK_NOT_FOUND">
-                <description>Not found.</description>
+                <description>Not found</description>
             </entry>
         </enum>
 
         <enum name="ASV_RSGA_DATA_FLAGS">
             <description>Common status flags for all ASV_RSGA_RTT_* data.[!THIS_IS_ENUM_FLAG!]</description>
             <entry value="1" name="ASV_RSGA_DATA_FLAGS_VALID">
-                <description>Is data valid.</description>
+                <description>Is data valid</description>
             </entry>
         </enum>
 
         <enum name="ASV_RSGA_RTT_GNSS_FLAGS">
             <description>Common status flags for all ASV_RSGA_RTT_GNSS message.[!THIS_IS_ENUM_FLAG!]</description>
             <entry value="1" name="ASV_RSGA_RTT_GNSS_FLAGS_ON_THE_GROUND">
-                <description>This flag is set when the vehicle is known to be on the ground.</description>
+                <description>This flag is set when the vehicle is known to be on the ground</description>
             </entry>
             <entry value="2" name="ASV_RSGA_RTT_GNSS_FLAGS_RESERVED1">
-                <description>Reserved .</description>
+                <description>Reserved </description>
             </entry>
             <entry value="4" name="ASV_RSGA_RTT_GNSS_FLAGS_RESERVED2">
-                <description>Reserved.</description>
+                <description>Reserved</description>
             </entry>
             <entry value="8" name="ASV_RSGA_RTT_GNSS_FLAGS_RESERVED3">
-                <description>Reserved.</description>
+                <description>Reserved</description>
             </entry>
             <entry value="16" name="ASV_RSGA_RTT_GNSS_FLAGS_RESERVED4">
-                <description>Reserved.</description>
+                <description>Reserved</description>
             </entry>
             <entry value="32" name="ASV_RSGA_RTT_GNSS_FLAGS_RESERVED5">
-                <description>Reserved.</description>
+                <description>Reserved</description>
             </entry>
             <entry value="64" name="ASV_RSGA_RTT_GNSS_FLAGS_RESERVED6">
-                <description>Reserved.</description>
+                <description>Reserved</description>
             </entry>
             <entry value="128" name="ASV_RSGA_RTT_GNSS_FLAGS_RESERVED7">
-                <description>Reserved.</description>
+                <description>Reserved</description>
             </entry>
         </enum>
         <enum name="ASV_RSGA_RTT_GNSS_TYPE">
             <description>Type of GNSS receiver</description>
             <entry value="0" name="ASV_RSGA_RTT_GNSS_TYPE_VIRTUAL">
-                <description>Virtual GNSS data.</description>
+                <description>Virtual GNSS data</description>
             </entry>
             <entry value="1" name="ASV_RSGA_RTT_GNSS_TYPE_NMEA">
-                <description>GNSS data from receiver.</description>
+                <description>GNSS data from receiver</description>
             </entry>
             <entry value="2" name="ASV_RSGA_RTT_GNSS_TYPE_UAV">
-                <description>GNSS data from UAV.</description>
+                <description>GNSS data from UAV</description>
             </entry>
         </enum>
 
         <enum name="ASV_RSGA_RTT_ADSB_MSG_UF">
             <description>Mode S interrogation or uplink formats.[!THIS_IS_ENUM_FLAG!]</description>
             <entry value="1" name="ASV_RSGA_RTT_ADSB_MSG_UF_00">
-                <description>[UF00] Short air-air surveillance (ACAS).</description>
+                <description>[UF00] Short air-air surveillance (ACAS)</description>
             </entry>
             <entry value="2" name="ASV_RSGA_RTT_ADSB_MSG_UF_01">
-                <description>[UF01] Reserved.</description>
+                <description>[UF01] Reserved</description>
             </entry>
             <entry value="4" name="ASV_RSGA_RTT_ADSB_MSG_UF_02">
-                <description>[UF02] Reserved.</description>
+                <description>[UF02] Reserved</description>
             </entry>
             <entry value="8" name="ASV_RSGA_RTT_ADSB_MSG_UF_03">
-                <description>[UF03] Reserved.</description>
+                <description>[UF03] Reserved</description>
             </entry>
             <entry value="16" name="ASV_RSGA_RTT_ADSB_MSG_UF_04">
-                <description>[UF04] Surveillance, altitude request.</description>
+                <description>[UF04] Surveillance, altitude request</description>
             </entry>
             <entry value="32" name="ASV_RSGA_RTT_ADSB_MSG_UF_05">
-                <description>[UF05] Surveillance, identify request.</description>
+                <description>[UF05] Surveillance, identify request</description>
             </entry>
             <entry value="64" name="ASV_RSGA_RTT_ADSB_MSG_UF_06">
-                <description>[UF06] Reserved.</description>
+                <description>[UF06] Reserved</description>
             </entry>
             <entry value="128" name="ASV_RSGA_RTT_ADSB_MSG_UF_07">
-                <description>[UF07] Reserved.</description>
+                <description>[UF07] Reserved</description>
             </entry>
             <entry value="256" name="ASV_RSGA_RTT_ADSB_MSG_UF_08">
-                <description>[UF08] Reserved.</description>
+                <description>[UF08] Reserved</description>
             </entry>
             <entry value="512" name="ASV_RSGA_RTT_ADSB_MSG_UF_09">
-                <description>[UF09] Reserved.</description>
+                <description>[UF09] Reserved</description>
             </entry>
             <entry value="1024" name="ASV_RSGA_RTT_ADSB_MSG_UF_10">
-                <description>[UF10] Reserved.</description>
+                <description>[UF10] Reserved</description>
             </entry>
             <entry value="2048" name="ASV_RSGA_RTT_ADSB_MSG_UF_11">
-                <description>[UF11] Mode S only all-call.</description>
+                <description>[UF11] Mode S only all-call</description>
             </entry>
             <entry value="4096" name="ASV_RSGA_RTT_ADSB_MSG_UF_12">
-                <description>[UF12] Reserved.</description>
+                <description>[UF12] Reserved</description>
             </entry>
             <entry value="8192" name="ASV_RSGA_RTT_ADSB_MSG_UF_13">
-                <description>[UF13] Reserved.</description>
+                <description>[UF13] Reserved</description>
             </entry>
             <entry value="16384" name="ASV_RSGA_RTT_ADSB_MSG_UF_14">
-                <description>[UF14] Reserved.</description>
+                <description>[UF14] Reserved</description>
             </entry>
             <entry value="32768" name="ASV_RSGA_RTT_ADSB_MSG_UF_15">
-                <description>[UF15] Reserved.</description>
+                <description>[UF15] Reserved</description>
             </entry>
             <entry value="65536" name="ASV_RSGA_RTT_ADSB_MSG_UF_16">
-                <description>[UF16] Long air-air surveillance (ACAS).</description>
+                <description>[UF16] Long air-air surveillance (ACAS)</description>
             </entry>
             <entry value="131072" name="ASV_RSGA_RTT_ADSB_MSG_UF_17">
-                <description>[UF17] Reserved.</description>
+                <description>[UF17] Reserved</description>
             </entry>
             <entry value="262144" name="ASV_RSGA_RTT_ADSB_MSG_UF_18">
-                <description>[UF18] Reserved.</description>
+                <description>[UF18] Reserved</description>
             </entry>
             <entry value="524288" name="ASV_RSGA_RTT_ADSB_MSG_UF_19">
-                <description>[UF19] Reserved for military use.</description>
+                <description>[UF19] Reserved for military use</description>
             </entry>
             <entry value="1048576" name="ASV_RSGA_RTT_ADSB_MSG_UF_20">
-                <description>[UF20] Comm-A, altitude request.</description>
+                <description>[UF20] Comm-A, altitude request</description>
             </entry>
             <entry value="2097152" name="ASV_RSGA_RTT_ADSB_MSG_UF_21">
-                <description>[UF21] Comm-A, identify request.</description>
+                <description>[UF21] Comm-A, identify request</description>
             </entry>
             <entry value="4194304" name="ASV_RSGA_RTT_ADSB_MSG_UF_22">
-                <description>[UF22] Reserved for military use.</description>
+                <description>[UF22] Reserved for military use</description>
             </entry>
             <entry value="8388608" name="ASV_RSGA_RTT_ADSB_MSG_UF_23">
-                <description>[UF23] Reserved.</description>
+                <description>[UF23] Reserved</description>
             </entry>
             <entry value="16777216" name="ASV_RSGA_RTT_ADSB_MSG_UF_24">
-                <description>[UF24] Comm-C (ELM).</description>
+                <description>[UF24] Comm-C (ELM)</description>
             </entry>
         </enum>
 
         <enum name="ASV_RSGA_RTT_ADSB_MSG_DF">
             <description>Mode S reply or downlink formats.[!THIS_IS_ENUM_FLAG!]</description>
             <entry value="1" name="ASV_RSGA_RTT_ADSB_MSG_DF_00">
-                <description>[DF00] Short air-air surveillance (ACAS).</description>
+                <description>[DF00] Short air-air surveillance (ACAS)</description>
             </entry>
             <entry value="2" name="ASV_RSGA_RTT_ADSB_MSG_DF_01">
-                <description>[DF01] Reserved.</description>
+                <description>[DF01] Reserved</description>
             </entry>
             <entry value="4" name="ASV_RSGA_RTT_ADSB_MSG_DF_02">
-                <description>[DF02] Reserved.</description>
+                <description>[DF02] Reserved</description>
             </entry>
             <entry value="8" name="ASV_RSGA_RTT_ADSB_MSG_DF_03">
-                <description>[DF03] Reserved.</description>
+                <description>[DF03] Reserved</description>
             </entry>
             <entry value="16" name="ASV_RSGA_RTT_ADSB_MSG_DF_04">
-                <description>[DF04] Surveillance, altitude reply.</description>
+                <description>[DF04] Surveillance, altitude reply</description>
             </entry>
             <entry value="32" name="ASV_RSGA_RTT_ADSB_MSG_DF_05">
-                <description>[DF05] Surveillance, identify reply.</description>
+                <description>[DF05] Surveillance, identify reply</description>
             </entry>
             <entry value="64" name="ASV_RSGA_RTT_ADSB_MSG_DF_06">
-                <description>[DF06] Reserved.</description>
+                <description>[DF06] Reserved</description>
             </entry>
             <entry value="128" name="ASV_RSGA_RTT_ADSB_MSG_DF_07">
-                <description>[DF07] Reserved.</description>
+                <description>[DF07] Reserved</description>
             </entry>
             <entry value="256" name="ASV_RSGA_RTT_ADSB_MSG_DF_08">
-                <description>[DF08] Reserved.</description>
+                <description>[DF08] Reserved</description>
             </entry>
             <entry value="512" name="ASV_RSGA_RTT_ADSB_MSG_DF_09">
-                <description>[DF09] Reserved.</description>
+                <description>[DF09] Reserved</description>
             </entry>
             <entry value="1024" name="ASV_RSGA_RTT_ADSB_MSG_DF_10">
-                <description>[DF10] Reserved.</description>
+                <description>[DF10] Reserved</description>
             </entry>
             <entry value="2048" name="ASV_RSGA_RTT_ADSB_MSG_DF_11">
-                <description>[DF11] All-call reply.</description>
+                <description>[DF11] All-call reply</description>
             </entry>
             <entry value="4096" name="ASV_RSGA_RTT_ADSB_MSG_DF_12">
-                <description>[DF12] Reserved.</description>
+                <description>[DF12] Reserved</description>
             </entry>
             <entry value="8192" name="ASV_RSGA_RTT_ADSB_MSG_DF_13">
-                <description>[DF13] Reserved.</description>
+                <description>[DF13] Reserved</description>
             </entry>
             <entry value="16384" name="ASV_RSGA_RTT_ADSB_MSG_DF_14">
-                <description>[DF14] Reserved.</description>
+                <description>[DF14] Reserved</description>
             </entry>
             <entry value="32768" name="ASV_RSGA_RTT_ADSB_MSG_DF_15">
-                <description>[DF15] Reserved.</description>
+                <description>[DF15] Reserved</description>
             </entry>
             <entry value="65536" name="ASV_RSGA_RTT_ADSB_MSG_DF_16">
-                <description>[DF16] Long air-air surveillance (ACAS).</description>
+                <description>[DF16] Long air-air surveillance (ACAS)</description>
             </entry>
             <entry value="131072" name="ASV_RSGA_RTT_ADSB_MSG_DF_17">
-                <description>[DF17] Extended squitter.</description>
+                <description>[DF17] Extended squitter</description>
             </entry>
             <entry value="262144" name="ASV_RSGA_RTT_ADSB_MSG_DF_18">
-                <description>[DF18] Extended squitter/non transponder.</description>
+                <description>[DF18] Extended squitter/non transponder</description>
             </entry>
             <entry value="524288" name="ASV_RSGA_RTT_ADSB_MSG_DF_19">
-                <description>[DF19] Military extended squitter.</description>
+                <description>[DF19] Military extended squitter</description>
             </entry>
             <entry value="1048576" name="ASV_RSGA_RTT_ADSB_MSG_DF_20">
-                <description>[DF20] Comm-B, altitude reply.</description>
+                <description>[DF20] Comm-B, altitude reply</description>
             </entry>
             <entry value="2097152" name="ASV_RSGA_RTT_ADSB_MSG_DF_21">
-                <description>[DF21] Comm-B, identify reply.</description>
+                <description>[DF21] Comm-B, identify reply</description>
             </entry>
             <entry value="4194304" name="ASV_RSGA_RTT_ADSB_MSG_DF_22">
-                <description>[DF22] Reserved for military use.</description>
+                <description>[DF22] Reserved for military use</description>
             </entry>
             <entry value="8388608" name="ASV_RSGA_RTT_ADSB_MSG_DF_23">
-                <description>[DF23] Reserved.</description>
+                <description>[DF23] Reserved</description>
             </entry>
             <entry value="16777216" name="ASV_RSGA_RTT_ADSB_MSG_DF_24">
-                <description>[DF24] Comm-D (ELM).</description>
+                <description>[DF24] Comm-D (ELM)</description>
             </entry>
         </enum>
 
         <!-- Asv specific MAV_CMD_* commands -->
         <enum name="MAV_CMD">
             <entry value="13400" name="MAV_CMD_ASV_RSGA_SET_MODE">
-                <description>Set the operational mode.</description>
-                <param index="1">Mode (uint32_t, see ASV_RSGA_CUSTOM_MODE).</param>
-                <param index="2">Empty.</param>
-                <param index="3">Empty.</param>
-                <param index="4">Empty.</param>
-                <param index="5">Empty.</param>
-                <param index="6">Empty.</param>
-                <param index="7">Empty.</param>
+                <description>Set the operational mode</description>
+                <param index="1">Mode (uint32_t, see ASV_RSGA_CUSTOM_MODE)</param>
+                <param index="2">Empty</param>
+                <param index="3">Empty</param>
+                <param index="4">Empty</param>
+                <param index="5">Empty</param>
+                <param index="6">Empty</param>
+                <param index="7">Empty</param>
             </entry>
             <entry value="13401" name="MAV_CMD_ASV_RSGA_START_RECORD">
-                <description>Start data recording with a unique name (maximum 28 characters). Can be used in mission protocol for RSGA payloads.</description>
-                <param index="1">Record unique name: 0-3 chars (char[4]).</param>
-                <param index="2">Record unique name: 4-7 chars (char[4]).</param>
-                <param index="3">Record unique name: 8-11 chars (char[4]).</param>
-                <param index="4">Record unique name: 12-15 chars (char[4]).</param>
-                <param index="5">Record unique name: 16-19 chars (char[4]).</param>
-                <param index="6">Record unique name: 20-23 chars (char[4]).</param>
-                <param index="7">Record unique name: 24-27 chars (char[4]).</param>
+                <description>Start data recording with a unique name (maximum 28 characters). Can be used in mission protocol for RSGA payloads</description>
+                <param index="1">Record unique name: 0-3 chars (char[4])</param>
+                <param index="2">Record unique name: 4-7 chars (char[4])</param>
+                <param index="3">Record unique name: 8-11 chars (char[4])</param>
+                <param index="4">Record unique name: 12-15 chars (char[4])</param>
+                <param index="5">Record unique name: 16-19 chars (char[4])</param>
+                <param index="6">Record unique name: 20-23 chars (char[4])</param>
+                <param index="7">Record unique name: 24-27 chars (char[4])</param>
             </entry>
             <entry value="13402" name="MAV_CMD_ASV_RSGA_STOP_RECORD">
-                <description>Stop recording data. Can be used in the mission protocol for RSGA payloads.</description>
-                <param index="1">Empty.</param>
-                <param index="2">Empty.</param>
-                <param index="3">Empty.</param>
-                <param index="4">Empty.</param>
-                <param index="5">Empty.</param>
-                <param index="6">Empty.</param>
-                <param index="7">Empty.</param>
+                <description>Stop recording data. Can be used in the mission protocol for RSGA payloads</description>
+                <param index="1">Empty</param>
+                <param index="2">Empty</param>
+                <param index="3">Empty</param>
+                <param index="4">Empty</param>
+                <param index="5">Empty</param>
+                <param index="6">Empty</param>
+                <param index="7">Empty</param>
             </entry>
         </enum>
     </enums>
@@ -396,15 +396,15 @@
         <!-- message 13400 - 13449 for common use -->
         <message id="13400" name="ASV_RSGA_COMPATIBILITY_REQUEST">
             <description>Requests device COMPATIBILITY. Returns ASV_RSGA_COMPATIBILITY_RESPONSE. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
-            <field type="uint8_t" name="target_system">System ID.</field>
-            <field type="uint8_t" name="target_component">Component ID.</field>
-            <field type="uint16_t" name="request_id">Specifies a unique number for this request. This allows the response packet to be identified.</field>
+            <field type="uint8_t" name="target_system">System ID</field>
+            <field type="uint8_t" name="target_component">Component ID</field>
+            <field type="uint16_t" name="request_id">Specifies a unique number for this request. This allows the response packet to be identified</field>
         </message>
         <message id="13401" name="ASV_RSGA_COMPATIBILITY_RESPONSE">
             <description>Responds to the ASV_RSGA_COMPATIBILITY_REQUEST. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
-            <field type="uint8_t" name="result" enum="ASV_RSGA_REQUEST_ACK">Result code.</field>
-            <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request.</field>
-            <field type="uint8_t[32]" name="supported_modes">Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true.</field>
+            <field type="uint8_t" name="result" enum="ASV_RSGA_REQUEST_ACK">Result code</field>
+            <field type="uint16_t" name="request_id">Specifies the unique number of the original request. This allows the response to be matched to the correct request</field>
+            <field type="uint8_t[32]" name="supported_modes">Supported modes. Each bit index represents an ASV_RSGA_CUSTOM_MODE value (256 bits). First (IDLE) bit always true</field>
         </message>
 
         <!--==================================================-->
@@ -415,12 +415,12 @@
             <description>Global position from GNSS receiver. Can be transmitted for all supported modes. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="data_index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
 
-            <field type="uint16_t" name="ref_id">GNSS reference station ID (used when GNSS is received from multiple sources).</field>
-            <field type="uint8_t" name="receiver_type" enum="ASV_RSGA_RTT_GNSS_TYPE">GNSS receiver type.</field>
-            <field type="uint8_t" name="gnss_flags" enum="ASV_RSGA_RTT_GNSS_FLAGS">GNSS special flags.</field>
+            <field type="uint16_t" name="ref_id">GNSS reference station ID (used when GNSS is received from multiple sources)</field>
+            <field type="uint8_t" name="receiver_type" enum="ASV_RSGA_RTT_GNSS_TYPE">GNSS receiver type</field>
+            <field type="uint8_t" name="gnss_flags" enum="ASV_RSGA_RTT_GNSS_FLAGS">GNSS special flags</field>
 
             <field type="int32_t" name="lat" units="degE7">Latitude (WGS84, EGM96 ellipsoid)</field>
             <field type="int32_t" name="lat_err" units="mm">Expected Error in Latitude (North) Direction</field>
@@ -449,8 +449,8 @@
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_SPECTRUM mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
 
         <!--==================================================-->
@@ -460,64 +460,64 @@
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_LLZ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
         
         <message id="13453" name="ASV_RSGA_RTT_TX_GP">
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_GP mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
         
         <message id="13454" name="ASV_RSGA_RTT_TX_VOR">
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_VOR mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
         
         <message id="13455" name="ASV_RSGA_RTT_TX_MARKER">
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_MARKER mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
         
         <message id="13456" name="ASV_RSGA_RTT_DME_REP">
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_DME_REP mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
         
         <message id="13457" name="ASV_RSGA_RTT_TX_GBAS">
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_GBAS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
         
         <message id="13458" name="ASV_RSGA_RTT_ADSB_REQ">
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_ADSB_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
         
         <message id="13459" name="ASV_RSGA_RTT_TX_GNSS">
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_GNSS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
         
         <!--==================================================-->
@@ -528,15 +528,15 @@
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_DME_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
-            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
+            <field type="int16_t" name="measure_time" units="ms">Measure time</field>
             <!--RX-->
             <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
             <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
             <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
-            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
-            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).</field>
+            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high)</field>
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             <!--TX-->
             <field type="uint64_t" name="tx_freq" units="Hz">TX frequency</field>
@@ -562,42 +562,42 @@
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_LLZ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
-            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
+            <field type="int16_t" name="measure_time" units="ms">Measure time</field>
             <!--RX-->
             <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
             <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
             <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
-            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
-            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).</field>
+            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high)</field>
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             <!-- Total measure data -->
-            <field type="float" name="am_90" units="%">Total aplitude modulation of 90Hz.</field>
-            <field type="int16_t" name="freq_90" units="Hz">Total frequency offset of signal 90 Hz.</field>
-            <field type="float" name="am_150" units="%">Total aplitude modulation of 150Hz.</field>
-            <field type="int16_t" name="freq_150" units="Hz">Total frequency offset of signal 150 Hz.</field>
-            <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz.</field>
-            <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz.</field>
+            <field type="float" name="am_90" units="%">Total aplitude modulation of 90Hz</field>
+            <field type="int16_t" name="freq_90" units="Hz">Total frequency offset of signal 90 Hz</field>
+            <field type="float" name="am_150" units="%">Total aplitude modulation of 150Hz</field>
+            <field type="int16_t" name="freq_150" units="Hz">Total frequency offset of signal 150 Hz</field>
+            <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz</field>
+            <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz</field>
             <field type="char[4]" name="code_id" units="Letters">Code identification</field>
             
             <field type="float" name="phi_90_low_vs_high" units="deg"> Phase difference 90 Hz low and high freq channel</field>
-            <field type="float" name="phi_150_low_vs_high" units="deg">Phase difference 150 Hz low and high.</field>
+            <field type="float" name="phi_150_low_vs_high" units="deg">Phase difference 150 Hz low and high freq channel</field>
             
             <!-- Course measure data -->
-            <field type="float" name="low_power" units="dBm">Input power of low freq channel.</field>
-            <field type="int16_t" name="low_carrier_offset" units="Hz">Carrier frequency offset of low freq channel.</field>
-            <field type="float" name="low_am_90" units="%">Aplitude modulation of 90Hz of low freq channel.</field>
-            <field type="int16_t" name="low_freq_90" units="Hz">Frequency offset of signal 90 Hz of low freq channel.</field>
-            <field type="float" name="low_am_150" units="%">Aplitude modulation of 150Hz of low freq channel.</field>
-            <field type="int16_t" name="low_freq_150" units="Hz">Frequency offset of signal 150 Hz of low freq channel.</field>
+            <field type="float" name="low_power" units="dBm">Input power of low freq channel</field>
+            <field type="int16_t" name="low_carrier_offset" units="Hz">Carrier frequency offset of low freq channel</field>
+            <field type="float" name="low_am_90" units="%">Aplitude modulation of 90Hz of low freq channel</field>
+            <field type="int16_t" name="low_freq_90" units="Hz">Frequency offset of signal 90 Hz of low freq channel</field>
+            <field type="float" name="low_am_150" units="%">Aplitude modulation of 150Hz of low freq channel</field>
+            <field type="int16_t" name="low_freq_150" units="Hz">Frequency offset of signal 150 Hz of low freq channel</field>
             <!-- Clearance measure data -->
-            <field type="float" name="high_power" units="dBm">Input power of high freq channel.</field>
-            <field type="int16_t" name="high_carrier_offset" units="Hz">Carrier frequency offset of high freq channel.</field>
-            <field type="float" name="high_am_90" units="%">Aplitude modulation of 90Hz of high freq channel.</field>
-            <field type="int16_t" name="high_freq_90" units="Hz">Frequency offset of signal 90 Hz of high freq channel.</field>
-            <field type="float" name="high_am_150" units="% E2">Aplitude modulation of 150Hz of high freq channel.</field>
-            <field type="int16_t" name="high_freq_150" units="Hz">Frequency offset of signal 150 Hz of high freq channel.</field>
+            <field type="float" name="high_power" units="dBm">Input power of high freq channel</field>
+            <field type="int16_t" name="high_carrier_offset" units="Hz">Carrier frequency offset of high freq channel</field>
+            <field type="float" name="high_am_90" units="%">Aplitude modulation of 90Hz of high freq channel</field>
+            <field type="int16_t" name="high_freq_90" units="Hz">Frequency offset of signal 90 Hz of high freq channel</field>
+            <field type="float" name="high_am_150" units="% E2">Aplitude modulation of 150Hz of high freq channel</field>
+            <field type="int16_t" name="high_freq_150" units="Hz">Frequency offset of signal 150 Hz of high freq channel</field>
 
             
         </message>
@@ -606,40 +606,40 @@
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_GP mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
-            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
+            <field type="int16_t" name="measure_time" units="ms">Measure time</field>
             <!--RX-->
             <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
             <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
             <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
-            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
-            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).</field>
+            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high)</field>
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             <!-- High measure data -->
-            <field type="float" name="low_power" units="dBm">Input power of low freq channel.</field>
-            <field type="int16_t" name="low_carrier_offset" units="Hz">Carrier frequency offset of low freq channel.</field>
-            <field type="float" name="low_am_90" units="%">Aplitude modulation of 90Hz of low freq channel.</field>
-            <field type="int16_t" name="low_freq_90" units="Hz">Frequency offset of signal 90 Hz of low freq channel.</field>
-            <field type="float" name="low_am_150" units="%">Aplitude modulation of 150Hz of low freq channel.</field>
-            <field type="int16_t" name="low_freq_150" units="Hz">Frequency offset of signal 150 Hz of low freq channel.</field>
+            <field type="float" name="low_power" units="dBm">Input power of low freq channel</field>
+            <field type="int16_t" name="low_carrier_offset" units="Hz">Carrier frequency offset of low freq channel</field>
+            <field type="float" name="low_am_90" units="%">Aplitude modulation of 90Hz of low freq channel</field>
+            <field type="int16_t" name="low_freq_90" units="Hz">Frequency offset of signal 90 Hz of low freq channel</field>
+            <field type="float" name="low_am_150" units="%">Aplitude modulation of 150Hz of low freq channel</field>
+            <field type="int16_t" name="low_freq_150" units="Hz">Frequency offset of signal 150 Hz of low freq channel</field>
             <!-- Low measure data -->
-            <field type="float" name="high_power" units="dBm">Input power of high freq channel.</field>
-            <field type="int16_t" name="high_carrier_offset" units="Hz">Carrier frequency offset of high freq channel.</field>
-            <field type="float" name="high_am_90" units="%">Aplitude modulation of 90Hz of high freq channel.</field>
-            <field type="int16_t" name="high_freq_90" units="Hz">Frequency offset of signal 90 Hz of high freq channel.</field>
-            <field type="float" name="high_am_150" units="% E2">Aplitude modulation of 150Hz of high freq channel.</field>
-            <field type="int16_t" name="high_freq_150" units="Hz">Frequency offset of signal 150 Hz of high freq channel.</field>
+            <field type="float" name="high_power" units="dBm">Input power of high freq channel</field>
+            <field type="int16_t" name="high_carrier_offset" units="Hz">Carrier frequency offset of high freq channel</field>
+            <field type="float" name="high_am_90" units="%">Aplitude modulation of 90Hz of high freq channel</field>
+            <field type="int16_t" name="high_freq_90" units="Hz">Frequency offset of signal 90 Hz of high freq channel</field>
+            <field type="float" name="high_am_150" units="% E2">Aplitude modulation of 150Hz of high freq channel</field>
+            <field type="int16_t" name="high_freq_150" units="Hz">Frequency offset of signal 150 Hz of high freq channel</field>
             <!-- Total measure data -->
 
-            <field type="float" name="am_90" units="%">Total aplitude modulation of 90Hz.</field>
-            <field type="int16_t" name="freq_90" units="Hz">Total frequency offset of signal 90 Hz.</field>
+            <field type="float" name="am_90" units="%">Total aplitude modulation of 90Hz</field>
+            <field type="int16_t" name="freq_90" units="Hz">Total frequency offset of signal 90 Hz</field>
 
-            <field type="float" name="am_150" units="%">Total aplitude modulation of 150Hz.</field>
-            <field type="int16_t" name="freq_150" units="Hz">Total frequency offset of signal 150 Hz.</field>
+            <field type="float" name="am_150" units="%">Total aplitude modulation of 150Hz</field>
+            <field type="int16_t" name="freq_150" units="Hz">Total frequency offset of signal 150 Hz</field>
 
-            <field type="float" name="phi_90_low_vs_clr" units="deg"> Phase difference 90 Hz high freq channel and cource</field>
-            <field type="float" name="phi_150_low_vs_clr" units="deg">Phase difference 150 Hz high freq channel and cource.</field>
+            <field type="float" name="phi_90_low_vs_high" units="deg"> Phase difference 90 Hz low and high freq channel</field>
+            <field type="float" name="phi_150_low_vs_high" units="deg">Phase difference 150 Hz low and high freq channel</field>
 
         </message>
         
@@ -647,31 +647,31 @@
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_VOR mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
-            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
+            <field type="int16_t" name="measure_time" units="ms">Measure time</field>
             <!--RX-->
             <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
             <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
             <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
-            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
-            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).</field>
+            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high)</field>
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             
-            <field type="float" name="azimuth" units="deg">Measured azimuth.</field>
-            <field type="float" name="power" units="dBm">Total input power.</field>
-            <field type="float" name="field_strength" units="uV/m">Total field strength.</field>
+            <field type="float" name="azimuth" units="deg">Measured azimuth</field>
+            <field type="float" name="power" units="dBm">Total input power</field>
+            <field type="float" name="field_strength" units="uV/m">Total field strength</field>
 
-            <field type="float" name="am_30" units="%">Total aplitude modulation of 30 Hz.</field>
-            <field type="int16_t" name="freq_30" units="Hz">Total frequency offset of signal 30 Hz.</field>
+            <field type="float" name="am_30" units="%">Total aplitude modulation of 30 Hz</field>
+            <field type="int16_t" name="freq_30" units="Hz">Total frequency offset of signal 30 Hz</field>
 
-            <field type="float" name="am_9960" units="%">Total aplitude modulation of 9960 Hz.</field>
-            <field type="int16_t" name="freq_9960" units="Hz">Total frequency offset of signal 9960 Hz.</field>
+            <field type="float" name="am_9960" units="%">Total aplitude modulation of 9960 Hz</field>
+            <field type="int16_t" name="freq_9960" units="Hz">Total frequency offset of signal 9960 Hz</field>
 
-            <field type="float" name="deviation" units="">Deviation.</field>
+            <field type="float" name="deviation" units="">Deviation</field>
 
-            <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz.</field>
-            <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz.</field>
+            <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz</field>
+            <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz</field>
             <field type="char[4]" name="code_id" units="Letters">Code identification</field>
 
         </message>
@@ -680,38 +680,38 @@
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_MARKER mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
-            <field type="int16_t" name="measure_time" units="ms">Measure time.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
+            <field type="int16_t" name="measure_time" units="ms">Measure time</field>
             <!--RX-->
             <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
             <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
             <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
-            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
-            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high).</field>
+            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high)</field>
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             <!-- 400 Hz component (Outer marker) -->
-            <field type="float" name="am_400" units="%">Current AM modulation depth of the 400 Hz component.</field>
-            <field type="float" name="am_400_max" units="%">Max AM modulation depth of the 400 Hz component.</field>
-            <field type="float" name="am_400_min" units="%">Min AM modulation depth of the 400 Hz component.</field>
-            <field type="int16_t" name="freq_400" units="Hz">Frequency of the 400 Hz component.</field>
-            <field type="float" name="dash_400" units="ms">Length of a dash for the outer marker.</field>
-            <field type="float" name="gap_400" units="ms">Gap between two dashes for the outer marker.</field>
+            <field type="float" name="am_400" units="%">Current AM modulation depth of the 400 Hz component</field>
+            <field type="float" name="am_400_max" units="%">Max AM modulation depth of the 400 Hz component</field>
+            <field type="float" name="am_400_min" units="%">Min AM modulation depth of the 400 Hz component</field>
+            <field type="int16_t" name="freq_400" units="Hz">Frequency of the 400 Hz component</field>
+            <field type="float" name="dash_400" units="ms">Length of a dash for the outer marker</field>
+            <field type="float" name="gap_400" units="ms">Gap between two dashes for the outer marker</field>
             <!-- 1300 Hz component (Middle marker) -->
-            <field type="float" name="am_1300" units="%">AM modulation depth of the 1300 Hz component.</field>
-            <field type="float" name="am_1300_max" units="%">Max AM modulation depth of the 1300 Hz component.</field>
-            <field type="float" name="am_1300_min" units="%">Min AM modulation depth of the 1300 Hz component.</field>
-            <field type="int16_t" name="freq_1300" units="Hz">Frequency of the 1300 Hz component.</field>
-            <field type="float" name="dash_1300" units="ms">Length of a dash for the middle marker.</field>
-            <field type="float" name="dot_1300" units="ms">Length of a dot for the middle marker.</field>
-            <field type="float" name="gap_1300" units="ms">Gap between dot and dash for the middle marker.</field>
+            <field type="float" name="am_1300" units="%">AM modulation depth of the 1300 Hz component</field>
+            <field type="float" name="am_1300_max" units="%">Max AM modulation depth of the 1300 Hz component</field>
+            <field type="float" name="am_1300_min" units="%">Min AM modulation depth of the 1300 Hz component</field>
+            <field type="int16_t" name="freq_1300" units="Hz">Frequency of the 1300 Hz component</field>
+            <field type="float" name="dash_1300" units="ms">Length of a dash for the middle marker</field>
+            <field type="float" name="dot_1300" units="ms">Length of a dot for the middle marker</field>
+            <field type="float" name="gap_1300" units="ms">Gap between dot and dash for the middle marker</field>
             <!-- 3000 Hz component (Inner marker) -->
-            <field type="float" name="am_3000" units="%">AM modulation depth of the 3000 Hz component.</field>
-            <field type="float" name="am_3000_max" units="%">Max AM modulation depth of the 3000 Hz component.</field>
-            <field type="float" name="am_3000_min" units="%">Min AM modulation depth of the 3000 Hz component.</field>
-            <field type="int16_t" name="freq_3000" units="Hz">Frequency of the 3000 Hz component.</field>
-            <field type="float" name="dot_3000" units="ms">Length of a dot for the inner marker.</field>
-            <field type="float" name="gap_3000" units="ms">Gap between two dashes for the inner marker.</field>
+            <field type="float" name="am_3000" units="%">AM modulation depth of the 3000 Hz component</field>
+            <field type="float" name="am_3000_max" units="%">Max AM modulation depth of the 3000 Hz component</field>
+            <field type="float" name="am_3000_min" units="%">Min AM modulation depth of the 3000 Hz component</field>
+            <field type="int16_t" name="freq_3000" units="Hz">Frequency of the 3000 Hz component</field>
+            <field type="float" name="dot_3000" units="ms">Length of a dot for the inner marker</field>
+            <field type="float" name="gap_3000" units="ms">Gap between two dashes for the inner marker</field>
 
         </message>
         
@@ -719,16 +719,16 @@
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_GBAS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
         
         <message id="13466" name="ASV_RSGA_RTT_ADSB_REP">
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_ADSB_REP mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
 
             <!--TX-->
             <field type="uint64_t" name="tx_freq" units="Hz">TX frequency</field>
@@ -738,11 +738,11 @@
             <field type="uint64_t" name="rx_freq" units="Hz">RX frequency</field>
             <field type="int16_t" name="rx_freq_offset" units="Hz">RX frequency offset</field>
             <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
-            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength.</field>
-            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong).</field>
+            <field type="float" name="rx_field_strength" units="uV/m">Receive power field strength</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong)</field>
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             <!--Messages-->
-            <field type="uint16_t" name="ref_id">GNSS reference station ID (used when GNSS is received from multiple sources).</field>
+            <field type="uint16_t" name="ref_id">GNSS reference station ID (used when GNSS is received from multiple sources)</field>
             <field type="char[8]" name="call_sign">Vehicle identifier (8 characters, valid characters are A-Z, 0-9, " " only)</field>
             <field type="uint32_t" name="icao_address" >Vehicle ICAO address (24 bit)</field>
             <field type="uint16_t" name="squawk">Mode A code (typically 1200 [0x04B0] for VFR)</field>
@@ -757,8 +757,8 @@
             <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_GNSS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
             <!-- Common header for all ASV_RSGA_RTT messages-->
             <field type="uint32_t" name="index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time).</field>
-            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags.</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
         
         
