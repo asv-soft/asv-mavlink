@@ -9,7 +9,6 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        //Assembly.GetExecutingAssembly().PrintWelcomeToConsole();
         Console.InputEncoding = Encoding.UTF8;
         Console.OutputEncoding = Encoding.UTF8;
         Console.BackgroundColor = ConsoleColor.Black;
@@ -30,8 +29,8 @@ class Program
         app.Add<CreateVirtualFtpServerCommand>();
         app.Add<GenerateDiagnostics>();
         app.Add<TestGenerateDiagnosticsCommand>();
-        app.Add<PrintVehicleStateCommand>();
         app.Add<ParamsCommand>();
+        app.Add<PrintVehicleStateCommand>();
         app.Add<DownloadMissionItemsCommand>();
         
         await app.RunAsync(args);
