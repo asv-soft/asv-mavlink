@@ -4084,8 +4084,7 @@ namespace Asv.Mavlink.AsvSdr
             +CodeId.Length // char[4] code_id
             );
         }
-
-
+        
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4157,10 +4156,8 @@ namespace Asv.Mavlink.AsvSdr
                 }
             }
             buffer = buffer[arraySize..];
-           
-
         }
-
+        
         public void Serialize(ref Span<byte> buffer)
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
