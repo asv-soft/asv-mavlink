@@ -19,7 +19,7 @@ class Program
         // app.Add<FtpTreeDirectory>();
         // app.Add<FtpBrowserDirectory>();
         // app.Add<DevicesInfoCommand>();
-        // app.Add<VirtualAdsbCommand>();
+        app.Add<VirtualAdsbCommand>();
         // app.Add<ExportSdrData>();
         // app.Add<MavProxy>();
         // app.Add<BenchmarkBinSerializationCommand>();
