@@ -25,3 +25,8 @@ Full possible command with all the parameters
 ```bash
 Asv.Mavlink.Shell.exe code-gen-example -v -d custom_folder_name
 ```
+
+For testing, you can use:
+1.  [template.tpl](../exampleFiles/generateCommand/template.tpl)
+2. standart.xml file (targetFile):
+https://github.com/mavlink/mavlink/blob/master/message_definitions/v1.0/standard.xml

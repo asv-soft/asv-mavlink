@@ -11,7 +11,9 @@
         </toc-element>
     </toc-element>
     <toc-element toc-title="CLI">
-        <toc-element topic="code-gen-example.md"/>
+        <toc-element topic="code-gen-example.md">
+            <toc-element href="../exampleFiles/generateCommand/template.tpl" toc-title="template.tpl"/>
+        </toc-element>
         <toc-element topic="print-vehicle-state.md"/>
         <toc-element topic="params.md"/>
         <toc-element topic="packet-code-generation.md"/>
