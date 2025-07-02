@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.8+aedf0e45cecf4e3648d310da2728457ab10b401a 25-06-29.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.8+aedf0e45cecf4e3648d310da2728457ab10b401a 25-07-02.
 
 using System;
 using System.Text;
@@ -385,19 +385,33 @@ namespace Asv.Mavlink.AsvRsga
     {
         /// <summary>
         /// Is data valid
-        /// ASV_RSGA_DATA_FLAGS_VALID
+        /// ASV_RSGA_DATA_FLAGS_IS_VALID
         /// </summary>
-        AsvRsgaDataFlagsValid = 1,
+        AsvRsgaDataFlagsIsValid = 1,
+        /// <summary>
+        /// Signal level too high
+        /// ASV_RSGA_DATA_FLAGS_SIGNAL_OVERFLOW
+        /// </summary>
+        AsvRsgaDataFlagsSignalOverflow = 2,
+        /// <summary>
+        /// Signal level too low
+        /// ASV_RSGA_DATA_FLAGS_SIGNAL_LOW
+        /// </summary>
+        AsvRsgaDataFlagsSignalLow = 4,
     }
     public static class AsvRsgaDataFlagsHelper
     {
         public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
         {
             yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
         }
         public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
         {
-            yield return new EnumValue<T>(converter(1),"ASV_RSGA_DATA_FLAGS_VALID");
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_DATA_FLAGS_IS_VALID");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_DATA_FLAGS_SIGNAL_OVERFLOW");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_DATA_FLAGS_SIGNAL_LOW");
         }
     }
     /// <summary>

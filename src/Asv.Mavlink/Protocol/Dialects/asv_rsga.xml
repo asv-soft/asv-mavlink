@@ -155,8 +155,14 @@
 
         <enum name="ASV_RSGA_DATA_FLAGS">
             <description>Common status flags for all ASV_RSGA_RTT_* data.[!THIS_IS_ENUM_FLAG!]</description>
-            <entry value="1" name="ASV_RSGA_DATA_FLAGS_VALID">
+            <entry value="1" name="ASV_RSGA_DATA_FLAGS_IS_VALID">
                 <description>Is data valid</description>
+            </entry>
+            <entry value="2" name="ASV_RSGA_DATA_FLAGS_SIGNAL_OVERFLOW">
+                <description>Signal level too high</description>
+            </entry>
+            <entry value="4" name="ASV_RSGA_DATA_FLAGS_SIGNAL_LOW">
+                <description>Signal level too low</description>
             </entry>
         </enum>
 
