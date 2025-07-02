@@ -1,7 +1,6 @@
-namespace Asv.Mavlink.Shell
+namespace Asv.Mavlink.Shell;
+
+public class MavlinkEnumEntryParamModel: MavlinkModelBase
 {
-    public class MavlinkEnumEntryParamModel: MavlinkModelBase
-    {
-        public int Index { get; set; }
-    }
+    public int Index { get; set; }
 }
