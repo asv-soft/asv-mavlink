@@ -2,111 +2,125 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 using ConsoleAppFramework;
 using Spectre.Console;
 
-namespace Asv.Mavlink.Shell
+namespace Asv.Mavlink.Shell;
+
+public class GenerateCommand
 {
-    public class GenerateCommand
+    private string _inputFolder = "in";
+    private string _outputFolder = "out";
+    private string _targetFileName = "standard.xml";
+    private string _extension = string.Empty;
+
+    /// <summary>
+    /// Generate files from MAVLink XML message definitions.
+    /// </summary>
+    /// <param name="ext">-e, Output file extension</param>
+    /// <param name="templateFile">-template, Template file (Liquid syntax)</param>
+    /// <param name="targetFile">-t, [Optional] Target file name (default: standard.xml)</param>
+    /// <param name="inputFolder">-i, [Optional] Input folder (default: "in")</param>
+    /// <param name="outputFolder">-o, [Optional] Output folder (default: "out")</param>
+    [Command("gen")]
+    public async Task RunGenerate(
+        string ext,
+        string templateFile,
+        string? targetFile = null,
+        string? inputFolder = null,
+        string? outputFolder = null)
     {
-        private string _in = "in";
-        private string _targetFileName = "standard.xml";
-        private string _out = "out";
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-        private string _ext;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+        var cancellationTokenSource = new CancellationTokenSource();
+        var cancellationToken = cancellationTokenSource.Token;
 
-        /// <summary>
-        /// Generate file form MAVLink XML message definitions.
-        /// </summary>
-        /// <param name="ext">-e, Output files extensions</param>
-        /// <param name="templateFile">-template, Liquid syntax template file, that used for generation</param>
-        /// <param name="targetFile">-t, [Optional] OnTarget file name. By default standard.xml</param>
-        /// <param name="inputFolder">-i, [Optional] Folder with source XML files. By default "in" folder</param>
-        /// <param name="outputFolder">-o, [Optional] Output folder with results. By default "out" folder</param>
-        [Command("gen")]
-        public async Task RunGenerate(string ext,
-            string templateFile, string? targetFile = null, string? inputFolder = null, string? outputFolder = null)
+        cancellationToken.ThrowIfCancellationRequested();                
+
+        _extension = string.IsNullOrWhiteSpace(ext)
+            ? Path.GetExtension(templateFile).TrimStart('.')
+            : ext;
+
+        _targetFileName = targetFile ?? _targetFileName;
+        _inputFolder = inputFolder ?? _inputFolder;
+        _outputFolder = outputFolder ?? _outputFolder;
+            
+        if (!Directory.Exists(_inputFolder))
+            Directory.CreateDirectory(_inputFolder);
+
+        if (!Directory.Exists(_outputFolder))
+            Directory.CreateDirectory(_outputFolder);
+            
+        var generatedFiles = new HashSet<string>();
+        var templateContent = await File.ReadAllTextAsync(templateFile, cancellationToken);
+
+        foreach (var model in GenerateModels(_targetFileName, cancellationToken))
         {
-            _targetFileName = targetFile ?? _targetFileName;
-            _in = inputFolder ?? _in;
-            _out = outputFolder ?? _out;
-            _ext = ext ?? Path.GetExtension(templateFile);
+            cancellationToken.ThrowIfCancellationRequested();
 
-            if (!Directory.Exists(_in))
+            if (string.IsNullOrEmpty(model.FileName))
             {
-                Directory.CreateDirectory(_in);
+                AnsiConsole.MarkupLine("[red]error[/]: Model FileName is null or empty");
+                continue;
             }
 
-            if (!Directory.Exists(_out))
+            if (generatedFiles.Contains(model.FileName))
             {
-                Directory.CreateDirectory(_out);
+                AnsiConsole.MarkupLine($"[yellow]Skipping[/] '{model.FileName}'");
+                continue;
             }
-
-            var generatedFiles = new HashSet<string>();
-
-            foreach (var model in Generate(_targetFileName))
-            {
-                try
-                {
-                    if (generatedFiles.Contains(model.FileName ?? throw new InvalidOperationException()))
-                    {
-                        AnsiConsole.MarkupLine($"[yellow]Skip[/] {model.FileName}");
-                        continue;
-                    }
-
-                    var template = await File.ReadAllTextAsync(templateFile);
-                    var data = new LiquidGenerator().Generate(template, model);
-                    var file = Path.GetFileNameWithoutExtension(model.FileName);
-                    var path = Path.Combine(_out, file + "." + _ext);
-
-                    generatedFiles.Add(model.FileName);
-                    await File.WriteAllTextAsync(path, data);
-
-                    AnsiConsole.MarkupLine($"[green]Generated:[/] {path}");
-                }
-                catch (Exception e)
-                {
-                    AnsiConsole.MarkupLine($"[red]Error generating file '{_targetFileName}':[/] {e.Message}");
-                }
-            }
-        }
-
-        private IEnumerable<MavlinkProtocolModel> Generate(string name)
-        {
-            var path = Path.Combine(_in, name);
-            AnsiConsole.MarkupLine($"[blue]Processing:[/] {path}");
-            MavlinkProtocolModel model;
 
             try
             {
-                model = MavlinkGenerator.ParseXml(name, File.OpenRead(path));
+                var outputPath = await GenerateFileAsync(templateContent, model, cancellationToken);
+                generatedFiles.Add(model.FileName);
+                AnsiConsole.MarkupLine($"[blue]info[/]: Generated '{outputPath}'");
             }
             catch (Exception e)
             {
-                AnsiConsole.MarkupLine($"[red]Error parsing XML file '{path}':[/] {e.Message}");
-                throw;
+                AnsiConsole.WriteException(e);
             }
+        }
+    }
 
-            yield return model;
+    private async Task<string> GenerateFileAsync(string template, MavlinkProtocolModel model, CancellationToken cancellationToken)
+    {
+        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(model.FileName);
+        var outputPath = Path.Combine(_outputFolder, $"{fileNameWithoutExtension}.{_extension}");
 
-            foreach (var include in model.Include)
+        var data = new LiquidGenerator().Generate(template, model);
+        await File.WriteAllTextAsync(outputPath, data, cancellationToken);
+
+        return outputPath;
+    }
+
+    private IEnumerable<MavlinkProtocolModel> GenerateModels(string fileName, CancellationToken cancellationToken)
+    {
+        var filePath = Path.Combine(_inputFolder, fileName);
+        AnsiConsole.MarkupLine($"[blue]info[/]: Processing '{filePath}'");
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        MavlinkProtocolModel model;
+        try
+        {
+            using var stream = File.OpenRead(filePath);
+            model = MavlinkGenerator.ParseXml(fileName, stream);
+            AnsiConsole.MarkupLine($"[blue]info[/]: Parsed '{model.FileName}', Enums: {model.Enums.Count}");
+        }
+        catch (Exception e)
+        {
+            AnsiConsole.WriteException(e);
+            yield break;
+        }
+
+        yield return model;
+
+        foreach (var include in model.Include)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            foreach (var includedModel in GenerateModels(include, cancellationToken))
             {
-                IEnumerable<MavlinkProtocolModel> protoModel;
-                try
-                {
-                    protoModel = Generate(include);
-                }
-                catch (Exception e)
-                {
-                    AnsiConsole.MarkupLine($"[red]Error generating include file '{include}':[/] {e.Message}");
-                    throw;
-                }
-
-                foreach (var protocolModel in protoModel)
-                {
-                    yield return protocolModel;
-                }
+                yield return includedModel;
             }
         }
     }
