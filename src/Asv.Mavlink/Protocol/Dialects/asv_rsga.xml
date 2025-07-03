@@ -583,9 +583,6 @@
             <field type="int16_t" name="freq_90" units="Hz">Total frequency offset of signal 90 Hz</field>
             <field type="float" name="am_150" units="%">Total aplitude modulation of 150Hz</field>
             <field type="int16_t" name="freq_150" units="Hz">Total frequency offset of signal 150 Hz</field>
-            <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz</field>
-            <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz</field>
-            <field type="char[4]" name="code_id" units="Letters">Code identification</field>
             
             <field type="float" name="phi_90_low_vs_high" units="deg"> Phase difference 90 Hz low and high freq channel</field>
             <field type="float" name="phi_150_low_vs_high" units="deg">Phase difference 150 Hz low and high freq channel</field>
@@ -604,7 +601,10 @@
             <field type="int16_t" name="high_freq_90" units="Hz">Frequency offset of signal 90 Hz of high freq channel</field>
             <field type="float" name="high_am_150" units="% E2">Aplitude modulation of 150Hz of high freq channel</field>
             <field type="int16_t" name="high_freq_150" units="Hz">Frequency offset of signal 150 Hz of high freq channel</field>
-
+            <!-- Code ID -->
+            <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz</field>
+            <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz</field>
+            <field type="char[4]" name="code_id" units="Letters">Code identification</field>
             
         </message>
 
@@ -665,8 +665,6 @@
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             
             <field type="float" name="azimuth" units="deg">Measured azimuth</field>
-            <field type="float" name="power" units="dBm">Total input power</field>
-            <field type="float" name="field_strength" units="uV/m">Total field strength</field>
 
             <field type="float" name="am_30" units="%">Total aplitude modulation of 30 Hz</field>
             <field type="int16_t" name="freq_30" units="Hz">Total frequency offset of signal 30 Hz</field>
@@ -676,6 +674,7 @@
 
             <field type="float" name="deviation" units="">Deviation</field>
 
+            <!-- Code ID -->
             <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz</field>
             <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz</field>
             <field type="char[4]" name="code_id" units="Letters">Code identification</field>
