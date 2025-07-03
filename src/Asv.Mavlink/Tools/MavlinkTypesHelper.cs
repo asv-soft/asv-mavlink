@@ -10,7 +10,7 @@ public static class MavlinkTypesHelper
     
     public static DateTime FromUnixTimeUs(ulong unixTime)
     {
-        return UnixEpoch.AddMilliseconds(unixTime);
+        return UnixEpoch.AddMicroseconds(unixTime);
     }
     
     public static ulong ToUnixTimeUs(DateTime unixTime)
