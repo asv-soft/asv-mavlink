@@ -3066,7 +3066,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13461;
         
-        public const byte CrcExtra = 39;
+        public const byte CrcExtra = 59;
         
         public override int Id => MessageId;
         
@@ -3086,9 +3086,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttRxLlzPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 114; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 130; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 114; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 130; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -3112,6 +3112,8 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float high_am_90
             +4 // float high_am_150
             +4 // float code_id_am_1020
+            +4 // float code_id_am_min_1020
+            +4 // float code_id_am_max_1020
             +2 // int16_t measure_time
             +2 // int16_t rx_freq_offset
             +2 // int16_t freq_90
@@ -3122,7 +3124,11 @@ namespace Asv.Mavlink.AsvRsga
             +2 // int16_t high_carrier_offset
             +2 // int16_t high_freq_90
             +2 // int16_t high_freq_150
-            +2 // int16_t code_id_freq_1020
+            +2 // uint16_t code_id_dot_time
+            +2 // uint16_t code_id_dash_time
+            +2 // uint16_t code_id_symbol_pause
+            +2 // uint16_t code_id_char_pause
+            +2 // uint16_t code_id_delay
             +CodeId.Length // char[4] code_id
             );
         }
@@ -3152,6 +3158,8 @@ namespace Asv.Mavlink.AsvRsga
             HighAm90 = BinSerialize.ReadFloat(ref buffer);
             HighAm150 = BinSerialize.ReadFloat(ref buffer);
             CodeIdAm1020 = BinSerialize.ReadFloat(ref buffer);
+            CodeIdAmMin1020 = BinSerialize.ReadFloat(ref buffer);
+            CodeIdAmMax1020 = BinSerialize.ReadFloat(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
             RxFreqOffset = BinSerialize.ReadShort(ref buffer);
             Freq90 = BinSerialize.ReadShort(ref buffer);
@@ -3162,8 +3170,12 @@ namespace Asv.Mavlink.AsvRsga
             HighCarrierOffset = BinSerialize.ReadShort(ref buffer);
             HighFreq90 = BinSerialize.ReadShort(ref buffer);
             HighFreq150 = BinSerialize.ReadShort(ref buffer);
-            CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/114 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            CodeIdDotTime = BinSerialize.ReadUShort(ref buffer);
+            CodeIdDashTime = BinSerialize.ReadUShort(ref buffer);
+            CodeIdSymbolPause = BinSerialize.ReadUShort(ref buffer);
+            CodeIdCharPause = BinSerialize.ReadUShort(ref buffer);
+            CodeIdDelay = BinSerialize.ReadUShort(ref buffer);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/130 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             unsafe
             {
@@ -3199,6 +3211,8 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,HighAm90);
             BinSerialize.WriteFloat(ref buffer,HighAm150);
             BinSerialize.WriteFloat(ref buffer,CodeIdAm1020);
+            BinSerialize.WriteFloat(ref buffer,CodeIdAmMin1020);
+            BinSerialize.WriteFloat(ref buffer,CodeIdAmMax1020);
             BinSerialize.WriteShort(ref buffer,MeasureTime);
             BinSerialize.WriteShort(ref buffer,RxFreqOffset);
             BinSerialize.WriteShort(ref buffer,Freq90);
@@ -3209,7 +3223,11 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteShort(ref buffer,HighCarrierOffset);
             BinSerialize.WriteShort(ref buffer,HighFreq90);
             BinSerialize.WriteShort(ref buffer,HighFreq150);
-            BinSerialize.WriteShort(ref buffer,CodeIdFreq1020);
+            BinSerialize.WriteUShort(ref buffer,CodeIdDotTime);
+            BinSerialize.WriteUShort(ref buffer,CodeIdDashTime);
+            BinSerialize.WriteUShort(ref buffer,CodeIdSymbolPause);
+            BinSerialize.WriteUShort(ref buffer,CodeIdCharPause);
+            BinSerialize.WriteUShort(ref buffer,CodeIdDelay);
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -3220,7 +3238,7 @@ namespace Asv.Mavlink.AsvRsga
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 114 */;
+            /* PayloadByteSize = 130 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -3246,6 +3264,8 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,HighAm90Field, HighAm90Field.DataType, ref _highAm90);    
             FloatType.Accept(visitor,HighAm150Field, HighAm150Field.DataType, ref _highAm150);    
             FloatType.Accept(visitor,CodeIdAm1020Field, CodeIdAm1020Field.DataType, ref _codeIdAm1020);    
+            FloatType.Accept(visitor,CodeIdAmMin1020Field, CodeIdAmMin1020Field.DataType, ref _codeIdAmMin1020);    
+            FloatType.Accept(visitor,CodeIdAmMax1020Field, CodeIdAmMax1020Field.DataType, ref _codeIdAmMax1020);    
             Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
             Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
             Int16Type.Accept(visitor,Freq90Field, Freq90Field.DataType, ref _freq90);
@@ -3256,7 +3276,11 @@ namespace Asv.Mavlink.AsvRsga
             Int16Type.Accept(visitor,HighCarrierOffsetField, HighCarrierOffsetField.DataType, ref _highCarrierOffset);
             Int16Type.Accept(visitor,HighFreq90Field, HighFreq90Field.DataType, ref _highFreq90);
             Int16Type.Accept(visitor,HighFreq150Field, HighFreq150Field.DataType, ref _highFreq150);
-            Int16Type.Accept(visitor,CodeIdFreq1020Field, CodeIdFreq1020Field.DataType, ref _codeIdFreq1020);
+            UInt16Type.Accept(visitor,CodeIdDotTimeField, CodeIdDotTimeField.DataType, ref _codeIdDotTime);    
+            UInt16Type.Accept(visitor,CodeIdDashTimeField, CodeIdDashTimeField.DataType, ref _codeIdDashTime);    
+            UInt16Type.Accept(visitor,CodeIdSymbolPauseField, CodeIdSymbolPauseField.DataType, ref _codeIdSymbolPause);    
+            UInt16Type.Accept(visitor,CodeIdCharPauseField, CodeIdCharPauseField.DataType, ref _codeIdCharPause);    
+            UInt16Type.Accept(visitor,CodeIdDelayField, CodeIdDelayField.DataType, ref _codeIdDelay);    
             ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
@@ -3367,26 +3391,26 @@ namespace Asv.Mavlink.AsvRsga
         private float _rxGain;
         public float RxGain { get => _rxGain; set => _rxGain = value; }
         /// <summary>
-        /// Total aplitude modulation of 90Hz
+        /// Total amplitude modulation of 90Hz
         /// OriginName: am_90, Units: %, IsExtended: false
         /// </summary>
         public static readonly Field Am90Field = new Field.Builder()
             .Name(nameof(Am90))
             .Title("am_90")
-            .Description("Total aplitude modulation of 90Hz")
+            .Description("Total amplitude modulation of 90Hz")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
         private float _am90;
         public float Am90 { get => _am90; set => _am90 = value; }
         /// <summary>
-        /// Total aplitude modulation of 150Hz
+        /// Total amplitude modulation of 150Hz
         /// OriginName: am_150, Units: %, IsExtended: false
         /// </summary>
         public static readonly Field Am150Field = new Field.Builder()
             .Name(nameof(Am150))
             .Title("am_150")
-            .Description("Total aplitude modulation of 150Hz")
+            .Description("Total amplitude modulation of 150Hz")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
@@ -3497,18 +3521,44 @@ namespace Asv.Mavlink.AsvRsga
         private float _highAm150;
         public float HighAm150 { get => _highAm150; set => _highAm150 = value; }
         /// <summary>
-        /// Total aplitude modulation of 90Hz
+        /// Current amplitude modulation of Code ID
         /// OriginName: code_id_am_1020, Units: %, IsExtended: false
         /// </summary>
         public static readonly Field CodeIdAm1020Field = new Field.Builder()
             .Name(nameof(CodeIdAm1020))
             .Title("code_id_am_1020")
-            .Description("Total aplitude modulation of 90Hz")
+            .Description("Current amplitude modulation of Code ID")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
         private float _codeIdAm1020;
         public float CodeIdAm1020 { get => _codeIdAm1020; set => _codeIdAm1020 = value; }
+        /// <summary>
+        /// Min amplitude modulation of Code ID
+        /// OriginName: code_id_am_min_1020, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdAmMin1020Field = new Field.Builder()
+            .Name(nameof(CodeIdAmMin1020))
+            .Title("code_id_am_min_1020")
+            .Description("Min amplitude modulation of Code ID")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _codeIdAmMin1020;
+        public float CodeIdAmMin1020 { get => _codeIdAmMin1020; set => _codeIdAmMin1020 = value; }
+        /// <summary>
+        /// Max amplitude modulation of Code ID
+        /// OriginName: code_id_am_max_1020, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdAmMax1020Field = new Field.Builder()
+            .Name(nameof(CodeIdAmMax1020))
+            .Title("code_id_am_max_1020")
+            .Description("Max amplitude modulation of Code ID")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _codeIdAmMax1020;
+        public float CodeIdAmMax1020 { get => _codeIdAmMax1020; set => _codeIdAmMax1020 = value; }
         /// <summary>
         /// Measure time
         /// OriginName: measure_time, Units: ms, IsExtended: false
@@ -3640,18 +3690,70 @@ namespace Asv.Mavlink.AsvRsga
         private short _highFreq150;
         public short HighFreq150 { get => _highFreq150; set => _highFreq150 = value; }
         /// <summary>
-        /// Total frequency offset of signal 90 Hz
-        /// OriginName: code_id_freq_1020, Units: Hz, IsExtended: false
+        /// Dot time
+        /// OriginName: code_id_dot_time, Units: ms, IsExtended: false
         /// </summary>
-        public static readonly Field CodeIdFreq1020Field = new Field.Builder()
-            .Name(nameof(CodeIdFreq1020))
-            .Title("code_id_freq_1020")
-            .Description("Total frequency offset of signal 90 Hz")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
+        public static readonly Field CodeIdDotTimeField = new Field.Builder()
+            .Name(nameof(CodeIdDotTime))
+            .Title("code_id_dot_time")
+            .Description("Dot time")
+.Units(@"ms")
+            .DataType(UInt16Type.Default)
         .Build();
-        private short _codeIdFreq1020;
-        public short CodeIdFreq1020 { get => _codeIdFreq1020; set => _codeIdFreq1020 = value; }
+        private ushort _codeIdDotTime;
+        public ushort CodeIdDotTime { get => _codeIdDotTime; set => _codeIdDotTime = value; }
+        /// <summary>
+        /// Dash time
+        /// OriginName: code_id_dash_time, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdDashTimeField = new Field.Builder()
+            .Name(nameof(CodeIdDashTime))
+            .Title("code_id_dash_time")
+            .Description("Dash time")
+.Units(@"ms")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _codeIdDashTime;
+        public ushort CodeIdDashTime { get => _codeIdDashTime; set => _codeIdDashTime = value; }
+        /// <summary>
+        /// Symbol pause time
+        /// OriginName: code_id_symbol_pause, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdSymbolPauseField = new Field.Builder()
+            .Name(nameof(CodeIdSymbolPause))
+            .Title("code_id_symbol_pause")
+            .Description("Symbol pause time")
+.Units(@"ms")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _codeIdSymbolPause;
+        public ushort CodeIdSymbolPause { get => _codeIdSymbolPause; set => _codeIdSymbolPause = value; }
+        /// <summary>
+        /// Char pause time
+        /// OriginName: code_id_char_pause, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdCharPauseField = new Field.Builder()
+            .Name(nameof(CodeIdCharPause))
+            .Title("code_id_char_pause")
+            .Description("Char pause time")
+.Units(@"ms")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _codeIdCharPause;
+        public ushort CodeIdCharPause { get => _codeIdCharPause; set => _codeIdCharPause = value; }
+        /// <summary>
+        /// Last update
+        /// OriginName: code_id_delay, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdDelayField = new Field.Builder()
+            .Name(nameof(CodeIdDelay))
+            .Title("code_id_delay")
+            .Description("Last update")
+.Units(@"s")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _codeIdDelay;
+        public ushort CodeIdDelay { get => _codeIdDelay; set => _codeIdDelay = value; }
         /// <summary>
         /// Code identification
         /// OriginName: code_id, Units: Letters, IsExtended: false
@@ -4020,26 +4122,26 @@ namespace Asv.Mavlink.AsvRsga
         private float _highAm150;
         public float HighAm150 { get => _highAm150; set => _highAm150 = value; }
         /// <summary>
-        /// Total aplitude modulation of 90Hz
+        /// Total amplitude modulation of 90Hz
         /// OriginName: am_90, Units: %, IsExtended: false
         /// </summary>
         public static readonly Field Am90Field = new Field.Builder()
             .Name(nameof(Am90))
             .Title("am_90")
-            .Description("Total aplitude modulation of 90Hz")
+            .Description("Total amplitude modulation of 90Hz")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
         private float _am90;
         public float Am90 { get => _am90; set => _am90 = value; }
         /// <summary>
-        /// Total aplitude modulation of 150Hz
+        /// Total amplitude modulation of 150Hz
         /// OriginName: am_150, Units: %, IsExtended: false
         /// </summary>
         public static readonly Field Am150Field = new Field.Builder()
             .Name(nameof(Am150))
             .Title("am_150")
-            .Description("Total aplitude modulation of 150Hz")
+            .Description("Total amplitude modulation of 150Hz")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
@@ -4210,7 +4312,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13463;
         
-        public const byte CrcExtra = 210;
+        public const byte CrcExtra = 94;
         
         public override int Id => MessageId;
         
@@ -4230,9 +4332,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttRxVorPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 78; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 94; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 78; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 94; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -4250,11 +4352,17 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float am_9960
             +4 // float deviation
             +4 // float code_id_am_1020
+            +4 // float code_id_am_min_1020
+            +4 // float code_id_am_max_1020
             +2 // int16_t measure_time
             +2 // int16_t rx_freq_offset
             +2 // int16_t freq_30
             +2 // int16_t freq_9960
-            +2 // int16_t code_id_freq_1020
+            +2 // uint16_t code_id_dot_time
+            +2 // uint16_t code_id_dash_time
+            +2 // uint16_t code_id_symbol_pause
+            +2 // uint16_t code_id_char_pause
+            +2 // uint16_t code_id_delay
             +CodeId.Length // char[4] code_id
             );
         }
@@ -4278,12 +4386,18 @@ namespace Asv.Mavlink.AsvRsga
             Am9960 = BinSerialize.ReadFloat(ref buffer);
             Deviation = BinSerialize.ReadFloat(ref buffer);
             CodeIdAm1020 = BinSerialize.ReadFloat(ref buffer);
+            CodeIdAmMin1020 = BinSerialize.ReadFloat(ref buffer);
+            CodeIdAmMax1020 = BinSerialize.ReadFloat(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
             RxFreqOffset = BinSerialize.ReadShort(ref buffer);
             Freq30 = BinSerialize.ReadShort(ref buffer);
             Freq9960 = BinSerialize.ReadShort(ref buffer);
-            CodeIdFreq1020 = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/78 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            CodeIdDotTime = BinSerialize.ReadUShort(ref buffer);
+            CodeIdDashTime = BinSerialize.ReadUShort(ref buffer);
+            CodeIdSymbolPause = BinSerialize.ReadUShort(ref buffer);
+            CodeIdCharPause = BinSerialize.ReadUShort(ref buffer);
+            CodeIdDelay = BinSerialize.ReadUShort(ref buffer);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/94 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             unsafe
             {
@@ -4313,11 +4427,17 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,Am9960);
             BinSerialize.WriteFloat(ref buffer,Deviation);
             BinSerialize.WriteFloat(ref buffer,CodeIdAm1020);
+            BinSerialize.WriteFloat(ref buffer,CodeIdAmMin1020);
+            BinSerialize.WriteFloat(ref buffer,CodeIdAmMax1020);
             BinSerialize.WriteShort(ref buffer,MeasureTime);
             BinSerialize.WriteShort(ref buffer,RxFreqOffset);
             BinSerialize.WriteShort(ref buffer,Freq30);
             BinSerialize.WriteShort(ref buffer,Freq9960);
-            BinSerialize.WriteShort(ref buffer,CodeIdFreq1020);
+            BinSerialize.WriteUShort(ref buffer,CodeIdDotTime);
+            BinSerialize.WriteUShort(ref buffer,CodeIdDashTime);
+            BinSerialize.WriteUShort(ref buffer,CodeIdSymbolPause);
+            BinSerialize.WriteUShort(ref buffer,CodeIdCharPause);
+            BinSerialize.WriteUShort(ref buffer,CodeIdDelay);
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -4328,7 +4448,7 @@ namespace Asv.Mavlink.AsvRsga
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 78 */;
+            /* PayloadByteSize = 94 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -4348,11 +4468,17 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,Am9960Field, Am9960Field.DataType, ref _am9960);    
             FloatType.Accept(visitor,DeviationField, DeviationField.DataType, ref _deviation);    
             FloatType.Accept(visitor,CodeIdAm1020Field, CodeIdAm1020Field.DataType, ref _codeIdAm1020);    
+            FloatType.Accept(visitor,CodeIdAmMin1020Field, CodeIdAmMin1020Field.DataType, ref _codeIdAmMin1020);    
+            FloatType.Accept(visitor,CodeIdAmMax1020Field, CodeIdAmMax1020Field.DataType, ref _codeIdAmMax1020);    
             Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
             Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
             Int16Type.Accept(visitor,Freq30Field, Freq30Field.DataType, ref _freq30);
             Int16Type.Accept(visitor,Freq9960Field, Freq9960Field.DataType, ref _freq9960);
-            Int16Type.Accept(visitor,CodeIdFreq1020Field, CodeIdFreq1020Field.DataType, ref _codeIdFreq1020);
+            UInt16Type.Accept(visitor,CodeIdDotTimeField, CodeIdDotTimeField.DataType, ref _codeIdDotTime);    
+            UInt16Type.Accept(visitor,CodeIdDashTimeField, CodeIdDashTimeField.DataType, ref _codeIdDashTime);    
+            UInt16Type.Accept(visitor,CodeIdSymbolPauseField, CodeIdSymbolPauseField.DataType, ref _codeIdSymbolPause);    
+            UInt16Type.Accept(visitor,CodeIdCharPauseField, CodeIdCharPauseField.DataType, ref _codeIdCharPause);    
+            UInt16Type.Accept(visitor,CodeIdDelayField, CodeIdDelayField.DataType, ref _codeIdDelay);    
             ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
@@ -4476,26 +4602,26 @@ namespace Asv.Mavlink.AsvRsga
         private float _azimuth;
         public float Azimuth { get => _azimuth; set => _azimuth = value; }
         /// <summary>
-        /// Total aplitude modulation of 30 Hz
+        /// Total amplitude modulation of 30 Hz
         /// OriginName: am_30, Units: %, IsExtended: false
         /// </summary>
         public static readonly Field Am30Field = new Field.Builder()
             .Name(nameof(Am30))
             .Title("am_30")
-            .Description("Total aplitude modulation of 30 Hz")
+            .Description("Total amplitude modulation of 30 Hz")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
         private float _am30;
         public float Am30 { get => _am30; set => _am30 = value; }
         /// <summary>
-        /// Total aplitude modulation of 9960 Hz
+        /// Total amplitude modulation of 9960 Hz
         /// OriginName: am_9960, Units: %, IsExtended: false
         /// </summary>
         public static readonly Field Am9960Field = new Field.Builder()
             .Name(nameof(Am9960))
             .Title("am_9960")
-            .Description("Total aplitude modulation of 9960 Hz")
+            .Description("Total amplitude modulation of 9960 Hz")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
@@ -4515,18 +4641,44 @@ namespace Asv.Mavlink.AsvRsga
         private float _deviation;
         public float Deviation { get => _deviation; set => _deviation = value; }
         /// <summary>
-        /// Total aplitude modulation of 90Hz
+        /// Current amplitude modulation of Code ID
         /// OriginName: code_id_am_1020, Units: %, IsExtended: false
         /// </summary>
         public static readonly Field CodeIdAm1020Field = new Field.Builder()
             .Name(nameof(CodeIdAm1020))
             .Title("code_id_am_1020")
-            .Description("Total aplitude modulation of 90Hz")
+            .Description("Current amplitude modulation of Code ID")
 .Units(@"%")
             .DataType(FloatType.Default)
         .Build();
         private float _codeIdAm1020;
         public float CodeIdAm1020 { get => _codeIdAm1020; set => _codeIdAm1020 = value; }
+        /// <summary>
+        /// Min amplitude modulation of Code ID
+        /// OriginName: code_id_am_min_1020, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdAmMin1020Field = new Field.Builder()
+            .Name(nameof(CodeIdAmMin1020))
+            .Title("code_id_am_min_1020")
+            .Description("Min amplitude modulation of Code ID")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _codeIdAmMin1020;
+        public float CodeIdAmMin1020 { get => _codeIdAmMin1020; set => _codeIdAmMin1020 = value; }
+        /// <summary>
+        /// Max amplitude modulation of Code ID
+        /// OriginName: code_id_am_max_1020, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdAmMax1020Field = new Field.Builder()
+            .Name(nameof(CodeIdAmMax1020))
+            .Title("code_id_am_max_1020")
+            .Description("Max amplitude modulation of Code ID")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _codeIdAmMax1020;
+        public float CodeIdAmMax1020 { get => _codeIdAmMax1020; set => _codeIdAmMax1020 = value; }
         /// <summary>
         /// Measure time
         /// OriginName: measure_time, Units: ms, IsExtended: false
@@ -4580,18 +4732,70 @@ namespace Asv.Mavlink.AsvRsga
         private short _freq9960;
         public short Freq9960 { get => _freq9960; set => _freq9960 = value; }
         /// <summary>
-        /// Total frequency offset of signal 90 Hz
-        /// OriginName: code_id_freq_1020, Units: Hz, IsExtended: false
+        /// Dot time
+        /// OriginName: code_id_dot_time, Units: ms, IsExtended: false
         /// </summary>
-        public static readonly Field CodeIdFreq1020Field = new Field.Builder()
-            .Name(nameof(CodeIdFreq1020))
-            .Title("code_id_freq_1020")
-            .Description("Total frequency offset of signal 90 Hz")
-.Units(@"Hz")
-            .DataType(Int16Type.Default)
+        public static readonly Field CodeIdDotTimeField = new Field.Builder()
+            .Name(nameof(CodeIdDotTime))
+            .Title("code_id_dot_time")
+            .Description("Dot time")
+.Units(@"ms")
+            .DataType(UInt16Type.Default)
         .Build();
-        private short _codeIdFreq1020;
-        public short CodeIdFreq1020 { get => _codeIdFreq1020; set => _codeIdFreq1020 = value; }
+        private ushort _codeIdDotTime;
+        public ushort CodeIdDotTime { get => _codeIdDotTime; set => _codeIdDotTime = value; }
+        /// <summary>
+        /// Dash time
+        /// OriginName: code_id_dash_time, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdDashTimeField = new Field.Builder()
+            .Name(nameof(CodeIdDashTime))
+            .Title("code_id_dash_time")
+            .Description("Dash time")
+.Units(@"ms")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _codeIdDashTime;
+        public ushort CodeIdDashTime { get => _codeIdDashTime; set => _codeIdDashTime = value; }
+        /// <summary>
+        /// Symbol pause time
+        /// OriginName: code_id_symbol_pause, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdSymbolPauseField = new Field.Builder()
+            .Name(nameof(CodeIdSymbolPause))
+            .Title("code_id_symbol_pause")
+            .Description("Symbol pause time")
+.Units(@"ms")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _codeIdSymbolPause;
+        public ushort CodeIdSymbolPause { get => _codeIdSymbolPause; set => _codeIdSymbolPause = value; }
+        /// <summary>
+        /// Char pause time
+        /// OriginName: code_id_char_pause, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdCharPauseField = new Field.Builder()
+            .Name(nameof(CodeIdCharPause))
+            .Title("code_id_char_pause")
+            .Description("Char pause time")
+.Units(@"ms")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _codeIdCharPause;
+        public ushort CodeIdCharPause { get => _codeIdCharPause; set => _codeIdCharPause = value; }
+        /// <summary>
+        /// Last update
+        /// OriginName: code_id_delay, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdDelayField = new Field.Builder()
+            .Name(nameof(CodeIdDelay))
+            .Title("code_id_delay")
+            .Description("Last update")
+.Units(@"s")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _codeIdDelay;
+        public ushort CodeIdDelay { get => _codeIdDelay; set => _codeIdDelay = value; }
         /// <summary>
         /// Code identification
         /// OriginName: code_id, Units: Letters, IsExtended: false

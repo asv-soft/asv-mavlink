@@ -579,9 +579,9 @@
             <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high)</field>
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             <!-- Total measure data -->
-            <field type="float" name="am_90" units="%">Total aplitude modulation of 90Hz</field>
+            <field type="float" name="am_90" units="%">Total amplitude modulation of 90Hz</field>
             <field type="int16_t" name="freq_90" units="Hz">Total frequency offset of signal 90 Hz</field>
-            <field type="float" name="am_150" units="%">Total aplitude modulation of 150Hz</field>
+            <field type="float" name="am_150" units="%">Total amplitude modulation of 150Hz</field>
             <field type="int16_t" name="freq_150" units="Hz">Total frequency offset of signal 150 Hz</field>
             
             <field type="float" name="phi_90_low_vs_high" units="deg"> Phase difference 90 Hz low and high freq channel</field>
@@ -602,8 +602,14 @@
             <field type="float" name="high_am_150" units="% E2">Aplitude modulation of 150Hz of high freq channel</field>
             <field type="int16_t" name="high_freq_150" units="Hz">Frequency offset of signal 150 Hz of high freq channel</field>
             <!-- Code ID -->
-            <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz</field>
-            <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz</field>
+            <field type="float" name="code_id_am_1020" units="%">Current amplitude modulation of Code ID</field>
+            <field type="float" name="code_id_am_min_1020" units="%">Min amplitude modulation of Code ID</field>
+            <field type="float" name="code_id_am_max_1020" units="%">Max amplitude modulation of Code ID</field>
+            <field type="uint16_t" name="code_id_dot_time" units="ms">Dot time</field>
+            <field type="uint16_t" name="code_id_dash_time" units="ms">Dash time</field>
+            <field type="uint16_t" name="code_id_symbol_pause" units="ms">Symbol pause time</field>
+            <field type="uint16_t" name="code_id_char_pause" units="ms">Char pause time</field>
+            <field type="uint16_t" name="code_id_delay" units="s">Last update</field>
             <field type="char[4]" name="code_id" units="Letters">Code identification</field>
             
         </message>
@@ -638,10 +644,10 @@
             <field type="int16_t" name="high_freq_150" units="Hz">Frequency offset of signal 150 Hz of high freq channel</field>
             <!-- Total measure data -->
 
-            <field type="float" name="am_90" units="%">Total aplitude modulation of 90Hz</field>
+            <field type="float" name="am_90" units="%">Total amplitude modulation of 90Hz</field>
             <field type="int16_t" name="freq_90" units="Hz">Total frequency offset of signal 90 Hz</field>
 
-            <field type="float" name="am_150" units="%">Total aplitude modulation of 150Hz</field>
+            <field type="float" name="am_150" units="%">Total amplitude modulation of 150Hz</field>
             <field type="int16_t" name="freq_150" units="Hz">Total frequency offset of signal 150 Hz</field>
 
             <field type="float" name="phi_90_low_vs_high" units="deg"> Phase difference 90 Hz low and high freq channel</field>
@@ -666,18 +672,24 @@
             
             <field type="float" name="azimuth" units="deg">Measured azimuth</field>
 
-            <field type="float" name="am_30" units="%">Total aplitude modulation of 30 Hz</field>
+            <field type="float" name="am_30" units="%">Total amplitude modulation of 30 Hz</field>
             <field type="int16_t" name="freq_30" units="Hz">Total frequency offset of signal 30 Hz</field>
 
-            <field type="float" name="am_9960" units="%">Total aplitude modulation of 9960 Hz</field>
+            <field type="float" name="am_9960" units="%">Total amplitude modulation of 9960 Hz</field>
             <field type="int16_t" name="freq_9960" units="Hz">Total frequency offset of signal 9960 Hz</field>
 
             <field type="float" name="deviation" units="">Deviation</field>
-
             <!-- Code ID -->
-            <field type="float" name="code_id_am_1020" units="%">Total aplitude modulation of 90Hz</field>
-            <field type="int16_t" name="code_id_freq_1020" units="Hz">Total frequency offset of signal 90 Hz</field>
+            <field type="float" name="code_id_am_1020" units="%">Current amplitude modulation of Code ID</field>
+            <field type="float" name="code_id_am_min_1020" units="%">Min amplitude modulation of Code ID</field>
+            <field type="float" name="code_id_am_max_1020" units="%">Max amplitude modulation of Code ID</field>
+            <field type="uint16_t" name="code_id_dot_time" units="ms">Dot time</field>
+            <field type="uint16_t" name="code_id_dash_time" units="ms">Dash time</field>
+            <field type="uint16_t" name="code_id_symbol_pause" units="ms">Symbol pause time</field>
+            <field type="uint16_t" name="code_id_char_pause" units="ms">Char pause time</field>
+            <field type="uint16_t" name="code_id_delay" units="s">Last update</field>
             <field type="char[4]" name="code_id" units="Letters">Code identification</field>
+            
 
         </message>
         
