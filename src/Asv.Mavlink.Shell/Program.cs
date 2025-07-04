@@ -22,7 +22,7 @@ class Program
         app.Add<VirtualAdsbCommand>();
         app.Add<ExportSdrData>();
         // app.Add<MavProxy>();
-        // app.Add<BenchmarkBinSerializationCommand>();
+         app.Add<BenchmarkBinSerializationCommand>();
         // app.Add<BenchmarkSerializationPacket>();*/
         //app.Add<BenchmarkFtpServerExCommand>();
         //app.Add<ShowParams>();
