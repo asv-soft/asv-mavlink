@@ -4820,7 +4820,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13464;
         
-        public const byte CrcExtra = 223;
+        public const byte CrcExtra = 237;
         
         public override int Id => MessageId;
         
@@ -4840,9 +4840,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttRxMarkerPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 123; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 135; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 123; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 135; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -4860,15 +4860,18 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float am_400_min
             +4 // float dot_400
             +4 // float dash_400
+            +4 // float gap_400
             +4 // float am_1300
             +4 // float am_1300_max
             +4 // float am_1300_min
-            +4 // float dash_1300
             +4 // float dot_1300
+            +4 // float dash_1300
+            +4 // float gap_1300
             +4 // float am_3000
             +4 // float am_3000_max
             +4 // float am_3000_min
             +4 // float dot_3000
+            +4 // float dash_3000
             +4 // float gap_3000
             +2 // int16_t measure_time
             +2 // int16_t rx_freq_offset
@@ -4900,22 +4903,25 @@ namespace Asv.Mavlink.AsvRsga
             Am400Min = BinSerialize.ReadFloat(ref buffer);
             Dot400 = BinSerialize.ReadFloat(ref buffer);
             Dash400 = BinSerialize.ReadFloat(ref buffer);
+            Gap400 = BinSerialize.ReadFloat(ref buffer);
             Am1300 = BinSerialize.ReadFloat(ref buffer);
             Am1300Max = BinSerialize.ReadFloat(ref buffer);
             Am1300Min = BinSerialize.ReadFloat(ref buffer);
-            Dash1300 = BinSerialize.ReadFloat(ref buffer);
             Dot1300 = BinSerialize.ReadFloat(ref buffer);
+            Dash1300 = BinSerialize.ReadFloat(ref buffer);
+            Gap1300 = BinSerialize.ReadFloat(ref buffer);
             Am3000 = BinSerialize.ReadFloat(ref buffer);
             Am3000Max = BinSerialize.ReadFloat(ref buffer);
             Am3000Min = BinSerialize.ReadFloat(ref buffer);
             Dot3000 = BinSerialize.ReadFloat(ref buffer);
+            Dash3000 = BinSerialize.ReadFloat(ref buffer);
             Gap3000 = BinSerialize.ReadFloat(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
             RxFreqOffset = BinSerialize.ReadShort(ref buffer);
             Freq400 = BinSerialize.ReadShort(ref buffer);
             Freq1300 = BinSerialize.ReadShort(ref buffer);
             Freq3000 = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/123 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/135 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             unsafe
             {
@@ -4967,15 +4973,18 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,Am400Min);
             BinSerialize.WriteFloat(ref buffer,Dot400);
             BinSerialize.WriteFloat(ref buffer,Dash400);
+            BinSerialize.WriteFloat(ref buffer,Gap400);
             BinSerialize.WriteFloat(ref buffer,Am1300);
             BinSerialize.WriteFloat(ref buffer,Am1300Max);
             BinSerialize.WriteFloat(ref buffer,Am1300Min);
-            BinSerialize.WriteFloat(ref buffer,Dash1300);
             BinSerialize.WriteFloat(ref buffer,Dot1300);
+            BinSerialize.WriteFloat(ref buffer,Dash1300);
+            BinSerialize.WriteFloat(ref buffer,Gap1300);
             BinSerialize.WriteFloat(ref buffer,Am3000);
             BinSerialize.WriteFloat(ref buffer,Am3000Max);
             BinSerialize.WriteFloat(ref buffer,Am3000Min);
             BinSerialize.WriteFloat(ref buffer,Dot3000);
+            BinSerialize.WriteFloat(ref buffer,Dash3000);
             BinSerialize.WriteFloat(ref buffer,Gap3000);
             BinSerialize.WriteShort(ref buffer,MeasureTime);
             BinSerialize.WriteShort(ref buffer,RxFreqOffset);
@@ -5012,7 +5021,7 @@ namespace Asv.Mavlink.AsvRsga
             }
             buffer = buffer.Slice(CodeId3000.Length);
             
-            /* PayloadByteSize = 123 */;
+            /* PayloadByteSize = 135 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -5032,15 +5041,18 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,Am400MinField, Am400MinField.DataType, ref _am400Min);    
             FloatType.Accept(visitor,Dot400Field, Dot400Field.DataType, ref _dot400);    
             FloatType.Accept(visitor,Dash400Field, Dash400Field.DataType, ref _dash400);    
+            FloatType.Accept(visitor,Gap400Field, Gap400Field.DataType, ref _gap400);    
             FloatType.Accept(visitor,Am1300Field, Am1300Field.DataType, ref _am1300);    
             FloatType.Accept(visitor,Am1300MaxField, Am1300MaxField.DataType, ref _am1300Max);    
             FloatType.Accept(visitor,Am1300MinField, Am1300MinField.DataType, ref _am1300Min);    
-            FloatType.Accept(visitor,Dash1300Field, Dash1300Field.DataType, ref _dash1300);    
             FloatType.Accept(visitor,Dot1300Field, Dot1300Field.DataType, ref _dot1300);    
+            FloatType.Accept(visitor,Dash1300Field, Dash1300Field.DataType, ref _dash1300);    
+            FloatType.Accept(visitor,Gap1300Field, Gap1300Field.DataType, ref _gap1300);    
             FloatType.Accept(visitor,Am3000Field, Am3000Field.DataType, ref _am3000);    
             FloatType.Accept(visitor,Am3000MaxField, Am3000MaxField.DataType, ref _am3000Max);    
             FloatType.Accept(visitor,Am3000MinField, Am3000MinField.DataType, ref _am3000Min);    
             FloatType.Accept(visitor,Dot3000Field, Dot3000Field.DataType, ref _dot3000);    
+            FloatType.Accept(visitor,Dash3000Field, Dash3000Field.DataType, ref _dash3000);    
             FloatType.Accept(visitor,Gap3000Field, Gap3000Field.DataType, ref _gap3000);    
             Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
             Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
@@ -5200,31 +5212,44 @@ namespace Asv.Mavlink.AsvRsga
         private float _am400Min;
         public float Am400Min { get => _am400Min; set => _am400Min = value; }
         /// <summary>
-        /// Gap between two dashes for the outer marker
+        /// Dot for the outer marker
         /// OriginName: dot_400, Units: ms, IsExtended: false
         /// </summary>
         public static readonly Field Dot400Field = new Field.Builder()
             .Name(nameof(Dot400))
             .Title("dot_400")
-            .Description("Gap between two dashes for the outer marker")
+            .Description("Dot for the outer marker")
 .Units(@"ms")
             .DataType(FloatType.Default)
         .Build();
         private float _dot400;
         public float Dot400 { get => _dot400; set => _dot400 = value; }
         /// <summary>
-        /// Length of a dash for the outer marker
+        /// Dash for the outer marker
         /// OriginName: dash_400, Units: ms, IsExtended: false
         /// </summary>
         public static readonly Field Dash400Field = new Field.Builder()
             .Name(nameof(Dash400))
             .Title("dash_400")
-            .Description("Length of a dash for the outer marker")
+            .Description("Dash for the outer marker")
 .Units(@"ms")
             .DataType(FloatType.Default)
         .Build();
         private float _dash400;
         public float Dash400 { get => _dash400; set => _dash400 = value; }
+        /// <summary>
+        /// Gap for the outer marker
+        /// OriginName: gap_400, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field Gap400Field = new Field.Builder()
+            .Name(nameof(Gap400))
+            .Title("gap_400")
+            .Description("Gap for the outer marker")
+.Units(@"ms")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _gap400;
+        public float Gap400 { get => _gap400; set => _gap400 = value; }
         /// <summary>
         /// AM modulation depth of the 1300 Hz component
         /// OriginName: am_1300, Units: %, IsExtended: false
@@ -5265,31 +5290,44 @@ namespace Asv.Mavlink.AsvRsga
         private float _am1300Min;
         public float Am1300Min { get => _am1300Min; set => _am1300Min = value; }
         /// <summary>
-        /// Length of a dash for the middle marker
+        /// Dot for the outer marker
+        /// OriginName: dot_1300, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field Dot1300Field = new Field.Builder()
+            .Name(nameof(Dot1300))
+            .Title("dot_1300")
+            .Description("Dot for the outer marker")
+.Units(@"ms")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _dot1300;
+        public float Dot1300 { get => _dot1300; set => _dot1300 = value; }
+        /// <summary>
+        /// Dash for the outer marker
         /// OriginName: dash_1300, Units: ms, IsExtended: false
         /// </summary>
         public static readonly Field Dash1300Field = new Field.Builder()
             .Name(nameof(Dash1300))
             .Title("dash_1300")
-            .Description("Length of a dash for the middle marker")
+            .Description("Dash for the outer marker")
 .Units(@"ms")
             .DataType(FloatType.Default)
         .Build();
         private float _dash1300;
         public float Dash1300 { get => _dash1300; set => _dash1300 = value; }
         /// <summary>
-        /// Length of a dot for the middle marker
-        /// OriginName: dot_1300, Units: ms, IsExtended: false
+        /// Gap for the outer marker
+        /// OriginName: gap_1300, Units: ms, IsExtended: false
         /// </summary>
-        public static readonly Field Dot1300Field = new Field.Builder()
-            .Name(nameof(Dot1300))
-            .Title("dot_1300")
-            .Description("Length of a dot for the middle marker")
+        public static readonly Field Gap1300Field = new Field.Builder()
+            .Name(nameof(Gap1300))
+            .Title("gap_1300")
+            .Description("Gap for the outer marker")
 .Units(@"ms")
             .DataType(FloatType.Default)
         .Build();
-        private float _dot1300;
-        public float Dot1300 { get => _dot1300; set => _dot1300 = value; }
+        private float _gap1300;
+        public float Gap1300 { get => _gap1300; set => _gap1300 = value; }
         /// <summary>
         /// AM modulation depth of the 3000 Hz component
         /// OriginName: am_3000, Units: %, IsExtended: false
@@ -5330,26 +5368,39 @@ namespace Asv.Mavlink.AsvRsga
         private float _am3000Min;
         public float Am3000Min { get => _am3000Min; set => _am3000Min = value; }
         /// <summary>
-        /// Length of a dot for the inner marker
+        /// Dot for the outer marker
         /// OriginName: dot_3000, Units: ms, IsExtended: false
         /// </summary>
         public static readonly Field Dot3000Field = new Field.Builder()
             .Name(nameof(Dot3000))
             .Title("dot_3000")
-            .Description("Length of a dot for the inner marker")
+            .Description("Dot for the outer marker")
 .Units(@"ms")
             .DataType(FloatType.Default)
         .Build();
         private float _dot3000;
         public float Dot3000 { get => _dot3000; set => _dot3000 = value; }
         /// <summary>
-        /// Gap between two dashes for the inner marker
+        /// Dash for the outer marker
+        /// OriginName: dash_3000, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field Dash3000Field = new Field.Builder()
+            .Name(nameof(Dash3000))
+            .Title("dash_3000")
+            .Description("Dash for the outer marker")
+.Units(@"ms")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _dash3000;
+        public float Dash3000 { get => _dash3000; set => _dash3000 = value; }
+        /// <summary>
+        /// Gap for the outer marker
         /// OriginName: gap_3000, Units: ms, IsExtended: false
         /// </summary>
         public static readonly Field Gap3000Field = new Field.Builder()
             .Name(nameof(Gap3000))
             .Title("gap_3000")
-            .Description("Gap between two dashes for the inner marker")
+            .Description("Gap for the outer marker")
 .Units(@"ms")
             .DataType(FloatType.Default)
         .Build();
