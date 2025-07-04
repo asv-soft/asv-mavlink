@@ -712,8 +712,9 @@
             <field type="float" name="am_400_max" units="%">Max AM modulation depth of the 400 Hz component</field>
             <field type="float" name="am_400_min" units="%">Min AM modulation depth of the 400 Hz component</field>
             <field type="int16_t" name="freq_400" units="Hz">Frequency of the 400 Hz component</field>
+            <field type="float" name="dot_400" units="ms">Gap between two dashes for the outer marker</field>
             <field type="float" name="dash_400" units="ms">Length of a dash for the outer marker</field>
-            <field type="float" name="gap_400" units="ms">Gap between two dashes for the outer marker</field>
+            <field type="char[3]" name="code_id_400" units="Symb">Dash\dot id</field>
             <!-- 1300 Hz component (Middle marker) -->
             <field type="float" name="am_1300" units="%">AM modulation depth of the 1300 Hz component</field>
             <field type="float" name="am_1300_max" units="%">Max AM modulation depth of the 1300 Hz component</field>
@@ -721,7 +722,7 @@
             <field type="int16_t" name="freq_1300" units="Hz">Frequency of the 1300 Hz component</field>
             <field type="float" name="dash_1300" units="ms">Length of a dash for the middle marker</field>
             <field type="float" name="dot_1300" units="ms">Length of a dot for the middle marker</field>
-            <field type="float" name="gap_1300" units="ms">Gap between dot and dash for the middle marker</field>
+            <field type="char[3]" name="code_id_1300" units="Symb">Dash\dot id</field>
             <!-- 3000 Hz component (Inner marker) -->
             <field type="float" name="am_3000" units="%">AM modulation depth of the 3000 Hz component</field>
             <field type="float" name="am_3000_max" units="%">Max AM modulation depth of the 3000 Hz component</field>
@@ -729,6 +730,7 @@
             <field type="int16_t" name="freq_3000" units="Hz">Frequency of the 3000 Hz component</field>
             <field type="float" name="dot_3000" units="ms">Length of a dot for the inner marker</field>
             <field type="float" name="gap_3000" units="ms">Gap between two dashes for the inner marker</field>
+            <field type="char[3]" name="code_id_3000" units="Symb">Dash\dot id</field>
 
         </message>
         

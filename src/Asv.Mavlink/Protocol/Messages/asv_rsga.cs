@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-03.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
 
 using System;
 using System.Text;
@@ -4820,7 +4820,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13464;
         
-        public const byte CrcExtra = 187;
+        public const byte CrcExtra = 223;
         
         public override int Id => MessageId;
         
@@ -4840,9 +4840,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttRxMarkerPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 118; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 123; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 118; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 123; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -4858,14 +4858,13 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float am_400
             +4 // float am_400_max
             +4 // float am_400_min
+            +4 // float dot_400
             +4 // float dash_400
-            +4 // float gap_400
             +4 // float am_1300
             +4 // float am_1300_max
             +4 // float am_1300_min
             +4 // float dash_1300
             +4 // float dot_1300
-            +4 // float gap_1300
             +4 // float am_3000
             +4 // float am_3000_max
             +4 // float am_3000_min
@@ -4876,6 +4875,9 @@ namespace Asv.Mavlink.AsvRsga
             +2 // int16_t freq_400
             +2 // int16_t freq_1300
             +2 // int16_t freq_3000
+            +CodeId400.Length // char[3] code_id_400
+            +CodeId1300.Length // char[3] code_id_1300
+            +CodeId3000.Length // char[3] code_id_3000
             );
         }
 
@@ -4883,6 +4885,8 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
             RxFreq = BinSerialize.ReadULong(ref buffer);
@@ -4894,14 +4898,13 @@ namespace Asv.Mavlink.AsvRsga
             Am400 = BinSerialize.ReadFloat(ref buffer);
             Am400Max = BinSerialize.ReadFloat(ref buffer);
             Am400Min = BinSerialize.ReadFloat(ref buffer);
+            Dot400 = BinSerialize.ReadFloat(ref buffer);
             Dash400 = BinSerialize.ReadFloat(ref buffer);
-            Gap400 = BinSerialize.ReadFloat(ref buffer);
             Am1300 = BinSerialize.ReadFloat(ref buffer);
             Am1300Max = BinSerialize.ReadFloat(ref buffer);
             Am1300Min = BinSerialize.ReadFloat(ref buffer);
             Dash1300 = BinSerialize.ReadFloat(ref buffer);
             Dot1300 = BinSerialize.ReadFloat(ref buffer);
-            Gap1300 = BinSerialize.ReadFloat(ref buffer);
             Am3000 = BinSerialize.ReadFloat(ref buffer);
             Am3000Max = BinSerialize.ReadFloat(ref buffer);
             Am3000Min = BinSerialize.ReadFloat(ref buffer);
@@ -4912,6 +4915,40 @@ namespace Asv.Mavlink.AsvRsga
             Freq400 = BinSerialize.ReadShort(ref buffer);
             Freq1300 = BinSerialize.ReadShort(ref buffer);
             Freq3000 = BinSerialize.ReadShort(ref buffer);
+            arraySize = /*ArrayLength*/3 - Math.Max(0,((/*PayloadByteSize*/123 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CodeId400)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, CodeId400.Length);
+                }
+            }
+            buffer = buffer[arraySize..];
+           
+            arraySize = 3;
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CodeId1300)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, CodeId1300.Length);
+                }
+            }
+            buffer = buffer[arraySize..];
+           
+            arraySize = 3;
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CodeId3000)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, CodeId3000.Length);
+                }
+            }
+            buffer = buffer[arraySize..];
+           
 
         }
 
@@ -4928,14 +4965,13 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,Am400);
             BinSerialize.WriteFloat(ref buffer,Am400Max);
             BinSerialize.WriteFloat(ref buffer,Am400Min);
+            BinSerialize.WriteFloat(ref buffer,Dot400);
             BinSerialize.WriteFloat(ref buffer,Dash400);
-            BinSerialize.WriteFloat(ref buffer,Gap400);
             BinSerialize.WriteFloat(ref buffer,Am1300);
             BinSerialize.WriteFloat(ref buffer,Am1300Max);
             BinSerialize.WriteFloat(ref buffer,Am1300Min);
             BinSerialize.WriteFloat(ref buffer,Dash1300);
             BinSerialize.WriteFloat(ref buffer,Dot1300);
-            BinSerialize.WriteFloat(ref buffer,Gap1300);
             BinSerialize.WriteFloat(ref buffer,Am3000);
             BinSerialize.WriteFloat(ref buffer,Am3000Max);
             BinSerialize.WriteFloat(ref buffer,Am3000Min);
@@ -4946,7 +4982,37 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteShort(ref buffer,Freq400);
             BinSerialize.WriteShort(ref buffer,Freq1300);
             BinSerialize.WriteShort(ref buffer,Freq3000);
-            /* PayloadByteSize = 118 */;
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CodeId400)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, CodeId400.Length, bytePointer, CodeId400.Length);
+                }
+            }
+            buffer = buffer.Slice(CodeId400.Length);
+            
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CodeId1300)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, CodeId1300.Length, bytePointer, CodeId1300.Length);
+                }
+            }
+            buffer = buffer.Slice(CodeId1300.Length);
+            
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CodeId3000)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, CodeId3000.Length, bytePointer, CodeId3000.Length);
+                }
+            }
+            buffer = buffer.Slice(CodeId3000.Length);
+            
+            /* PayloadByteSize = 123 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -4964,14 +5030,13 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,Am400Field, Am400Field.DataType, ref _am400);    
             FloatType.Accept(visitor,Am400MaxField, Am400MaxField.DataType, ref _am400Max);    
             FloatType.Accept(visitor,Am400MinField, Am400MinField.DataType, ref _am400Min);    
+            FloatType.Accept(visitor,Dot400Field, Dot400Field.DataType, ref _dot400);    
             FloatType.Accept(visitor,Dash400Field, Dash400Field.DataType, ref _dash400);    
-            FloatType.Accept(visitor,Gap400Field, Gap400Field.DataType, ref _gap400);    
             FloatType.Accept(visitor,Am1300Field, Am1300Field.DataType, ref _am1300);    
             FloatType.Accept(visitor,Am1300MaxField, Am1300MaxField.DataType, ref _am1300Max);    
             FloatType.Accept(visitor,Am1300MinField, Am1300MinField.DataType, ref _am1300Min);    
             FloatType.Accept(visitor,Dash1300Field, Dash1300Field.DataType, ref _dash1300);    
             FloatType.Accept(visitor,Dot1300Field, Dot1300Field.DataType, ref _dot1300);    
-            FloatType.Accept(visitor,Gap1300Field, Gap1300Field.DataType, ref _gap1300);    
             FloatType.Accept(visitor,Am3000Field, Am3000Field.DataType, ref _am3000);    
             FloatType.Accept(visitor,Am3000MaxField, Am3000MaxField.DataType, ref _am3000Max);    
             FloatType.Accept(visitor,Am3000MinField, Am3000MinField.DataType, ref _am3000Min);    
@@ -4982,6 +5047,12 @@ namespace Asv.Mavlink.AsvRsga
             Int16Type.Accept(visitor,Freq400Field, Freq400Field.DataType, ref _freq400);
             Int16Type.Accept(visitor,Freq1300Field, Freq1300Field.DataType, ref _freq1300);
             Int16Type.Accept(visitor,Freq3000Field, Freq3000Field.DataType, ref _freq3000);
+            ArrayType.Accept(visitor,CodeId400Field, CodeId400Field.DataType, 3, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId400[index]));
+            ArrayType.Accept(visitor,CodeId1300Field, CodeId1300Field.DataType, 3, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId1300[index]));
+            ArrayType.Accept(visitor,CodeId3000Field, CodeId3000Field.DataType, 3, 
+                (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId3000[index]));
 
         }
 
@@ -5129,6 +5200,19 @@ namespace Asv.Mavlink.AsvRsga
         private float _am400Min;
         public float Am400Min { get => _am400Min; set => _am400Min = value; }
         /// <summary>
+        /// Gap between two dashes for the outer marker
+        /// OriginName: dot_400, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field Dot400Field = new Field.Builder()
+            .Name(nameof(Dot400))
+            .Title("dot_400")
+            .Description("Gap between two dashes for the outer marker")
+.Units(@"ms")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _dot400;
+        public float Dot400 { get => _dot400; set => _dot400 = value; }
+        /// <summary>
         /// Length of a dash for the outer marker
         /// OriginName: dash_400, Units: ms, IsExtended: false
         /// </summary>
@@ -5141,19 +5225,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private float _dash400;
         public float Dash400 { get => _dash400; set => _dash400 = value; }
-        /// <summary>
-        /// Gap between two dashes for the outer marker
-        /// OriginName: gap_400, Units: ms, IsExtended: false
-        /// </summary>
-        public static readonly Field Gap400Field = new Field.Builder()
-            .Name(nameof(Gap400))
-            .Title("gap_400")
-            .Description("Gap between two dashes for the outer marker")
-.Units(@"ms")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _gap400;
-        public float Gap400 { get => _gap400; set => _gap400 = value; }
         /// <summary>
         /// AM modulation depth of the 1300 Hz component
         /// OriginName: am_1300, Units: %, IsExtended: false
@@ -5219,19 +5290,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private float _dot1300;
         public float Dot1300 { get => _dot1300; set => _dot1300 = value; }
-        /// <summary>
-        /// Gap between dot and dash for the middle marker
-        /// OriginName: gap_1300, Units: ms, IsExtended: false
-        /// </summary>
-        public static readonly Field Gap1300Field = new Field.Builder()
-            .Name(nameof(Gap1300))
-            .Title("gap_1300")
-            .Description("Gap between dot and dash for the middle marker")
-.Units(@"ms")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _gap1300;
-        public float Gap1300 { get => _gap1300; set => _gap1300 = value; }
         /// <summary>
         /// AM modulation depth of the 3000 Hz component
         /// OriginName: am_3000, Units: %, IsExtended: false
@@ -5362,6 +5420,47 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private short _freq3000;
         public short Freq3000 { get => _freq3000; set => _freq3000 = value; }
+        /// <summary>
+        /// Dash\dot id
+        /// OriginName: code_id_400, Units: Symb, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeId400Field = new Field.Builder()
+            .Name(nameof(CodeId400))
+            .Title("code_id_400")
+            .Description("Dash\\dot id")
+.Units(@"Symb")
+            .DataType(new ArrayType(CharType.Ascii,3))
+        .Build();
+        public const int CodeId400MaxItemsCount = 3;
+        public char[] CodeId400 { get; } = new char[3];
+        [Obsolete("This method is deprecated. Use GetCodeId400MaxItemsCount instead.")]
+        public byte GetCodeId400MaxItemsCount() => 3;
+        /// <summary>
+        /// Dash\dot id
+        /// OriginName: code_id_1300, Units: Symb, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeId1300Field = new Field.Builder()
+            .Name(nameof(CodeId1300))
+            .Title("code_id_1300")
+            .Description("Dash\\dot id")
+.Units(@"Symb")
+            .DataType(new ArrayType(CharType.Ascii,3))
+        .Build();
+        public const int CodeId1300MaxItemsCount = 3;
+        public char[] CodeId1300 { get; } = new char[3];
+        /// <summary>
+        /// Dash\dot id
+        /// OriginName: code_id_3000, Units: Symb, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeId3000Field = new Field.Builder()
+            .Name(nameof(CodeId3000))
+            .Title("code_id_3000")
+            .Description("Dash\\dot id")
+.Units(@"Symb")
+            .DataType(new ArrayType(CharType.Ascii,3))
+        .Build();
+        public const int CodeId3000MaxItemsCount = 3;
+        public char[] CodeId3000 { get; } = new char[3];
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RX_GBAS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
