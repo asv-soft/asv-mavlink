@@ -61,6 +61,7 @@ namespace Asv.Mavlink.AsvRsga
             src.Add(AsvRsgaRttRxGbasPacket.MessageId, ()=>new AsvRsgaRttRxGbasPacket());
             src.Add(AsvRsgaRttAdsbRepPacket.MessageId, ()=>new AsvRsgaRttAdsbRepPacket());
             src.Add(AsvRsgaRttRxGnssPacket.MessageId, ()=>new AsvRsgaRttRxGnssPacket());
+            src.Add(AsvRsgaRttRdfPacket.MessageId, ()=>new AsvRsgaRttRdfPacket());
         }
  
     }
@@ -6091,6 +6092,115 @@ namespace Asv.Mavlink.AsvRsga
     ///  ASV_RSGA_RTT_RX_GNSS
     /// </summary>
     public class AsvRsgaRttRxGnssPayload : IPayload
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public int GetByteSize()
+        {
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            );
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
+            Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
+            Index = BinSerialize.ReadUInt(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
+            BinSerialize.WriteULong(ref buffer,(ulong)Flags);
+            BinSerialize.WriteUInt(ref buffer,Index);
+            /* PayloadByteSize = 20 */;
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+
+        }
+
+        /// <summary>
+        /// Timestamp (UNIX epoch time)
+        /// OriginName: time_unix_usec, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time)")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
+        /// <summary>
+        /// Data flags
+        /// OriginName: flags, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
+        /// <summary>
+        /// Data index in record
+        /// OriginName: index, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
+    }
+    /// <summary>
+    /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RDF mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_RSGA_RTT_RDF
+    /// </summary>
+    public class AsvRsgaRttRdfPacket : MavlinkV2Message<AsvRsgaRttRdfPayload>
+    {
+        public const int MessageId = 13468;
+        
+        public const byte CrcExtra = 120;
+        
+        public override int Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
+        public override bool WrapToV2Extension => true;
+
+        public override AsvRsgaRttRdfPayload Payload { get; } = new();
+
+        public override string Name => "ASV_RSGA_RTT_RDF";
+    }
+
+    /// <summary>
+    ///  ASV_RSGA_RTT_RDF
+    /// </summary>
+    public class AsvRsgaRttRdfPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)

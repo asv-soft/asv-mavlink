@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <ProductVersion>4.0.15</ProductVersion>
+    <ProductVersion>4.0.16</ProductVersion>
     <DotNetVersion>9.0.3</DotNetVersion>
     <AsvCommonVersion>3.2.8</AsvCommonVersion>
     <ZLoggerVersion>2.5.10</ZLoggerVersion>

@@ -782,6 +782,14 @@
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
+
+        <message id="13468" name="ASV_RSGA_RTT_RDF">
+            <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_RDF mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+            <!-- Common header for all ASV_RSGA_RTT messages-->
+            <field type="uint32_t" name="index">Data index in record</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
+        </message>
         
         
         
