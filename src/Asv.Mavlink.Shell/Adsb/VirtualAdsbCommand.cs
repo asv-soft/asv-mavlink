@@ -10,15 +10,22 @@ using Asv.Mavlink.Common;
 using ConsoleAppFramework;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
+using R3;
 using Spectre.Console;
 
 namespace Asv.Mavlink.Shell;
 
-public class VirtualAdsbCommand
+public class VirtualAdsbCommand : IDisposable
 {
-    private string _file = "adsb.json";
     private readonly CancellationTokenSource _cancellationTokenSource = new();
-        
+
+    private string _file = "adsb.json";
+    private bool _disposed;
+    
+    private const double VelocityCoefficient = 1e2;
+    private const int DefaultTslc = 1; 
+    private const int PercentageCoefficient = 100;
+
     /// <summary>
     /// Generate virtual ADSB Vehicle.
     /// </summary>
@@ -110,7 +117,7 @@ public class VirtualAdsbCommand
                 AnsiConsole.MarkupLine($"[red]Config error {cfg.CallSign}[/]. Invalid longitude at route point {index}");
                 return;
             }
-            route.Add(new GeoPoint(lat,lon,point.Alt));
+            route.Add(new GeoPoint(lat, lon, point.Alt));
         }
         for (int i = 1; i < route.Count; i++)
         {
@@ -123,64 +130,121 @@ public class VirtualAdsbCommand
         }
     }
 
-    private async Task<double> RunVehicleTaskAsync(int index, double dist, double total, IServerDevice srv,
-        AdsbCommandVehicleConfig cfg, ProgressContext ctx, ProgressTask vehicleTask, GeoPoint from,
-        double velocityFrom, GeoPoint to, double velocityTo)
+    private async Task<double> RunVehicleTaskAsync(int index, double dist, double total,
+        IServerDevice srv, AdsbCommandVehicleConfig cfg, ProgressContext ctx,
+        ProgressTask vehicleTask, GeoPoint from, double velocityFrom, GeoPoint to,
+        double velocityTo)
     {
         var spatialDistance = from.DistanceTo(to);
         var horizontalDistance = from.SetAltitude(0).DistanceTo(to.SetAltitude(0));
         var verticalDistance = Math.Abs(to.Altitude - from.Altitude);
         var azimuth = from.Azimuth(to);
-        var timeStep = (double)cfg.UpdateRateMs / 1000;
-        
+        var timeStep = cfg.UpdateRateMs / 1000.0;
+
         var currentDistance = 0.0;
         var currentHorizontalDistance = 0.0;
         var currentVerticalDistance = 0.0;
 
-        while (currentDistance < spatialDistance)
-        {
-            var fractionOfJourney = currentDistance / spatialDistance;
-            var currentVelocity = velocityFrom + (velocityTo - velocityFrom) * fractionOfJourney;
-            var vHorizontal = currentVelocity * (horizontalDistance / spatialDistance);
-            var vVertical = currentVelocity * (verticalDistance / spatialDistance);
-            currentHorizontalDistance += vHorizontal / timeStep;
-            currentVerticalDistance += vVertical / timeStep;
-            var vehiclePos = from.RadialPoint(currentHorizontalDistance, azimuth)
-                .AddAltitude(currentVerticalDistance);
-            currentDistance = from.DistanceTo(vehiclePos);
-            await srv.GetAdsb().Send(x =>
-            {
-                x.Tslc = (byte)(timeStep + 1);
-                x.Altitude = MavlinkTypesHelper.AltFromDoubleMeterToInt32Mm(vehiclePos.Altitude);
-                x.Lon = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(vehiclePos.Longitude);
-                x.Lat = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(vehiclePos.Latitude);
-                MavlinkTypesHelper.SetString(x.Callsign, cfg.CallSign ?? throw new InvalidOperationException());
-                // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-                x.Flags = AdsbFlags.AdsbFlagsSimulated |
-                          // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-                          AdsbFlags.AdsbFlagsValidAltitude |
-                          // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-                          AdsbFlags.AdsbFlagsValidHeading |
-                          // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-                          AdsbFlags.AdsbFlagsValidCoords |
-                          // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-                          AdsbFlags.AdsbFlagsValidSquawk;
-                x.Squawk = cfg.Squawk;
-                x.Heading = (ushort)(azimuth * 1e2);
-                x.AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric;
-                x.EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo;
-                x.HorVelocity = (ushort)(vHorizontal * 1e2);
-                x.VerVelocity = (short)(vVertical * 1e2);
-                x.IcaoAddress = cfg.IcaoAddress;
-            },  _cancellationTokenSource.Token);
+        var tcs = new TaskCompletionSource<bool>();
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token);
+        cts.Token.Register(() => tcs.TrySetCanceled());
+        IDisposable? subscription = null;
+        
+        subscription = R3.Observable.Interval(TimeSpan.FromMilliseconds(timeStep * 1000))
+            .TakeWhile(_ => currentDistance < spatialDistance)
+           .SubscribeAwait(
+                async (_, ct) =>
+                {
+                    ct.ThrowIfCancellationRequested();
+                    
+                    var fractionOfJourney = currentDistance / spatialDistance;
+                    var currentVelocity = velocityFrom + (velocityTo - velocityFrom) * fractionOfJourney;
+                    var vHorizontal = currentVelocity * (horizontalDistance / spatialDistance);
+                    var vVertical = currentVelocity * (verticalDistance / spatialDistance);
+                    currentHorizontalDistance += vHorizontal * timeStep;
+                    currentVerticalDistance += vVertical * timeStep;
+                    var vehiclePos = from.RadialPoint(currentHorizontalDistance, azimuth)
+                        .AddAltitude(currentVerticalDistance);
+                    currentDistance = from.DistanceTo(vehiclePos);
 
-            // Simulate delay for realistic movement
-            vehicleTask.Description =
-                $"[green]{cfg.CallSign}[/] {index:0}=>{index + 1:0} V:[blue]{vVertical,-5:F1} m/s[/] H:[blue]{vHorizontal,-5:F1}[/] m/s D:[blue]{currentDistance,-5:F0} m[/] from [blue]{spatialDistance,-5:F0} m[/]";
-            vehicleTask.Value = (dist + currentDistance) / total * 100.0;
-            await Task.Delay((int)(timeStep * 1000));
+                    await srv.GetAdsb().Send(x =>
+                    {
+                        x.Tslc = (byte)(timeStep + DefaultTslc);
+                        x.Altitude = MavlinkTypesHelper.AltFromDoubleMeterToInt32Mm(vehiclePos.Altitude);
+                        x.Lon = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(vehiclePos.Longitude);
+                        x.Lat = MavlinkTypesHelper.LatLonDegDoubleToFromInt32E7To(vehiclePos.Latitude);
+                        MavlinkTypesHelper.SetString(x.Callsign, cfg.CallSign ?? throw new InvalidOperationException());
+                        x.Flags = AdsbFlags.AdsbFlagsSimulated |
+                                  AdsbFlags.AdsbFlagsValidAltitude |
+                                  AdsbFlags.AdsbFlagsValidHeading |
+                                  AdsbFlags.AdsbFlagsValidCoords |
+                                  AdsbFlags.AdsbFlagsValidSquawk;
+                        x.Squawk = cfg.Squawk;
+                        x.Heading = (ushort)(azimuth * VelocityCoefficient);
+                        x.AltitudeType = AdsbAltitudeType.AdsbAltitudeTypeGeometric;
+                        x.EmitterType = AdsbEmitterType.AdsbEmitterTypeNoInfo;
+                        x.HorVelocity = (ushort)(vHorizontal * VelocityCoefficient);
+                        x.VerVelocity = (short)(vVertical * VelocityCoefficient);
+                        x.IcaoAddress = cfg.IcaoAddress;
+                    }, _cancellationTokenSource.Token);
+
+                    try
+                    {
+                        vehicleTask.Description =
+                            $"[green]{cfg.CallSign}[/] {index:0}=>{index + 1:0} " +
+                            $"V:[blue]{vVertical,-5:F1} m/s[/] " +
+                            $"H:[blue]{vHorizontal,-5:F1}[/] m/s " +
+                            $"D:[blue]{currentDistance,-5:F0} m[/] from [blue]{spatialDistance,-5:F0} m[/]";
+                        vehicleTask.Value = (dist + currentDistance) / total * PercentageCoefficient;
+                    }
+                    catch (Exception ex)
+                    {
+                        AnsiConsole.MarkupLine($"[red]Error updating progress for vehicle '{cfg.CallSign}': {ex.Message}[/]");
+                    }
+
+                    if (currentDistance >= spatialDistance)
+                    {
+                        tcs.TrySetResult(true);
+                    }
+                },
+                ex =>
+                {
+                    AnsiConsole.MarkupLine($"[red]Observable stream error in vehicle '{cfg.CallSign}': {ex.Message}[/]");
+                    tcs.TrySetResult(true);
+                },
+                _ =>
+                {
+                    AnsiConsole.MarkupLine($"[grey]Stream completed for vehicle '{cfg.CallSign}'[/]");
+                },
+                AwaitOperation.Sequential,
+                false,
+                true,
+                1
+            );
+        try
+        {
+            await tcs.Task;
+            if (cts.IsCancellationRequested)
+                throw new TaskCanceledException();
+        }
+        catch (TaskCanceledException)
+        {
+            AnsiConsole.MarkupLine($"[yellow]Cancelled segment {index} of vehicle {cfg.CallSign}[/]");
+        }
+        finally
+        {
+            subscription.Dispose();
         }
 
-        return spatialDistance;
+        return currentDistance;
+    }
+
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            _cancellationTokenSource.Dispose();
+            _disposed = true;
+        }
     }
 }
