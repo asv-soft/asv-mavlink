@@ -2,7 +2,7 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "litedb-test"
+      "commandLineArgs": "gen -e txt -template C:\\Users\\1\\Desktop\\template.tpl"
     }
   }
 }
