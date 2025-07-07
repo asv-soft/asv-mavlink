@@ -82,7 +82,7 @@ public static class ShellCommandsHelper
 
                 AnsiConsole.Clear();
                 var count = 1;
-                var devices = deviceExplorer.Devices.ToImmutableDictionary();
+                var devices = deviceExplorer.InitializedDevices.ToImmutableList();
                 if (devices.Count == 0)
                 {
                     AnsiConsole.MarkupLine("Waiting for connections...");
@@ -92,7 +92,7 @@ public static class ShellCommandsHelper
 
                 foreach (var device in devices)
                 {
-                    AnsiConsole.WriteLine($@"{count}: {device.Key}");
+                    AnsiConsole.WriteLine($@"{count}: {device.Id}");
                     count++;
                 }
 
@@ -117,7 +117,7 @@ public static class ShellCommandsHelper
                 )
                 {
                     isChosen = true;
-                    list.AddRange(devices.Values);
+                    list.AddRange(devices);
                 }
                 else
                 {
