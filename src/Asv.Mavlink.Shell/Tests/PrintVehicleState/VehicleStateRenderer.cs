@@ -2,48 +2,48 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.IO;
+using Asv.Mavlink.Minimal;
+using DotLiquid.Util;
 using Spectre.Console;
 
 namespace Asv.Mavlink.Shell
 {
     public class VehicleStateRenderer
     {
-        private const int DeltaXy = 10;
-        private const int DeltaZ = 5;
-        private const int AzimuthR = 90;
-        private const int AzimuthL = 270;
-        private const int AzimuthU = 0;
-        private const int AzimuthD = 180;
-        private const string VelocityMaxParamName = "MPC_XY_VEL_MAX";
-        
-        private readonly CancellationToken _cancel;
         private readonly Queue<string> _journal = new();
-        private readonly VehicleTelemetryProvider _telemetryProvider;
+        private readonly IClientDevice _device;
+        private readonly IHeartbeatClient _heartbeat;
+        private readonly HeartbeatPayload _heartbeatPayload;
+        private readonly IPositionClient _position;
         private readonly List<KeyValuePair<string, string>> _telemetryRows =
         [
-            new("Link", ""),
-            new("PacketRateHz", ""),
-            new("Type", ""),
-            new("SystemStatus", ""),
-            new("Autopilot", ""),
-            new("BaseMode", ""),
-            new("CustomMode", ""),
-            new("MavlinkVersion", ""),
-            new("Home", ""),
-            new("GlobalPosition", ""),
-            new("LastCommand", "")
+            new(TelemetryKeys.Link, string.Empty),
+            new(TelemetryKeys.PacketRateHz, string.Empty),
+            new(TelemetryKeys.Type, string.Empty),
+            new(TelemetryKeys.SystemStatus, string.Empty),
+            new(TelemetryKeys.Autopilot, string.Empty),
+            new(TelemetryKeys.BaseMode, string.Empty),
+            new(TelemetryKeys.CustomMode, string.Empty),
+            new(TelemetryKeys.MavlinkVersion, string.Empty),
+            new(TelemetryKeys.Home, string.Empty),
+            new(TelemetryKeys.GlobalPosition, string.Empty),
+            new(TelemetryKeys.LastCommand, string.Empty)
         ];
-        private string _lastCommand = "";
+        private string _lastCommand = string.Empty;
         private Table? _mainTable;
         private Table? _statusTable;
         private Table? _logTable;
         private Table? _headerTable;
         
-        public VehicleStateRenderer(VehicleTelemetryProvider telemetryProvider,
-            CancellationToken cancel)
+        public VehicleStateRenderer(IClientDevice device)
         {
-            _telemetryProvider = telemetryProvider;
-            _cancel = cancel;
+            _device = device;     
+            _heartbeat = _device.GetMicroservice<IHeartbeatClient>() ?? throw new InvalidOperationException("No heartbeat");
+            _position = _device.GetMicroservice<IPositionClient>() ?? throw new InvalidOperationException("No position");
+            _heartbeatPayload = _heartbeat.RawHeartbeat.CurrentValue ?? throw new InvalidOperationException("No heartbeat");
+            
+            UpdateTable();
         }
 
         /// <summary>
@@ -55,8 +55,8 @@ namespace Asv.Mavlink.Shell
             _headerTable = new Table().Expand().AddColumns("[red]U[/]", "[red]D[/]", "[red]LeftArrow[/]",
                     "[red]RightArrow[/]", "[red]T[/]", "[red]Q[/]", "[red]PageUp[/]", "[red]PageDown[/]")
                 .Title("[aqua]Controls[/]");
-            _headerTable.AddRow("Up", $"Down", "Move Left", "Move Right", "Take Off", "Quit", "Speed Up", "Slow Down");
-            _mainTable = new Table().AddColumns("Status", "Log").Expand().Title($"{Markup.Escape(_telemetryProvider.GetDeviceName())}");
+            _headerTable.AddRow("Up", "Down", "Move Left", "Move Right", "Take Off", "Quit", "Speed Up", "Slow Down");
+            _mainTable = new Table().AddColumns("Status", "Log").Expand().Title($"{Markup.Escape(GetDeviceName())}");
             _statusTable = new Table().AddColumns("Param", "Value").BorderColor(Color.Green);
             foreach (var item in _telemetryRows)
             {
@@ -70,15 +70,15 @@ namespace Asv.Mavlink.Shell
         /// Updates the telemetry and log tables with the latest data from the telemetry provider.
         /// Re-renders status values and log entries.
         /// </summary>
-        public void Print()
+        public void UpdateTable()
         {
             if (_statusTable is null || _mainTable is null || _logTable is null)
             {
                 CreateTables();
             }
 
-            var dict = _telemetryProvider.GetTelemetry();
-            dict["LastCommand"] = _lastCommand;
+            var dict = GetTelemetry();
+            dict[TelemetryKeys.LastCommand] = _lastCommand;
 
             int count = 0;
             foreach (var item in dict)
@@ -87,11 +87,51 @@ namespace Asv.Mavlink.Shell
                 count++;
             }
 
-            _mainTable?.UpdateCell(0, 0, _statusTable);
-            _mainTable?.UpdateCell(0, 1, _logTable);
+            if (_statusTable is not null && _logTable is not null)
+            {
+                _mainTable?.UpdateCell(0, 0, _statusTable);
+                _mainTable?.UpdateCell(0, 1, _logTable);
+            }
         }
 
+        /// <summary>
+        /// Gets the current name of the device.
+        /// </summary>
+        /// <returns>The device name, or an empty string if unavailable.</returns>
+        public string GetDeviceName()
+        {
+            return _device.Name.CurrentValue ?? string.Empty;
+        }
         
+        /// <summary>
+        /// Retrieves a dictionary of telemetry parameters and their current string representations.
+        /// </summary>
+        /// <returns>A dictionary of telemetry field names and values.</returns>
+        public Dictionary<string, string> GetTelemetry()
+        {
+            var home = _position.Home.CurrentValue;
+            var global = _position.GlobalPosition.CurrentValue;
+
+            var homeStr = home == null ? "Not Accessible" : $"{home.Longitude} {home.Latitude} {home.Altitude}";
+            var globalStr = global == null
+                ? "Not Accessible"
+                : $"{global.Lat} {global.Lon} (MSL){global.Alt} (AGL){global.RelativeAlt}";
+
+            return new Dictionary<string, string>
+            {
+                { TelemetryKeys.Link, _device.Link.State.ToString() ?? string.Empty },
+                { TelemetryKeys.PacketRateHz, _heartbeat.GetPropertyValue("PacketRateHz")?.ToString() ?? string.Empty },
+                { TelemetryKeys.SystemStatus, _heartbeatPayload.SystemStatus.ToString() },
+                { TelemetryKeys.Type, _heartbeatPayload.Type.ToString() },
+                { TelemetryKeys.Autopilot, _heartbeatPayload.Autopilot.ToString() },
+                { TelemetryKeys.BaseMode, _heartbeatPayload.BaseMode.ToString("F") },
+                { TelemetryKeys.CustomMode, _heartbeatPayload.CustomMode.ToString() },
+                { TelemetryKeys.MavlinkVersion, _heartbeatPayload.MavlinkVersion.ToString() },
+                { TelemetryKeys.Home, homeStr },
+                { TelemetryKeys.GlobalPosition, globalStr }
+            };
+        }
+
         /// <summary>
         /// Starts a live console UI session that continuously refreshes the telemetry display
         /// until cancellation is requested.
@@ -105,12 +145,15 @@ namespace Asv.Mavlink.Shell
             {
                 while (!ct.IsCancellationRequested)
                 {
-                    await Task.Delay(35);
                     if (ct.IsCancellationRequested)
                     {
                         AnsiConsole.Write("All done");
                         break;   
                     }
+                    await Task.Delay(TimeSpan.FromSeconds(1), ct);
+                    
+                    UpdateTable();
+                    
                     ctx.Refresh();
                 }
             });
@@ -121,7 +164,7 @@ namespace Asv.Mavlink.Shell
         /// </summary>
         public void WriteJournal(CommandInfo info)
         {
-            _lastCommand = info.ToJournalString(_telemetryProvider);
+            _lastCommand = info.ToJournalString();
             Write(_lastCommand);
         }
         
@@ -145,36 +188,27 @@ namespace Asv.Mavlink.Shell
             }
         }
         
-        #region  MessageType
-        public enum MessageType
-        {
-            Info,
-            Warning,
-            Error
-        }
-        #endregion
-        
-        #region  CommandInfo
+        #region CommandInfo
         public class CommandInfo
         {
-            public VehicleDirection Direction { get; set; }
+            public VehicleAction Action { get; init; }
             public double? AltitudeBeforeChange { get; set; }
             public double? VelocityParam { get; set; }
 
-            public string ToJournalString(VehicleTelemetryProvider telemetry)
+            public string ToJournalString()
             {
-                return Direction switch
+                return Action switch
                 {
-                    VehicleDirection.Right => $"GOTO: delta={telemetry.DeltaXyValue} Azimuth={telemetry.RedialRight}",
-                    VehicleDirection.Left => $"GOTO: delta={telemetry.DeltaXyValue} Azimuth={telemetry.RedialLeft}",
-                    VehicleDirection.Up => $"GOTO: delta={telemetry.DeltaXyValue} Azimuth={telemetry.RedialUp}",
-                    VehicleDirection.Down => $"GOTO: delta={telemetry.DeltaXyValue} Azimuth={telemetry.RedialDown}",
-                    VehicleDirection.U => $"Up: H={AltitudeBeforeChange:F1} D=+{telemetry.DeltaZValue}",
-                    VehicleDirection.D => $"Down: H={AltitudeBeforeChange:F1} D=-{telemetry.DeltaZValue}",
-                    VehicleDirection.PageUp => $"{telemetry.VelocityMaxParam}: {VelocityParam} D=+1",
-                    VehicleDirection.PageDown => $"{telemetry.VelocityMaxParam}: {VelocityParam} D=-1",
-                    VehicleDirection.T => "Takeoff",
-                    _ => ""
+                    VehicleAction.GoRight => $"GOTO: delta={TelemetryParams.DeltaXy} Azimuth={TelemetryParams.RedialDegRight}",
+                    VehicleAction.GoLeft => $"GOTO: delta={TelemetryParams.DeltaXy} Azimuth={TelemetryParams.RedialDegLeft}",
+                    VehicleAction.GoForward => $"GOTO: delta={TelemetryParams.DeltaXy} Azimuth={TelemetryParams.RedialDegForward}",
+                    VehicleAction.GoBackwards => $"GOTO: delta={TelemetryParams.DeltaXy} Azimuth={TelemetryParams.RedialDegBackwards}",
+                    VehicleAction.Upward => $"Up: H={AltitudeBeforeChange:F1} D=+{TelemetryParams.DeltaZ}",
+                    VehicleAction.Downward => $"Down: H={AltitudeBeforeChange:F1} D=-{TelemetryParams.DeltaZ}",
+                    VehicleAction.PageUp => $"{TelemetryParams.VelocityMaxParamName}: {VelocityParam} D=+1",
+                    VehicleAction.PageDown => $"{TelemetryParams.VelocityMaxParamName}: {VelocityParam} D=-1",
+                    VehicleAction.TakeOff => "Takeoff",
+                    _ => string.Empty
                 };
             }
         }

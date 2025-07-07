@@ -1,104 +1,80 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Reactive.Threading.Tasks;
+using System.Threading;
 using System.Threading.Tasks;
+using R3;
 
 namespace Asv.Mavlink.Shell;
 
-public class KeyListener : IDisposable
+public class KeyListener: IDisposable
 {
-    private readonly Subject<ConsoleKey> _keySubject = new();
-    private readonly Subject<VehicleDirection> _directionSubject = new();
-    private bool _isRunning;
-    
-    public IObservable<ConsoleKey> KeyStream => _keySubject;
-    
-    public IObservable<VehicleDirection> DirectionStream => _directionSubject;
-    
-    public async Task ListenAsync()
+    private bool _isDisposed;
+
+    private readonly ReactiveProperty<ConsoleKey> _keyPressed;
+    public ReadOnlyReactiveProperty<VehicleAction> KeyPressed { get; }
+
+    public KeyListener()
     {
-        _isRunning = true;
-        while (_isRunning)
+        _keyPressed = new ReactiveProperty<ConsoleKey>();
+        KeyPressed = _keyPressed.Select(ConvertKeyToAction).ToReadOnlyReactiveProperty();
+    }
+    
+    public Task ListenAsync(CancellationToken cancel)
+    {
+        if (cancel.IsCancellationRequested)
+        {
+            return Task.CompletedTask;
+        }
+        
+        while (!cancel.IsCancellationRequested)
         {
             var key = Console.ReadKey(true).Key;
-
-            _keySubject.OnNext(key);
-
-            if (TryMapKeyToDirection(key, out var direction))
-            {
-                _directionSubject.OnNext(direction);
-            }
+            _keyPressed.OnNext(ConsoleKey.None);
+            _keyPressed.OnNext(key);
         }
+        
+        return Task.CompletedTask;
     }
-
-    public void Stop() => _isRunning = false;
     
-    public Task<ConsoleKey> WaitForKeyAsync(IEnumerable<ConsoleKey> validKeys)
+    private static VehicleAction ConvertKeyToAction(ConsoleKey key)
     {
-        var tcs = new TaskCompletionSource<ConsoleKey>();
-
-        Task.Run(() =>
+        return key switch
         {
-            while (true)
-            {
-                var key = Console.ReadKey(true).Key;
-                if (!validKeys.Any() || validKeys.Contains(key))
-                {
-                    tcs.TrySetResult(key);
-                    break;
-                }
-            }
-        });
-
-        return tcs.Task;
-    }
-
-    private static bool TryMapKeyToDirection(ConsoleKey key, out VehicleDirection direction)
-    {
-        switch (key)
-        {
-            case ConsoleKey.RightArrow:
-                direction = VehicleDirection.Right;
-                return true;
-            case ConsoleKey.LeftArrow:
-                direction = VehicleDirection.Left;
-                return true;
-            case ConsoleKey.UpArrow:
-                direction = VehicleDirection.Up;
-                return true;
-            case ConsoleKey.DownArrow:
-                direction = VehicleDirection.Down;
-                return true;
-            case ConsoleKey.U:
-                direction = VehicleDirection.U;
-                return true;
-            case ConsoleKey.D:
-                direction = VehicleDirection.D;
-                return true;
-            case ConsoleKey.PageUp:
-                direction = VehicleDirection.PageUp;
-                return true;
-            case ConsoleKey.PageDown:
-                direction = VehicleDirection.PageDown;
-                return true;
-            case ConsoleKey.Q:
-                direction = VehicleDirection.Q;
-                return true;
-            case ConsoleKey.T:
-                direction = VehicleDirection.T;
-                return true;
-            default:
-                direction = default;
-                return false;
-        }
+            ConsoleKey.RightArrow => VehicleAction.GoRight,
+            ConsoleKey.LeftArrow => VehicleAction.GoLeft,
+            ConsoleKey.UpArrow => VehicleAction.GoForward,
+            ConsoleKey.DownArrow => VehicleAction.GoBackwards,
+            ConsoleKey.U => VehicleAction.Upward,
+            ConsoleKey.D => VehicleAction.Downward,
+            ConsoleKey.PageUp => VehicleAction.PageUp,
+            ConsoleKey.PageDown => VehicleAction.PageDown,
+            ConsoleKey.Q => VehicleAction.Quit,
+            ConsoleKey.T => VehicleAction.TakeOff,
+            _ => VehicleAction.Unknown
+        };
     }
 
     public void Dispose()
     {
-        _keySubject?.Dispose();
-        _directionSubject?.Dispose();
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    
+    private void Dispose(bool disposing)
+    {
+        if (_isDisposed) return;
+
+        if (disposing)
+        {
+            KeyPressed.Dispose();
+            _keyPressed.Dispose();
+        }
+
+        _isDisposed = true;
+    }
+    
+    ~KeyListener()
+    {
+        Dispose(disposing: false);
     }
 }
