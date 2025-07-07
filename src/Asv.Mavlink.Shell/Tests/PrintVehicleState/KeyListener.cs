@@ -1,22 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 
 namespace Asv.Mavlink.Shell;
 
-public class KeyListener : IDisposable
+public class KeyListener
 {
-    private readonly Subject<ConsoleKey> _keySubject = new();
-    private readonly Subject<VehicleDirection> _directionSubject = new();
     private bool _isRunning;
-    
-    public IObservable<ConsoleKey> KeyStream => _keySubject;
-    
-    public IObservable<VehicleDirection> DirectionStream => _directionSubject;
+
+    public event Func<VehicleAction, Task>? OnDirectionPressed;
     
     public async Task ListenAsync()
     {
@@ -25,80 +16,45 @@ public class KeyListener : IDisposable
         {
             var key = Console.ReadKey(true).Key;
 
-            _keySubject.OnNext(key);
+            if (!TryMapKeyToDirection(key, out var direction))
+                continue;
 
-            if (TryMapKeyToDirection(key, out var direction))
+            if (OnDirectionPressed is not null)
             {
-                _directionSubject.OnNext(direction);
+                await OnDirectionPressed.Invoke(direction);
             }
         }
     }
 
+
     public void Stop() => _isRunning = false;
-    
-    public Task<ConsoleKey> WaitForKeyAsync(IEnumerable<ConsoleKey> validKeys)
-    {
-        var tcs = new TaskCompletionSource<ConsoleKey>();
 
-        Task.Run(() =>
-        {
-            while (true)
-            {
-                var key = Console.ReadKey(true).Key;
-                if (!validKeys.Any() || validKeys.Contains(key))
-                {
-                    tcs.TrySetResult(key);
-                    break;
-                }
-            }
-        });
-
-        return tcs.Task;
-    }
-
-    private static bool TryMapKeyToDirection(ConsoleKey key, out VehicleDirection direction)
+    private static bool TryMapKeyToDirection(ConsoleKey key, out VehicleAction direction)
     {
         switch (key)
         {
             case ConsoleKey.RightArrow:
-                direction = VehicleDirection.Right;
-                return true;
+                direction = VehicleAction.GoRight; return true;
             case ConsoleKey.LeftArrow:
-                direction = VehicleDirection.Left;
-                return true;
+                direction = VehicleAction.GoLeft; return true;
             case ConsoleKey.UpArrow:
-                direction = VehicleDirection.Up;
-                return true;
+                direction = VehicleAction.GoUp; return true;
             case ConsoleKey.DownArrow:
-                direction = VehicleDirection.Down;
-                return true;
+                direction = VehicleAction.GoDown; return true;
             case ConsoleKey.U:
-                direction = VehicleDirection.U;
-                return true;
+                direction = VehicleAction.Upward; return true;
             case ConsoleKey.D:
-                direction = VehicleDirection.D;
-                return true;
+                direction = VehicleAction.Downward; return true;
             case ConsoleKey.PageUp:
-                direction = VehicleDirection.PageUp;
-                return true;
+                direction = VehicleAction.PageUp; return true;
             case ConsoleKey.PageDown:
-                direction = VehicleDirection.PageDown;
-                return true;
+                direction = VehicleAction.PageDown; return true;
             case ConsoleKey.Q:
-                direction = VehicleDirection.Q;
-                return true;
+                direction = VehicleAction.Quit; return true;
             case ConsoleKey.T:
-                direction = VehicleDirection.T;
-                return true;
+                direction = VehicleAction.TakeOff; return true;
             default:
-                direction = default;
-                return false;
+                direction = default; return false;
         }
-    }
-
-    public void Dispose()
-    {
-        _keySubject?.Dispose();
-        _directionSubject?.Dispose();
     }
 }
