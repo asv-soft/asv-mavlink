@@ -23,7 +23,7 @@ class Program
         app.Add<ExportSdrData>();
         // app.Add<MavProxy>();
         app.Add<BenchmarkBinSerializationCommand>();
-        // app.Add<BenchmarkSerializationPacket>();*/
+        app.Add<BenchmarkSerializationPacket>();
         //app.Add<BenchmarkFtpServerExCommand>();
         //app.Add<ShowParams>();
         app.Add<GenerateCommand>();
