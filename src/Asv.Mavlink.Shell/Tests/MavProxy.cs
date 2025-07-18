@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,25 +10,28 @@ using Asv.IO;
 using ConsoleAppFramework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using Spectre.Console;
 using R3;
 
 namespace Asv.Mavlink.Shell;
 
-public class MavProxy
+public class MavProxy  : IDisposable
 {
-    private readonly CancellationTokenSource _cancel = new();
     private const string Key = "DIR";
-    private StreamWriter? _out;
-    private readonly Subject<ConsoleKeyInfo> _userInput = new();
-    private IProtocolRouter? _router;
+    private readonly CancellationTokenSource _cancel = new();
     private readonly List<int> _sysId = new();
     private readonly List<int> _msgId = new();
+    
+    private IProtocolRouter? _router;
+    private IDisposable? _subscription;
+    private StreamWriter? _out;
     private Regex? _nameFilter;
-    private bool _silentMode;
     private Regex? _textFilter;
+    
+    private bool _silentMode;
     private int _count;
-
+    
     /// <summary>
     /// Used for connecting vehicle and several ground station
     /// Example: proxy -l udp://192.168.0.140:14560 -l udp://192.168.0.140:14550 -o out.txt
@@ -49,25 +53,35 @@ public class MavProxy
         _nameFilter = string.IsNullOrEmpty(namePattern) ? null : new Regex(namePattern, RegexOptions.Compiled);
         _textFilter = string.IsNullOrEmpty(textPattern) ? null : new Regex(textPattern, RegexOptions.Compiled);
 
-        if (!string.IsNullOrEmpty(outputFile))
+        try
         {
-            _out = new StreamWriter(File.OpenWrite(outputFile));
+            if (!string.IsNullOrEmpty(outputFile))
+            {
+                _out = new StreamWriter(File.OpenWrite(outputFile));
+            }
+
+            var protocol = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(); });
+            _router = protocol.CreateRouter("ROUTER");
+
+            links = new string[] { "tcp://127.0.0.1:7341", "tcp://127.0.0.1:5670" };
+            foreach (var link in links)
+            {
+                AddLink(link);
+            }
+
+            _subscription = _router.OnRxMessage
+                .FilterByType<MavlinkMessage>()
+                .Subscribe(OnPacket);
+
+            using var c = ConsoleAppHelper.WaitCancelPressOrProcessExit();
+        }
+        finally
+        {
+            _subscription?.Dispose();
+            _router?.Dispose();
+            _out?.Dispose();
         }
 
-        _router = Protocol.Create(builder =>
-        {
-            builder.RegisterMavlinkV2Protocol();
-
-        }).CreateRouter("ROUTER");
-        
-        foreach (var link in links)
-        {
-            AddLink(link);
-        }
-        _router.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(OnPacket);
-        using var c = ConsoleAppHelper.WaitCancelPressOrProcessExit();
-
-        _cancel.Cancel();
         return Task.CompletedTask;
     }
 
@@ -78,9 +92,7 @@ public class MavProxy
 #pragma warning restore CS8604 // Possible null reference argument.
         port.Tags.Add(Key, _count++);
     }
-
     
-
     private void OnPacket(MavlinkMessage packetV2)
     {
         if (Filter(packetV2, out var txt))
@@ -93,12 +105,55 @@ public class MavProxy
 
     private bool Filter(MavlinkMessage packetV2, out string txt)
     {
-        txt = JsonConvert.SerializeObject(packetV2, Formatting.None, new StringEnumConverter());
+        txt = JsonConvert.SerializeObject(packetV2, Formatting.None, new JsonSerializerSettings
+        {
+            ContractResolver = new SafeContractResolver(),
+            Converters = { new StringEnumConverter() }
+        });
 
         if (_sysId.Count != 0 && !_sysId.Contains(packetV2.SystemId)) return false;
         if (_msgId.Count != 0 && !_msgId.Contains(packetV2.Id)) return false;
         if (_nameFilter != null && !_nameFilter.IsMatch(packetV2.Name)) return false;
         if (_textFilter != null && !_textFilter.IsMatch(txt)) return false;
         return true;
+    }
+
+    public void Dispose()
+    {
+        _cancel.Cancel();
+        _out?.Dispose();
+        _subscription?.Dispose();
+    }
+}
+
+public class SafeContractResolver : DefaultContractResolver
+{
+    protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+    {
+        var allProps = base.CreateProperties(type, memberSerialization);
+        var safeProps = new List<JsonProperty>();
+
+        foreach (var prop in allProps)
+        {
+            try
+            {
+                var pi = type.GetProperty(prop.UnderlyingName ?? prop.PropertyName,
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                if (pi != null)
+                {
+                    if (pi.PropertyType.IsByRef) continue; 
+                    if (pi.PropertyType.FullName?.Contains("&") == true) continue;
+                }
+
+                safeProps.Add(prop);
+            }
+            catch
+            {
+                
+            }
+        }
+
+        return safeProps;
     }
 }

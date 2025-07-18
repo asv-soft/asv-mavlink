@@ -2,7 +2,7 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "litedb-test"
+      "commandLineArgs": "proxy -l udp://127.0.0.1:5660 -l udp://127.0.0.1:5670 -o out.txt"
     }
   }
 }
