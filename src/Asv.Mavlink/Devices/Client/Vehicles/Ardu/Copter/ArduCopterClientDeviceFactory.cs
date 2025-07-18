@@ -2,7 +2,6 @@ using System.Collections.Immutable;
 using Asv.IO;
 using Asv.Mavlink.Minimal;
 
-
 namespace Asv.Mavlink;
 
 public class ArduCopterClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, VehicleClientDeviceConfig config) 

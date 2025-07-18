@@ -4,7 +4,6 @@ using Asv.Common;
 using Asv.Mavlink.Ardupilotmega;
 using Asv.Mavlink.Minimal;
 
-
 using Microsoft.Extensions.Logging;
 using ZLogger;
 
