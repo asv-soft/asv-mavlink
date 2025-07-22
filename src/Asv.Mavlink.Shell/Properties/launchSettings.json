@@ -2,7 +2,6 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "litedb-test"
-    }
+      "commandLineArgs": "export-sdr -i \"D:\\LLZ_ZERO_24_02_29_05_16 #w32isGVkvESCygK504BW3Q.sdr\" -o \"D:\\out.csv\""    }
   }
 }
