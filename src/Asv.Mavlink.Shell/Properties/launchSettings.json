@@ -2,6 +2,6 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "export-sdr -i \"C:\\Users\\1\\Downloads\\Telegram Desktop\\ASV SITL 1\\ASV SITL v4.3.7\\sdr\\records\\LLZ_ZERO_24_02_29_05_16 #w32isGVkvESCygK504BW3Q.sdr\""    }
+      "commandLineArgs": "export-sdr -i \"D:\\LLZ_ZERO_24_02_29_05_16 #w32isGVkvESCygK504BW3Q.sdr\" -o \"D:\\out.csv\""    }
   }
 }

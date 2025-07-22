@@ -18,30 +18,29 @@ public class ExportSdrData
     /// <param name="outputFile">-o, Output file</param>
     [Command("export-sdr")]
     public async Task RunExportSdrDataAsync(string inputFile, string outputFile = "out.csv")
-    { 
-        var maxRecordSize = new AsvSdrRecordDataLlzPayload().GetMaxByteSize();
-        var minRecordSize = new AsvSdrRecordDataLlzPayload().GetMinByteSize();
-        var buffer = ArrayPool<byte>.Shared.Rent(maxRecordSize);
+    {
+        var minPayloadSize = new AsvSdrRecordDataLlzPayload().GetMinByteSize(); // = 186
+        var maxPayloadSize = new AsvSdrRecordDataLlzPayload().GetMaxByteSize(); // = 186
+        var buffer = ArrayPool<byte>.Shared.Rent(maxPayloadSize);
 
         try
         {
             await using var file = File.OpenRead(inputFile);
-            if (file.Length == 0 || file.Length < minRecordSize)
+            if (file.Length == 0 || file.Length < minPayloadSize)
             {
                 AnsiConsole.MarkupLine($"[red]Error:[/] Input file [yellow]{inputFile}[/] is empty or incomplete.");
                 return;
             }
 
             await using var outFile = new StreamWriter(File.OpenWrite(outputFile));
-            
-            var memory = new Memory<byte>(buffer, 0, maxRecordSize);
+            var memory = new Memory<byte>(buffer, 0, maxPayloadSize);
 
             while (true)
             {
-                int bytesRead = await file.ReadAsync(memory);
+                var bytesRead = await file.ReadAsync(memory);
                 if (bytesRead <= 0) break;
 
-                if (bytesRead < minRecordSize || bytesRead > maxRecordSize)
+                if (bytesRead < minPayloadSize)
                 {
                     AnsiConsole.MarkupLine("[yellow]Warning:[/] Incomplete record detected at the end of file. Skipping.");
                     break;
@@ -71,7 +70,7 @@ public class ExportSdrData
         }
         finally
         {
-            ArrayPool<byte>.Shared.Return(buffer);
+           ArrayPool<byte>.Shared.Return(buffer);
         }
     }
     

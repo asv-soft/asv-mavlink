@@ -25,10 +25,10 @@ Options:
 ### Possible outputs and behavior
 
 | Scenario                     | Console Output                                                    | Type    |
-| ---------------------------- | ----------------------------------------------------------------- | ------- |
+| ---------------------------- |-------------------------------------------------------------------| ------- |
 | Successful export            | Export completed. Data saved to <output-file>                     | Info    |
 | Input file not found         | Error: Input file <input-file> not found.                         | Error   |
-| Input file is empty          | Error: Input file <input-file> is empty.                          | Error   |
+| Input file is empty          | Error: Input file <input-file> is empty or incomplete.            | Error   |
 | Incomplete record at the end | Warning: Incomplete record detected at the end of file. Skipping. | Warning |
 | Access denied                | Access denied: <error message>                                    | Error   |
 | Unexpected error             | Unexpected error: <error message>                                 | Error   |
