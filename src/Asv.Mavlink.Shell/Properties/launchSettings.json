@@ -2,6 +2,6 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "export-sdr -i \"D:\\LLZ_ZERO_24_02_29_05_16 #w32isGVkvESCygK504BW3Q.sdr\" -o \"D:\\out.csv\""    }
+      "commandLineArgs": "devices-info --connection-string tcp://127.0.0.1:5760 -r 30 -i 5"    }
   }
 }
