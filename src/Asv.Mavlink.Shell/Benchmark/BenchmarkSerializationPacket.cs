@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using Asv.Mavlink.Test;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
@@ -18,8 +19,7 @@ namespace Asv.Mavlink.Shell
             BenchmarkRunner.Run<SerializationPacket>();
         }
     }
-
-
+    
     [SimpleJob(RuntimeMoniker.HostProcess)]
     [RPlotExporter]
     [MemoryDiagnoser]
@@ -27,20 +27,21 @@ namespace Asv.Mavlink.Shell
     {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         private TestTypesPacket _packet;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-        private byte[] _data = new byte[250];
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+        private byte[] _data;
 
         [GlobalSetup]
         public void Setup()
         {
             _packet = new TestTypesPacket();
-            _data = new byte[280];
-           
-
+            _data = ArrayPool<byte>.Shared.Rent(280); 
+            
+            var writeSpan = new Span<byte>(_data);
+            _packet.Serialize(ref writeSpan);
         }
 
         [Benchmark]
-        public void DeserializeSpan()
+        public void Deserialize()
         {
             var span = new ReadOnlySpan<byte>(_data);
             _packet.Deserialize(ref span);
@@ -53,6 +54,10 @@ namespace Asv.Mavlink.Shell
             _packet.Serialize(ref span);
         }
 
-        
+        [GlobalCleanup]
+        public void Cleanup()
+        {
+            ArrayPool<byte>.Shared.Return(_data); 
+        }
     }
 }
