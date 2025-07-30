@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.IO;
 using Asv.IO;
 using BenchmarkDotNet.Attributes;
@@ -57,12 +58,14 @@ namespace Asv.Mavlink.Shell
     {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         private TestClass _packet;
+        private JsonSerializer _serializer;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
         [GlobalSetup]
         public void Setup()
         {
             _packet = new TestClass();
+            _serializer = new JsonSerializer();
         }
 
         [Benchmark]
@@ -72,8 +75,7 @@ namespace Asv.Mavlink.Shell
 #pragma warning disable CS0618 // Type or member is obsolete
             using var writer = new BsonWriter(ms);
 #pragma warning restore CS0618 // Type or member is obsolete
-            var serializer = new JsonSerializer();
-            serializer.Serialize(writer, _packet);
+            _serializer.Serialize(writer, _packet);
         }
 
         [Benchmark]
@@ -82,6 +84,21 @@ namespace Asv.Mavlink.Shell
             var data = new byte[_packet.GetByteSize()];
             var span = new Span<byte>(data);
             _packet.Serialize(ref span);
+        }
+        
+        [Benchmark]
+        public void SerializeBinSerializerCloseToReal()
+        {
+            var data = ArrayPool<byte>.Shared.Rent(_packet.GetByteSize());
+            try
+            {
+                var span = new Span<byte>(data);
+                _packet.Serialize(ref span);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(data);
+            }
         }
     }
 }
