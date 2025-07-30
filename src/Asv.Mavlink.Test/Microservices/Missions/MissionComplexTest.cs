@@ -447,7 +447,7 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
     }
     
     [Fact]
-    public void WriteMissionIntItem_SendNull_Throws()
+    public async Task WriteMissionIntItem_SendNull_Throws()
     {
         // Arrange
         var called = 0;
@@ -456,9 +456,9 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        
+
         // Act + Assert
-        Assert.ThrowsAsync<NullReferenceException>(
+        await Assert.ThrowsAsync<NullReferenceException>(
             // ReSharper disable once NullableWarningSuppressionIsUsed
             async () => await _client.WriteMissionIntItem(null!, cancel:_cancellationTokenSource.Token)
         );

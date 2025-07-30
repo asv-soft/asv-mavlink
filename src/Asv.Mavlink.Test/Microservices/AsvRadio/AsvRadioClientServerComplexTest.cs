@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvRadio;
 using Asv.Mavlink.Common;
+using DotNext;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -104,24 +105,21 @@ public class AsvRadioClientServerComplexTest
     public async Task Client_DisableRadio_Success()
     {
         //Arrange
-        Server.EnableRadio += async (_, _, _, _, _, cancel) =>
-        {
-            return await Task.Run(() => MavResult.MavResultAccepted, cancel);
-        };
-        Server.DisableRadio += async cancel => { return await Task.Run(() => MavResult.MavResultAccepted, cancel); };
+        Server.EnableRadio = (_, _, _, _, _, _) => Task.FromResult(MavResult.MavResultAccepted);
+        Server.DisableRadio = _ => Task.FromResult(MavResult.MavResultAccepted);
         Server.Start();
-
-        //Act
-        ClientTime.Advance(TimeSpan.FromSeconds(1));
-        ServerTime.Advance(TimeSpan.FromSeconds(1));
-        var result = await Client.EnableRadio(10000001, AsvRadioModulation.AsvRadioModulationFm, (float)-99.0,
-            (float)90.0,
+        
+        await Client.EnableRadio(
+            10000001, 
+            AsvRadioModulation.AsvRadioModulationFm, 
+            -99.0f,
+            90.0f,
             AsvAudioCodec.AsvAudioCodecAac, _cancellationTokenSource.Token);
 
+        //Act
+        var result = await Client.DisableRadio(_cancellationTokenSource.Token);
+
         //Assert
-        Assert.True(result == MavResult.MavResultAccepted);
-        Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeOnair, Server.CustomMode.CurrentValue);
-        result = await Client.DisableRadio(_cancellationTokenSource.Token);
         Assert.True(result == MavResult.MavResultAccepted);
         Assert.Equal(AsvRadioCustomMode.AsvRadioCustomModeIdle, Server.CustomMode.CurrentValue);
     }

@@ -59,12 +59,84 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
     }
 
     [Fact]
-    public async Task ResetSessions_BasicRequest_Success()
+    public async Task ResetSessions_NoActiveSessions_Success()
     {
         // Arrange
         _ = Server;
         var rxCount = 0;
         var txCount = 0;
+
+        using var subRx = Link
+            .Server.RxFilterByType<FileTransferProtocolPacket>()
+            .Subscribe(_ =>
+            {
+                rxCount++;
+            });
+        using var subTx = Link
+            .Server.TxFilterByType<FileTransferProtocolPacket>()
+            .Subscribe(_ =>
+            {
+                txCount++;
+            });
+
+        // Act
+        var response = await Client.ResetSessions(_cts.Token);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
+        Assert.Equal(FtpOpcode.ResetSessions, response.ReadOriginOpCode());
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(rxCount, txCount);
+    }
+    
+    [Fact]
+    public async Task ResetSessions_All_Success()
+    {
+        // Arrange
+        _ = Server;
+        var rxCount = 0;
+        var txCount = 0;
+        _fileSystem.AddEmptyFile("file.txt");
+        _fileSystem.AddEmptyFile("file1.txt");
+        _fileSystem.AddEmptyFile("file2.txt");
+        await Server.OpenFileRead("file.txt");
+        await Server.OpenFileWrite("file1.txt");
+        await Server.OpenFileRead("file2.txt");
+
+        using var subRx = Link
+            .Server.RxFilterByType<FileTransferProtocolPacket>()
+            .Subscribe(_ =>
+            {
+                rxCount++;
+            });
+        using var subTx = Link
+            .Server.TxFilterByType<FileTransferProtocolPacket>()
+            .Subscribe(_ =>
+            {
+                txCount++;
+            });
+
+        // Act
+        var response = await Client.ResetSessions(_cts.Token);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
+        Assert.Equal(FtpOpcode.ResetSessions, response.ReadOriginOpCode());
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(rxCount, txCount);
+    }
+    
+    [Fact]
+    public async Task ResetSessions_SingleFileThatIsEmpty_Success()
+    {
+        // Arrange
+        _ = Server;
+        var rxCount = 0;
+        var txCount = 0;
+        _fileSystem.AddEmptyFile("file.txt");
+        await Server.OpenFileRead("file.txt");
 
         using var subRx = Link
             .Server.RxFilterByType<FileTransferProtocolPacket>()
@@ -111,11 +183,11 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
                 txCount++;
             });
 
-        const string path = "/file.txt";
+        const string path = "file.txt";
         var fullPath = _fileSystem.MakeFullPath(path, _serverExConfig.RootDirectory);
         _fileSystem.AddEmptyFile(fullPath);
-        await Client.OpenFileWrite(fullPath, _cts.Token);
-        await Client.OpenFileRead(fullPath, _cts.Token);
+        await Client.OpenFileWrite(path, _cts.Token);
+        await Client.OpenFileRead(path, _cts.Token);
 
         // Act
         var response = await Client.ResetSessions(_cts.Token);
@@ -149,10 +221,10 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
                 txCount++;
             });
 
-        const string path = "/file.txt";
+        const string path = "file.txt";
         var fullPath = _fileSystem.MakeFullPath(path, _serverExConfig.RootDirectory);
         _fileSystem.AddEmptyFile(fullPath);
-        var handle = await Client.OpenFileWrite(fullPath, _cts.Token);
+        var handle = await Client.OpenFileWrite(path, _cts.Token);
 
         const uint skip = 0;
         const byte take = 1;
@@ -172,7 +244,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(rxCount, txCount);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/path/to/directory")]
     [InlineData("/path/to/directory/")]
     [InlineData("path/to/directory/")]
@@ -198,7 +270,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Client.Statistic.TxMessages, Link.Server.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/path/to/file.txt")]
     [InlineData("path/file.txt")]
     public async Task RemoveFile_BasicRequest_Success(string expectedPath)
@@ -221,7 +293,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/path/to/file.txt", 3000, 1024)]
     [InlineData("/path/to/file.txt", 1024, 1024)]
     public async Task TruncateFile_NormalData_Success(string path, int fileSize, uint offset)
@@ -250,7 +322,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/path/to/file.txt", "123456789", 771566984)]
     [InlineData("/path/to/file.txt", "1234567890", 3315058323)]
     public async Task CalcFileCrc32_NormalData_Success(string path, string data, uint expectedCrc)
@@ -271,7 +343,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/")]
     [InlineData("/path/to/directory")]
     public async Task CalcFileCrc32_PathToDirectory_Throws(string path)
@@ -290,7 +362,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/file.txt")]
     [InlineData("/path/to/directory")]
     public async Task CalcFileCrc32_InexistentPath_Throws(string path)
@@ -306,7 +378,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/path/to/directory")]
     [InlineData("/path/to/directory/")]
     [InlineData("path/to/directory/")]
@@ -330,7 +402,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/path/to/old_name.txt", "/path/to/new_name.txt")]
     [InlineData("path/to/old_name.txt", "path/to/new_name.txt")]
     public async Task Rename_NormalData_Success(string oldPath, string newPath)
@@ -359,7 +431,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Client.Statistic.TxMessages, Link.Server.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData(
         new[] { "file1.txt", "file2.txt", "lib1.a" },
         "/",
@@ -406,7 +478,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/path/to/file.txt", 2048)]
     [InlineData("/path/to/file.txt", 0)]
     public async Task OpenFileRead_NormalData_Success(string path, uint fileSize)
@@ -431,7 +503,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/path/to/file.txt", 2048)]
     [InlineData("/path/to/file.txt", 0)]
     public async Task OpenFileRead_MultipleRequests_Success(string path, uint fileSize)
@@ -458,7 +530,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/")]
     [InlineData("/path/tp/directory")]
     [InlineData("/path/tp/directory/")]
@@ -477,7 +549,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/path/to/file.txt", 2048)]
     [InlineData("/path/to/file.txt", 0)]
     public async Task OpenFileWrite_NormalData_Success(string path, uint fileSize)
@@ -502,7 +574,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/path/to/file.txt", 2048)]
     [InlineData("/path/to/file.txt", 0)]
     public async Task OpenFileWrite_MultipleRequests_Success(string path, uint fileSize)
@@ -529,7 +601,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("/")]
     [InlineData("/path/tp/directory")]
     [InlineData("/path/tp/directory/")]
@@ -568,7 +640,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
+    [Theory] // TODO: Unstable test. May fail if system has another directory separators
     [InlineData("new_file.txt")]
     [InlineData("/new_file.txt")]
     public async Task CreateFile_NormalData_Success(string path)
