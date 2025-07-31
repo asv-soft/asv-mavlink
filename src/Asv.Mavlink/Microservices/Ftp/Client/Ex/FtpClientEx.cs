@@ -236,12 +236,13 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
                     byte charSize;
                     if (MavlinkFtpHelper.IsRootPath(path))
                     {
-                        // special case for root path: we don't need to trim '/' on root path
+                        // special case for the root path: we don't need to trim '/' on the root path
                         charSize = await Base.ListDirectory(path, offset, array, cancel).ConfigureAwait(false);
                     }
                     else
                     {
-                        if (path.StartsWith(MavlinkFtpHelper.DirectorySeparator)) path = path.TrimStart('/');
+                        if (path.StartsWith(Path.DirectorySeparatorChar))
+                            path = path.TrimStart(Path.DirectorySeparatorChar);
                         charSize = await Base.ListDirectory(path, offset, array, cancel).ConfigureAwait(false);
                     }
 
@@ -311,6 +312,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
                 $"Max data size is {MavlinkFtpHelper.MaxDataSize}"
             );
         }
+
         if (partSize == 0)
         {
             throw new ArgumentOutOfRangeException(
@@ -318,6 +320,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
                 "Part size must be greater than 0"
             );
         }
+
         var take = partSize;
         progress.Report(0);
         try
@@ -370,6 +373,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
                 $"Max data size is {MavlinkFtpHelper.MaxDataSize}"
             );
         }
+
         if (partSize == 0)
         {
             throw new ArgumentOutOfRangeException(
@@ -377,6 +381,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
                 "Part size must be greater than 0"
             );
         }
+
         var take = partSize;
         progress.Report(0);
         var buffer = ArrayPool<byte>.Shared.Rent(MavlinkFtpHelper.MaxDataSize);

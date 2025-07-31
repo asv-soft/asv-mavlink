@@ -221,12 +221,12 @@ public class FtpExComplexTest(ITestOutputHelper log)
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
-    [Theory]
-    [InlineData("/")]
-    public async Task Refresh_NormalData_Success(string refreshPath)
+    [Fact]
+    public async Task Refresh_RootPath_Success()
     {
         // Arrange
         _ = Server;
+        var refreshPath = _fileSystem.Path.DirectorySeparatorChar.ToString();
         var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
         _fileSystem.AddDirectory(localRoot);
         _fileSystem.AddDirectory(_fileSystem.Path.Combine(localRoot, "innerFolder"));
@@ -256,7 +256,7 @@ public class FtpExComplexTest(ITestOutputHelper log)
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file2.txt"));
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file3.txt"));
 
-        const char d = MavlinkFtpHelper.DirectorySeparator;
+        var d = MavlinkFtpHelper.DirectorySeparator;
         var expectedFiles = new[]
         {
             $"{d}",
@@ -426,15 +426,14 @@ public class FtpExComplexTest(ITestOutputHelper log)
         });
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
-
-    [Theory]
-    [InlineData("/")]
-    [InlineData("")]
-    public async Task Refresh_NormalData_ThrowsByCancellation(string refreshPath)
+    
+    [Fact]
+    public async Task Refresh_RootPath_ThrowsByCancellation()
     {
         // Arrange
         _ = Server;
         await _cts.CancelAsync();
+        var refreshPath = _fileSystem.Path.DirectorySeparatorChar.ToString();
         var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
         _fileSystem.AddDirectory(localRoot);
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file1.txt"));

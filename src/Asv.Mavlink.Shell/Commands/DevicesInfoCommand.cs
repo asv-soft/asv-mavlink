@@ -47,7 +47,7 @@ public class DevicesInfoCommand
     /// Command that shows info about devices in the mavlink network
     /// </summary>
     /// <param name="connectionString">-cs, The address of the connection to the mavlink device</param>
-    /// <param name="iterations">-i, States how many iterations should the program work through</param>
+    /// <param name="iterations">-i, States how many iterations the program should work through</param>
     /// <param name="refreshRate">-r, (in ms) States how fast should the console be refreshed</param>
     /// <returns></returns>
     [Command("devices-info")]
@@ -61,6 +61,8 @@ public class DevicesInfoCommand
         var protocol = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(); });
         _router = protocol.CreateRouter("ROUTER");
         _router.AddPort(connectionString);
+        _router.OnTxMessage.Subscribe(_ => { }, exception => { });
+        _router.OnRxMessage.Subscribe(_ => { }, exception => { });
         var seq = new PacketSequenceCalculator();
         _explorer = DeviceExplorer.Create(_router, builder =>
         {
