@@ -226,7 +226,7 @@ public class FtpExComplexTest(ITestOutputHelper log)
     {
         // Arrange
         _ = Server;
-        var refreshPath = _fileSystem.Path.DirectorySeparatorChar.ToString();
+        var refreshPath = MavlinkFtpHelper.DirectorySeparator.ToString();
         var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
         _fileSystem.AddDirectory(localRoot);
         _fileSystem.AddDirectory(_fileSystem.Path.Combine(localRoot, "innerFolder"));

@@ -1,7 +1,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Immutable;
-using System.IO;
 using System.IO.Abstractions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -15,8 +14,8 @@ public static class MavlinkFtpHelper
 {
     public const string FtpMicroserviceName = "FTP";
     public const string FtpMicroserviceExName = "FTPEX";
-
-    public static readonly char DirectorySeparator = Path.DirectorySeparatorChar;
+    
+    public const char DirectorySeparator = '/';
     public const byte MaxDataSize = 239;
     public const char FileSizeSeparator = '\t';
     public const char DirectoryChar = 'D';
@@ -46,10 +45,7 @@ public static class MavlinkFtpHelper
         }
     }
 
-    public static bool IsRootPath(ReadOnlySpan<char> path)
-    {
-        return path.Trim().ToString() == Path.DirectorySeparatorChar.ToString();
-    }
+    public static bool IsRootPath(ReadOnlySpan<char> path) => path.Trim() is [DirectorySeparator];
 
     public static IFtpEntry CreateFtpDirectoryFromPath(string path)
     {
