@@ -9,7 +9,6 @@ public class VirtualFtpServerLoggerFactory(string prefix) : ILoggerFactory
 {
     public void Dispose()
     {
-        
     }
 
     public ILogger CreateLogger(string categoryName)
@@ -19,7 +18,6 @@ public class VirtualFtpServerLoggerFactory(string prefix) : ILoggerFactory
 
     public void AddProvider(ILoggerProvider provider)
     {
-        
     }
 }
 
@@ -32,17 +30,25 @@ public class VirtualFtpServerLogger : ILogger
         _categoryName = categoryName;
     }
 
-    public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
+    public bool IsEnabled(LogLevel logLevel)
+    {
+        return logLevel != LogLevel.None;
+    }
 
-    public IDisposable BeginScope<TState>(TState state) where TState : notnull => Disposable.Empty;
+    public IDisposable BeginScope<TState>(TState state) where TState : notnull
+    {
+        return Disposable.Empty;
+    }
 
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+        Func<TState, Exception?, string> formatter)
     {
         try
         {
             var colorStr = SyncWithLogLevelColor(logLevel);
             var formatterStr = Markup.Escape($"{formatter(state, exception)}");
-            AnsiConsole.MarkupLine($@"[orange4]{DateTime.Now:HH:mm:ss}[/] [{colorStr}]|={ConvertToStr(logLevel)}=|[/] {_categoryName,-8} [{colorStr}]|[/] {formatterStr}");
+            AnsiConsole.MarkupLine(
+                $@"[orange4]{DateTime.Now:HH:mm:ss}[/] [{colorStr}]|={ConvertToStr(logLevel)}=|[/] {_categoryName,-8} [{colorStr}]|[/] {formatterStr}");
         }
         catch
         {

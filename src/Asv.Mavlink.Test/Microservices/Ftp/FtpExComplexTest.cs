@@ -278,6 +278,26 @@ public class FtpExComplexTest(ITestOutputHelper log)
         Client.Entries.Keys.Should().Equal(expectedFiles);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
+    
+    [Theory]
+    [InlineData("/")]
+    public async Task Refresh_InvalidEncodedFolder_Throws(string refreshPath)
+    {
+        // Arrange
+        _ = Server;
+        var localRoot = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
+        _fileSystem.AddDirectory(localRoot);
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "new", "file1.txt"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "файлы", "test.txt"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "files", "にちゃんねる", "wow.txt"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(localRoot, "file3.txt"));
+
+        // Act
+        var task = Client.Refresh(refreshPath, true, _cts.Token);
+
+        // Assert
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+    }
 
     [Theory]
     [InlineData(100, 239)]
