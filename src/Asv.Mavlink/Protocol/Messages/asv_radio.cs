@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -288,15 +288,15 @@ namespace Asv.Mavlink.AsvRadio
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,FreqField, FreqField.DataType, ref _freq);    
-            FloatType.Accept(visitor,TxLevelField, TxLevelField.DataType, ref _txLevel);    
-            FloatType.Accept(visitor,RxLevelField, RxLevelField.DataType, ref _rxLevel);    
-            FloatType.Accept(visitor,RxEstimatedLevelField, RxEstimatedLevelField.DataType, ref _rxEstimatedLevel);    
+            FloatType.Accept(visitor,FreqField, ref _freq);    
+            FloatType.Accept(visitor,TxLevelField, ref _txLevel);    
+            FloatType.Accept(visitor,RxLevelField, ref _rxLevel);    
+            FloatType.Accept(visitor,RxEstimatedLevelField, ref _rxEstimatedLevel);    
             var tmpRfMode = (uint)RfMode;
-            UInt32Type.Accept(visitor,RfModeField, RfModeField.DataType, ref tmpRfMode);
+            UInt32Type.Accept(visitor,RfModeField, ref tmpRfMode);
             RfMode = (AsvRadioRfModeFlag)tmpRfMode;
             var tmpModulation = (byte)Modulation;
-            UInt8Type.Accept(visitor,ModulationField, ModulationField.DataType, ref tmpModulation);
+            UInt8Type.Accept(visitor,ModulationField, ref tmpModulation);
             Modulation = (AsvRadioModulation)tmpModulation;
 
         }
@@ -438,8 +438,8 @@ namespace Asv.Mavlink.AsvRadio
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -553,13 +553,13 @@ namespace Asv.Mavlink.AsvRadio
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,MaxRfFreqField, MaxRfFreqField.DataType, ref _maxRfFreq);    
-            UInt32Type.Accept(visitor,MinRfFreqField, MinRfFreqField.DataType, ref _minRfFreq);    
-            FloatType.Accept(visitor,MaxTxPowerField, MaxTxPowerField.DataType, ref _maxTxPower);    
-            FloatType.Accept(visitor,MinTxPowerField, MinTxPowerField.DataType, ref _minTxPower);    
-            FloatType.Accept(visitor,MaxRxPowerField, MaxRxPowerField.DataType, ref _maxRxPower);    
-            FloatType.Accept(visitor,MinRxPowerField, MinRxPowerField.DataType, ref _minRxPower);    
-            ArrayType.Accept(visitor,SupportedModulationField, SupportedModulationField.DataType, 32,
+            UInt32Type.Accept(visitor,MaxRfFreqField, ref _maxRfFreq);    
+            UInt32Type.Accept(visitor,MinRfFreqField, ref _minRfFreq);    
+            FloatType.Accept(visitor,MaxTxPowerField, ref _maxTxPower);    
+            FloatType.Accept(visitor,MinTxPowerField, ref _minTxPower);    
+            FloatType.Accept(visitor,MaxRxPowerField, ref _maxRxPower);    
+            FloatType.Accept(visitor,MinRxPowerField, ref _minRxPower);    
+            ArrayType.Accept(visitor,SupportedModulationField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref SupportedModulation[index]));    
 
         }
@@ -722,10 +722,10 @@ namespace Asv.Mavlink.AsvRadio
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,SkipField, SkipField.DataType, ref _skip);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            UInt16Type.Accept(visitor,SkipField, ref _skip);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,CountField, ref _count);    
 
         }
 
@@ -858,15 +858,15 @@ namespace Asv.Mavlink.AsvRadio
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,AllField, AllField.DataType, ref _all);    
-            UInt16Type.Accept(visitor,SkipField, SkipField.DataType, ref _skip);    
-            ArrayType.Accept(visitor,CodecsField, CodecsField.DataType, 100, (index, v, f, t) =>
+            UInt16Type.Accept(visitor,AllField, ref _all);    
+            UInt16Type.Accept(visitor,SkipField, ref _skip);    
+            ArrayType.Accept(visitor,CodecsField, (index, v, f, t) =>
             {
                 var tmp = (ushort)Codecs[index];
                 UInt16Type.Accept(v, f, t, ref tmp);
                 Codecs[index] = (AsvAudioCodec)tmp;
             });
-            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            UInt8Type.Accept(visitor,CountField, ref _count);    
 
         }
 

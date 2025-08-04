@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -318,11 +318,11 @@ namespace Asv.Mavlink.AsvChart
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt16Type.Accept(visitor,SkipField, SkipField.DataType, ref _skip);    
-            UInt16Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,SkipField, ref _skip);    
+            UInt16Type.Accept(visitor,CountField, ref _count);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -456,11 +456,11 @@ namespace Asv.Mavlink.AsvChart
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt16Type.Accept(visitor,ItemsCountField, ItemsCountField.DataType, ref _itemsCount);    
-            UInt16Type.Accept(visitor,ChatListHashField, ChatListHashField.DataType, ref _chatListHash);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,ItemsCountField, ref _itemsCount);    
+            UInt16Type.Accept(visitor,ChatListHashField, ref _chatListHash);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (AsvChartRequestAck)tmpResult;
 
         }
@@ -576,8 +576,8 @@ namespace Asv.Mavlink.AsvChart
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,ChartCountField, ChartCountField.DataType, ref _chartCount);    
-            UInt16Type.Accept(visitor,ChatListHashField, ChatListHashField.DataType, ref _chatListHash);    
+            UInt16Type.Accept(visitor,ChartCountField, ref _chartCount);    
+            UInt16Type.Accept(visitor,ChatListHashField, ref _chatListHash);    
 
         }
 
@@ -765,31 +765,31 @@ namespace Asv.Mavlink.AsvChart
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,AxesXMinField, AxesXMinField.DataType, ref _axesXMin);    
-            FloatType.Accept(visitor,AxesXMaxField, AxesXMaxField.DataType, ref _axesXMax);    
-            FloatType.Accept(visitor,AxesYMinField, AxesYMinField.DataType, ref _axesYMin);    
-            FloatType.Accept(visitor,AxesYMaxField, AxesYMaxField.DataType, ref _axesYMax);    
-            UInt16Type.Accept(visitor,ChartIdField, ChartIdField.DataType, ref _chartId);    
-            UInt16Type.Accept(visitor,ChartInfoHashField, ChartInfoHashField.DataType, ref _chartInfoHash);    
+            FloatType.Accept(visitor,AxesXMinField, ref _axesXMin);    
+            FloatType.Accept(visitor,AxesXMaxField, ref _axesXMax);    
+            FloatType.Accept(visitor,AxesYMinField, ref _axesYMin);    
+            FloatType.Accept(visitor,AxesYMaxField, ref _axesYMax);    
+            UInt16Type.Accept(visitor,ChartIdField, ref _chartId);    
+            UInt16Type.Accept(visitor,ChartInfoHashField, ref _chartInfoHash);    
             var tmpAxesXUnit = (ushort)AxesXUnit;
-            UInt16Type.Accept(visitor,AxesXUnitField, AxesXUnitField.DataType, ref tmpAxesXUnit);
+            UInt16Type.Accept(visitor,AxesXUnitField, ref tmpAxesXUnit);
             AxesXUnit = (AsvChartUnitType)tmpAxesXUnit;
-            UInt16Type.Accept(visitor,AxesXCountField, AxesXCountField.DataType, ref _axesXCount);    
+            UInt16Type.Accept(visitor,AxesXCountField, ref _axesXCount);    
             var tmpAxesYUnit = (ushort)AxesYUnit;
-            UInt16Type.Accept(visitor,AxesYUnitField, AxesYUnitField.DataType, ref tmpAxesYUnit);
+            UInt16Type.Accept(visitor,AxesYUnitField, ref tmpAxesYUnit);
             AxesYUnit = (AsvChartUnitType)tmpAxesYUnit;
-            UInt16Type.Accept(visitor,AxesYCountField, AxesYCountField.DataType, ref _axesYCount);    
-            ArrayType.Accept(visitor,ChartNameField, ChartNameField.DataType, 16, 
+            UInt16Type.Accept(visitor,AxesYCountField, ref _axesYCount);    
+            ArrayType.Accept(visitor,ChartNameField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref ChartName[index]));
             var tmpChartType = (byte)ChartType;
-            UInt8Type.Accept(visitor,ChartTypeField, ChartTypeField.DataType, ref tmpChartType);
+            UInt8Type.Accept(visitor,ChartTypeField, ref tmpChartType);
             ChartType = (AsvChartType)tmpChartType;
-            ArrayType.Accept(visitor,AxesXNameField, AxesXNameField.DataType, 16, 
+            ArrayType.Accept(visitor,AxesXNameField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref AxesXName[index]));
-            ArrayType.Accept(visitor,AxesYNameField, AxesYNameField.DataType, 16, 
+            ArrayType.Accept(visitor,AxesYNameField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref AxesYName[index]));
             var tmpFormat = (byte)Format;
-            UInt8Type.Accept(visitor,FormatField, FormatField.DataType, ref tmpFormat);
+            UInt8Type.Accept(visitor,FormatField, ref tmpFormat);
             Format = (AsvChartDataFormat)tmpFormat;
 
         }
@@ -1062,13 +1062,13 @@ namespace Asv.Mavlink.AsvChart
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DataRateField, DataRateField.DataType, ref _dataRate);    
-            UInt16Type.Accept(visitor,ChatIdField, ChatIdField.DataType, ref _chatId);    
-            UInt16Type.Accept(visitor,ChatInfoHashField, ChatInfoHashField.DataType, ref _chatInfoHash);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            FloatType.Accept(visitor,DataRateField, ref _dataRate);    
+            UInt16Type.Accept(visitor,ChatIdField, ref _chatId);    
+            UInt16Type.Accept(visitor,ChatInfoHashField, ref _chatInfoHash);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
             var tmpDataTrigger = (byte)DataTrigger;
-            UInt8Type.Accept(visitor,DataTriggerField, DataTriggerField.DataType, ref tmpDataTrigger);
+            UInt8Type.Accept(visitor,DataTriggerField, ref tmpDataTrigger);
             DataTrigger = (AsvChartDataTrigger)tmpDataTrigger;
 
         }
@@ -1219,14 +1219,14 @@ namespace Asv.Mavlink.AsvChart
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DataRateField, DataRateField.DataType, ref _dataRate);    
-            UInt16Type.Accept(visitor,ChatIdField, ChatIdField.DataType, ref _chatId);    
-            UInt16Type.Accept(visitor,ChatInfoHashField, ChatInfoHashField.DataType, ref _chatInfoHash);    
+            FloatType.Accept(visitor,DataRateField, ref _dataRate);    
+            UInt16Type.Accept(visitor,ChatIdField, ref _chatId);    
+            UInt16Type.Accept(visitor,ChatInfoHashField, ref _chatInfoHash);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (AsvChartRequestAck)tmpResult;
             var tmpDataTrigger = (byte)DataTrigger;
-            UInt8Type.Accept(visitor,DataTriggerField, DataTriggerField.DataType, ref tmpDataTrigger);
+            UInt8Type.Accept(visitor,DataTriggerField, ref tmpDataTrigger);
             DataTrigger = (AsvChartDataTrigger)tmpDataTrigger;
 
         }
@@ -1380,13 +1380,13 @@ namespace Asv.Mavlink.AsvChart
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
-            UInt16Type.Accept(visitor,ChatIdField, ChatIdField.DataType, ref _chatId);    
-            UInt16Type.Accept(visitor,ChatInfoHashField, ChatInfoHashField.DataType, ref _chatInfoHash);    
-            UInt16Type.Accept(visitor,PktInFrameField, PktInFrameField.DataType, ref _pktInFrame);    
-            UInt16Type.Accept(visitor,PktSeqField, PktSeqField.DataType, ref _pktSeq);    
-            UInt8Type.Accept(visitor,DataSizeField, DataSizeField.DataType, ref _dataSize);    
-            ArrayType.Accept(visitor,DataField, DataField.DataType, 220,
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt16Type.Accept(visitor,ChatIdField, ref _chatId);    
+            UInt16Type.Accept(visitor,ChatInfoHashField, ref _chatInfoHash);    
+            UInt16Type.Accept(visitor,PktInFrameField, ref _pktInFrame);    
+            UInt16Type.Accept(visitor,PktSeqField, ref _pktSeq);    
+            UInt8Type.Accept(visitor,DataSizeField, ref _dataSize);    
+            ArrayType.Accept(visitor,DataField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }

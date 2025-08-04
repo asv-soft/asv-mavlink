@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -194,7 +194,7 @@ namespace Asv.Mavlink.Icarous
         public void Accept(IVisitor visitor)
         {
             var tmpStatus = (byte)Status;
-            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
+            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
             Status = (IcarousFmsState)tmpStatus;
 
         }
@@ -313,31 +313,31 @@ namespace Asv.Mavlink.Icarous
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,Min1Field, Min1Field.DataType, ref _min1);    
-            FloatType.Accept(visitor,Max1Field, Max1Field.DataType, ref _max1);    
-            FloatType.Accept(visitor,Min2Field, Min2Field.DataType, ref _min2);    
-            FloatType.Accept(visitor,Max2Field, Max2Field.DataType, ref _max2);    
-            FloatType.Accept(visitor,Min3Field, Min3Field.DataType, ref _min3);    
-            FloatType.Accept(visitor,Max3Field, Max3Field.DataType, ref _max3);    
-            FloatType.Accept(visitor,Min4Field, Min4Field.DataType, ref _min4);    
-            FloatType.Accept(visitor,Max4Field, Max4Field.DataType, ref _max4);    
-            FloatType.Accept(visitor,Min5Field, Min5Field.DataType, ref _min5);    
-            FloatType.Accept(visitor,Max5Field, Max5Field.DataType, ref _max5);    
-            Int8Type.Accept(visitor,NumbandsField, NumbandsField.DataType, ref _numbands);                
+            FloatType.Accept(visitor,Min1Field, ref _min1);    
+            FloatType.Accept(visitor,Max1Field, ref _max1);    
+            FloatType.Accept(visitor,Min2Field, ref _min2);    
+            FloatType.Accept(visitor,Max2Field, ref _max2);    
+            FloatType.Accept(visitor,Min3Field, ref _min3);    
+            FloatType.Accept(visitor,Max3Field, ref _max3);    
+            FloatType.Accept(visitor,Min4Field, ref _min4);    
+            FloatType.Accept(visitor,Max4Field, ref _max4);    
+            FloatType.Accept(visitor,Min5Field, ref _min5);    
+            FloatType.Accept(visitor,Max5Field, ref _max5);    
+            Int8Type.Accept(visitor,NumbandsField, ref _numbands);                
             var tmpType1 = (byte)Type1;
-            UInt8Type.Accept(visitor,Type1Field, Type1Field.DataType, ref tmpType1);
+            UInt8Type.Accept(visitor,Type1Field, ref tmpType1);
             Type1 = (IcarousTrackBandTypes)tmpType1;
             var tmpType2 = (byte)Type2;
-            UInt8Type.Accept(visitor,Type2Field, Type2Field.DataType, ref tmpType2);
+            UInt8Type.Accept(visitor,Type2Field, ref tmpType2);
             Type2 = (IcarousTrackBandTypes)tmpType2;
             var tmpType3 = (byte)Type3;
-            UInt8Type.Accept(visitor,Type3Field, Type3Field.DataType, ref tmpType3);
+            UInt8Type.Accept(visitor,Type3Field, ref tmpType3);
             Type3 = (IcarousTrackBandTypes)tmpType3;
             var tmpType4 = (byte)Type4;
-            UInt8Type.Accept(visitor,Type4Field, Type4Field.DataType, ref tmpType4);
+            UInt8Type.Accept(visitor,Type4Field, ref tmpType4);
             Type4 = (IcarousTrackBandTypes)tmpType4;
             var tmpType5 = (byte)Type5;
-            UInt8Type.Accept(visitor,Type5Field, Type5Field.DataType, ref tmpType5);
+            UInt8Type.Accept(visitor,Type5Field, ref tmpType5);
             Type5 = (IcarousTrackBandTypes)tmpType5;
 
         }

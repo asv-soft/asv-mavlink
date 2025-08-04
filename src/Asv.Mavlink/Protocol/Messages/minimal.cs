@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -1796,20 +1796,20 @@ namespace Asv.Mavlink.Minimal
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,CustomModeField, CustomModeField.DataType, ref _customMode);    
+            UInt32Type.Accept(visitor,CustomModeField, ref _customMode);    
             var tmpType = (byte)Type;
-            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref tmpType);
+            UInt8Type.Accept(visitor,TypeField, ref tmpType);
             Type = (MavType)tmpType;
             var tmpAutopilot = (byte)Autopilot;
-            UInt8Type.Accept(visitor,AutopilotField, AutopilotField.DataType, ref tmpAutopilot);
+            UInt8Type.Accept(visitor,AutopilotField, ref tmpAutopilot);
             Autopilot = (MavAutopilot)tmpAutopilot;
             var tmpBaseMode = (byte)BaseMode;
-            UInt8Type.Accept(visitor,BaseModeField, BaseModeField.DataType, ref tmpBaseMode);
+            UInt8Type.Accept(visitor,BaseModeField, ref tmpBaseMode);
             BaseMode = (MavModeFlag)tmpBaseMode;
             var tmpSystemStatus = (byte)SystemStatus;
-            UInt8Type.Accept(visitor,SystemStatusField, SystemStatusField.DataType, ref tmpSystemStatus);
+            UInt8Type.Accept(visitor,SystemStatusField, ref tmpSystemStatus);
             SystemStatus = (MavState)tmpSystemStatus;
-            UInt8Type.Accept(visitor,MavlinkVersionField, MavlinkVersionField.DataType, ref _mavlinkVersion);    
+            UInt8Type.Accept(visitor,MavlinkVersionField, ref _mavlinkVersion);    
 
         }
 
@@ -1976,12 +1976,12 @@ namespace Asv.Mavlink.Minimal
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,VersionField, VersionField.DataType, ref _version);    
-            UInt16Type.Accept(visitor,MinVersionField, MinVersionField.DataType, ref _minVersion);    
-            UInt16Type.Accept(visitor,MaxVersionField, MaxVersionField.DataType, ref _maxVersion);    
-            ArrayType.Accept(visitor,SpecVersionHashField, SpecVersionHashField.DataType, 8,
+            UInt16Type.Accept(visitor,VersionField, ref _version);    
+            UInt16Type.Accept(visitor,MinVersionField, ref _minVersion);    
+            UInt16Type.Accept(visitor,MaxVersionField, ref _maxVersion);    
+            ArrayType.Accept(visitor,SpecVersionHashField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref SpecVersionHash[index]));    
-            ArrayType.Accept(visitor,LibraryVersionHashField, LibraryVersionHashField.DataType, 8,
+            ArrayType.Accept(visitor,LibraryVersionHashField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref LibraryVersionHash[index]));    
 
         }

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -288,25 +288,25 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,VehicleTimestampField, VehicleTimestampField.DataType, ref _vehicleTimestamp);    
-            UInt32Type.Accept(visitor,UtcTimeField, UtcTimeField.DataType, ref _utcTime);    
-            FloatType.Accept(visitor,Param1Field, Param1Field.DataType, ref _param1);    
-            FloatType.Accept(visitor,Param2Field, Param2Field.DataType, ref _param2);    
-            FloatType.Accept(visitor,Param3Field, Param3Field.DataType, ref _param3);    
-            FloatType.Accept(visitor,Param4Field, Param4Field.DataType, ref _param4);    
-            Int32Type.Accept(visitor,XField, XField.DataType, ref _x);    
-            Int32Type.Accept(visitor,YField, YField.DataType, ref _y);    
-            FloatType.Accept(visitor,ZField, ZField.DataType, ref _z);    
+            UInt64Type.Accept(visitor,VehicleTimestampField, ref _vehicleTimestamp);    
+            UInt32Type.Accept(visitor,UtcTimeField, ref _utcTime);    
+            FloatType.Accept(visitor,Param1Field, ref _param1);    
+            FloatType.Accept(visitor,Param2Field, ref _param2);    
+            FloatType.Accept(visitor,Param3Field, ref _param3);    
+            FloatType.Accept(visitor,Param4Field, ref _param4);    
+            Int32Type.Accept(visitor,XField, ref _x);    
+            Int32Type.Accept(visitor,YField, ref _y);    
+            FloatType.Accept(visitor,ZField, ref _z);    
             var tmpCommand = (ushort)Command;
-            UInt16Type.Accept(visitor,CommandField, CommandField.DataType, ref tmpCommand);
+            UInt16Type.Accept(visitor,CommandField, ref tmpCommand);
             Command = (MavCmd)tmpCommand;
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
             var tmpFrame = (byte)Frame;
-            UInt8Type.Accept(visitor,FrameField, FrameField.DataType, ref tmpFrame);
+            UInt8Type.Accept(visitor,FrameField, ref tmpFrame);
             Frame = (MavFrame)tmpFrame;
-            UInt8Type.Accept(visitor,CurrentField, CurrentField.DataType, ref _current);    
-            UInt8Type.Accept(visitor,AutocontinueField, AutocontinueField.DataType, ref _autocontinue);    
+            UInt8Type.Accept(visitor,CurrentField, ref _current);    
+            UInt8Type.Accept(visitor,AutocontinueField, ref _autocontinue);    
 
         }
 
@@ -597,21 +597,21 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,VehicleTimestampField, VehicleTimestampField.DataType, ref _vehicleTimestamp);    
-            UInt32Type.Accept(visitor,UtcTimeField, UtcTimeField.DataType, ref _utcTime);    
-            FloatType.Accept(visitor,Param1Field, Param1Field.DataType, ref _param1);    
-            FloatType.Accept(visitor,Param2Field, Param2Field.DataType, ref _param2);    
-            FloatType.Accept(visitor,Param3Field, Param3Field.DataType, ref _param3);    
-            FloatType.Accept(visitor,Param4Field, Param4Field.DataType, ref _param4);    
-            FloatType.Accept(visitor,Param5Field, Param5Field.DataType, ref _param5);    
-            FloatType.Accept(visitor,Param6Field, Param6Field.DataType, ref _param6);    
-            FloatType.Accept(visitor,Param7Field, Param7Field.DataType, ref _param7);    
+            UInt64Type.Accept(visitor,VehicleTimestampField, ref _vehicleTimestamp);    
+            UInt32Type.Accept(visitor,UtcTimeField, ref _utcTime);    
+            FloatType.Accept(visitor,Param1Field, ref _param1);    
+            FloatType.Accept(visitor,Param2Field, ref _param2);    
+            FloatType.Accept(visitor,Param3Field, ref _param3);    
+            FloatType.Accept(visitor,Param4Field, ref _param4);    
+            FloatType.Accept(visitor,Param5Field, ref _param5);    
+            FloatType.Accept(visitor,Param6Field, ref _param6);    
+            FloatType.Accept(visitor,Param7Field, ref _param7);    
             var tmpCommand = (ushort)Command;
-            UInt16Type.Accept(visitor,CommandField, CommandField.DataType, ref tmpCommand);
+            UInt16Type.Accept(visitor,CommandField, ref tmpCommand);
             Command = (MavCmd)tmpCommand;
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,ConfirmationField, ConfirmationField.DataType, ref _confirmation);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,ConfirmationField, ref _confirmation);    
 
         }
 
@@ -849,10 +849,10 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,Adc121VspbVoltField, Adc121VspbVoltField.DataType, ref _adc121VspbVolt);    
-            FloatType.Accept(visitor,Adc121CspbAmpField, Adc121CspbAmpField.DataType, ref _adc121CspbAmp);    
-            FloatType.Accept(visitor,Adc121Cs1AmpField, Adc121Cs1AmpField.DataType, ref _adc121Cs1Amp);    
-            FloatType.Accept(visitor,Adc121Cs2AmpField, Adc121Cs2AmpField.DataType, ref _adc121Cs2Amp);    
+            FloatType.Accept(visitor,Adc121VspbVoltField, ref _adc121VspbVolt);    
+            FloatType.Accept(visitor,Adc121CspbAmpField, ref _adc121CspbAmp);    
+            FloatType.Accept(visitor,Adc121Cs1AmpField, ref _adc121Cs1Amp);    
+            FloatType.Accept(visitor,Adc121Cs2AmpField, ref _adc121Cs2Amp);    
 
         }
 
@@ -1000,19 +1000,19 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,MpptTimestampField, MpptTimestampField.DataType, ref _mpptTimestamp);    
-            FloatType.Accept(visitor,Mppt1VoltField, Mppt1VoltField.DataType, ref _mppt1Volt);    
-            FloatType.Accept(visitor,Mppt1AmpField, Mppt1AmpField.DataType, ref _mppt1Amp);    
-            FloatType.Accept(visitor,Mppt2VoltField, Mppt2VoltField.DataType, ref _mppt2Volt);    
-            FloatType.Accept(visitor,Mppt2AmpField, Mppt2AmpField.DataType, ref _mppt2Amp);    
-            FloatType.Accept(visitor,Mppt3VoltField, Mppt3VoltField.DataType, ref _mppt3Volt);    
-            FloatType.Accept(visitor,Mppt3AmpField, Mppt3AmpField.DataType, ref _mppt3Amp);    
-            UInt16Type.Accept(visitor,Mppt1PwmField, Mppt1PwmField.DataType, ref _mppt1Pwm);    
-            UInt16Type.Accept(visitor,Mppt2PwmField, Mppt2PwmField.DataType, ref _mppt2Pwm);    
-            UInt16Type.Accept(visitor,Mppt3PwmField, Mppt3PwmField.DataType, ref _mppt3Pwm);    
-            UInt8Type.Accept(visitor,Mppt1StatusField, Mppt1StatusField.DataType, ref _mppt1Status);    
-            UInt8Type.Accept(visitor,Mppt2StatusField, Mppt2StatusField.DataType, ref _mppt2Status);    
-            UInt8Type.Accept(visitor,Mppt3StatusField, Mppt3StatusField.DataType, ref _mppt3Status);    
+            UInt64Type.Accept(visitor,MpptTimestampField, ref _mpptTimestamp);    
+            FloatType.Accept(visitor,Mppt1VoltField, ref _mppt1Volt);    
+            FloatType.Accept(visitor,Mppt1AmpField, ref _mppt1Amp);    
+            FloatType.Accept(visitor,Mppt2VoltField, ref _mppt2Volt);    
+            FloatType.Accept(visitor,Mppt2AmpField, ref _mppt2Amp);    
+            FloatType.Accept(visitor,Mppt3VoltField, ref _mppt3Volt);    
+            FloatType.Accept(visitor,Mppt3AmpField, ref _mppt3Amp);    
+            UInt16Type.Accept(visitor,Mppt1PwmField, ref _mppt1Pwm);    
+            UInt16Type.Accept(visitor,Mppt2PwmField, ref _mppt2Pwm);    
+            UInt16Type.Accept(visitor,Mppt3PwmField, ref _mppt3Pwm);    
+            UInt8Type.Accept(visitor,Mppt1StatusField, ref _mppt1Status);    
+            UInt8Type.Accept(visitor,Mppt2StatusField, ref _mppt2Status);    
+            UInt8Type.Accept(visitor,Mppt3StatusField, ref _mppt3Status);    
 
         }
 
@@ -1313,31 +1313,31 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, TimestampField.DataType, ref _timestamp);    
-            FloatType.Accept(visitor,HField, HField.DataType, ref _h);    
-            FloatType.Accept(visitor,HrefField, HrefField.DataType, ref _href);    
-            FloatType.Accept(visitor,HrefTField, HrefTField.DataType, ref _hrefT);    
-            FloatType.Accept(visitor,PitchangleField, PitchangleField.DataType, ref _pitchangle);    
-            FloatType.Accept(visitor,PitchanglerefField, PitchanglerefField.DataType, ref _pitchangleref);    
-            FloatType.Accept(visitor,QField, QField.DataType, ref _q);    
-            FloatType.Accept(visitor,QrefField, QrefField.DataType, ref _qref);    
-            FloatType.Accept(visitor,UelevField, UelevField.DataType, ref _uelev);    
-            FloatType.Accept(visitor,UthrotField, UthrotField.DataType, ref _uthrot);    
-            FloatType.Accept(visitor,Uthrot2Field, Uthrot2Field.DataType, ref _uthrot2);    
-            FloatType.Accept(visitor,NzField, NzField.DataType, ref _nz);    
-            FloatType.Accept(visitor,AirspeedrefField, AirspeedrefField.DataType, ref _airspeedref);    
-            FloatType.Accept(visitor,YawangleField, YawangleField.DataType, ref _yawangle);    
-            FloatType.Accept(visitor,YawanglerefField, YawanglerefField.DataType, ref _yawangleref);    
-            FloatType.Accept(visitor,RollangleField, RollangleField.DataType, ref _rollangle);    
-            FloatType.Accept(visitor,RollanglerefField, RollanglerefField.DataType, ref _rollangleref);    
-            FloatType.Accept(visitor,PField, PField.DataType, ref _p);    
-            FloatType.Accept(visitor,PrefField, PrefField.DataType, ref _pref);    
-            FloatType.Accept(visitor,RField, RField.DataType, ref _r);    
-            FloatType.Accept(visitor,RrefField, RrefField.DataType, ref _rref);    
-            FloatType.Accept(visitor,UailField, UailField.DataType, ref _uail);    
-            FloatType.Accept(visitor,UrudField, UrudField.DataType, ref _urud);    
-            UInt8Type.Accept(visitor,AslctrlModeField, AslctrlModeField.DataType, ref _aslctrlMode);    
-            UInt8Type.Accept(visitor,SpoilersengagedField, SpoilersengagedField.DataType, ref _spoilersengaged);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,HField, ref _h);    
+            FloatType.Accept(visitor,HrefField, ref _href);    
+            FloatType.Accept(visitor,HrefTField, ref _hrefT);    
+            FloatType.Accept(visitor,PitchangleField, ref _pitchangle);    
+            FloatType.Accept(visitor,PitchanglerefField, ref _pitchangleref);    
+            FloatType.Accept(visitor,QField, ref _q);    
+            FloatType.Accept(visitor,QrefField, ref _qref);    
+            FloatType.Accept(visitor,UelevField, ref _uelev);    
+            FloatType.Accept(visitor,UthrotField, ref _uthrot);    
+            FloatType.Accept(visitor,Uthrot2Field, ref _uthrot2);    
+            FloatType.Accept(visitor,NzField, ref _nz);    
+            FloatType.Accept(visitor,AirspeedrefField, ref _airspeedref);    
+            FloatType.Accept(visitor,YawangleField, ref _yawangle);    
+            FloatType.Accept(visitor,YawanglerefField, ref _yawangleref);    
+            FloatType.Accept(visitor,RollangleField, ref _rollangle);    
+            FloatType.Accept(visitor,RollanglerefField, ref _rollangleref);    
+            FloatType.Accept(visitor,PField, ref _p);    
+            FloatType.Accept(visitor,PrefField, ref _pref);    
+            FloatType.Accept(visitor,RField, ref _r);    
+            FloatType.Accept(visitor,RrefField, ref _rref);    
+            FloatType.Accept(visitor,UailField, ref _uail);    
+            FloatType.Accept(visitor,UrudField, ref _urud);    
+            UInt8Type.Accept(visitor,AslctrlModeField, ref _aslctrlMode);    
+            UInt8Type.Accept(visitor,SpoilersengagedField, ref _spoilersengaged);    
 
         }
 
@@ -1752,17 +1752,17 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,I321Field, I321Field.DataType, ref _i321);    
-            FloatType.Accept(visitor,F1Field, F1Field.DataType, ref _f1);    
-            FloatType.Accept(visitor,F2Field, F2Field.DataType, ref _f2);    
-            FloatType.Accept(visitor,F3Field, F3Field.DataType, ref _f3);    
-            FloatType.Accept(visitor,F4Field, F4Field.DataType, ref _f4);    
-            FloatType.Accept(visitor,F5Field, F5Field.DataType, ref _f5);    
-            FloatType.Accept(visitor,F6Field, F6Field.DataType, ref _f6);    
-            FloatType.Accept(visitor,F7Field, F7Field.DataType, ref _f7);    
-            FloatType.Accept(visitor,F8Field, F8Field.DataType, ref _f8);    
-            UInt8Type.Accept(visitor,I81Field, I81Field.DataType, ref _i81);    
-            UInt8Type.Accept(visitor,I82Field, I82Field.DataType, ref _i82);    
+            UInt32Type.Accept(visitor,I321Field, ref _i321);    
+            FloatType.Accept(visitor,F1Field, ref _f1);    
+            FloatType.Accept(visitor,F2Field, ref _f2);    
+            FloatType.Accept(visitor,F3Field, ref _f3);    
+            FloatType.Accept(visitor,F4Field, ref _f4);    
+            FloatType.Accept(visitor,F5Field, ref _f5);    
+            FloatType.Accept(visitor,F6Field, ref _f6);    
+            FloatType.Accept(visitor,F7Field, ref _f7);    
+            FloatType.Accept(visitor,F8Field, ref _f8);    
+            UInt8Type.Accept(visitor,I81Field, ref _i81);    
+            UInt8Type.Accept(visitor,I82Field, ref _i82);    
 
         }
 
@@ -1984,10 +1984,10 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,MotorRpmField, MotorRpmField.DataType, ref _motorRpm);    
-            UInt8Type.Accept(visitor,LedStatusField, LedStatusField.DataType, ref _ledStatus);    
-            UInt8Type.Accept(visitor,SatcomStatusField, SatcomStatusField.DataType, ref _satcomStatus);    
-            ArrayType.Accept(visitor,ServoStatusField, ServoStatusField.DataType, 8,
+            FloatType.Accept(visitor,MotorRpmField, ref _motorRpm);    
+            UInt8Type.Accept(visitor,LedStatusField, ref _ledStatus);    
+            UInt8Type.Accept(visitor,SatcomStatusField, ref _satcomStatus);    
+            ArrayType.Accept(visitor,ServoStatusField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref ServoStatus[index]));    
 
         }
@@ -2120,13 +2120,13 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, TimestampField.DataType, ref _timestamp);    
-            FloatType.Accept(visitor,WindspeedField, WindspeedField.DataType, ref _windspeed);    
-            FloatType.Accept(visitor,WinddirField, WinddirField.DataType, ref _winddir);    
-            FloatType.Accept(visitor,WindzField, WindzField.DataType, ref _windz);    
-            FloatType.Accept(visitor,AirspeedField, AirspeedField.DataType, ref _airspeed);    
-            FloatType.Accept(visitor,BetaField, BetaField.DataType, ref _beta);    
-            FloatType.Accept(visitor,AlphaField, AlphaField.DataType, ref _alpha);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,WindspeedField, ref _windspeed);    
+            FloatType.Accept(visitor,WinddirField, ref _winddir);    
+            FloatType.Accept(visitor,WindzField, ref _windz);    
+            FloatType.Accept(visitor,AirspeedField, ref _airspeed);    
+            FloatType.Accept(visitor,BetaField, ref _beta);    
+            FloatType.Accept(visitor,AlphaField, ref _alpha);    
 
         }
 
@@ -2298,14 +2298,14 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, TimestampField.DataType, ref _timestamp);    
-            FloatType.Accept(visitor,UelevField, UelevField.DataType, ref _uelev);    
-            FloatType.Accept(visitor,UthrotField, UthrotField.DataType, ref _uthrot);    
-            FloatType.Accept(visitor,Uthrot2Field, Uthrot2Field.DataType, ref _uthrot2);    
-            FloatType.Accept(visitor,UaillField, UaillField.DataType, ref _uaill);    
-            FloatType.Accept(visitor,UailrField, UailrField.DataType, ref _uailr);    
-            FloatType.Accept(visitor,UrudField, UrudField.DataType, ref _urud);    
-            UInt8Type.Accept(visitor,ObctrlStatusField, ObctrlStatusField.DataType, ref _obctrlStatus);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,UelevField, ref _uelev);    
+            FloatType.Accept(visitor,UthrotField, ref _uthrot);    
+            FloatType.Accept(visitor,Uthrot2Field, ref _uthrot2);    
+            FloatType.Accept(visitor,UaillField, ref _uaill);    
+            FloatType.Accept(visitor,UailrField, ref _uailr);    
+            FloatType.Accept(visitor,UrudField, ref _urud);    
+            UInt8Type.Accept(visitor,ObctrlStatusField, ref _obctrlStatus);    
 
         }
 
@@ -2475,9 +2475,9 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, TimestampField.DataType, ref _timestamp);    
-            FloatType.Accept(visitor,TempambientField, TempambientField.DataType, ref _tempambient);    
-            FloatType.Accept(visitor,HumidityField, HumidityField.DataType, ref _humidity);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,TempambientField, ref _tempambient);    
+            FloatType.Accept(visitor,HumidityField, ref _humidity);    
 
         }
 
@@ -2618,21 +2618,21 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,BatmonTimestampField, BatmonTimestampField.DataType, ref _batmonTimestamp);    
-            FloatType.Accept(visitor,TemperatureField, TemperatureField.DataType, ref _temperature);    
-            UInt32Type.Accept(visitor,SafetystatusField, SafetystatusField.DataType, ref _safetystatus);    
-            UInt32Type.Accept(visitor,OperationstatusField, OperationstatusField.DataType, ref _operationstatus);    
-            UInt16Type.Accept(visitor,VoltageField, VoltageField.DataType, ref _voltage);    
-            Int16Type.Accept(visitor,CurrentField, CurrentField.DataType, ref _current);
-            UInt16Type.Accept(visitor,BatterystatusField, BatterystatusField.DataType, ref _batterystatus);    
-            UInt16Type.Accept(visitor,SerialnumberField, SerialnumberField.DataType, ref _serialnumber);    
-            UInt16Type.Accept(visitor,Cellvoltage1Field, Cellvoltage1Field.DataType, ref _cellvoltage1);    
-            UInt16Type.Accept(visitor,Cellvoltage2Field, Cellvoltage2Field.DataType, ref _cellvoltage2);    
-            UInt16Type.Accept(visitor,Cellvoltage3Field, Cellvoltage3Field.DataType, ref _cellvoltage3);    
-            UInt16Type.Accept(visitor,Cellvoltage4Field, Cellvoltage4Field.DataType, ref _cellvoltage4);    
-            UInt16Type.Accept(visitor,Cellvoltage5Field, Cellvoltage5Field.DataType, ref _cellvoltage5);    
-            UInt16Type.Accept(visitor,Cellvoltage6Field, Cellvoltage6Field.DataType, ref _cellvoltage6);    
-            UInt8Type.Accept(visitor,SocField, SocField.DataType, ref _soc);    
+            UInt64Type.Accept(visitor,BatmonTimestampField, ref _batmonTimestamp);    
+            FloatType.Accept(visitor,TemperatureField, ref _temperature);    
+            UInt32Type.Accept(visitor,SafetystatusField, ref _safetystatus);    
+            UInt32Type.Accept(visitor,OperationstatusField, ref _operationstatus);    
+            UInt16Type.Accept(visitor,VoltageField, ref _voltage);    
+            Int16Type.Accept(visitor,CurrentField, ref _current);
+            UInt16Type.Accept(visitor,BatterystatusField, ref _batterystatus);    
+            UInt16Type.Accept(visitor,SerialnumberField, ref _serialnumber);    
+            UInt16Type.Accept(visitor,Cellvoltage1Field, ref _cellvoltage1);    
+            UInt16Type.Accept(visitor,Cellvoltage2Field, ref _cellvoltage2);    
+            UInt16Type.Accept(visitor,Cellvoltage3Field, ref _cellvoltage3);    
+            UInt16Type.Accept(visitor,Cellvoltage4Field, ref _cellvoltage4);    
+            UInt16Type.Accept(visitor,Cellvoltage5Field, ref _cellvoltage5);    
+            UInt16Type.Accept(visitor,Cellvoltage6Field, ref _cellvoltage6);    
+            UInt8Type.Accept(visitor,SocField, ref _soc);    
 
         }
 
@@ -2959,31 +2959,31 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, TimestampField.DataType, ref _timestamp);    
-            UInt64Type.Accept(visitor,TimestampmodechangedField, TimestampmodechangedField.DataType, ref _timestampmodechanged);    
-            FloatType.Accept(visitor,XwField, XwField.DataType, ref _xw);    
-            FloatType.Accept(visitor,XrField, XrField.DataType, ref _xr);    
-            FloatType.Accept(visitor,XlatField, XlatField.DataType, ref _xlat);    
-            FloatType.Accept(visitor,XlonField, XlonField.DataType, ref _xlon);    
-            FloatType.Accept(visitor,VarwField, VarwField.DataType, ref _varw);    
-            FloatType.Accept(visitor,VarrField, VarrField.DataType, ref _varr);    
-            FloatType.Accept(visitor,VarlatField, VarlatField.DataType, ref _varlat);    
-            FloatType.Accept(visitor,VarlonField, VarlonField.DataType, ref _varlon);    
-            FloatType.Accept(visitor,LoiterradiusField, LoiterradiusField.DataType, ref _loiterradius);    
-            FloatType.Accept(visitor,LoiterdirectionField, LoiterdirectionField.DataType, ref _loiterdirection);    
-            FloatType.Accept(visitor,DisttosoarpointField, DisttosoarpointField.DataType, ref _disttosoarpoint);    
-            FloatType.Accept(visitor,VsinkexpField, VsinkexpField.DataType, ref _vsinkexp);    
-            FloatType.Accept(visitor,Z1LocalupdraftspeedField, Z1LocalupdraftspeedField.DataType, ref _z1Localupdraftspeed);    
-            FloatType.Accept(visitor,Z2DeltarollField, Z2DeltarollField.DataType, ref _z2Deltaroll);    
-            FloatType.Accept(visitor,Z1ExpField, Z1ExpField.DataType, ref _z1Exp);    
-            FloatType.Accept(visitor,Z2ExpField, Z2ExpField.DataType, ref _z2Exp);    
-            FloatType.Accept(visitor,ThermalgsnorthField, ThermalgsnorthField.DataType, ref _thermalgsnorth);    
-            FloatType.Accept(visitor,ThermalgseastField, ThermalgseastField.DataType, ref _thermalgseast);    
-            FloatType.Accept(visitor,TseDotField, TseDotField.DataType, ref _tseDot);    
-            FloatType.Accept(visitor,Debugvar1Field, Debugvar1Field.DataType, ref _debugvar1);    
-            FloatType.Accept(visitor,Debugvar2Field, Debugvar2Field.DataType, ref _debugvar2);    
-            UInt8Type.Accept(visitor,ControlmodeField, ControlmodeField.DataType, ref _controlmode);    
-            UInt8Type.Accept(visitor,ValidField, ValidField.DataType, ref _valid);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            UInt64Type.Accept(visitor,TimestampmodechangedField, ref _timestampmodechanged);    
+            FloatType.Accept(visitor,XwField, ref _xw);    
+            FloatType.Accept(visitor,XrField, ref _xr);    
+            FloatType.Accept(visitor,XlatField, ref _xlat);    
+            FloatType.Accept(visitor,XlonField, ref _xlon);    
+            FloatType.Accept(visitor,VarwField, ref _varw);    
+            FloatType.Accept(visitor,VarrField, ref _varr);    
+            FloatType.Accept(visitor,VarlatField, ref _varlat);    
+            FloatType.Accept(visitor,VarlonField, ref _varlon);    
+            FloatType.Accept(visitor,LoiterradiusField, ref _loiterradius);    
+            FloatType.Accept(visitor,LoiterdirectionField, ref _loiterdirection);    
+            FloatType.Accept(visitor,DisttosoarpointField, ref _disttosoarpoint);    
+            FloatType.Accept(visitor,VsinkexpField, ref _vsinkexp);    
+            FloatType.Accept(visitor,Z1LocalupdraftspeedField, ref _z1Localupdraftspeed);    
+            FloatType.Accept(visitor,Z2DeltarollField, ref _z2Deltaroll);    
+            FloatType.Accept(visitor,Z1ExpField, ref _z1Exp);    
+            FloatType.Accept(visitor,Z2ExpField, ref _z2Exp);    
+            FloatType.Accept(visitor,ThermalgsnorthField, ref _thermalgsnorth);    
+            FloatType.Accept(visitor,ThermalgseastField, ref _thermalgseast);    
+            FloatType.Accept(visitor,TseDotField, ref _tseDot);    
+            FloatType.Accept(visitor,Debugvar1Field, ref _debugvar1);    
+            FloatType.Accept(visitor,Debugvar2Field, ref _debugvar2);    
+            UInt8Type.Accept(visitor,ControlmodeField, ref _controlmode);    
+            UInt8Type.Accept(visitor,ValidField, ref _valid);    
 
         }
 
@@ -3389,14 +3389,14 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, TimestampField.DataType, ref _timestamp);    
-            UInt16Type.Accept(visitor,FreeSpaceField, FreeSpaceField.DataType, ref _freeSpace);    
-            UInt8Type.Accept(visitor,VisensorRate1Field, VisensorRate1Field.DataType, ref _visensorRate1);    
-            UInt8Type.Accept(visitor,VisensorRate2Field, VisensorRate2Field.DataType, ref _visensorRate2);    
-            UInt8Type.Accept(visitor,VisensorRate3Field, VisensorRate3Field.DataType, ref _visensorRate3);    
-            UInt8Type.Accept(visitor,VisensorRate4Field, VisensorRate4Field.DataType, ref _visensorRate4);    
-            UInt8Type.Accept(visitor,RecordingNodesCountField, RecordingNodesCountField.DataType, ref _recordingNodesCount);    
-            UInt8Type.Accept(visitor,CpuTempField, CpuTempField.DataType, ref _cpuTemp);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            UInt16Type.Accept(visitor,FreeSpaceField, ref _freeSpace);    
+            UInt8Type.Accept(visitor,VisensorRate1Field, ref _visensorRate1);    
+            UInt8Type.Accept(visitor,VisensorRate2Field, ref _visensorRate2);    
+            UInt8Type.Accept(visitor,VisensorRate3Field, ref _visensorRate3);    
+            UInt8Type.Accept(visitor,VisensorRate4Field, ref _visensorRate4);    
+            UInt8Type.Accept(visitor,RecordingNodesCountField, ref _recordingNodesCount);    
+            UInt8Type.Accept(visitor,CpuTempField, ref _cpuTemp);    
 
         }
 
@@ -3593,18 +3593,18 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, TimestampField.DataType, ref _timestamp);    
-            FloatType.Accept(visitor,PwrBrdSystemVoltField, PwrBrdSystemVoltField.DataType, ref _pwrBrdSystemVolt);    
-            FloatType.Accept(visitor,PwrBrdServoVoltField, PwrBrdServoVoltField.DataType, ref _pwrBrdServoVolt);    
-            FloatType.Accept(visitor,PwrBrdDigitalVoltField, PwrBrdDigitalVoltField.DataType, ref _pwrBrdDigitalVolt);    
-            FloatType.Accept(visitor,PwrBrdMotLAmpField, PwrBrdMotLAmpField.DataType, ref _pwrBrdMotLAmp);    
-            FloatType.Accept(visitor,PwrBrdMotRAmpField, PwrBrdMotRAmpField.DataType, ref _pwrBrdMotRAmp);    
-            FloatType.Accept(visitor,PwrBrdAnalogAmpField, PwrBrdAnalogAmpField.DataType, ref _pwrBrdAnalogAmp);    
-            FloatType.Accept(visitor,PwrBrdDigitalAmpField, PwrBrdDigitalAmpField.DataType, ref _pwrBrdDigitalAmp);    
-            FloatType.Accept(visitor,PwrBrdExtAmpField, PwrBrdExtAmpField.DataType, ref _pwrBrdExtAmp);    
-            FloatType.Accept(visitor,PwrBrdAuxAmpField, PwrBrdAuxAmpField.DataType, ref _pwrBrdAuxAmp);    
-            UInt8Type.Accept(visitor,PwrBrdStatusField, PwrBrdStatusField.DataType, ref _pwrBrdStatus);    
-            UInt8Type.Accept(visitor,PwrBrdLedStatusField, PwrBrdLedStatusField.DataType, ref _pwrBrdLedStatus);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,PwrBrdSystemVoltField, ref _pwrBrdSystemVolt);    
+            FloatType.Accept(visitor,PwrBrdServoVoltField, ref _pwrBrdServoVolt);    
+            FloatType.Accept(visitor,PwrBrdDigitalVoltField, ref _pwrBrdDigitalVolt);    
+            FloatType.Accept(visitor,PwrBrdMotLAmpField, ref _pwrBrdMotLAmp);    
+            FloatType.Accept(visitor,PwrBrdMotRAmpField, ref _pwrBrdMotRAmp);    
+            FloatType.Accept(visitor,PwrBrdAnalogAmpField, ref _pwrBrdAnalogAmp);    
+            FloatType.Accept(visitor,PwrBrdDigitalAmpField, ref _pwrBrdDigitalAmp);    
+            FloatType.Accept(visitor,PwrBrdExtAmpField, ref _pwrBrdExtAmp);    
+            FloatType.Accept(visitor,PwrBrdAuxAmpField, ref _pwrBrdAuxAmp);    
+            UInt8Type.Accept(visitor,PwrBrdStatusField, ref _pwrBrdStatus);    
+            UInt8Type.Accept(visitor,PwrBrdLedStatusField, ref _pwrBrdLedStatus);    
 
         }
 
@@ -3838,17 +3838,17 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, TimestampField.DataType, ref _timestamp);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
             var tmpGsmModemType = (byte)GsmModemType;
-            UInt8Type.Accept(visitor,GsmModemTypeField, GsmModemTypeField.DataType, ref tmpGsmModemType);
+            UInt8Type.Accept(visitor,GsmModemTypeField, ref tmpGsmModemType);
             GsmModemType = (GsmModemType)tmpGsmModemType;
             var tmpGsmLinkType = (byte)GsmLinkType;
-            UInt8Type.Accept(visitor,GsmLinkTypeField, GsmLinkTypeField.DataType, ref tmpGsmLinkType);
+            UInt8Type.Accept(visitor,GsmLinkTypeField, ref tmpGsmLinkType);
             GsmLinkType = (GsmLinkType)tmpGsmLinkType;
-            UInt8Type.Accept(visitor,RssiField, RssiField.DataType, ref _rssi);    
-            UInt8Type.Accept(visitor,RsrpRscpField, RsrpRscpField.DataType, ref _rsrpRscp);    
-            UInt8Type.Accept(visitor,SinrEcioField, SinrEcioField.DataType, ref _sinrEcio);    
-            UInt8Type.Accept(visitor,RsrqField, RsrqField.DataType, ref _rsrq);    
+            UInt8Type.Accept(visitor,RssiField, ref _rssi);    
+            UInt8Type.Accept(visitor,RsrpRscpField, ref _rsrpRscp);    
+            UInt8Type.Accept(visitor,SinrEcioField, ref _sinrEcio);    
+            UInt8Type.Accept(visitor,RsrqField, ref _rsrq);    
 
         }
 
@@ -4020,14 +4020,14 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, TimestampField.DataType, ref _timestamp);    
-            UInt64Type.Accept(visitor,LastHeartbeatField, LastHeartbeatField.DataType, ref _lastHeartbeat);    
-            UInt16Type.Accept(visitor,FailedSessionsField, FailedSessionsField.DataType, ref _failedSessions);    
-            UInt16Type.Accept(visitor,SuccessfulSessionsField, SuccessfulSessionsField.DataType, ref _successfulSessions);    
-            UInt8Type.Accept(visitor,SignalQualityField, SignalQualityField.DataType, ref _signalQuality);    
-            UInt8Type.Accept(visitor,RingPendingField, RingPendingField.DataType, ref _ringPending);    
-            UInt8Type.Accept(visitor,TxSessionPendingField, TxSessionPendingField.DataType, ref _txSessionPending);    
-            UInt8Type.Accept(visitor,RxSessionPendingField, RxSessionPendingField.DataType, ref _rxSessionPending);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            UInt64Type.Accept(visitor,LastHeartbeatField, ref _lastHeartbeat);    
+            UInt16Type.Accept(visitor,FailedSessionsField, ref _failedSessions);    
+            UInt16Type.Accept(visitor,SuccessfulSessionsField, ref _successfulSessions);    
+            UInt8Type.Accept(visitor,SignalQualityField, ref _signalQuality);    
+            UInt8Type.Accept(visitor,RingPendingField, ref _ringPending);    
+            UInt8Type.Accept(visitor,TxSessionPendingField, ref _txSessionPending);    
+            UInt8Type.Accept(visitor,RxSessionPendingField, ref _rxSessionPending);    
 
         }
 
@@ -4203,11 +4203,11 @@ namespace Asv.Mavlink.Asluav
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimestampField, TimestampField.DataType, ref _timestamp);    
-            FloatType.Accept(visitor,AngleofattackField, AngleofattackField.DataType, ref _angleofattack);    
-            FloatType.Accept(visitor,SideslipField, SideslipField.DataType, ref _sideslip);    
-            UInt8Type.Accept(visitor,AngleofattackValidField, AngleofattackValidField.DataType, ref _angleofattackValid);    
-            UInt8Type.Accept(visitor,SideslipValidField, SideslipValidField.DataType, ref _sideslipValid);    
+            UInt64Type.Accept(visitor,TimestampField, ref _timestamp);    
+            FloatType.Accept(visitor,AngleofattackField, ref _angleofattack);    
+            FloatType.Accept(visitor,SideslipField, ref _sideslip);    
+            UInt8Type.Accept(visitor,AngleofattackValidField, ref _angleofattackValid);    
+            UInt8Type.Accept(visitor,SideslipValidField, ref _sideslipValid);    
 
         }
 

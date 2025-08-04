@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -3334,18 +3334,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,MagDeclinationField, MagDeclinationField.DataType, ref _magDeclination);    
-            Int32Type.Accept(visitor,RawPressField, RawPressField.DataType, ref _rawPress);    
-            Int32Type.Accept(visitor,RawTempField, RawTempField.DataType, ref _rawTemp);    
-            FloatType.Accept(visitor,GyroCalXField, GyroCalXField.DataType, ref _gyroCalX);    
-            FloatType.Accept(visitor,GyroCalYField, GyroCalYField.DataType, ref _gyroCalY);    
-            FloatType.Accept(visitor,GyroCalZField, GyroCalZField.DataType, ref _gyroCalZ);    
-            FloatType.Accept(visitor,AccelCalXField, AccelCalXField.DataType, ref _accelCalX);    
-            FloatType.Accept(visitor,AccelCalYField, AccelCalYField.DataType, ref _accelCalY);    
-            FloatType.Accept(visitor,AccelCalZField, AccelCalZField.DataType, ref _accelCalZ);    
-            Int16Type.Accept(visitor,MagOfsXField, MagOfsXField.DataType, ref _magOfsX);
-            Int16Type.Accept(visitor,MagOfsYField, MagOfsYField.DataType, ref _magOfsY);
-            Int16Type.Accept(visitor,MagOfsZField, MagOfsZField.DataType, ref _magOfsZ);
+            FloatType.Accept(visitor,MagDeclinationField, ref _magDeclination);    
+            Int32Type.Accept(visitor,RawPressField, ref _rawPress);    
+            Int32Type.Accept(visitor,RawTempField, ref _rawTemp);    
+            FloatType.Accept(visitor,GyroCalXField, ref _gyroCalX);    
+            FloatType.Accept(visitor,GyroCalYField, ref _gyroCalY);    
+            FloatType.Accept(visitor,GyroCalZField, ref _gyroCalZ);    
+            FloatType.Accept(visitor,AccelCalXField, ref _accelCalX);    
+            FloatType.Accept(visitor,AccelCalYField, ref _accelCalY);    
+            FloatType.Accept(visitor,AccelCalZField, ref _accelCalZ);    
+            Int16Type.Accept(visitor,MagOfsXField, ref _magOfsX);
+            Int16Type.Accept(visitor,MagOfsYField, ref _magOfsY);
+            Int16Type.Accept(visitor,MagOfsZField, ref _magOfsZ);
 
         }
 
@@ -3573,11 +3573,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int16Type.Accept(visitor,MagOfsXField, MagOfsXField.DataType, ref _magOfsX);
-            Int16Type.Accept(visitor,MagOfsYField, MagOfsYField.DataType, ref _magOfsY);
-            Int16Type.Accept(visitor,MagOfsZField, MagOfsZField.DataType, ref _magOfsZ);
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            Int16Type.Accept(visitor,MagOfsXField, ref _magOfsX);
+            Int16Type.Accept(visitor,MagOfsYField, ref _magOfsY);
+            Int16Type.Accept(visitor,MagOfsZField, ref _magOfsZ);
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -3710,9 +3710,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,BrkvalField, BrkvalField.DataType, ref _brkval);    
-            UInt16Type.Accept(visitor,FreememField, FreememField.DataType, ref _freemem);    
-            UInt32Type.Accept(visitor,Freemem32Field, Freemem32Field.DataType, ref _freemem32);    
+            UInt16Type.Accept(visitor,BrkvalField, ref _brkval);    
+            UInt16Type.Accept(visitor,FreememField, ref _freemem);    
+            UInt32Type.Accept(visitor,Freemem32Field, ref _freemem32);    
 
         }
 
@@ -3826,12 +3826,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,Adc1Field, Adc1Field.DataType, ref _adc1);    
-            UInt16Type.Accept(visitor,Adc2Field, Adc2Field.DataType, ref _adc2);    
-            UInt16Type.Accept(visitor,Adc3Field, Adc3Field.DataType, ref _adc3);    
-            UInt16Type.Accept(visitor,Adc4Field, Adc4Field.DataType, ref _adc4);    
-            UInt16Type.Accept(visitor,Adc5Field, Adc5Field.DataType, ref _adc5);    
-            UInt16Type.Accept(visitor,Adc6Field, Adc6Field.DataType, ref _adc6);    
+            UInt16Type.Accept(visitor,Adc1Field, ref _adc1);    
+            UInt16Type.Accept(visitor,Adc2Field, ref _adc2);    
+            UInt16Type.Accept(visitor,Adc3Field, ref _adc3);    
+            UInt16Type.Accept(visitor,Adc4Field, ref _adc4);    
+            UInt16Type.Accept(visitor,Adc5Field, ref _adc5);    
+            UInt16Type.Accept(visitor,Adc6Field, ref _adc6);    
 
         }
 
@@ -3999,17 +3999,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,ExtraValueField, ExtraValueField.DataType, ref _extraValue);    
-            UInt16Type.Accept(visitor,ShutterSpeedField, ShutterSpeedField.DataType, ref _shutterSpeed);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,ModeField, ModeField.DataType, ref _mode);    
-            UInt8Type.Accept(visitor,ApertureField, ApertureField.DataType, ref _aperture);    
-            UInt8Type.Accept(visitor,IsoField, IsoField.DataType, ref _iso);    
-            UInt8Type.Accept(visitor,ExposureTypeField, ExposureTypeField.DataType, ref _exposureType);    
-            UInt8Type.Accept(visitor,CommandIdField, CommandIdField.DataType, ref _commandId);    
-            UInt8Type.Accept(visitor,EngineCutOffField, EngineCutOffField.DataType, ref _engineCutOff);    
-            UInt8Type.Accept(visitor,ExtraParamField, ExtraParamField.DataType, ref _extraParam);    
+            FloatType.Accept(visitor,ExtraValueField, ref _extraValue);    
+            UInt16Type.Accept(visitor,ShutterSpeedField, ref _shutterSpeed);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,ModeField, ref _mode);    
+            UInt8Type.Accept(visitor,ApertureField, ref _aperture);    
+            UInt8Type.Accept(visitor,IsoField, ref _iso);    
+            UInt8Type.Accept(visitor,ExposureTypeField, ref _exposureType);    
+            UInt8Type.Accept(visitor,CommandIdField, ref _commandId);    
+            UInt8Type.Accept(visitor,EngineCutOffField, ref _engineCutOff);    
+            UInt8Type.Accept(visitor,ExtraParamField, ref _extraParam);    
 
         }
 
@@ -4239,16 +4239,16 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,ExtraValueField, ExtraValueField.DataType, ref _extraValue);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,SessionField, SessionField.DataType, ref _session);    
-            UInt8Type.Accept(visitor,ZoomPosField, ZoomPosField.DataType, ref _zoomPos);    
-            Int8Type.Accept(visitor,ZoomStepField, ZoomStepField.DataType, ref _zoomStep);                
-            UInt8Type.Accept(visitor,FocusLockField, FocusLockField.DataType, ref _focusLock);    
-            UInt8Type.Accept(visitor,ShotField, ShotField.DataType, ref _shot);    
-            UInt8Type.Accept(visitor,CommandIdField, CommandIdField.DataType, ref _commandId);    
-            UInt8Type.Accept(visitor,ExtraParamField, ExtraParamField.DataType, ref _extraParam);    
+            FloatType.Accept(visitor,ExtraValueField, ref _extraValue);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,SessionField, ref _session);    
+            UInt8Type.Accept(visitor,ZoomPosField, ref _zoomPos);    
+            Int8Type.Accept(visitor,ZoomStepField, ref _zoomStep);                
+            UInt8Type.Accept(visitor,FocusLockField, ref _focusLock);    
+            UInt8Type.Accept(visitor,ShotField, ref _shot);    
+            UInt8Type.Accept(visitor,CommandIdField, ref _commandId);    
+            UInt8Type.Accept(visitor,ExtraParamField, ref _extraParam);    
 
         }
 
@@ -4453,14 +4453,14 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
             var tmpMountMode = (byte)MountMode;
-            UInt8Type.Accept(visitor,MountModeField, MountModeField.DataType, ref tmpMountMode);
+            UInt8Type.Accept(visitor,MountModeField, ref tmpMountMode);
             MountMode = (MavMountMode)tmpMountMode;
-            UInt8Type.Accept(visitor,StabRollField, StabRollField.DataType, ref _stabRoll);    
-            UInt8Type.Accept(visitor,StabPitchField, StabPitchField.DataType, ref _stabPitch);    
-            UInt8Type.Accept(visitor,StabYawField, StabYawField.DataType, ref _stabYaw);    
+            UInt8Type.Accept(visitor,StabRollField, ref _stabRoll);    
+            UInt8Type.Accept(visitor,StabPitchField, ref _stabPitch);    
+            UInt8Type.Accept(visitor,StabYawField, ref _stabYaw);    
 
         }
 
@@ -4613,12 +4613,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int32Type.Accept(visitor,InputAField, InputAField.DataType, ref _inputA);    
-            Int32Type.Accept(visitor,InputBField, InputBField.DataType, ref _inputB);    
-            Int32Type.Accept(visitor,InputCField, InputCField.DataType, ref _inputC);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,SavePositionField, SavePositionField.DataType, ref _savePosition);    
+            Int32Type.Accept(visitor,InputAField, ref _inputA);    
+            Int32Type.Accept(visitor,InputBField, ref _inputB);    
+            Int32Type.Accept(visitor,InputCField, ref _inputC);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,SavePositionField, ref _savePosition);    
 
         }
 
@@ -4773,13 +4773,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int32Type.Accept(visitor,PointingAField, PointingAField.DataType, ref _pointingA);    
-            Int32Type.Accept(visitor,PointingBField, PointingBField.DataType, ref _pointingB);    
-            Int32Type.Accept(visitor,PointingCField, PointingCField.DataType, ref _pointingC);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            Int32Type.Accept(visitor,PointingAField, ref _pointingA);    
+            Int32Type.Accept(visitor,PointingBField, ref _pointingB);    
+            Int32Type.Accept(visitor,PointingCField, ref _pointingC);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
             var tmpMountMode = (byte)MountMode;
-            UInt8Type.Accept(visitor,MountModeField, MountModeField.DataType, ref tmpMountMode);
+            UInt8Type.Accept(visitor,MountModeField, ref tmpMountMode);
             MountMode = (MavMountMode)tmpMountMode;
 
         }
@@ -4933,12 +4933,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            FloatType.Accept(visitor,LngField, LngField.DataType, ref _lng);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
-            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            FloatType.Accept(visitor,LatField, ref _lat);    
+            FloatType.Accept(visitor,LngField, ref _lng);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, ref _idx);    
+            UInt8Type.Accept(visitor,CountField, ref _count);    
 
         }
 
@@ -5082,9 +5082,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, ref _idx);    
 
         }
 
@@ -5201,13 +5201,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,OmegaixField, OmegaixField.DataType, ref _omegaix);    
-            FloatType.Accept(visitor,OmegaiyField, OmegaiyField.DataType, ref _omegaiy);    
-            FloatType.Accept(visitor,OmegaizField, OmegaizField.DataType, ref _omegaiz);    
-            FloatType.Accept(visitor,AccelWeightField, AccelWeightField.DataType, ref _accelWeight);    
-            FloatType.Accept(visitor,RenormValField, RenormValField.DataType, ref _renormVal);    
-            FloatType.Accept(visitor,ErrorRpField, ErrorRpField.DataType, ref _errorRp);    
-            FloatType.Accept(visitor,ErrorYawField, ErrorYawField.DataType, ref _errorYaw);    
+            FloatType.Accept(visitor,OmegaixField, ref _omegaix);    
+            FloatType.Accept(visitor,OmegaiyField, ref _omegaiy);    
+            FloatType.Accept(visitor,OmegaizField, ref _omegaiz);    
+            FloatType.Accept(visitor,AccelWeightField, ref _accelWeight);    
+            FloatType.Accept(visitor,RenormValField, ref _renormVal);    
+            FloatType.Accept(visitor,ErrorRpField, ref _errorRp);    
+            FloatType.Accept(visitor,ErrorYawField, ref _errorYaw);    
 
         }
 
@@ -5388,17 +5388,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
-            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
-            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
-            FloatType.Accept(visitor,XaccField, XaccField.DataType, ref _xacc);    
-            FloatType.Accept(visitor,YaccField, YaccField.DataType, ref _yacc);    
-            FloatType.Accept(visitor,ZaccField, ZaccField.DataType, ref _zacc);    
-            FloatType.Accept(visitor,XgyroField, XgyroField.DataType, ref _xgyro);    
-            FloatType.Accept(visitor,YgyroField, YgyroField.DataType, ref _ygyro);    
-            FloatType.Accept(visitor,ZgyroField, ZgyroField.DataType, ref _zgyro);    
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            FloatType.Accept(visitor,RollField, ref _roll);    
+            FloatType.Accept(visitor,PitchField, ref _pitch);    
+            FloatType.Accept(visitor,YawField, ref _yaw);    
+            FloatType.Accept(visitor,XaccField, ref _xacc);    
+            FloatType.Accept(visitor,YaccField, ref _yacc);    
+            FloatType.Accept(visitor,ZaccField, ref _zacc);    
+            FloatType.Accept(visitor,XgyroField, ref _xgyro);    
+            FloatType.Accept(visitor,YgyroField, ref _ygyro);    
+            FloatType.Accept(visitor,ZgyroField, ref _zgyro);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LngField, ref _lng);    
 
         }
 
@@ -5604,8 +5604,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,VccField, VccField.DataType, ref _vcc);    
-            UInt8Type.Accept(visitor,I2cerrField, I2cerrField.DataType, ref _i2cerr);    
+            UInt16Type.Accept(visitor,VccField, ref _vcc);    
+            UInt8Type.Accept(visitor,I2cerrField, ref _i2cerr);    
 
         }
 
@@ -5709,13 +5709,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RxerrorsField, RxerrorsField.DataType, ref _rxerrors);    
-            UInt16Type.Accept(visitor,FixedField, FixedField.DataType, ref _fixed);    
-            UInt8Type.Accept(visitor,RssiField, RssiField.DataType, ref _rssi);    
-            UInt8Type.Accept(visitor,RemrssiField, RemrssiField.DataType, ref _remrssi);    
-            UInt8Type.Accept(visitor,TxbufField, TxbufField.DataType, ref _txbuf);    
-            UInt8Type.Accept(visitor,NoiseField, NoiseField.DataType, ref _noise);    
-            UInt8Type.Accept(visitor,RemnoiseField, RemnoiseField.DataType, ref _remnoise);    
+            UInt16Type.Accept(visitor,RxerrorsField, ref _rxerrors);    
+            UInt16Type.Accept(visitor,FixedField, ref _fixed);    
+            UInt8Type.Accept(visitor,RssiField, ref _rssi);    
+            UInt8Type.Accept(visitor,RemrssiField, ref _remrssi);    
+            UInt8Type.Accept(visitor,TxbufField, ref _txbuf);    
+            UInt8Type.Accept(visitor,NoiseField, ref _noise);    
+            UInt8Type.Accept(visitor,RemnoiseField, ref _remnoise);    
 
         }
 
@@ -5890,22 +5890,22 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,LastTriggerField, LastTriggerField.DataType, ref _lastTrigger);    
-            UInt32Type.Accept(visitor,LastActionField, LastActionField.DataType, ref _lastAction);    
-            UInt32Type.Accept(visitor,LastRecoveryField, LastRecoveryField.DataType, ref _lastRecovery);    
-            UInt32Type.Accept(visitor,LastClearField, LastClearField.DataType, ref _lastClear);    
-            UInt16Type.Accept(visitor,BreachCountField, BreachCountField.DataType, ref _breachCount);    
+            UInt32Type.Accept(visitor,LastTriggerField, ref _lastTrigger);    
+            UInt32Type.Accept(visitor,LastActionField, ref _lastAction);    
+            UInt32Type.Accept(visitor,LastRecoveryField, ref _lastRecovery);    
+            UInt32Type.Accept(visitor,LastClearField, ref _lastClear);    
+            UInt16Type.Accept(visitor,BreachCountField, ref _breachCount);    
             var tmpLimitsState = (byte)LimitsState;
-            UInt8Type.Accept(visitor,LimitsStateField, LimitsStateField.DataType, ref tmpLimitsState);
+            UInt8Type.Accept(visitor,LimitsStateField, ref tmpLimitsState);
             LimitsState = (LimitsState)tmpLimitsState;
             var tmpModsEnabled = (byte)ModsEnabled;
-            UInt8Type.Accept(visitor,ModsEnabledField, ModsEnabledField.DataType, ref tmpModsEnabled);
+            UInt8Type.Accept(visitor,ModsEnabledField, ref tmpModsEnabled);
             ModsEnabled = (LimitModule)tmpModsEnabled;
             var tmpModsRequired = (byte)ModsRequired;
-            UInt8Type.Accept(visitor,ModsRequiredField, ModsRequiredField.DataType, ref tmpModsRequired);
+            UInt8Type.Accept(visitor,ModsRequiredField, ref tmpModsRequired);
             ModsRequired = (LimitModule)tmpModsRequired;
             var tmpModsTriggered = (byte)ModsTriggered;
-            UInt8Type.Accept(visitor,ModsTriggeredField, ModsTriggeredField.DataType, ref tmpModsTriggered);
+            UInt8Type.Accept(visitor,ModsTriggeredField, ref tmpModsTriggered);
             ModsTriggered = (LimitModule)tmpModsTriggered;
 
         }
@@ -6089,9 +6089,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DirectionField, DirectionField.DataType, ref _direction);    
-            FloatType.Accept(visitor,SpeedField, SpeedField.DataType, ref _speed);    
-            FloatType.Accept(visitor,SpeedZField, SpeedZField.DataType, ref _speedZ);    
+            FloatType.Accept(visitor,DirectionField, ref _direction);    
+            FloatType.Accept(visitor,SpeedField, ref _speed);    
+            FloatType.Accept(visitor,SpeedZField, ref _speedZ);    
 
         }
 
@@ -6206,9 +6206,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
-            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
-            ArrayType.Accept(visitor,DataField, DataField.DataType, 16,
+            UInt8Type.Accept(visitor,TypeField, ref _type);    
+            UInt8Type.Accept(visitor,LenField, ref _len);    
+            ArrayType.Accept(visitor,DataField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
@@ -6326,9 +6326,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
-            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
-            ArrayType.Accept(visitor,DataField, DataField.DataType, 32,
+            UInt8Type.Accept(visitor,TypeField, ref _type);    
+            UInt8Type.Accept(visitor,LenField, ref _len);    
+            ArrayType.Accept(visitor,DataField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
@@ -6446,9 +6446,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
-            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
-            ArrayType.Accept(visitor,DataField, DataField.DataType, 64,
+            UInt8Type.Accept(visitor,TypeField, ref _type);    
+            UInt8Type.Accept(visitor,LenField, ref _len);    
+            ArrayType.Accept(visitor,DataField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
@@ -6566,9 +6566,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TypeField, TypeField.DataType, ref _type);    
-            UInt8Type.Accept(visitor,LenField, LenField.DataType, ref _len);    
-            ArrayType.Accept(visitor,DataField, DataField.DataType, 96,
+            UInt8Type.Accept(visitor,TypeField, ref _type);    
+            UInt8Type.Accept(visitor,LenField, ref _len);    
+            ArrayType.Accept(visitor,DataField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
@@ -6673,8 +6673,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DistanceField, DistanceField.DataType, ref _distance);    
-            FloatType.Accept(visitor,VoltageField, VoltageField.DataType, ref _voltage);    
+            FloatType.Accept(visitor,DistanceField, ref _distance);    
+            FloatType.Accept(visitor,VoltageField, ref _voltage);    
 
         }
 
@@ -6793,18 +6793,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,VxField, VxField.DataType, ref _vx);    
-            FloatType.Accept(visitor,VyField, VyField.DataType, ref _vy);    
-            FloatType.Accept(visitor,VzField, VzField.DataType, ref _vz);    
-            FloatType.Accept(visitor,DiffPressureField, DiffPressureField.DataType, ref _diffPressure);    
-            FloatType.Accept(visitor,Eas2tasField, Eas2tasField.DataType, ref _eas2tas);    
-            FloatType.Accept(visitor,RatioField, RatioField.DataType, ref _ratio);    
-            FloatType.Accept(visitor,StateXField, StateXField.DataType, ref _stateX);    
-            FloatType.Accept(visitor,StateYField, StateYField.DataType, ref _stateY);    
-            FloatType.Accept(visitor,StateZField, StateZField.DataType, ref _stateZ);    
-            FloatType.Accept(visitor,PaxField, PaxField.DataType, ref _pax);    
-            FloatType.Accept(visitor,PbyField, PbyField.DataType, ref _pby);    
-            FloatType.Accept(visitor,PczField, PczField.DataType, ref _pcz);    
+            FloatType.Accept(visitor,VxField, ref _vx);    
+            FloatType.Accept(visitor,VyField, ref _vy);    
+            FloatType.Accept(visitor,VzField, ref _vz);    
+            FloatType.Accept(visitor,DiffPressureField, ref _diffPressure);    
+            FloatType.Accept(visitor,Eas2tasField, ref _eas2tas);    
+            FloatType.Accept(visitor,RatioField, ref _ratio);    
+            FloatType.Accept(visitor,StateXField, ref _stateX);    
+            FloatType.Accept(visitor,StateYField, ref _stateY);    
+            FloatType.Accept(visitor,StateZField, ref _stateZ);    
+            FloatType.Accept(visitor,PaxField, ref _pax);    
+            FloatType.Accept(visitor,PbyField, ref _pby);    
+            FloatType.Accept(visitor,PczField, ref _pcz);    
 
         }
 
@@ -7047,17 +7047,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
-            Int16Type.Accept(visitor,AltField, AltField.DataType, ref _alt);
-            Int16Type.Accept(visitor,BreakAltField, BreakAltField.DataType, ref _breakAlt);
-            UInt16Type.Accept(visitor,LandDirField, LandDirField.DataType, ref _landDir);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
-            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LngField, ref _lng);    
+            Int16Type.Accept(visitor,AltField, ref _alt);
+            Int16Type.Accept(visitor,BreakAltField, ref _breakAlt);
+            UInt16Type.Accept(visitor,LandDirField, ref _landDir);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, ref _idx);    
+            UInt8Type.Accept(visitor,CountField, ref _count);    
             var tmpFlags = (byte)Flags;
-            UInt8Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (RallyFlags)tmpFlags;
 
         }
@@ -7254,9 +7254,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,IdxField, IdxField.DataType, ref _idx);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,IdxField, ref _idx);    
 
         }
 
@@ -7370,12 +7370,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,CurrentField, CurrentField.DataType, ref _current);    
-            FloatType.Accept(visitor,CompensationxField, CompensationxField.DataType, ref _compensationx);    
-            FloatType.Accept(visitor,CompensationyField, CompensationyField.DataType, ref _compensationy);    
-            FloatType.Accept(visitor,CompensationzField, CompensationzField.DataType, ref _compensationz);    
-            UInt16Type.Accept(visitor,ThrottleField, ThrottleField.DataType, ref _throttle);    
-            UInt16Type.Accept(visitor,InterferenceField, InterferenceField.DataType, ref _interference);    
+            FloatType.Accept(visitor,CurrentField, ref _current);    
+            FloatType.Accept(visitor,CompensationxField, ref _compensationx);    
+            FloatType.Accept(visitor,CompensationyField, ref _compensationy);    
+            FloatType.Accept(visitor,CompensationzField, ref _compensationz);    
+            UInt16Type.Accept(visitor,ThrottleField, ref _throttle);    
+            UInt16Type.Accept(visitor,InterferenceField, ref _interference);    
 
         }
 
@@ -7528,12 +7528,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
-            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
-            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
-            FloatType.Accept(visitor,AltitudeField, AltitudeField.DataType, ref _altitude);    
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
+            FloatType.Accept(visitor,RollField, ref _roll);    
+            FloatType.Accept(visitor,PitchField, ref _pitch);    
+            FloatType.Accept(visitor,YawField, ref _yaw);    
+            FloatType.Accept(visitor,AltitudeField, ref _altitude);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LngField, ref _lng);    
 
         }
 
@@ -7695,16 +7695,16 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
-            FloatType.Accept(visitor,P1Field, P1Field.DataType, ref _p1);    
-            FloatType.Accept(visitor,P2Field, P2Field.DataType, ref _p2);    
-            FloatType.Accept(visitor,P3Field, P3Field.DataType, ref _p3);    
-            FloatType.Accept(visitor,P4Field, P4Field.DataType, ref _p4);    
-            UInt16Type.Accept(visitor,ImgIdxField, ImgIdxField.DataType, ref _imgIdx);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,CamIdxField, CamIdxField.DataType, ref _camIdx);    
+            UInt64Type.Accept(visitor,TimeUsecField, ref _timeUsec);    
+            FloatType.Accept(visitor,P1Field, ref _p1);    
+            FloatType.Accept(visitor,P2Field, ref _p2);    
+            FloatType.Accept(visitor,P3Field, ref _p3);    
+            FloatType.Accept(visitor,P4Field, ref _p4);    
+            UInt16Type.Accept(visitor,ImgIdxField, ref _imgIdx);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,CamIdxField, ref _camIdx);    
             var tmpEventId = (byte)EventId;
-            UInt8Type.Accept(visitor,EventIdField, EventIdField.DataType, ref tmpEventId);
+            UInt8Type.Accept(visitor,EventIdField, ref tmpEventId);
             EventId = (CameraStatusTypes)tmpEventId;
 
         }
@@ -7923,22 +7923,22 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
-            FloatType.Accept(visitor,AltMslField, AltMslField.DataType, ref _altMsl);    
-            FloatType.Accept(visitor,AltRelField, AltRelField.DataType, ref _altRel);    
-            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
-            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
-            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
-            FloatType.Accept(visitor,FocLenField, FocLenField.DataType, ref _focLen);    
-            UInt16Type.Accept(visitor,ImgIdxField, ImgIdxField.DataType, ref _imgIdx);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,CamIdxField, CamIdxField.DataType, ref _camIdx);    
+            UInt64Type.Accept(visitor,TimeUsecField, ref _timeUsec);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LngField, ref _lng);    
+            FloatType.Accept(visitor,AltMslField, ref _altMsl);    
+            FloatType.Accept(visitor,AltRelField, ref _altRel);    
+            FloatType.Accept(visitor,RollField, ref _roll);    
+            FloatType.Accept(visitor,PitchField, ref _pitch);    
+            FloatType.Accept(visitor,YawField, ref _yaw);    
+            FloatType.Accept(visitor,FocLenField, ref _focLen);    
+            UInt16Type.Accept(visitor,ImgIdxField, ref _imgIdx);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,CamIdxField, ref _camIdx);    
             var tmpFlags = (byte)Flags;
-            UInt8Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (CameraFeedbackFlags)tmpFlags;
-            UInt16Type.Accept(visitor,CompletedCapturesField, CompletedCapturesField.DataType, ref _completedCaptures);    
+            UInt16Type.Accept(visitor,CompletedCapturesField, ref _completedCaptures);    
 
         }
 
@@ -8183,8 +8183,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,VoltageField, VoltageField.DataType, ref _voltage);    
-            Int16Type.Accept(visitor,CurrentBatteryField, CurrentBatteryField.DataType, ref _currentBattery);
+            UInt16Type.Accept(visitor,VoltageField, ref _voltage);    
+            Int16Type.Accept(visitor,CurrentBatteryField, ref _currentBattery);
 
         }
 
@@ -8297,16 +8297,16 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
-            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
-            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
-            FloatType.Accept(visitor,AltitudeField, AltitudeField.DataType, ref _altitude);    
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
-            FloatType.Accept(visitor,V1Field, V1Field.DataType, ref _v1);    
-            FloatType.Accept(visitor,V2Field, V2Field.DataType, ref _v2);    
-            FloatType.Accept(visitor,V3Field, V3Field.DataType, ref _v3);    
-            FloatType.Accept(visitor,V4Field, V4Field.DataType, ref _v4);    
+            FloatType.Accept(visitor,RollField, ref _roll);    
+            FloatType.Accept(visitor,PitchField, ref _pitch);    
+            FloatType.Accept(visitor,YawField, ref _yaw);    
+            FloatType.Accept(visitor,AltitudeField, ref _altitude);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LngField, ref _lng);    
+            FloatType.Accept(visitor,V1Field, ref _v1);    
+            FloatType.Accept(visitor,V2Field, ref _v2);    
+            FloatType.Accept(visitor,V3Field, ref _v3);    
+            FloatType.Accept(visitor,V4Field, ref _v4);    
 
         }
 
@@ -8499,8 +8499,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -8606,11 +8606,11 @@ namespace Asv.Mavlink.Ardupilotmega
         public void Accept(IVisitor visitor)
         {
             var tmpSeqno = (uint)Seqno;
-            UInt32Type.Accept(visitor,SeqnoField, SeqnoField.DataType, ref tmpSeqno);
+            UInt32Type.Accept(visitor,SeqnoField, ref tmpSeqno);
             Seqno = (MavRemoteLogDataBlockCommands)tmpSeqno;
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            ArrayType.Accept(visitor,DataField, DataField.DataType, 200,
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            ArrayType.Accept(visitor,DataField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
@@ -8734,11 +8734,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,SeqnoField, SeqnoField.DataType, ref _seqno);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt32Type.Accept(visitor,SeqnoField, ref _seqno);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
             var tmpStatus = (byte)Status;
-            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
+            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
             Status = (MavRemoteLogDataBlockStatuses)tmpStatus;
 
         }
@@ -8876,12 +8876,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,InstanceField, InstanceField.DataType, ref _instance);    
-            UInt8Type.Accept(visitor,PatternField, PatternField.DataType, ref _pattern);    
-            UInt8Type.Accept(visitor,CustomLenField, CustomLenField.DataType, ref _customLen);    
-            ArrayType.Accept(visitor,CustomBytesField, CustomBytesField.DataType, 24,
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,InstanceField, ref _instance);    
+            UInt8Type.Accept(visitor,PatternField, ref _pattern);    
+            UInt8Type.Accept(visitor,CustomLenField, ref _customLen);    
+            ArrayType.Accept(visitor,CustomBytesField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref CustomBytes[index]));    
 
         }
@@ -9056,17 +9056,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DirectionXField, DirectionXField.DataType, ref _directionX);    
-            FloatType.Accept(visitor,DirectionYField, DirectionYField.DataType, ref _directionY);    
-            FloatType.Accept(visitor,DirectionZField, DirectionZField.DataType, ref _directionZ);    
-            UInt8Type.Accept(visitor,CompassIdField, CompassIdField.DataType, ref _compassId);    
-            UInt8Type.Accept(visitor,CalMaskField, CalMaskField.DataType, ref _calMask);    
+            FloatType.Accept(visitor,DirectionXField, ref _directionX);    
+            FloatType.Accept(visitor,DirectionYField, ref _directionY);    
+            FloatType.Accept(visitor,DirectionZField, ref _directionZ);    
+            UInt8Type.Accept(visitor,CompassIdField, ref _compassId);    
+            UInt8Type.Accept(visitor,CalMaskField, ref _calMask);    
             var tmpCalStatus = (byte)CalStatus;
-            UInt8Type.Accept(visitor,CalStatusField, CalStatusField.DataType, ref tmpCalStatus);
+            UInt8Type.Accept(visitor,CalStatusField, ref tmpCalStatus);
             CalStatus = (MagCalStatus)tmpCalStatus;
-            UInt8Type.Accept(visitor,AttemptField, AttemptField.DataType, ref _attempt);    
-            UInt8Type.Accept(visitor,CompletionPctField, CompletionPctField.DataType, ref _completionPct);    
-            ArrayType.Accept(visitor,CompletionMaskField, CompletionMaskField.DataType, 10,
+            UInt8Type.Accept(visitor,AttemptField, ref _attempt);    
+            UInt8Type.Accept(visitor,CompletionPctField, ref _completionPct);    
+            ArrayType.Accept(visitor,CompletionMaskField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref CompletionMask[index]));    
 
         }
@@ -9266,15 +9266,15 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,VelocityVarianceField, VelocityVarianceField.DataType, ref _velocityVariance);    
-            FloatType.Accept(visitor,PosHorizVarianceField, PosHorizVarianceField.DataType, ref _posHorizVariance);    
-            FloatType.Accept(visitor,PosVertVarianceField, PosVertVarianceField.DataType, ref _posVertVariance);    
-            FloatType.Accept(visitor,CompassVarianceField, CompassVarianceField.DataType, ref _compassVariance);    
-            FloatType.Accept(visitor,TerrainAltVarianceField, TerrainAltVarianceField.DataType, ref _terrainAltVariance);    
+            FloatType.Accept(visitor,VelocityVarianceField, ref _velocityVariance);    
+            FloatType.Accept(visitor,PosHorizVarianceField, ref _posHorizVariance);    
+            FloatType.Accept(visitor,PosVertVarianceField, ref _posVertVariance);    
+            FloatType.Accept(visitor,CompassVarianceField, ref _compassVariance);    
+            FloatType.Accept(visitor,TerrainAltVarianceField, ref _terrainAltVariance);    
             var tmpFlags = (ushort)Flags;
-            UInt16Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt16Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (EkfStatusFlags)tmpFlags;
-            FloatType.Accept(visitor,AirspeedVarianceField, AirspeedVarianceField.DataType, ref _airspeedVariance);    
+            FloatType.Accept(visitor,AirspeedVarianceField, ref _airspeedVariance);    
 
         }
 
@@ -9453,17 +9453,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DesiredField, DesiredField.DataType, ref _desired);    
-            FloatType.Accept(visitor,AchievedField, AchievedField.DataType, ref _achieved);    
-            FloatType.Accept(visitor,FfField, FfField.DataType, ref _ff);    
-            FloatType.Accept(visitor,PField, PField.DataType, ref _p);    
-            FloatType.Accept(visitor,IField, IField.DataType, ref _i);    
-            FloatType.Accept(visitor,DField, DField.DataType, ref _d);    
+            FloatType.Accept(visitor,DesiredField, ref _desired);    
+            FloatType.Accept(visitor,AchievedField, ref _achieved);    
+            FloatType.Accept(visitor,FfField, ref _ff);    
+            FloatType.Accept(visitor,PField, ref _p);    
+            FloatType.Accept(visitor,IField, ref _i);    
+            FloatType.Accept(visitor,DField, ref _d);    
             var tmpAxis = (byte)Axis;
-            UInt8Type.Accept(visitor,AxisField, AxisField.DataType, ref tmpAxis);
+            UInt8Type.Accept(visitor,AxisField, ref tmpAxis);
             Axis = (PidTuningAxis)tmpAxis;
-            FloatType.Accept(visitor,SrateField, SrateField.DataType, ref _srate);    
-            FloatType.Accept(visitor,PdmodField, PdmodField.DataType, ref _pdmod);    
+            FloatType.Accept(visitor,SrateField, ref _srate);    
+            FloatType.Accept(visitor,PdmodField, ref _pdmod);    
 
         }
 
@@ -9667,17 +9667,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int32Type.Accept(visitor,LandingLatField, LandingLatField.DataType, ref _landingLat);    
-            Int32Type.Accept(visitor,LandingLonField, LandingLonField.DataType, ref _landingLon);    
-            Int32Type.Accept(visitor,PathLatField, PathLatField.DataType, ref _pathLat);    
-            Int32Type.Accept(visitor,PathLonField, PathLonField.DataType, ref _pathLon);    
-            Int32Type.Accept(visitor,ArcEntryLatField, ArcEntryLatField.DataType, ref _arcEntryLat);    
-            Int32Type.Accept(visitor,ArcEntryLonField, ArcEntryLonField.DataType, ref _arcEntryLon);    
-            FloatType.Accept(visitor,AltitudeField, AltitudeField.DataType, ref _altitude);    
-            FloatType.Accept(visitor,ExpectedTravelDistanceField, ExpectedTravelDistanceField.DataType, ref _expectedTravelDistance);    
-            FloatType.Accept(visitor,CrossTrackErrorField, CrossTrackErrorField.DataType, ref _crossTrackError);    
+            Int32Type.Accept(visitor,LandingLatField, ref _landingLat);    
+            Int32Type.Accept(visitor,LandingLonField, ref _landingLon);    
+            Int32Type.Accept(visitor,PathLatField, ref _pathLat);    
+            Int32Type.Accept(visitor,PathLonField, ref _pathLon);    
+            Int32Type.Accept(visitor,ArcEntryLatField, ref _arcEntryLat);    
+            Int32Type.Accept(visitor,ArcEntryLonField, ref _arcEntryLon);    
+            FloatType.Accept(visitor,AltitudeField, ref _altitude);    
+            FloatType.Accept(visitor,ExpectedTravelDistanceField, ref _expectedTravelDistance);    
+            FloatType.Accept(visitor,CrossTrackErrorField, ref _crossTrackError);    
             var tmpStage = (byte)Stage;
-            UInt8Type.Accept(visitor,StageField, StageField.DataType, ref tmpStage);
+            UInt8Type.Accept(visitor,StageField, ref tmpStage);
             Stage = (DeepstallStage)tmpStage;
 
         }
@@ -9901,18 +9901,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DeltaTimeField, DeltaTimeField.DataType, ref _deltaTime);    
-            FloatType.Accept(visitor,DeltaAngleXField, DeltaAngleXField.DataType, ref _deltaAngleX);    
-            FloatType.Accept(visitor,DeltaAngleYField, DeltaAngleYField.DataType, ref _deltaAngleY);    
-            FloatType.Accept(visitor,DeltaAngleZField, DeltaAngleZField.DataType, ref _deltaAngleZ);    
-            FloatType.Accept(visitor,DeltaVelocityXField, DeltaVelocityXField.DataType, ref _deltaVelocityX);    
-            FloatType.Accept(visitor,DeltaVelocityYField, DeltaVelocityYField.DataType, ref _deltaVelocityY);    
-            FloatType.Accept(visitor,DeltaVelocityZField, DeltaVelocityZField.DataType, ref _deltaVelocityZ);    
-            FloatType.Accept(visitor,JointRollField, JointRollField.DataType, ref _jointRoll);    
-            FloatType.Accept(visitor,JointElField, JointElField.DataType, ref _jointEl);    
-            FloatType.Accept(visitor,JointAzField, JointAzField.DataType, ref _jointAz);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            FloatType.Accept(visitor,DeltaTimeField, ref _deltaTime);    
+            FloatType.Accept(visitor,DeltaAngleXField, ref _deltaAngleX);    
+            FloatType.Accept(visitor,DeltaAngleYField, ref _deltaAngleY);    
+            FloatType.Accept(visitor,DeltaAngleZField, ref _deltaAngleZ);    
+            FloatType.Accept(visitor,DeltaVelocityXField, ref _deltaVelocityX);    
+            FloatType.Accept(visitor,DeltaVelocityYField, ref _deltaVelocityY);    
+            FloatType.Accept(visitor,DeltaVelocityZField, ref _deltaVelocityZ);    
+            FloatType.Accept(visitor,JointRollField, ref _jointRoll);    
+            FloatType.Accept(visitor,JointElField, ref _jointEl);    
+            FloatType.Accept(visitor,JointAzField, ref _jointAz);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -10140,11 +10140,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DemandedRateXField, DemandedRateXField.DataType, ref _demandedRateX);    
-            FloatType.Accept(visitor,DemandedRateYField, DemandedRateYField.DataType, ref _demandedRateY);    
-            FloatType.Accept(visitor,DemandedRateZField, DemandedRateZField.DataType, ref _demandedRateZ);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            FloatType.Accept(visitor,DemandedRateXField, ref _demandedRateX);    
+            FloatType.Accept(visitor,DemandedRateYField, ref _demandedRateY);    
+            FloatType.Accept(visitor,DemandedRateZField, ref _demandedRateZ);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -10281,11 +10281,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int16Type.Accept(visitor,RlTorqueCmdField, RlTorqueCmdField.DataType, ref _rlTorqueCmd);
-            Int16Type.Accept(visitor,ElTorqueCmdField, ElTorqueCmdField.DataType, ref _elTorqueCmd);
-            Int16Type.Accept(visitor,AzTorqueCmdField, AzTorqueCmdField.DataType, ref _azTorqueCmd);
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            Int16Type.Accept(visitor,RlTorqueCmdField, ref _rlTorqueCmd);
+            Int16Type.Accept(visitor,ElTorqueCmdField, ref _elTorqueCmd);
+            Int16Type.Accept(visitor,AzTorqueCmdField, ref _azTorqueCmd);
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -10417,13 +10417,13 @@ namespace Asv.Mavlink.Ardupilotmega
         public void Accept(IVisitor visitor)
         {
             var tmpStatus = (byte)Status;
-            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
+            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
             Status = (GoproHeartbeatStatus)tmpStatus;
             var tmpCaptureMode = (byte)CaptureMode;
-            UInt8Type.Accept(visitor,CaptureModeField, CaptureModeField.DataType, ref tmpCaptureMode);
+            UInt8Type.Accept(visitor,CaptureModeField, ref tmpCaptureMode);
             CaptureMode = (GoproCaptureMode)tmpCaptureMode;
             var tmpFlags = (byte)Flags;
-            UInt8Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt8Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (GoproHeartbeatFlags)tmpFlags;
 
         }
@@ -10529,10 +10529,10 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
             var tmpCmdId = (byte)CmdId;
-            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
+            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
             CmdId = (GoproCommand)tmpCmdId;
 
         }
@@ -10649,12 +10649,12 @@ namespace Asv.Mavlink.Ardupilotmega
         public void Accept(IVisitor visitor)
         {
             var tmpCmdId = (byte)CmdId;
-            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
+            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
             CmdId = (GoproCommand)tmpCmdId;
             var tmpStatus = (byte)Status;
-            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
+            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
             Status = (GoproRequestStatus)tmpStatus;
-            ArrayType.Accept(visitor,ValueField, ValueField.DataType, 4,
+            ArrayType.Accept(visitor,ValueField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Value[index]));    
 
         }
@@ -10775,12 +10775,12 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
             var tmpCmdId = (byte)CmdId;
-            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
+            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
             CmdId = (GoproCommand)tmpCmdId;
-            ArrayType.Accept(visitor,ValueField, ValueField.DataType, 4,
+            ArrayType.Accept(visitor,ValueField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Value[index]));    
 
         }
@@ -10899,10 +10899,10 @@ namespace Asv.Mavlink.Ardupilotmega
         public void Accept(IVisitor visitor)
         {
             var tmpCmdId = (byte)CmdId;
-            UInt8Type.Accept(visitor,CmdIdField, CmdIdField.DataType, ref tmpCmdId);
+            UInt8Type.Accept(visitor,CmdIdField, ref tmpCmdId);
             CmdId = (GoproCommand)tmpCmdId;
             var tmpStatus = (byte)Status;
-            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref tmpStatus);
+            UInt8Type.Accept(visitor,StatusField, ref tmpStatus);
             Status = (GoproRequestStatus)tmpStatus;
 
         }
@@ -10992,8 +10992,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,Rpm1Field, Rpm1Field.DataType, ref _rpm1);    
-            FloatType.Accept(visitor,Rpm2Field, Rpm2Field.DataType, ref _rpm2);    
+            FloatType.Accept(visitor,Rpm1Field, ref _rpm1);    
+            FloatType.Accept(visitor,Rpm2Field, ref _rpm2);    
 
         }
 
@@ -11130,19 +11130,19 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
             var tmpBustype = (byte)Bustype;
-            UInt8Type.Accept(visitor,BustypeField, BustypeField.DataType, ref tmpBustype);
+            UInt8Type.Accept(visitor,BustypeField, ref tmpBustype);
             Bustype = (DeviceOpBustype)tmpBustype;
-            UInt8Type.Accept(visitor,BusField, BusField.DataType, ref _bus);    
-            UInt8Type.Accept(visitor,AddressField, AddressField.DataType, ref _address);    
-            ArrayType.Accept(visitor,BusnameField, BusnameField.DataType, 40, 
+            UInt8Type.Accept(visitor,BusField, ref _bus);    
+            UInt8Type.Accept(visitor,AddressField, ref _address);    
+            ArrayType.Accept(visitor,BusnameField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref Busname[index]));
-            UInt8Type.Accept(visitor,RegstartField, RegstartField.DataType, ref _regstart);    
-            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
-            UInt8Type.Accept(visitor,BankField, BankField.DataType, ref _bank);    
+            UInt8Type.Accept(visitor,RegstartField, ref _regstart);    
+            UInt8Type.Accept(visitor,CountField, ref _count);    
+            UInt8Type.Accept(visitor,BankField, ref _bank);    
 
         }
 
@@ -11361,13 +11361,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref _result);    
-            UInt8Type.Accept(visitor,RegstartField, RegstartField.DataType, ref _regstart);    
-            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
-            ArrayType.Accept(visitor,DataField, DataField.DataType, 128,
+            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt8Type.Accept(visitor,ResultField, ref _result);    
+            UInt8Type.Accept(visitor,RegstartField, ref _regstart);    
+            UInt8Type.Accept(visitor,CountField, ref _count);    
+            ArrayType.Accept(visitor,DataField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
-            UInt8Type.Accept(visitor,BankField, BankField.DataType, ref _bank);    
+            UInt8Type.Accept(visitor,BankField, ref _bank);    
 
         }
 
@@ -11568,21 +11568,21 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
             var tmpBustype = (byte)Bustype;
-            UInt8Type.Accept(visitor,BustypeField, BustypeField.DataType, ref tmpBustype);
+            UInt8Type.Accept(visitor,BustypeField, ref tmpBustype);
             Bustype = (DeviceOpBustype)tmpBustype;
-            UInt8Type.Accept(visitor,BusField, BusField.DataType, ref _bus);    
-            UInt8Type.Accept(visitor,AddressField, AddressField.DataType, ref _address);    
-            ArrayType.Accept(visitor,BusnameField, BusnameField.DataType, 40, 
+            UInt8Type.Accept(visitor,BusField, ref _bus);    
+            UInt8Type.Accept(visitor,AddressField, ref _address);    
+            ArrayType.Accept(visitor,BusnameField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref Busname[index]));
-            UInt8Type.Accept(visitor,RegstartField, RegstartField.DataType, ref _regstart);    
-            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
-            ArrayType.Accept(visitor,DataField, DataField.DataType, 128,
+            UInt8Type.Accept(visitor,RegstartField, ref _regstart);    
+            UInt8Type.Accept(visitor,CountField, ref _count);    
+            ArrayType.Accept(visitor,DataField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
-            UInt8Type.Accept(visitor,BankField, BankField.DataType, ref _bank);    
+            UInt8Type.Accept(visitor,BankField, ref _bank);    
 
         }
 
@@ -11790,8 +11790,8 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref _result);    
+            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt8Type.Accept(visitor,ResultField, ref _result);    
 
         }
 
@@ -11913,20 +11913,20 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,DesiredField, DesiredField.DataType, ref _desired);    
-            FloatType.Accept(visitor,AchievedField, AchievedField.DataType, ref _achieved);    
-            FloatType.Accept(visitor,ErrorField, ErrorField.DataType, ref _error);    
-            FloatType.Accept(visitor,ThetaField, ThetaField.DataType, ref _theta);    
-            FloatType.Accept(visitor,OmegaField, OmegaField.DataType, ref _omega);    
-            FloatType.Accept(visitor,SigmaField, SigmaField.DataType, ref _sigma);    
-            FloatType.Accept(visitor,ThetaDotField, ThetaDotField.DataType, ref _thetaDot);    
-            FloatType.Accept(visitor,OmegaDotField, OmegaDotField.DataType, ref _omegaDot);    
-            FloatType.Accept(visitor,SigmaDotField, SigmaDotField.DataType, ref _sigmaDot);    
-            FloatType.Accept(visitor,FField, FField.DataType, ref _f);    
-            FloatType.Accept(visitor,FDotField, FDotField.DataType, ref _fDot);    
-            FloatType.Accept(visitor,UField, UField.DataType, ref _u);    
+            FloatType.Accept(visitor,DesiredField, ref _desired);    
+            FloatType.Accept(visitor,AchievedField, ref _achieved);    
+            FloatType.Accept(visitor,ErrorField, ref _error);    
+            FloatType.Accept(visitor,ThetaField, ref _theta);    
+            FloatType.Accept(visitor,OmegaField, ref _omega);    
+            FloatType.Accept(visitor,SigmaField, ref _sigma);    
+            FloatType.Accept(visitor,ThetaDotField, ref _thetaDot);    
+            FloatType.Accept(visitor,OmegaDotField, ref _omegaDot);    
+            FloatType.Accept(visitor,SigmaDotField, ref _sigmaDot);    
+            FloatType.Accept(visitor,FField, ref _f);    
+            FloatType.Accept(visitor,FDotField, ref _fDot);    
+            FloatType.Accept(visitor,UField, ref _u);    
             var tmpAxis = (byte)Axis;
-            UInt8Type.Accept(visitor,AxisField, AxisField.DataType, ref tmpAxis);
+            UInt8Type.Accept(visitor,AxisField, ref tmpAxis);
             Axis = (PidTuningAxis)tmpAxis;
 
         }
@@ -12185,13 +12185,13 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
-            UInt64Type.Accept(visitor,TimeDeltaUsecField, TimeDeltaUsecField.DataType, ref _timeDeltaUsec);    
-            ArrayType.Accept(visitor,AngleDeltaField, AngleDeltaField.DataType, 3,
+            UInt64Type.Accept(visitor,TimeUsecField, ref _timeUsec);    
+            UInt64Type.Accept(visitor,TimeDeltaUsecField, ref _timeDeltaUsec);    
+            ArrayType.Accept(visitor,AngleDeltaField, 
                 (index, v, f, t) => FloatType.Accept(v, f, t, ref AngleDelta[index]));
-            ArrayType.Accept(visitor,PositionDeltaField, PositionDeltaField.DataType, 3,
+            ArrayType.Accept(visitor,PositionDeltaField, 
                 (index, v, f, t) => FloatType.Accept(v, f, t, ref PositionDelta[index]));
-            FloatType.Accept(visitor,ConfidenceField, ConfidenceField.DataType, ref _confidence);    
+            FloatType.Accept(visitor,ConfidenceField, ref _confidence);    
 
         }
 
@@ -12324,9 +12324,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUsecField, TimeUsecField.DataType, ref _timeUsec);    
-            FloatType.Accept(visitor,AoaField, AoaField.DataType, ref _aoa);    
-            FloatType.Accept(visitor,SsaField, SsaField.DataType, ref _ssa);    
+            UInt64Type.Accept(visitor,TimeUsecField, ref _timeUsec);    
+            FloatType.Accept(visitor,AoaField, ref _aoa);    
+            FloatType.Accept(visitor,SsaField, ref _ssa);    
 
         }
 
@@ -12485,17 +12485,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,VoltageField, VoltageField.DataType, 4,
+            ArrayType.Accept(visitor,VoltageField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Voltage[index]));    
-            ArrayType.Accept(visitor,CurrentField, CurrentField.DataType, 4,
+            ArrayType.Accept(visitor,CurrentField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Current[index]));    
-            ArrayType.Accept(visitor,TotalcurrentField, TotalcurrentField.DataType, 4,
+            ArrayType.Accept(visitor,TotalcurrentField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Totalcurrent[index]));    
-            ArrayType.Accept(visitor,RpmField, RpmField.DataType, 4,
+            ArrayType.Accept(visitor,RpmField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rpm[index]));    
-            ArrayType.Accept(visitor,CountField, CountField.DataType, 4,
+            ArrayType.Accept(visitor,CountField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Count[index]));    
-            ArrayType.Accept(visitor,TemperatureField, TemperatureField.DataType, 4,
+            ArrayType.Accept(visitor,TemperatureField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Temperature[index]));    
 
         }
@@ -12696,17 +12696,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,VoltageField, VoltageField.DataType, 4,
+            ArrayType.Accept(visitor,VoltageField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Voltage[index]));    
-            ArrayType.Accept(visitor,CurrentField, CurrentField.DataType, 4,
+            ArrayType.Accept(visitor,CurrentField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Current[index]));    
-            ArrayType.Accept(visitor,TotalcurrentField, TotalcurrentField.DataType, 4,
+            ArrayType.Accept(visitor,TotalcurrentField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Totalcurrent[index]));    
-            ArrayType.Accept(visitor,RpmField, RpmField.DataType, 4,
+            ArrayType.Accept(visitor,RpmField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rpm[index]));    
-            ArrayType.Accept(visitor,CountField, CountField.DataType, 4,
+            ArrayType.Accept(visitor,CountField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Count[index]));    
-            ArrayType.Accept(visitor,TemperatureField, TemperatureField.DataType, 4,
+            ArrayType.Accept(visitor,TemperatureField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Temperature[index]));    
 
         }
@@ -12907,17 +12907,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,VoltageField, VoltageField.DataType, 4,
+            ArrayType.Accept(visitor,VoltageField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Voltage[index]));    
-            ArrayType.Accept(visitor,CurrentField, CurrentField.DataType, 4,
+            ArrayType.Accept(visitor,CurrentField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Current[index]));    
-            ArrayType.Accept(visitor,TotalcurrentField, TotalcurrentField.DataType, 4,
+            ArrayType.Accept(visitor,TotalcurrentField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Totalcurrent[index]));    
-            ArrayType.Accept(visitor,RpmField, RpmField.DataType, 4,
+            ArrayType.Accept(visitor,RpmField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rpm[index]));    
-            ArrayType.Accept(visitor,CountField, CountField.DataType, 4,
+            ArrayType.Accept(visitor,CountField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Count[index]));    
-            ArrayType.Accept(visitor,TemperatureField, TemperatureField.DataType, 4,
+            ArrayType.Accept(visitor,TemperatureField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Temperature[index]));    
 
         }
@@ -13107,18 +13107,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            FloatType.Accept(visitor,MinValueField, MinValueField.DataType, ref _minValue);    
-            FloatType.Accept(visitor,MaxValueField, MaxValueField.DataType, ref _maxValue);    
-            FloatType.Accept(visitor,IncrementField, IncrementField.DataType, ref _increment);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,OsdScreenField, OsdScreenField.DataType, ref _osdScreen);    
-            UInt8Type.Accept(visitor,OsdIndexField, OsdIndexField.DataType, ref _osdIndex);    
-            ArrayType.Accept(visitor,ParamIdField, ParamIdField.DataType, 16, 
+            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
+            FloatType.Accept(visitor,MinValueField, ref _minValue);    
+            FloatType.Accept(visitor,MaxValueField, ref _maxValue);    
+            FloatType.Accept(visitor,IncrementField, ref _increment);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,OsdScreenField, ref _osdScreen);    
+            UInt8Type.Accept(visitor,OsdIndexField, ref _osdIndex);    
+            ArrayType.Accept(visitor,ParamIdField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref ParamId[index]));
             var tmpConfigType = (byte)ConfigType;
-            UInt8Type.Accept(visitor,ConfigTypeField, ConfigTypeField.DataType, ref tmpConfigType);
+            UInt8Type.Accept(visitor,ConfigTypeField, ref tmpConfigType);
             ConfigType = (OsdParamConfigType)tmpConfigType;
 
         }
@@ -13314,9 +13314,9 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (OsdParamConfigError)tmpResult;
 
         }
@@ -13415,11 +13415,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,OsdScreenField, OsdScreenField.DataType, ref _osdScreen);    
-            UInt8Type.Accept(visitor,OsdIndexField, OsdIndexField.DataType, ref _osdIndex);    
+            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,OsdScreenField, ref _osdScreen);    
+            UInt8Type.Accept(visitor,OsdIndexField, ref _osdIndex);    
 
         }
 
@@ -13584,17 +13584,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            FloatType.Accept(visitor,MinValueField, MinValueField.DataType, ref _minValue);    
-            FloatType.Accept(visitor,MaxValueField, MaxValueField.DataType, ref _maxValue);    
-            FloatType.Accept(visitor,IncrementField, IncrementField.DataType, ref _increment);    
+            UInt32Type.Accept(visitor,RequestIdField, ref _requestId);    
+            FloatType.Accept(visitor,MinValueField, ref _minValue);    
+            FloatType.Accept(visitor,MaxValueField, ref _maxValue);    
+            FloatType.Accept(visitor,IncrementField, ref _increment);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (OsdParamConfigError)tmpResult;
-            ArrayType.Accept(visitor,ParamIdField, ParamIdField.DataType, 16, 
+            ArrayType.Accept(visitor,ParamIdField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref ParamId[index]));
             var tmpConfigType = (byte)ConfigType;
-            UInt8Type.Accept(visitor,ConfigTypeField, ConfigTypeField.DataType, ref tmpConfigType);
+            UInt8Type.Accept(visitor,ConfigTypeField, ref tmpConfigType);
             ConfigType = (OsdParamConfigType)tmpConfigType;
 
         }
@@ -13772,18 +13772,18 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
-            FloatType.Accept(visitor,XField, XField.DataType, ref _x);    
-            FloatType.Accept(visitor,YField, YField.DataType, ref _y);    
-            FloatType.Accept(visitor,ZField, ZField.DataType, ref _z);    
-            FloatType.Accept(visitor,MinDistanceField, MinDistanceField.DataType, ref _minDistance);    
-            FloatType.Accept(visitor,MaxDistanceField, MaxDistanceField.DataType, ref _maxDistance);    
-            UInt16Type.Accept(visitor,ObstacleIdField, ObstacleIdField.DataType, ref _obstacleId);    
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
+            FloatType.Accept(visitor,XField, ref _x);    
+            FloatType.Accept(visitor,YField, ref _y);    
+            FloatType.Accept(visitor,ZField, ref _z);    
+            FloatType.Accept(visitor,MinDistanceField, ref _minDistance);    
+            FloatType.Accept(visitor,MaxDistanceField, ref _maxDistance);    
+            UInt16Type.Accept(visitor,ObstacleIdField, ref _obstacleId);    
             var tmpSensorType = (byte)SensorType;
-            UInt8Type.Accept(visitor,SensorTypeField, SensorTypeField.DataType, ref tmpSensorType);
+            UInt8Type.Accept(visitor,SensorTypeField, ref tmpSensorType);
             SensorType = (MavDistanceSensor)tmpSensorType;
             var tmpFrame = (byte)Frame;
-            UInt8Type.Accept(visitor,FrameField, FrameField.DataType, ref tmpFrame);
+            UInt8Type.Accept(visitor,FrameField, ref tmpFrame);
             Frame = (MavFrame)tmpFrame;
 
         }
@@ -13991,17 +13991,17 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
-            FloatType.Accept(visitor,AltField, AltField.DataType, ref _alt);    
-            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
-            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
-            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
-            FloatType.Accept(visitor,DistanceField, DistanceField.DataType, ref _distance);    
-            FloatType.Accept(visitor,TemperatureField, TemperatureField.DataType, ref _temperature);    
-            UInt8Type.Accept(visitor,IdField, IdField.DataType, ref _id);    
-            UInt8Type.Accept(visitor,HealthyField, HealthyField.DataType, ref _healthy);    
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LngField, ref _lng);    
+            FloatType.Accept(visitor,AltField, ref _alt);    
+            FloatType.Accept(visitor,RollField, ref _roll);    
+            FloatType.Accept(visitor,PitchField, ref _pitch);    
+            FloatType.Accept(visitor,YawField, ref _yaw);    
+            FloatType.Accept(visitor,DistanceField, ref _distance);    
+            FloatType.Accept(visitor,TemperatureField, ref _temperature);    
+            UInt8Type.Accept(visitor,IdField, ref _id);    
+            UInt8Type.Accept(visitor,HealthyField, ref _healthy);    
 
         }
 
@@ -14216,11 +14216,11 @@ namespace Asv.Mavlink.Ardupilotmega
 
         public void Accept(IVisitor visitor)
         {
-            Int16Type.Accept(visitor,McuTemperatureField, McuTemperatureField.DataType, ref _mcuTemperature);
-            UInt16Type.Accept(visitor,McuVoltageField, McuVoltageField.DataType, ref _mcuVoltage);    
-            UInt16Type.Accept(visitor,McuVoltageMinField, McuVoltageMinField.DataType, ref _mcuVoltageMin);    
-            UInt16Type.Accept(visitor,McuVoltageMaxField, McuVoltageMaxField.DataType, ref _mcuVoltageMax);    
-            UInt8Type.Accept(visitor,IdField, IdField.DataType, ref _id);    
+            Int16Type.Accept(visitor,McuTemperatureField, ref _mcuTemperature);
+            UInt16Type.Accept(visitor,McuVoltageField, ref _mcuVoltage);    
+            UInt16Type.Accept(visitor,McuVoltageMinField, ref _mcuVoltageMin);    
+            UInt16Type.Accept(visitor,McuVoltageMaxField, ref _mcuVoltageMax);    
+            UInt8Type.Accept(visitor,IdField, ref _id);    
 
         }
 

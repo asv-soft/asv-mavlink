@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -122,7 +122,7 @@ namespace Asv.Mavlink.Cubepilot
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,RcRawField, RcRawField.DataType, 32,
+            ArrayType.Accept(visitor,RcRawField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RcRaw[index]));    
 
         }
@@ -241,14 +241,14 @@ namespace Asv.Mavlink.Cubepilot
 
         public void Accept(IVisitor visitor)
         {
-            FloatType.Accept(visitor,FramerateField, FramerateField.DataType, ref _framerate);    
-            UInt32Type.Accept(visitor,BitrateField, BitrateField.DataType, ref _bitrate);    
-            UInt16Type.Accept(visitor,ResolutionHField, ResolutionHField.DataType, ref _resolutionH);    
-            UInt16Type.Accept(visitor,ResolutionVField, ResolutionVField.DataType, ref _resolutionV);    
-            UInt16Type.Accept(visitor,RotationField, RotationField.DataType, ref _rotation);    
-            UInt8Type.Accept(visitor,CameraIdField, CameraIdField.DataType, ref _cameraId);    
-            UInt8Type.Accept(visitor,StatusField, StatusField.DataType, ref _status);    
-            ArrayType.Accept(visitor,UriField, UriField.DataType, 230, 
+            FloatType.Accept(visitor,FramerateField, ref _framerate);    
+            UInt32Type.Accept(visitor,BitrateField, ref _bitrate);    
+            UInt16Type.Accept(visitor,ResolutionHField, ref _resolutionH);    
+            UInt16Type.Accept(visitor,ResolutionVField, ref _resolutionV);    
+            UInt16Type.Accept(visitor,RotationField, ref _rotation);    
+            UInt8Type.Accept(visitor,CameraIdField, ref _cameraId);    
+            UInt8Type.Accept(visitor,StatusField, ref _status);    
+            ArrayType.Accept(visitor,UriField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref Uri[index]));
 
         }
@@ -433,13 +433,13 @@ namespace Asv.Mavlink.Cubepilot
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,RfFreqField, RfFreqField.DataType, ref _rfFreq);    
-            UInt32Type.Accept(visitor,LinkBwField, LinkBwField.DataType, ref _linkBw);    
-            UInt32Type.Accept(visitor,LinkRateField, LinkRateField.DataType, ref _linkRate);    
-            Int16Type.Accept(visitor,SnrField, SnrField.DataType, ref _snr);
-            Int16Type.Accept(visitor,CpuTempField, CpuTempField.DataType, ref _cpuTemp);
-            Int16Type.Accept(visitor,BoardTempField, BoardTempField.DataType, ref _boardTemp);
-            UInt8Type.Accept(visitor,RssiField, RssiField.DataType, ref _rssi);    
+            UInt32Type.Accept(visitor,RfFreqField, ref _rfFreq);    
+            UInt32Type.Accept(visitor,LinkBwField, ref _linkBw);    
+            UInt32Type.Accept(visitor,LinkRateField, ref _linkRate);    
+            Int16Type.Accept(visitor,SnrField, ref _snr);
+            Int16Type.Accept(visitor,CpuTempField, ref _cpuTemp);
+            Int16Type.Accept(visitor,BoardTempField, ref _boardTemp);
+            UInt8Type.Accept(visitor,RssiField, ref _rssi);    
 
         }
 
@@ -599,10 +599,10 @@ namespace Asv.Mavlink.Cubepilot
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,SizeField, SizeField.DataType, ref _size);    
-            UInt32Type.Accept(visitor,CrcField, CrcField.DataType, ref _crc);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt32Type.Accept(visitor,SizeField, ref _size);    
+            UInt32Type.Accept(visitor,CrcField, ref _crc);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -720,9 +720,9 @@ namespace Asv.Mavlink.Cubepilot
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,OffsetField, OffsetField.DataType, ref _offset);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt32Type.Accept(visitor,OffsetField, ref _offset);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 

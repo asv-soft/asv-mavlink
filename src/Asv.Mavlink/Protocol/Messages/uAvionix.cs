@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -593,24 +593,24 @@ namespace Asv.Mavlink.Uavionix
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,IcaoField, IcaoField.DataType, ref _icao);    
-            UInt16Type.Accept(visitor,StallspeedField, StallspeedField.DataType, ref _stallspeed);    
-            ArrayType.Accept(visitor,CallsignField, CallsignField.DataType, 9, 
+            UInt32Type.Accept(visitor,IcaoField, ref _icao);    
+            UInt16Type.Accept(visitor,StallspeedField, ref _stallspeed);    
+            ArrayType.Accept(visitor,CallsignField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref Callsign[index]));
             var tmpEmittertype = (byte)Emittertype;
-            UInt8Type.Accept(visitor,EmittertypeField, EmittertypeField.DataType, ref tmpEmittertype);
+            UInt8Type.Accept(visitor,EmittertypeField, ref tmpEmittertype);
             Emittertype = (AdsbEmitterType)tmpEmittertype;
             var tmpAircraftsize = (byte)Aircraftsize;
-            UInt8Type.Accept(visitor,AircraftsizeField, AircraftsizeField.DataType, ref tmpAircraftsize);
+            UInt8Type.Accept(visitor,AircraftsizeField, ref tmpAircraftsize);
             Aircraftsize = (UavionixAdsbOutCfgAircraftSize)tmpAircraftsize;
             var tmpGpsoffsetlat = (byte)Gpsoffsetlat;
-            UInt8Type.Accept(visitor,GpsoffsetlatField, GpsoffsetlatField.DataType, ref tmpGpsoffsetlat);
+            UInt8Type.Accept(visitor,GpsoffsetlatField, ref tmpGpsoffsetlat);
             Gpsoffsetlat = (UavionixAdsbOutCfgGpsOffsetLat)tmpGpsoffsetlat;
             var tmpGpsoffsetlon = (byte)Gpsoffsetlon;
-            UInt8Type.Accept(visitor,GpsoffsetlonField, GpsoffsetlonField.DataType, ref tmpGpsoffsetlon);
+            UInt8Type.Accept(visitor,GpsoffsetlonField, ref tmpGpsoffsetlon);
             Gpsoffsetlon = (UavionixAdsbOutCfgGpsOffsetLon)tmpGpsoffsetlon;
             var tmpRfselect = (byte)Rfselect;
-            UInt8Type.Accept(visitor,RfselectField, RfselectField.DataType, ref tmpRfselect);
+            UInt8Type.Accept(visitor,RfselectField, ref tmpRfselect);
             Rfselect = (UavionixAdsbOutRfSelect)tmpRfselect;
 
         }
@@ -822,27 +822,27 @@ namespace Asv.Mavlink.Uavionix
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,UtctimeField, UtctimeField.DataType, ref _utctime);    
-            Int32Type.Accept(visitor,GpslatField, GpslatField.DataType, ref _gpslat);    
-            Int32Type.Accept(visitor,GpslonField, GpslonField.DataType, ref _gpslon);    
-            Int32Type.Accept(visitor,GpsaltField, GpsaltField.DataType, ref _gpsalt);    
-            Int32Type.Accept(visitor,BaroaltmslField, BaroaltmslField.DataType, ref _baroaltmsl);    
-            UInt32Type.Accept(visitor,AccuracyhorField, AccuracyhorField.DataType, ref _accuracyhor);    
-            UInt16Type.Accept(visitor,AccuracyvertField, AccuracyvertField.DataType, ref _accuracyvert);    
-            UInt16Type.Accept(visitor,AccuracyvelField, AccuracyvelField.DataType, ref _accuracyvel);    
-            Int16Type.Accept(visitor,VelvertField, VelvertField.DataType, ref _velvert);
-            Int16Type.Accept(visitor,VelnsField, VelnsField.DataType, ref _velns);
-            Int16Type.Accept(visitor,VelewField, VelewField.DataType, ref _velew);
+            UInt32Type.Accept(visitor,UtctimeField, ref _utctime);    
+            Int32Type.Accept(visitor,GpslatField, ref _gpslat);    
+            Int32Type.Accept(visitor,GpslonField, ref _gpslon);    
+            Int32Type.Accept(visitor,GpsaltField, ref _gpsalt);    
+            Int32Type.Accept(visitor,BaroaltmslField, ref _baroaltmsl);    
+            UInt32Type.Accept(visitor,AccuracyhorField, ref _accuracyhor);    
+            UInt16Type.Accept(visitor,AccuracyvertField, ref _accuracyvert);    
+            UInt16Type.Accept(visitor,AccuracyvelField, ref _accuracyvel);    
+            Int16Type.Accept(visitor,VelvertField, ref _velvert);
+            Int16Type.Accept(visitor,VelnsField, ref _velns);
+            Int16Type.Accept(visitor,VelewField, ref _velew);
             var tmpState = (ushort)State;
-            UInt16Type.Accept(visitor,StateField, StateField.DataType, ref tmpState);
+            UInt16Type.Accept(visitor,StateField, ref tmpState);
             State = (UavionixAdsbOutDynamicState)tmpState;
-            UInt16Type.Accept(visitor,SquawkField, SquawkField.DataType, ref _squawk);    
+            UInt16Type.Accept(visitor,SquawkField, ref _squawk);    
             var tmpGpsfix = (byte)Gpsfix;
-            UInt8Type.Accept(visitor,GpsfixField, GpsfixField.DataType, ref tmpGpsfix);
+            UInt8Type.Accept(visitor,GpsfixField, ref tmpGpsfix);
             Gpsfix = (UavionixAdsbOutDynamicGpsFix)tmpGpsfix;
-            UInt8Type.Accept(visitor,NumsatsField, NumsatsField.DataType, ref _numsats);    
+            UInt8Type.Accept(visitor,NumsatsField, ref _numsats);    
             var tmpEmergencystatus = (byte)Emergencystatus;
-            UInt8Type.Accept(visitor,EmergencystatusField, EmergencystatusField.DataType, ref tmpEmergencystatus);
+            UInt8Type.Accept(visitor,EmergencystatusField, ref tmpEmergencystatus);
             Emergencystatus = (UavionixAdsbEmergencyStatus)tmpEmergencystatus;
 
         }
@@ -1112,7 +1112,7 @@ namespace Asv.Mavlink.Uavionix
         public void Accept(IVisitor visitor)
         {
             var tmpRfhealth = (byte)Rfhealth;
-            UInt8Type.Accept(visitor,RfhealthField, RfhealthField.DataType, ref tmpRfhealth);
+            UInt8Type.Accept(visitor,RfhealthField, ref tmpRfhealth);
             Rfhealth = (UavionixAdsbRfHealth)tmpRfhealth;
 
         }

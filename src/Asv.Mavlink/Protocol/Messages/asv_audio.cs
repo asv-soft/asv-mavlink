@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -273,12 +273,12 @@ namespace Asv.Mavlink.AsvAudio
         public void Accept(IVisitor visitor)
         {
             var tmpCodec = (ushort)Codec;
-            UInt16Type.Accept(visitor,CodecField, CodecField.DataType, ref tmpCodec);
+            UInt16Type.Accept(visitor,CodecField, ref tmpCodec);
             Codec = (AsvAudioCodec)tmpCodec;
             var tmpMode = (byte)Mode;
-            UInt8Type.Accept(visitor,ModeField, ModeField.DataType, ref tmpMode);
+            UInt8Type.Accept(visitor,ModeField, ref tmpMode);
             Mode = (AsvAudioModeFlag)tmpMode;
-            ArrayType.Accept(visitor,NameField, NameField.DataType, 16, 
+            ArrayType.Accept(visitor,NameField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref Name[index]));
 
         }
@@ -408,13 +408,13 @@ namespace Asv.Mavlink.AsvAudio
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            UInt8Type.Accept(visitor,FrameSeqField, FrameSeqField.DataType, ref _frameSeq);    
-            UInt8Type.Accept(visitor,PktInFrameField, PktInFrameField.DataType, ref _pktInFrame);    
-            UInt8Type.Accept(visitor,PktSeqField, PktSeqField.DataType, ref _pktSeq);    
-            UInt8Type.Accept(visitor,DataSizeField, DataSizeField.DataType, ref _dataSize);    
-            ArrayType.Accept(visitor,DataField, DataField.DataType, 230,
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            UInt8Type.Accept(visitor,FrameSeqField, ref _frameSeq);    
+            UInt8Type.Accept(visitor,PktInFrameField, ref _pktInFrame);    
+            UInt8Type.Accept(visitor,PktSeqField, ref _pktSeq);    
+            UInt8Type.Accept(visitor,DataSizeField, ref _dataSize);    
+            ArrayType.Accept(visitor,DataField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }

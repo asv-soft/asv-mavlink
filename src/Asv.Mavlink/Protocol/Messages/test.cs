@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -265,38 +265,38 @@ namespace Asv.Mavlink.Test
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,U64Field, U64Field.DataType, ref _u64);    
-            Int64Type.Accept(visitor,S64Field, S64Field.DataType, ref _s64);    
-            DoubleType.Accept(visitor,DField, DField.DataType, ref _d);
-            ArrayType.Accept(visitor,U64ArrayField, U64ArrayField.DataType, 3,
+            UInt64Type.Accept(visitor,U64Field, ref _u64);    
+            Int64Type.Accept(visitor,S64Field, ref _s64);    
+            DoubleType.Accept(visitor,DField, ref _d);
+            ArrayType.Accept(visitor,U64ArrayField, 
                 (index, v, f, t) => UInt64Type.Accept(v, f, t, ref U64Array[index]));    
-            ArrayType.Accept(visitor,S64ArrayField, S64ArrayField.DataType, 3,
+            ArrayType.Accept(visitor,S64ArrayField, 
                 (index, v, f, t) => Int64Type.Accept(v, f, t, ref S64Array[index]));    
-            ArrayType.Accept(visitor,DArrayField, DArrayField.DataType, 3,
+            ArrayType.Accept(visitor,DArrayField, 
                 (index, v, f, t) => DoubleType.Accept(v, f, t, ref DArray[index]));    
-            UInt32Type.Accept(visitor,U32Field, U32Field.DataType, ref _u32);    
-            Int32Type.Accept(visitor,S32Field, S32Field.DataType, ref _s32);    
-            FloatType.Accept(visitor,FField, FField.DataType, ref _f);    
-            ArrayType.Accept(visitor,U32ArrayField, U32ArrayField.DataType, 3,
+            UInt32Type.Accept(visitor,U32Field, ref _u32);    
+            Int32Type.Accept(visitor,S32Field, ref _s32);    
+            FloatType.Accept(visitor,FField, ref _f);    
+            ArrayType.Accept(visitor,U32ArrayField, 
                 (index, v, f, t) => UInt32Type.Accept(v, f, t, ref U32Array[index]));    
-            ArrayType.Accept(visitor,S32ArrayField, S32ArrayField.DataType, 3,
+            ArrayType.Accept(visitor,S32ArrayField, 
                 (index, v, f, t) => Int32Type.Accept(v, f, t, ref S32Array[index]));
-            ArrayType.Accept(visitor,FArrayField, FArrayField.DataType, 3,
+            ArrayType.Accept(visitor,FArrayField, 
                 (index, v, f, t) => FloatType.Accept(v, f, t, ref FArray[index]));
-            UInt16Type.Accept(visitor,U16Field, U16Field.DataType, ref _u16);    
-            Int16Type.Accept(visitor,S16Field, S16Field.DataType, ref _s16);
-            ArrayType.Accept(visitor,U16ArrayField, U16ArrayField.DataType, 3,
+            UInt16Type.Accept(visitor,U16Field, ref _u16);    
+            Int16Type.Accept(visitor,S16Field, ref _s16);
+            ArrayType.Accept(visitor,U16ArrayField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref U16Array[index]));    
-            ArrayType.Accept(visitor,S16ArrayField, S16ArrayField.DataType, 3,
+            ArrayType.Accept(visitor,S16ArrayField, 
                 (index, v, f, t) => Int16Type.Accept(v, f, t, ref S16Array[index]));    
-            CharType.Accept(visitor,CField, CField.DataType, ref _c);
-            ArrayType.Accept(visitor,SField, SField.DataType, 10, 
+            CharType.Accept(visitor,CField, ref _c);
+            ArrayType.Accept(visitor,SField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref S[index]));
-            UInt8Type.Accept(visitor,U8Field, U8Field.DataType, ref _u8);    
-            Int8Type.Accept(visitor,S8Field, S8Field.DataType, ref _s8);                
-            ArrayType.Accept(visitor,U8ArrayField, U8ArrayField.DataType, 3,
+            UInt8Type.Accept(visitor,U8Field, ref _u8);    
+            Int8Type.Accept(visitor,S8Field, ref _s8);                
+            ArrayType.Accept(visitor,U8ArrayField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref U8Array[index]));    
-            ArrayType.Accept(visitor,S8ArrayField, S8ArrayField.DataType, 3, 
+            ArrayType.Accept(visitor,S8ArrayField,  
                 (index, v, f, t) => Int8Type.Accept(v, f, t, ref S8Array[index]));
 
         }

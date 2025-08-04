@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -254,13 +254,13 @@ namespace Asv.Mavlink.Ualberta
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,UsecField, UsecField.DataType, ref _usec);    
-            FloatType.Accept(visitor,Accel0Field, Accel0Field.DataType, ref _accel0);    
-            FloatType.Accept(visitor,Accel1Field, Accel1Field.DataType, ref _accel1);    
-            FloatType.Accept(visitor,Accel2Field, Accel2Field.DataType, ref _accel2);    
-            FloatType.Accept(visitor,Gyro0Field, Gyro0Field.DataType, ref _gyro0);    
-            FloatType.Accept(visitor,Gyro1Field, Gyro1Field.DataType, ref _gyro1);    
-            FloatType.Accept(visitor,Gyro2Field, Gyro2Field.DataType, ref _gyro2);    
+            UInt64Type.Accept(visitor,UsecField, ref _usec);    
+            FloatType.Accept(visitor,Accel0Field, ref _accel0);    
+            FloatType.Accept(visitor,Accel1Field, ref _accel1);    
+            FloatType.Accept(visitor,Accel2Field, ref _accel2);    
+            FloatType.Accept(visitor,Gyro0Field, ref _gyro0);    
+            FloatType.Accept(visitor,Gyro1Field, ref _gyro1);    
+            FloatType.Accept(visitor,Gyro2Field, ref _gyro2);    
 
         }
 
@@ -471,17 +471,17 @@ namespace Asv.Mavlink.Ualberta
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,AileronField, AileronField.DataType, 3,
+            ArrayType.Accept(visitor,AileronField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Aileron[index]));    
-            ArrayType.Accept(visitor,ElevatorField, ElevatorField.DataType, 3,
+            ArrayType.Accept(visitor,ElevatorField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Elevator[index]));    
-            ArrayType.Accept(visitor,RudderField, RudderField.DataType, 3,
+            ArrayType.Accept(visitor,RudderField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Rudder[index]));    
-            ArrayType.Accept(visitor,GyroField, GyroField.DataType, 2,
+            ArrayType.Accept(visitor,GyroField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Gyro[index]));    
-            ArrayType.Accept(visitor,PitchField, PitchField.DataType, 5,
+            ArrayType.Accept(visitor,PitchField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Pitch[index]));    
-            ArrayType.Accept(visitor,ThrottleField, ThrottleField.DataType, 5,
+            ArrayType.Accept(visitor,ThrottleField, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref Throttle[index]));    
 
         }
@@ -628,9 +628,9 @@ namespace Asv.Mavlink.Ualberta
 
         public void Accept(IVisitor visitor)
         {
-            UInt8Type.Accept(visitor,ModeField, ModeField.DataType, ref _mode);    
-            UInt8Type.Accept(visitor,NavModeField, NavModeField.DataType, ref _navMode);    
-            UInt8Type.Accept(visitor,PilotField, PilotField.DataType, ref _pilot);    
+            UInt8Type.Accept(visitor,ModeField, ref _mode);    
+            UInt8Type.Accept(visitor,NavModeField, ref _navMode);    
+            UInt8Type.Accept(visitor,PilotField, ref _pilot);    
 
         }
 

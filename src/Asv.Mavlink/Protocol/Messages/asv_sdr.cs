@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -708,27 +708,27 @@ namespace Asv.Mavlink.AsvSdr
         public void Accept(IVisitor visitor)
         {
             var tmpSupportedModes = (ulong)SupportedModes;
-            UInt64Type.Accept(visitor,SupportedModesField, SupportedModesField.DataType, ref tmpSupportedModes);
+            UInt64Type.Accept(visitor,SupportedModesField, ref tmpSupportedModes);
             SupportedModes = (AsvSdrCustomModeFlag)tmpSupportedModes;
-            UInt64Type.Accept(visitor,SizeField, SizeField.DataType, ref _size);    
-            UInt16Type.Accept(visitor,RecordCountField, RecordCountField.DataType, ref _recordCount);    
-            UInt16Type.Accept(visitor,CurrentMissionIndexField, CurrentMissionIndexField.DataType, ref _currentMissionIndex);    
-            ArrayType.Accept(visitor,CurrentRecordGuidField, CurrentRecordGuidField.DataType, 16,
+            UInt64Type.Accept(visitor,SizeField, ref _size);    
+            UInt16Type.Accept(visitor,RecordCountField, ref _recordCount);    
+            UInt16Type.Accept(visitor,CurrentMissionIndexField, ref _currentMissionIndex);    
+            ArrayType.Accept(visitor,CurrentRecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref CurrentRecordGuid[index]));    
             var tmpCurrentRecordMode = (byte)CurrentRecordMode;
-            UInt8Type.Accept(visitor,CurrentRecordModeField, CurrentRecordModeField.DataType, ref tmpCurrentRecordMode);
+            UInt8Type.Accept(visitor,CurrentRecordModeField, ref tmpCurrentRecordMode);
             CurrentRecordMode = (AsvSdrCustomMode)tmpCurrentRecordMode;
-            ArrayType.Accept(visitor,CurrentRecordNameField, CurrentRecordNameField.DataType, 28, 
+            ArrayType.Accept(visitor,CurrentRecordNameField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CurrentRecordName[index]));
             var tmpMissionState = (byte)MissionState;
-            UInt8Type.Accept(visitor,MissionStateField, MissionStateField.DataType, ref tmpMissionState);
+            UInt8Type.Accept(visitor,MissionStateField, ref tmpMissionState);
             MissionState = (AsvSdrMissionState)tmpMissionState;
             var tmpCalibState = (byte)CalibState;
-            UInt8Type.Accept(visitor,CalibStateField, CalibStateField.DataType, ref tmpCalibState);
+            UInt8Type.Accept(visitor,CalibStateField, ref tmpCalibState);
             CalibState = (AsvSdrCalibState)tmpCalibState;
-            UInt16Type.Accept(visitor,CalibTableCountField, CalibTableCountField.DataType, ref _calibTableCount);    
-            FloatType.Accept(visitor,RefPowerField, RefPowerField.DataType, ref _refPower);    
-            FloatType.Accept(visitor,SignalOverflowField, SignalOverflowField.DataType, ref _signalOverflow);    
+            UInt16Type.Accept(visitor,CalibTableCountField, ref _calibTableCount);    
+            FloatType.Accept(visitor,RefPowerField, ref _refPower);    
+            FloatType.Accept(visitor,SignalOverflowField, ref _signalOverflow);    
 
         }
 
@@ -958,11 +958,11 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt16Type.Accept(visitor,SkipField, SkipField.DataType, ref _skip);    
-            UInt16Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,SkipField, ref _skip);    
+            UInt16Type.Accept(visitor,CountField, ref _count);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -1093,10 +1093,10 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt16Type.Accept(visitor,ItemsCountField, ItemsCountField.DataType, ref _itemsCount);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,ItemsCountField, ref _itemsCount);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
 
         }
@@ -1249,18 +1249,18 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,FrequencyField, FrequencyField.DataType, ref _frequency);    
-            UInt64Type.Accept(visitor,CreatedUnixUsField, CreatedUnixUsField.DataType, ref _createdUnixUs);    
+            UInt64Type.Accept(visitor,FrequencyField, ref _frequency);    
+            UInt64Type.Accept(visitor,CreatedUnixUsField, ref _createdUnixUs);    
             var tmpDataType = (uint)DataType;
-            UInt32Type.Accept(visitor,DataTypeField, DataTypeField.DataType, ref tmpDataType);
+            UInt32Type.Accept(visitor,DataTypeField, ref tmpDataType);
             DataType = (AsvSdrCustomMode)tmpDataType;
-            UInt32Type.Accept(visitor,DurationSecField, DurationSecField.DataType, ref _durationSec);    
-            UInt32Type.Accept(visitor,DataCountField, DataCountField.DataType, ref _dataCount);    
-            UInt32Type.Accept(visitor,SizeField, SizeField.DataType, ref _size);    
-            UInt16Type.Accept(visitor,TagCountField, TagCountField.DataType, ref _tagCount);    
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            UInt32Type.Accept(visitor,DurationSecField, ref _durationSec);    
+            UInt32Type.Accept(visitor,DataCountField, ref _dataCount);    
+            UInt32Type.Accept(visitor,SizeField, ref _size);    
+            UInt16Type.Accept(visitor,TagCountField, ref _tagCount);    
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
-            ArrayType.Accept(visitor,RecordNameField, RecordNameField.DataType, 28, 
+            ArrayType.Accept(visitor,RecordNameField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref RecordName[index]));
 
         }
@@ -1459,10 +1459,10 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
 
         }
@@ -1593,11 +1593,11 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
 
         }
@@ -1724,12 +1724,12 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt16Type.Accept(visitor,SkipField, SkipField.DataType, ref _skip);    
-            UInt16Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,SkipField, ref _skip);    
+            UInt16Type.Accept(visitor,CountField, ref _count);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
 
         }
@@ -1876,10 +1876,10 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt16Type.Accept(visitor,ItemsCountField, ItemsCountField.DataType, ref _itemsCount);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,ItemsCountField, ref _itemsCount);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
 
         }
@@ -2034,16 +2034,16 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
-            ArrayType.Accept(visitor,TagGuidField, TagGuidField.DataType, 16,
+            ArrayType.Accept(visitor,TagGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref TagGuid[index]));    
-            ArrayType.Accept(visitor,TagNameField, TagNameField.DataType, 16, 
+            ArrayType.Accept(visitor,TagNameField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref TagName[index]));
             var tmpTagType = (byte)TagType;
-            UInt8Type.Accept(visitor,TagTypeField, TagTypeField.DataType, ref tmpTagType);
+            UInt8Type.Accept(visitor,TagTypeField, ref tmpTagType);
             TagType = (AsvSdrRecordTagType)tmpTagType;
-            ArrayType.Accept(visitor,TagValueField, TagValueField.DataType, 8,
+            ArrayType.Accept(visitor,TagValueField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref TagValue[index]));    
 
         }
@@ -2200,12 +2200,12 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
-            ArrayType.Accept(visitor,TagGuidField, TagGuidField.DataType, 16,
+            ArrayType.Accept(visitor,TagGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref TagGuid[index]));    
 
         }
@@ -2359,13 +2359,13 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
-            ArrayType.Accept(visitor,TagGuidField, TagGuidField.DataType, 16,
+            ArrayType.Accept(visitor,TagGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref TagGuid[index]));    
 
         }
@@ -2505,12 +2505,12 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,SkipField, SkipField.DataType, ref _skip);    
-            UInt32Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            UInt32Type.Accept(visitor,SkipField, ref _skip);    
+            UInt32Type.Accept(visitor,CountField, ref _count);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
 
         }
@@ -2674,14 +2674,14 @@ namespace Asv.Mavlink.AsvSdr
         public void Accept(IVisitor visitor)
         {
             var tmpDataType = (uint)DataType;
-            UInt32Type.Accept(visitor,DataTypeField, DataTypeField.DataType, ref tmpDataType);
+            UInt32Type.Accept(visitor,DataTypeField, ref tmpDataType);
             DataType = (AsvSdrCustomMode)tmpDataType;
-            UInt32Type.Accept(visitor,ItemsCountField, ItemsCountField.DataType, ref _itemsCount);    
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt32Type.Accept(visitor,ItemsCountField, ref _itemsCount);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
 
         }
@@ -2812,9 +2812,9 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (AsvSdrRequestAck)tmpResult;
 
         }
@@ -2910,10 +2910,10 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -3056,10 +3056,10 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,CreatedUnixUsField, CreatedUnixUsField.DataType, ref _createdUnixUs);    
-            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RowCountField, RowCountField.DataType, ref _rowCount);    
-            ArrayType.Accept(visitor,TableNameField, TableNameField.DataType, 28, 
+            UInt64Type.Accept(visitor,CreatedUnixUsField, ref _createdUnixUs);    
+            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RowCountField, ref _rowCount);    
+            ArrayType.Accept(visitor,TableNameField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref TableName[index]));
 
         }
@@ -3186,11 +3186,11 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RowIndexField, RowIndexField.DataType, ref _rowIndex);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RowIndexField, ref _rowIndex);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -3336,14 +3336,14 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,RefFreqField, RefFreqField.DataType, ref _refFreq);    
-            FloatType.Accept(visitor,RefPowerField, RefPowerField.DataType, ref _refPower);    
-            FloatType.Accept(visitor,RefValueField, RefValueField.DataType, ref _refValue);    
-            FloatType.Accept(visitor,AdjustmentField, AdjustmentField.DataType, ref _adjustment);    
-            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RowIndexField, RowIndexField.DataType, ref _rowIndex);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt64Type.Accept(visitor,RefFreqField, ref _refFreq);    
+            FloatType.Accept(visitor,RefPowerField, ref _refPower);    
+            FloatType.Accept(visitor,RefValueField, ref _refValue);    
+            FloatType.Accept(visitor,AdjustmentField, ref _adjustment);    
+            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RowIndexField, ref _rowIndex);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -3522,12 +3522,12 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,CreatedUnixUsField, CreatedUnixUsField.DataType, ref _createdUnixUs);    
-            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt16Type.Accept(visitor,RowCountField, RowCountField.DataType, ref _rowCount);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt64Type.Accept(visitor,CreatedUnixUsField, ref _createdUnixUs);    
+            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,RowCountField, ref _rowCount);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -3677,11 +3677,11 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt16Type.Accept(visitor,TableIndexField, TableIndexField.DataType, ref _tableIndex);    
-            UInt16Type.Accept(visitor,RowIndexField, RowIndexField.DataType, ref _rowIndex);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt16Type.Accept(visitor,TableIndexField, ref _tableIndex);    
+            UInt16Type.Accept(visitor,RowIndexField, ref _rowIndex);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -3859,18 +3859,18 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
-            FloatType.Accept(visitor,MinField, MinField.DataType, ref _min);    
-            FloatType.Accept(visitor,MaxField, MaxField.DataType, ref _max);    
-            UInt16Type.Accept(visitor,StartField, StartField.DataType, ref _start);    
-            UInt16Type.Accept(visitor,TotalField, TotalField.DataType, ref _total);    
-            ArrayType.Accept(visitor,SignalNameField, SignalNameField.DataType, 8, 
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            FloatType.Accept(visitor,MinField, ref _min);    
+            FloatType.Accept(visitor,MaxField, ref _max);    
+            UInt16Type.Accept(visitor,StartField, ref _start);    
+            UInt16Type.Accept(visitor,TotalField, ref _total);    
+            ArrayType.Accept(visitor,SignalNameField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref SignalName[index]));
             var tmpFormat = (byte)Format;
-            UInt8Type.Accept(visitor,FormatField, FormatField.DataType, ref tmpFormat);
+            UInt8Type.Accept(visitor,FormatField, ref tmpFormat);
             Format = (AsvSdrSignalFormat)tmpFormat;
-            UInt8Type.Accept(visitor,CountField, CountField.DataType, ref _count);    
-            ArrayType.Accept(visitor,DataField, DataField.DataType, 200,
+            UInt8Type.Accept(visitor,CountField, ref _count);    
+            ArrayType.Accept(visitor,DataField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
 
         }
@@ -4084,7 +4084,8 @@ namespace Asv.Mavlink.AsvSdr
             +CodeId.Length // char[4] code_id
             );
         }
-        
+
+
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
@@ -4156,8 +4157,10 @@ namespace Asv.Mavlink.AsvSdr
                 }
             }
             buffer = buffer[arraySize..];
+           
+
         }
-        
+
         public void Serialize(ref Span<byte> buffer)
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
@@ -4229,61 +4232,61 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
-            UInt64Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
-            UInt32Type.Accept(visitor,DataIndexField, DataIndexField.DataType, ref _dataIndex);    
-            Int32Type.Accept(visitor,GnssLatField, GnssLatField.DataType, ref _gnssLat);    
-            Int32Type.Accept(visitor,GnssLonField, GnssLonField.DataType, ref _gnssLon);    
-            Int32Type.Accept(visitor,GnssAltField, GnssAltField.DataType, ref _gnssAlt);    
-            Int32Type.Accept(visitor,GnssAltEllipsoidField, GnssAltEllipsoidField.DataType, ref _gnssAltEllipsoid);    
-            UInt32Type.Accept(visitor,GnssHAccField, GnssHAccField.DataType, ref _gnssHAcc);    
-            UInt32Type.Accept(visitor,GnssVAccField, GnssVAccField.DataType, ref _gnssVAcc);    
-            UInt32Type.Accept(visitor,GnssVelAccField, GnssVelAccField.DataType, ref _gnssVelAcc);    
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LonField, LonField.DataType, ref _lon);    
-            Int32Type.Accept(visitor,AltField, AltField.DataType, ref _alt);    
-            Int32Type.Accept(visitor,RelativeAltField, RelativeAltField.DataType, ref _relativeAlt);    
-            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
-            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
-            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
-            FloatType.Accept(visitor,CrsPowerField, CrsPowerField.DataType, ref _crsPower);    
-            FloatType.Accept(visitor,CrsAm90Field, CrsAm90Field.DataType, ref _crsAm90);    
-            FloatType.Accept(visitor,CrsAm150Field, CrsAm150Field.DataType, ref _crsAm150);    
-            FloatType.Accept(visitor,ClrPowerField, ClrPowerField.DataType, ref _clrPower);    
-            FloatType.Accept(visitor,ClrAm90Field, ClrAm90Field.DataType, ref _clrAm90);    
-            FloatType.Accept(visitor,ClrAm150Field, ClrAm150Field.DataType, ref _clrAm150);    
-            FloatType.Accept(visitor,TotalPowerField, TotalPowerField.DataType, ref _totalPower);    
-            FloatType.Accept(visitor,TotalFieldStrengthField, TotalFieldStrengthField.DataType, ref _totalFieldStrength);    
-            FloatType.Accept(visitor,TotalAm90Field, TotalAm90Field.DataType, ref _totalAm90);    
-            FloatType.Accept(visitor,TotalAm150Field, TotalAm150Field.DataType, ref _totalAm150);    
-            FloatType.Accept(visitor,Phi90CrsVsClrField, Phi90CrsVsClrField.DataType, ref _phi90CrsVsClr);    
-            FloatType.Accept(visitor,Phi150CrsVsClrField, Phi150CrsVsClrField.DataType, ref _phi150CrsVsClr);    
-            FloatType.Accept(visitor,CodeIdAm1020Field, CodeIdAm1020Field.DataType, ref _codeIdAm1020);    
-            UInt16Type.Accept(visitor,GnssEphField, GnssEphField.DataType, ref _gnssEph);    
-            UInt16Type.Accept(visitor,GnssEpvField, GnssEpvField.DataType, ref _gnssEpv);    
-            UInt16Type.Accept(visitor,GnssVelField, GnssVelField.DataType, ref _gnssVel);    
-            Int16Type.Accept(visitor,VxField, VxField.DataType, ref _vx);
-            Int16Type.Accept(visitor,VyField, VyField.DataType, ref _vy);
-            Int16Type.Accept(visitor,VzField, VzField.DataType, ref _vz);
-            UInt16Type.Accept(visitor,HdgField, HdgField.DataType, ref _hdg);    
-            Int16Type.Accept(visitor,CrsCarrierOffsetField, CrsCarrierOffsetField.DataType, ref _crsCarrierOffset);
-            Int16Type.Accept(visitor,CrsFreq90Field, CrsFreq90Field.DataType, ref _crsFreq90);
-            Int16Type.Accept(visitor,CrsFreq150Field, CrsFreq150Field.DataType, ref _crsFreq150);
-            Int16Type.Accept(visitor,ClrCarrierOffsetField, ClrCarrierOffsetField.DataType, ref _clrCarrierOffset);
-            Int16Type.Accept(visitor,ClrFreq90Field, ClrFreq90Field.DataType, ref _clrFreq90);
-            Int16Type.Accept(visitor,ClrFreq150Field, ClrFreq150Field.DataType, ref _clrFreq150);
-            Int16Type.Accept(visitor,TotalCarrierOffsetField, TotalCarrierOffsetField.DataType, ref _totalCarrierOffset);
-            Int16Type.Accept(visitor,TotalFreq90Field, TotalFreq90Field.DataType, ref _totalFreq90);
-            Int16Type.Accept(visitor,TotalFreq150Field, TotalFreq150Field.DataType, ref _totalFreq150);
-            Int16Type.Accept(visitor,CodeIdFreq1020Field, CodeIdFreq1020Field.DataType, ref _codeIdFreq1020);
-            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TotalFreqField, ref _totalFreq);    
+            UInt32Type.Accept(visitor,DataIndexField, ref _dataIndex);    
+            Int32Type.Accept(visitor,GnssLatField, ref _gnssLat);    
+            Int32Type.Accept(visitor,GnssLonField, ref _gnssLon);    
+            Int32Type.Accept(visitor,GnssAltField, ref _gnssAlt);    
+            Int32Type.Accept(visitor,GnssAltEllipsoidField, ref _gnssAltEllipsoid);    
+            UInt32Type.Accept(visitor,GnssHAccField, ref _gnssHAcc);    
+            UInt32Type.Accept(visitor,GnssVAccField, ref _gnssVAcc);    
+            UInt32Type.Accept(visitor,GnssVelAccField, ref _gnssVelAcc);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LonField, ref _lon);    
+            Int32Type.Accept(visitor,AltField, ref _alt);    
+            Int32Type.Accept(visitor,RelativeAltField, ref _relativeAlt);    
+            FloatType.Accept(visitor,RollField, ref _roll);    
+            FloatType.Accept(visitor,PitchField, ref _pitch);    
+            FloatType.Accept(visitor,YawField, ref _yaw);    
+            FloatType.Accept(visitor,CrsPowerField, ref _crsPower);    
+            FloatType.Accept(visitor,CrsAm90Field, ref _crsAm90);    
+            FloatType.Accept(visitor,CrsAm150Field, ref _crsAm150);    
+            FloatType.Accept(visitor,ClrPowerField, ref _clrPower);    
+            FloatType.Accept(visitor,ClrAm90Field, ref _clrAm90);    
+            FloatType.Accept(visitor,ClrAm150Field, ref _clrAm150);    
+            FloatType.Accept(visitor,TotalPowerField, ref _totalPower);    
+            FloatType.Accept(visitor,TotalFieldStrengthField, ref _totalFieldStrength);    
+            FloatType.Accept(visitor,TotalAm90Field, ref _totalAm90);    
+            FloatType.Accept(visitor,TotalAm150Field, ref _totalAm150);    
+            FloatType.Accept(visitor,Phi90CrsVsClrField, ref _phi90CrsVsClr);    
+            FloatType.Accept(visitor,Phi150CrsVsClrField, ref _phi150CrsVsClr);    
+            FloatType.Accept(visitor,CodeIdAm1020Field, ref _codeIdAm1020);    
+            UInt16Type.Accept(visitor,GnssEphField, ref _gnssEph);    
+            UInt16Type.Accept(visitor,GnssEpvField, ref _gnssEpv);    
+            UInt16Type.Accept(visitor,GnssVelField, ref _gnssVel);    
+            Int16Type.Accept(visitor,VxField, ref _vx);
+            Int16Type.Accept(visitor,VyField, ref _vy);
+            Int16Type.Accept(visitor,VzField, ref _vz);
+            UInt16Type.Accept(visitor,HdgField, ref _hdg);    
+            Int16Type.Accept(visitor,CrsCarrierOffsetField, ref _crsCarrierOffset);
+            Int16Type.Accept(visitor,CrsFreq90Field, ref _crsFreq90);
+            Int16Type.Accept(visitor,CrsFreq150Field, ref _crsFreq150);
+            Int16Type.Accept(visitor,ClrCarrierOffsetField, ref _clrCarrierOffset);
+            Int16Type.Accept(visitor,ClrFreq90Field, ref _clrFreq90);
+            Int16Type.Accept(visitor,ClrFreq150Field, ref _clrFreq150);
+            Int16Type.Accept(visitor,TotalCarrierOffsetField, ref _totalCarrierOffset);
+            Int16Type.Accept(visitor,TotalFreq90Field, ref _totalFreq90);
+            Int16Type.Accept(visitor,TotalFreq150Field, ref _totalFreq150);
+            Int16Type.Accept(visitor,CodeIdFreq1020Field, ref _codeIdFreq1020);
+            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
             var tmpGnssFixType = (byte)GnssFixType;
-            UInt8Type.Accept(visitor,GnssFixTypeField, GnssFixTypeField.DataType, ref tmpGnssFixType);
+            UInt8Type.Accept(visitor,GnssFixTypeField, ref tmpGnssFixType);
             GnssFixType = (GpsFixType)tmpGnssFixType;
-            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, GnssSatellitesVisibleField.DataType, ref _gnssSatellitesVisible);    
-            ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
+            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, ref _gnssSatellitesVisible);    
+            ArrayType.Accept(visitor,CodeIdField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
         }
@@ -5176,58 +5179,58 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
-            UInt64Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
-            UInt32Type.Accept(visitor,DataIndexField, DataIndexField.DataType, ref _dataIndex);    
-            Int32Type.Accept(visitor,GnssLatField, GnssLatField.DataType, ref _gnssLat);    
-            Int32Type.Accept(visitor,GnssLonField, GnssLonField.DataType, ref _gnssLon);    
-            Int32Type.Accept(visitor,GnssAltField, GnssAltField.DataType, ref _gnssAlt);    
-            Int32Type.Accept(visitor,GnssAltEllipsoidField, GnssAltEllipsoidField.DataType, ref _gnssAltEllipsoid);    
-            UInt32Type.Accept(visitor,GnssHAccField, GnssHAccField.DataType, ref _gnssHAcc);    
-            UInt32Type.Accept(visitor,GnssVAccField, GnssVAccField.DataType, ref _gnssVAcc);    
-            UInt32Type.Accept(visitor,GnssVelAccField, GnssVelAccField.DataType, ref _gnssVelAcc);    
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LonField, LonField.DataType, ref _lon);    
-            Int32Type.Accept(visitor,AltField, AltField.DataType, ref _alt);    
-            Int32Type.Accept(visitor,RelativeAltField, RelativeAltField.DataType, ref _relativeAlt);    
-            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
-            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
-            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
-            FloatType.Accept(visitor,CrsPowerField, CrsPowerField.DataType, ref _crsPower);    
-            FloatType.Accept(visitor,CrsAm90Field, CrsAm90Field.DataType, ref _crsAm90);    
-            FloatType.Accept(visitor,CrsAm150Field, CrsAm150Field.DataType, ref _crsAm150);    
-            FloatType.Accept(visitor,ClrPowerField, ClrPowerField.DataType, ref _clrPower);    
-            FloatType.Accept(visitor,ClrAm90Field, ClrAm90Field.DataType, ref _clrAm90);    
-            FloatType.Accept(visitor,ClrAm150Field, ClrAm150Field.DataType, ref _clrAm150);    
-            FloatType.Accept(visitor,TotalPowerField, TotalPowerField.DataType, ref _totalPower);    
-            FloatType.Accept(visitor,TotalFieldStrengthField, TotalFieldStrengthField.DataType, ref _totalFieldStrength);    
-            FloatType.Accept(visitor,TotalAm90Field, TotalAm90Field.DataType, ref _totalAm90);    
-            FloatType.Accept(visitor,TotalAm150Field, TotalAm150Field.DataType, ref _totalAm150);    
-            FloatType.Accept(visitor,Phi90CrsVsClrField, Phi90CrsVsClrField.DataType, ref _phi90CrsVsClr);    
-            FloatType.Accept(visitor,Phi150CrsVsClrField, Phi150CrsVsClrField.DataType, ref _phi150CrsVsClr);    
-            UInt16Type.Accept(visitor,GnssEphField, GnssEphField.DataType, ref _gnssEph);    
-            UInt16Type.Accept(visitor,GnssEpvField, GnssEpvField.DataType, ref _gnssEpv);    
-            UInt16Type.Accept(visitor,GnssVelField, GnssVelField.DataType, ref _gnssVel);    
-            Int16Type.Accept(visitor,VxField, VxField.DataType, ref _vx);
-            Int16Type.Accept(visitor,VyField, VyField.DataType, ref _vy);
-            Int16Type.Accept(visitor,VzField, VzField.DataType, ref _vz);
-            UInt16Type.Accept(visitor,HdgField, HdgField.DataType, ref _hdg);    
-            Int16Type.Accept(visitor,CrsCarrierOffsetField, CrsCarrierOffsetField.DataType, ref _crsCarrierOffset);
-            Int16Type.Accept(visitor,CrsFreq90Field, CrsFreq90Field.DataType, ref _crsFreq90);
-            Int16Type.Accept(visitor,CrsFreq150Field, CrsFreq150Field.DataType, ref _crsFreq150);
-            Int16Type.Accept(visitor,ClrCarrierOffsetField, ClrCarrierOffsetField.DataType, ref _clrCarrierOffset);
-            Int16Type.Accept(visitor,ClrFreq90Field, ClrFreq90Field.DataType, ref _clrFreq90);
-            Int16Type.Accept(visitor,ClrFreq150Field, ClrFreq150Field.DataType, ref _clrFreq150);
-            Int16Type.Accept(visitor,TotalCarrierOffsetField, TotalCarrierOffsetField.DataType, ref _totalCarrierOffset);
-            Int16Type.Accept(visitor,TotalFreq90Field, TotalFreq90Field.DataType, ref _totalFreq90);
-            Int16Type.Accept(visitor,TotalFreq150Field, TotalFreq150Field.DataType, ref _totalFreq150);
-            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TotalFreqField, ref _totalFreq);    
+            UInt32Type.Accept(visitor,DataIndexField, ref _dataIndex);    
+            Int32Type.Accept(visitor,GnssLatField, ref _gnssLat);    
+            Int32Type.Accept(visitor,GnssLonField, ref _gnssLon);    
+            Int32Type.Accept(visitor,GnssAltField, ref _gnssAlt);    
+            Int32Type.Accept(visitor,GnssAltEllipsoidField, ref _gnssAltEllipsoid);    
+            UInt32Type.Accept(visitor,GnssHAccField, ref _gnssHAcc);    
+            UInt32Type.Accept(visitor,GnssVAccField, ref _gnssVAcc);    
+            UInt32Type.Accept(visitor,GnssVelAccField, ref _gnssVelAcc);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LonField, ref _lon);    
+            Int32Type.Accept(visitor,AltField, ref _alt);    
+            Int32Type.Accept(visitor,RelativeAltField, ref _relativeAlt);    
+            FloatType.Accept(visitor,RollField, ref _roll);    
+            FloatType.Accept(visitor,PitchField, ref _pitch);    
+            FloatType.Accept(visitor,YawField, ref _yaw);    
+            FloatType.Accept(visitor,CrsPowerField, ref _crsPower);    
+            FloatType.Accept(visitor,CrsAm90Field, ref _crsAm90);    
+            FloatType.Accept(visitor,CrsAm150Field, ref _crsAm150);    
+            FloatType.Accept(visitor,ClrPowerField, ref _clrPower);    
+            FloatType.Accept(visitor,ClrAm90Field, ref _clrAm90);    
+            FloatType.Accept(visitor,ClrAm150Field, ref _clrAm150);    
+            FloatType.Accept(visitor,TotalPowerField, ref _totalPower);    
+            FloatType.Accept(visitor,TotalFieldStrengthField, ref _totalFieldStrength);    
+            FloatType.Accept(visitor,TotalAm90Field, ref _totalAm90);    
+            FloatType.Accept(visitor,TotalAm150Field, ref _totalAm150);    
+            FloatType.Accept(visitor,Phi90CrsVsClrField, ref _phi90CrsVsClr);    
+            FloatType.Accept(visitor,Phi150CrsVsClrField, ref _phi150CrsVsClr);    
+            UInt16Type.Accept(visitor,GnssEphField, ref _gnssEph);    
+            UInt16Type.Accept(visitor,GnssEpvField, ref _gnssEpv);    
+            UInt16Type.Accept(visitor,GnssVelField, ref _gnssVel);    
+            Int16Type.Accept(visitor,VxField, ref _vx);
+            Int16Type.Accept(visitor,VyField, ref _vy);
+            Int16Type.Accept(visitor,VzField, ref _vz);
+            UInt16Type.Accept(visitor,HdgField, ref _hdg);    
+            Int16Type.Accept(visitor,CrsCarrierOffsetField, ref _crsCarrierOffset);
+            Int16Type.Accept(visitor,CrsFreq90Field, ref _crsFreq90);
+            Int16Type.Accept(visitor,CrsFreq150Field, ref _crsFreq150);
+            Int16Type.Accept(visitor,ClrCarrierOffsetField, ref _clrCarrierOffset);
+            Int16Type.Accept(visitor,ClrFreq90Field, ref _clrFreq90);
+            Int16Type.Accept(visitor,ClrFreq150Field, ref _clrFreq150);
+            Int16Type.Accept(visitor,TotalCarrierOffsetField, ref _totalCarrierOffset);
+            Int16Type.Accept(visitor,TotalFreq90Field, ref _totalFreq90);
+            Int16Type.Accept(visitor,TotalFreq150Field, ref _totalFreq150);
+            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
             var tmpGnssFixType = (byte)GnssFixType;
-            UInt8Type.Accept(visitor,GnssFixTypeField, GnssFixTypeField.DataType, ref tmpGnssFixType);
+            UInt8Type.Accept(visitor,GnssFixTypeField, ref tmpGnssFixType);
             GnssFixType = (GpsFixType)tmpGnssFixType;
-            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, GnssSatellitesVisibleField.DataType, ref _gnssSatellitesVisible);    
+            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, ref _gnssSatellitesVisible);    
 
         }
 
@@ -6072,49 +6075,49 @@ namespace Asv.Mavlink.AsvSdr
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
-            UInt64Type.Accept(visitor,TotalFreqField, TotalFreqField.DataType, ref _totalFreq);    
-            UInt32Type.Accept(visitor,DataIndexField, DataIndexField.DataType, ref _dataIndex);    
-            Int32Type.Accept(visitor,GnssLatField, GnssLatField.DataType, ref _gnssLat);    
-            Int32Type.Accept(visitor,GnssLonField, GnssLonField.DataType, ref _gnssLon);    
-            Int32Type.Accept(visitor,GnssAltField, GnssAltField.DataType, ref _gnssAlt);    
-            Int32Type.Accept(visitor,GnssAltEllipsoidField, GnssAltEllipsoidField.DataType, ref _gnssAltEllipsoid);    
-            UInt32Type.Accept(visitor,GnssHAccField, GnssHAccField.DataType, ref _gnssHAcc);    
-            UInt32Type.Accept(visitor,GnssVAccField, GnssVAccField.DataType, ref _gnssVAcc);    
-            UInt32Type.Accept(visitor,GnssVelAccField, GnssVelAccField.DataType, ref _gnssVelAcc);    
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LonField, LonField.DataType, ref _lon);    
-            Int32Type.Accept(visitor,AltField, AltField.DataType, ref _alt);    
-            Int32Type.Accept(visitor,RelativeAltField, RelativeAltField.DataType, ref _relativeAlt);    
-            FloatType.Accept(visitor,RollField, RollField.DataType, ref _roll);    
-            FloatType.Accept(visitor,PitchField, PitchField.DataType, ref _pitch);    
-            FloatType.Accept(visitor,YawField, YawField.DataType, ref _yaw);    
-            FloatType.Accept(visitor,AzimuthField, AzimuthField.DataType, ref _azimuth);    
-            FloatType.Accept(visitor,PowerField, PowerField.DataType, ref _power);    
-            FloatType.Accept(visitor,FieldStrengthField, FieldStrengthField.DataType, ref _fieldStrength);    
-            FloatType.Accept(visitor,Am30Field, Am30Field.DataType, ref _am30);    
-            FloatType.Accept(visitor,Am9960Field, Am9960Field.DataType, ref _am9960);    
-            FloatType.Accept(visitor,DeviationField, DeviationField.DataType, ref _deviation);    
-            FloatType.Accept(visitor,CodeIdAm1020Field, CodeIdAm1020Field.DataType, ref _codeIdAm1020);    
-            UInt16Type.Accept(visitor,GnssEphField, GnssEphField.DataType, ref _gnssEph);    
-            UInt16Type.Accept(visitor,GnssEpvField, GnssEpvField.DataType, ref _gnssEpv);    
-            UInt16Type.Accept(visitor,GnssVelField, GnssVelField.DataType, ref _gnssVel);    
-            Int16Type.Accept(visitor,VxField, VxField.DataType, ref _vx);
-            Int16Type.Accept(visitor,VyField, VyField.DataType, ref _vy);
-            Int16Type.Accept(visitor,VzField, VzField.DataType, ref _vz);
-            UInt16Type.Accept(visitor,HdgField, HdgField.DataType, ref _hdg);    
-            Int16Type.Accept(visitor,CarrierOffsetField, CarrierOffsetField.DataType, ref _carrierOffset);
-            Int16Type.Accept(visitor,Freq30Field, Freq30Field.DataType, ref _freq30);
-            Int16Type.Accept(visitor,Freq9960Field, Freq9960Field.DataType, ref _freq9960);
-            Int16Type.Accept(visitor,CodeIdFreq1020Field, CodeIdFreq1020Field.DataType, ref _codeIdFreq1020);
-            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
-            ArrayType.Accept(visitor,RecordGuidField, RecordGuidField.DataType, 16,
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TotalFreqField, ref _totalFreq);    
+            UInt32Type.Accept(visitor,DataIndexField, ref _dataIndex);    
+            Int32Type.Accept(visitor,GnssLatField, ref _gnssLat);    
+            Int32Type.Accept(visitor,GnssLonField, ref _gnssLon);    
+            Int32Type.Accept(visitor,GnssAltField, ref _gnssAlt);    
+            Int32Type.Accept(visitor,GnssAltEllipsoidField, ref _gnssAltEllipsoid);    
+            UInt32Type.Accept(visitor,GnssHAccField, ref _gnssHAcc);    
+            UInt32Type.Accept(visitor,GnssVAccField, ref _gnssVAcc);    
+            UInt32Type.Accept(visitor,GnssVelAccField, ref _gnssVelAcc);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LonField, ref _lon);    
+            Int32Type.Accept(visitor,AltField, ref _alt);    
+            Int32Type.Accept(visitor,RelativeAltField, ref _relativeAlt);    
+            FloatType.Accept(visitor,RollField, ref _roll);    
+            FloatType.Accept(visitor,PitchField, ref _pitch);    
+            FloatType.Accept(visitor,YawField, ref _yaw);    
+            FloatType.Accept(visitor,AzimuthField, ref _azimuth);    
+            FloatType.Accept(visitor,PowerField, ref _power);    
+            FloatType.Accept(visitor,FieldStrengthField, ref _fieldStrength);    
+            FloatType.Accept(visitor,Am30Field, ref _am30);    
+            FloatType.Accept(visitor,Am9960Field, ref _am9960);    
+            FloatType.Accept(visitor,DeviationField, ref _deviation);    
+            FloatType.Accept(visitor,CodeIdAm1020Field, ref _codeIdAm1020);    
+            UInt16Type.Accept(visitor,GnssEphField, ref _gnssEph);    
+            UInt16Type.Accept(visitor,GnssEpvField, ref _gnssEpv);    
+            UInt16Type.Accept(visitor,GnssVelField, ref _gnssVel);    
+            Int16Type.Accept(visitor,VxField, ref _vx);
+            Int16Type.Accept(visitor,VyField, ref _vy);
+            Int16Type.Accept(visitor,VzField, ref _vz);
+            UInt16Type.Accept(visitor,HdgField, ref _hdg);    
+            Int16Type.Accept(visitor,CarrierOffsetField, ref _carrierOffset);
+            Int16Type.Accept(visitor,Freq30Field, ref _freq30);
+            Int16Type.Accept(visitor,Freq9960Field, ref _freq9960);
+            Int16Type.Accept(visitor,CodeIdFreq1020Field, ref _codeIdFreq1020);
+            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            ArrayType.Accept(visitor,RecordGuidField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref RecordGuid[index]));    
             var tmpGnssFixType = (byte)GnssFixType;
-            UInt8Type.Accept(visitor,GnssFixTypeField, GnssFixTypeField.DataType, ref tmpGnssFixType);
+            UInt8Type.Accept(visitor,GnssFixTypeField, ref tmpGnssFixType);
             GnssFixType = (GpsFixType)tmpGnssFixType;
-            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, GnssSatellitesVisibleField.DataType, ref _gnssSatellitesVisible);    
-            ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
+            UInt8Type.Accept(visitor,GnssSatellitesVisibleField, ref _gnssSatellitesVisible);    
+            ArrayType.Accept(visitor,CodeIdField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
         }

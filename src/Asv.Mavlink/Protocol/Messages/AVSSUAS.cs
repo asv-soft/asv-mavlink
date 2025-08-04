@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -435,11 +435,11 @@ namespace Asv.Mavlink.Avssuas
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
-            UInt32Type.Accept(visitor,ErrorStatusField, ErrorStatusField.DataType, ref _errorStatus);    
-            UInt32Type.Accept(visitor,BatteryStatusField, BatteryStatusField.DataType, ref _batteryStatus);    
-            UInt8Type.Accept(visitor,ArmStatusField, ArmStatusField.DataType, ref _armStatus);    
-            UInt8Type.Accept(visitor,ChargeStatusField, ChargeStatusField.DataType, ref _chargeStatus);    
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
+            UInt32Type.Accept(visitor,ErrorStatusField, ref _errorStatus);    
+            UInt32Type.Accept(visitor,BatteryStatusField, ref _batteryStatus);    
+            UInt8Type.Accept(visitor,ArmStatusField, ref _armStatus);    
+            UInt8Type.Accept(visitor,ChargeStatusField, ref _chargeStatus);    
 
         }
 
@@ -579,12 +579,12 @@ namespace Asv.Mavlink.Avssuas
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LonField, LonField.DataType, ref _lon);    
-            Int32Type.Accept(visitor,AltField, AltField.DataType, ref _alt);    
-            FloatType.Accept(visitor,GroundAltField, GroundAltField.DataType, ref _groundAlt);    
-            FloatType.Accept(visitor,BarometerAltField, BarometerAltField.DataType, ref _barometerAlt);    
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LonField, ref _lon);    
+            Int32Type.Accept(visitor,AltField, ref _alt);    
+            FloatType.Accept(visitor,GroundAltField, ref _groundAlt);    
+            FloatType.Accept(visitor,BarometerAltField, ref _barometerAlt);    
 
         }
 
@@ -752,17 +752,17 @@ namespace Asv.Mavlink.Avssuas
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
-            FloatType.Accept(visitor,Q1Field, Q1Field.DataType, ref _q1);    
-            FloatType.Accept(visitor,Q2Field, Q2Field.DataType, ref _q2);    
-            FloatType.Accept(visitor,Q3Field, Q3Field.DataType, ref _q3);    
-            FloatType.Accept(visitor,Q4Field, Q4Field.DataType, ref _q4);    
-            FloatType.Accept(visitor,XaccField, XaccField.DataType, ref _xacc);    
-            FloatType.Accept(visitor,YaccField, YaccField.DataType, ref _yacc);    
-            FloatType.Accept(visitor,ZaccField, ZaccField.DataType, ref _zacc);    
-            FloatType.Accept(visitor,XgyroField, XgyroField.DataType, ref _xgyro);    
-            FloatType.Accept(visitor,YgyroField, YgyroField.DataType, ref _ygyro);    
-            FloatType.Accept(visitor,ZgyroField, ZgyroField.DataType, ref _zgyro);    
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
+            FloatType.Accept(visitor,Q1Field, ref _q1);    
+            FloatType.Accept(visitor,Q2Field, ref _q2);    
+            FloatType.Accept(visitor,Q3Field, ref _q3);    
+            FloatType.Accept(visitor,Q4Field, ref _q4);    
+            FloatType.Accept(visitor,XaccField, ref _xacc);    
+            FloatType.Accept(visitor,YaccField, ref _yacc);    
+            FloatType.Accept(visitor,ZaccField, ref _zacc);    
+            FloatType.Accept(visitor,XgyroField, ref _xgyro);    
+            FloatType.Accept(visitor,YgyroField, ref _ygyro);    
+            FloatType.Accept(visitor,ZgyroField, ref _zgyro);    
 
         }
 
@@ -971,9 +971,9 @@ namespace Asv.Mavlink.Avssuas
 
         public void Accept(IVisitor visitor)
         {
-            UInt32Type.Accept(visitor,TimeBootMsField, TimeBootMsField.DataType, ref _timeBootMs);    
-            UInt8Type.Accept(visitor,M300OperationModeField, M300OperationModeField.DataType, ref _m300OperationMode);    
-            UInt8Type.Accept(visitor,HorseflyOperationModeField, HorseflyOperationModeField.DataType, ref _horseflyOperationMode);    
+            UInt32Type.Accept(visitor,TimeBootMsField, ref _timeBootMs);    
+            UInt8Type.Accept(visitor,M300OperationModeField, ref _m300OperationMode);    
+            UInt8Type.Accept(visitor,HorseflyOperationModeField, ref _horseflyOperationMode);    
 
         }
 

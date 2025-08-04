@@ -511,56 +511,56 @@ namespace Asv.Mavlink.{{ Namespace }}
     {%- if field.IsArray -%}
         {%- case field.Type -%}
             {%- when 'sbyte' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }}, (index, v, f, t) =>
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, (index, v, f, t) =>
             {
                 var tmp = (sbyte){{ field.CamelCaseName }}[index];
                 Int8Type.Accept(v,f,t, ref tmp);
                 {{ field.CamelCaseName }}[index] = ({{ field.EnumCamelCaseName }})tmp;
             });
             {%- when 'byte' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }}, (index, v, f, t) =>
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, (index, v, f, t) =>
             {
                 var tmp = (byte){{ field.CamelCaseName }}[index];
                 UInt8Type.Accept(v, f, t, ref tmp);
                 {{ field.CamelCaseName }}[index] = ({{ field.EnumCamelCaseName }})tmp;
             });
             {%- when 'short' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }}, (index, v, f, t) =>
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, (index, v, f, t) =>
             {
                 var tmp = (short){{ field.CamelCaseName }}[index];
                 Int16Type.Accept(v, f, t, ref tmp));
                 {{ field.CamelCaseName }}[index] = ({{ field.EnumCamelCaseName }})tmp;
             });
             {%- when 'ushort' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }}, (index, v, f, t) =>
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, (index, v, f, t) =>
             {
                 var tmp = (ushort){{ field.CamelCaseName }}[index];
                 UInt16Type.Accept(v, f, t, ref tmp);
                 {{ field.CamelCaseName }}[index] = ({{ field.EnumCamelCaseName }})tmp;
             });
             {%- when 'int' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }}, (index, v, f, t) =>
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, (index, v, f, t) =>
             {
                 var tmp = (int){{ field.CamelCaseName }}[index];
                 Int32Type.Accept(v, f, t, ref tmp);
                 {{ field.CamelCaseName }}[index] = ({{ field.EnumCamelCaseName }})tmp;
             });
             {%- when 'uint' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }}, (index, v, f, t) =>
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, (index, v, f, t) =>
             {
                 var tmp = (uint){{ field.CamelCaseName }}[index];
                 UInt32Type.Accept(v, f, t, ref tmp);
                 {{ field.CamelCaseName }}[index] = ({{ field.EnumCamelCaseName }})tmp;
             });
             {%- when 'long' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }}, (index, v, f, t) =>
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field,  (index, v, f, t) =>
             {
                 var tmp = (long){{ field.CamelCaseName }}[index];
                 Int64Type.Accept(v, f, t, ref tmp);
                 {{ field.CamelCaseName }}[index] = ({{ field.EnumCamelCaseName }})tmp;
             });
             {%- when 'ulong' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }}, (index, v, f, t) =>
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field,  (index, v, f, t) =>
             {
                 var tmp = (ulong){{ field.CamelCaseName }}[index];
                 UInt64Type.Accept(v, f, t, ref tmp);
@@ -576,35 +576,35 @@ namespace Asv.Mavlink.{{ Namespace }}
         {%- case field.Type -%}
             {%- when 'sbyte' -%}
             var tmp{{ field.CamelCaseName }} = (sbyte){{ field.CamelCaseName }};
-            Int8Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref tmp{{ field.CamelCaseName }});
+            Int8Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref tmp{{ field.CamelCaseName }});
             {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})tmp{{ field.CamelCaseName }};
             {%- when 'byte' -%}
             var tmp{{ field.CamelCaseName }} = (byte){{ field.CamelCaseName }};
-            UInt8Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref tmp{{ field.CamelCaseName }});
+            UInt8Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref tmp{{ field.CamelCaseName }});
             {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})tmp{{ field.CamelCaseName }};
             {%- when 'short' -%}
             var tmp{{ field.CamelCaseName }} = (short){{ field.CamelCaseName }};
-            Int16Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref tmp{{ field.CamelCaseName }});
+            Int16Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref tmp{{ field.CamelCaseName }});
             {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})tmp{{ field.CamelCaseName }};
             {%- when 'ushort' -%}
             var tmp{{ field.CamelCaseName }} = (ushort){{ field.CamelCaseName }};
-            UInt16Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref tmp{{ field.CamelCaseName }});
+            UInt16Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref tmp{{ field.CamelCaseName }});
             {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})tmp{{ field.CamelCaseName }};
             {%- when 'int' -%}
             var tmp{{ field.CamelCaseName }} = (int){{ field.CamelCaseName }};
-            Int32Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref tmp{{ field.CamelCaseName }});
+            Int32Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref tmp{{ field.CamelCaseName }});
             {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})tmp{{ field.CamelCaseName }};
             {%- when 'uint' -%}
             var tmp{{ field.CamelCaseName }} = (uint){{ field.CamelCaseName }};
-            UInt32Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref tmp{{ field.CamelCaseName }});
+            UInt32Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref tmp{{ field.CamelCaseName }});
             {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})tmp{{ field.CamelCaseName }};
             {%- when 'long' -%}
             var tmp{{ field.CamelCaseName }} = (long){{ field.CamelCaseName }};
-            Int64Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref tmp{{ field.CamelCaseName }});
+            Int64Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref tmp{{ field.CamelCaseName }});
             {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})tmp{{ field.CamelCaseName }};
             {%- when 'ulong' -%}
             var tmp{{ field.CamelCaseName }} = (ulong){{ field.CamelCaseName }};
-            UInt64Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref tmp{{ field.CamelCaseName }});
+            UInt64Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref tmp{{ field.CamelCaseName }});
             {{ field.CamelCaseName }} = ({{ field.EnumCamelCaseName }})tmp{{ field.CamelCaseName }};
             {%- when 'char' -%}
             {%- when 'float' -%}
@@ -616,63 +616,63 @@ namespace Asv.Mavlink.{{ Namespace }}
     {%- if field.IsArray -%}
         {%- case field.Type -%}
             {%- when 'char' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }}, 
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref {{ field.CamelCaseName }}[index]));
             {%- when 'sbyte' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }}, 
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field,  
                 (index, v, f, t) => Int8Type.Accept(v, f, t, ref {{ field.CamelCaseName }}[index]));
             {%- when 'byte' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }},
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref {{ field.CamelCaseName }}[index]));    
             {%- when 'short' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }},
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, 
                 (index, v, f, t) => Int16Type.Accept(v, f, t, ref {{ field.CamelCaseName }}[index]));    
             {%- when 'ushort' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }},
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, 
                 (index, v, f, t) => UInt16Type.Accept(v, f, t, ref {{ field.CamelCaseName }}[index]));    
             {%- when 'int' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }},
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, 
                 (index, v, f, t) => Int32Type.Accept(v, f, t, ref {{ field.CamelCaseName }}[index]));
             {%- when 'uint' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }},
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, 
                 (index, v, f, t) => UInt32Type.Accept(v, f, t, ref {{ field.CamelCaseName }}[index]));    
             {%- when 'long' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }},
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, 
                 (index, v, f, t) => Int64Type.Accept(v, f, t, ref {{ field.CamelCaseName }}[index]));    
             {%- when 'ulong' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }},
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, 
                 (index, v, f, t) => UInt64Type.Accept(v, f, t, ref {{ field.CamelCaseName }}[index]));    
             {%- when 'float' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }},
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, 
                 (index, v, f, t) => FloatType.Accept(v, f, t, ref {{ field.CamelCaseName }}[index]));
             {%- when 'double' -%}
-            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, {{ field.ArrayLength }},
+            ArrayType.Accept(visitor,{{ field.CamelCaseName }}Field, 
                 (index, v, f, t) => DoubleType.Accept(v, f, t, ref {{ field.CamelCaseName }}[index]));    
         {%- endcase -%}
     {%- else -%}
         {%- case field.Type -%}
             {%- when 'char' -%}
-            CharType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref {{ field.FieldCaseName }});
+            CharType.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});
             {%- when 'sbyte' -%}
-            Int8Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref {{ field.FieldCaseName }});                
+            Int8Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});                
             {%- when 'byte' -%}
-            UInt8Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref {{ field.FieldCaseName }});    
+            UInt8Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'short' -%}
-            Int16Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref {{ field.FieldCaseName }});
+            Int16Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});
             {%- when 'ushort' -%}
-            UInt16Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref {{ field.FieldCaseName }});    
+            UInt16Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'int' -%}
-            Int32Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref {{ field.FieldCaseName }});    
+            Int32Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'uint' -%}
-            UInt32Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref {{ field.FieldCaseName }});    
+            UInt32Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'long' -%}
-            Int64Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref {{ field.FieldCaseName }});    
+            Int64Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'ulong' -%}
-            UInt64Type.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref {{ field.FieldCaseName }});    
+            UInt64Type.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'float' -%}
-            FloatType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref {{ field.FieldCaseName }});    
+            FloatType.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});    
             {%- when 'double' -%}
-            DoubleType.Accept(visitor,{{ field.CamelCaseName }}Field, {{ field.CamelCaseName }}Field.DataType, ref {{ field.FieldCaseName }});
+            DoubleType.Accept(visitor,{{ field.CamelCaseName }}Field, ref {{ field.FieldCaseName }});
         {%- endcase -%}
     {%- endif -%}
 {%- endif -%}

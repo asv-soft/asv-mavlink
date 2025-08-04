@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -284,20 +284,20 @@ namespace Asv.Mavlink.AsvGbs
 
         public void Accept(IVisitor visitor)
         {
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LngField, LngField.DataType, ref _lng);    
-            Int32Type.Accept(visitor,AltField, AltField.DataType, ref _alt);    
-            UInt16Type.Accept(visitor,AccuracyField, AccuracyField.DataType, ref _accuracy);    
-            UInt16Type.Accept(visitor,ObservationField, ObservationField.DataType, ref _observation);    
-            UInt16Type.Accept(visitor,DgpsRateField, DgpsRateField.DataType, ref _dgpsRate);    
-            UInt8Type.Accept(visitor,SatAllField, SatAllField.DataType, ref _satAll);    
-            UInt8Type.Accept(visitor,SatGpsField, SatGpsField.DataType, ref _satGps);    
-            UInt8Type.Accept(visitor,SatGloField, SatGloField.DataType, ref _satGlo);    
-            UInt8Type.Accept(visitor,SatBduField, SatBduField.DataType, ref _satBdu);    
-            UInt8Type.Accept(visitor,SatGalField, SatGalField.DataType, ref _satGal);    
-            UInt8Type.Accept(visitor,SatQzsField, SatQzsField.DataType, ref _satQzs);    
-            UInt8Type.Accept(visitor,SatImeField, SatImeField.DataType, ref _satIme);    
-            UInt8Type.Accept(visitor,SatSbsField, SatSbsField.DataType, ref _satSbs);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LngField, ref _lng);    
+            Int32Type.Accept(visitor,AltField, ref _alt);    
+            UInt16Type.Accept(visitor,AccuracyField, ref _accuracy);    
+            UInt16Type.Accept(visitor,ObservationField, ref _observation);    
+            UInt16Type.Accept(visitor,DgpsRateField, ref _dgpsRate);    
+            UInt8Type.Accept(visitor,SatAllField, ref _satAll);    
+            UInt8Type.Accept(visitor,SatGpsField, ref _satGps);    
+            UInt8Type.Accept(visitor,SatGloField, ref _satGlo);    
+            UInt8Type.Accept(visitor,SatBduField, ref _satBdu);    
+            UInt8Type.Accept(visitor,SatGalField, ref _satGal);    
+            UInt8Type.Accept(visitor,SatQzsField, ref _satQzs);    
+            UInt8Type.Accept(visitor,SatImeField, ref _satIme);    
+            UInt8Type.Accept(visitor,SatSbsField, ref _satSbs);    
 
         }
 

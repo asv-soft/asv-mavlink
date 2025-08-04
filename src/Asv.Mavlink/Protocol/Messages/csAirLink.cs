@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -182,9 +182,9 @@ namespace Asv.Mavlink.Csairlink
 
         public void Accept(IVisitor visitor)
         {
-            ArrayType.Accept(visitor,LoginField, LoginField.DataType, 50, 
+            ArrayType.Accept(visitor,LoginField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref Login[index]));
-            ArrayType.Accept(visitor,PasswordField, PasswordField.DataType, 50, 
+            ArrayType.Accept(visitor,PasswordField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref Password[index]));
 
         }
@@ -274,7 +274,7 @@ namespace Asv.Mavlink.Csairlink
         public void Accept(IVisitor visitor)
         {
             var tmpRespType = (byte)RespType;
-            UInt8Type.Accept(visitor,RespTypeField, RespTypeField.DataType, ref tmpRespType);
+            UInt8Type.Accept(visitor,RespTypeField, ref tmpRespType);
             RespType = (AirlinkAuthResponseType)tmpRespType;
 
         }

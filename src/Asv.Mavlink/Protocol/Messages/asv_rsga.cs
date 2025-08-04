@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-07-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
 
 using System;
 using System.Text;
@@ -1032,9 +1032,9 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
-            UInt8Type.Accept(visitor,TargetSystemField, TargetSystemField.DataType, ref _targetSystem);    
-            UInt8Type.Accept(visitor,TargetComponentField, TargetComponentField.DataType, ref _targetComponent);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
+            UInt8Type.Accept(visitor,TargetSystemField, ref _targetSystem);    
+            UInt8Type.Accept(visitor,TargetComponentField, ref _targetComponent);    
 
         }
 
@@ -1149,11 +1149,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt16Type.Accept(visitor,RequestIdField, RequestIdField.DataType, ref _requestId);    
+            UInt16Type.Accept(visitor,RequestIdField, ref _requestId);    
             var tmpResult = (byte)Result;
-            UInt8Type.Accept(visitor,ResultField, ResultField.DataType, ref tmpResult);
+            UInt8Type.Accept(visitor,ResultField, ref tmpResult);
             Result = (AsvRsgaRequestAck)tmpResult;
-            ArrayType.Accept(visitor,SupportedModesField, SupportedModesField.DataType, 32,
+            ArrayType.Accept(visitor,SupportedModesField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref SupportedModes[index]));    
 
         }
@@ -1312,33 +1312,33 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,DataIndexField, DataIndexField.DataType, ref _dataIndex);    
-            Int32Type.Accept(visitor,LatField, LatField.DataType, ref _lat);    
-            Int32Type.Accept(visitor,LatErrField, LatErrField.DataType, ref _latErr);    
-            Int32Type.Accept(visitor,LonField, LonField.DataType, ref _lon);    
-            Int32Type.Accept(visitor,LonErrField, LonErrField.DataType, ref _lonErr);    
-            Int32Type.Accept(visitor,AltMslField, AltMslField.DataType, ref _altMsl);    
-            Int32Type.Accept(visitor,AltWgsField, AltWgsField.DataType, ref _altWgs);    
-            Int32Type.Accept(visitor,AltErrField, AltErrField.DataType, ref _altErr);    
-            UInt16Type.Accept(visitor,RefIdField, RefIdField.DataType, ref _refId);    
-            UInt16Type.Accept(visitor,HdopField, HdopField.DataType, ref _hdop);    
-            UInt16Type.Accept(visitor,VdopField, VdopField.DataType, ref _vdop);    
-            UInt16Type.Accept(visitor,SogField, SogField.DataType, ref _sog);    
-            UInt16Type.Accept(visitor,CogTrueField, CogTrueField.DataType, ref _cogTrue);    
-            UInt16Type.Accept(visitor,CogMagField, CogMagField.DataType, ref _cogMag);    
+            UInt32Type.Accept(visitor,DataIndexField, ref _dataIndex);    
+            Int32Type.Accept(visitor,LatField, ref _lat);    
+            Int32Type.Accept(visitor,LatErrField, ref _latErr);    
+            Int32Type.Accept(visitor,LonField, ref _lon);    
+            Int32Type.Accept(visitor,LonErrField, ref _lonErr);    
+            Int32Type.Accept(visitor,AltMslField, ref _altMsl);    
+            Int32Type.Accept(visitor,AltWgsField, ref _altWgs);    
+            Int32Type.Accept(visitor,AltErrField, ref _altErr);    
+            UInt16Type.Accept(visitor,RefIdField, ref _refId);    
+            UInt16Type.Accept(visitor,HdopField, ref _hdop);    
+            UInt16Type.Accept(visitor,VdopField, ref _vdop);    
+            UInt16Type.Accept(visitor,SogField, ref _sog);    
+            UInt16Type.Accept(visitor,CogTrueField, ref _cogTrue);    
+            UInt16Type.Accept(visitor,CogMagField, ref _cogMag);    
             var tmpReceiverType = (byte)ReceiverType;
-            UInt8Type.Accept(visitor,ReceiverTypeField, ReceiverTypeField.DataType, ref tmpReceiverType);
+            UInt8Type.Accept(visitor,ReceiverTypeField, ref tmpReceiverType);
             ReceiverType = (AsvRsgaRttGnssType)tmpReceiverType;
             var tmpGnssFlags = (byte)GnssFlags;
-            UInt8Type.Accept(visitor,GnssFlagsField, GnssFlagsField.DataType, ref tmpGnssFlags);
+            UInt8Type.Accept(visitor,GnssFlagsField, ref tmpGnssFlags);
             GnssFlags = (AsvRsgaRttGnssFlags)tmpGnssFlags;
-            UInt8Type.Accept(visitor,SatCntField, SatCntField.DataType, ref _satCnt);    
+            UInt8Type.Accept(visitor,SatCntField, ref _satCnt);    
             var tmpFixType = (byte)FixType;
-            UInt8Type.Accept(visitor,FixTypeField, FixTypeField.DataType, ref tmpFixType);
+            UInt8Type.Accept(visitor,FixTypeField, ref tmpFixType);
             FixType = (GpsFixType)tmpFixType;
 
         }
@@ -1665,11 +1665,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
@@ -1774,11 +1774,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
@@ -1883,11 +1883,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
@@ -1992,11 +1992,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
@@ -2101,11 +2101,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
@@ -2210,11 +2210,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
@@ -2319,11 +2319,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
@@ -2428,11 +2428,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
@@ -2537,11 +2537,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
@@ -2728,31 +2728,31 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
-            UInt64Type.Accept(visitor,TxFreqField, TxFreqField.DataType, ref _txFreq);    
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
-            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
-            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
-            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
-            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
-            FloatType.Accept(visitor,TxPowerField, TxPowerField.DataType, ref _txPower);    
-            FloatType.Accept(visitor,TxGainField, TxGainField.DataType, ref _txGain);    
-            FloatType.Accept(visitor,DistanceField, DistanceField.DataType, ref _distance);    
-            FloatType.Accept(visitor,ReplyEfficiencyField, ReplyEfficiencyField.DataType, ref _replyEfficiency);    
-            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
-            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
-            UInt16Type.Accept(visitor,PulseShapeRiseField, PulseShapeRiseField.DataType, ref _pulseShapeRise);    
-            UInt16Type.Accept(visitor,PulseShapeDurationField, PulseShapeDurationField.DataType, ref _pulseShapeDuration);    
-            UInt16Type.Accept(visitor,PulseShapeDecayField, PulseShapeDecayField.DataType, ref _pulseShapeDecay);    
-            UInt16Type.Accept(visitor,PulseSpacingField, PulseSpacingField.DataType, ref _pulseSpacing);    
-            UInt16Type.Accept(visitor,ReqFreqField, ReqFreqField.DataType, ref _reqFreq);    
-            UInt16Type.Accept(visitor,HipFreqField, HipFreqField.DataType, ref _hipFreq);    
-            Int8Type.Accept(visitor,PulseShapeAmplitudeField, PulseShapeAmplitudeField.DataType, ref _pulseShapeAmplitude);                
-            ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
+            UInt64Type.Accept(visitor,RxFreqField, ref _rxFreq);    
+            UInt64Type.Accept(visitor,TxFreqField, ref _txFreq);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            FloatType.Accept(visitor,RxPowerField, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
+            FloatType.Accept(visitor,TxPowerField, ref _txPower);    
+            FloatType.Accept(visitor,TxGainField, ref _txGain);    
+            FloatType.Accept(visitor,DistanceField, ref _distance);    
+            FloatType.Accept(visitor,ReplyEfficiencyField, ref _replyEfficiency);    
+            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            Int16Type.Accept(visitor,RxFreqOffsetField, ref _rxFreqOffset);
+            UInt16Type.Accept(visitor,PulseShapeRiseField, ref _pulseShapeRise);    
+            UInt16Type.Accept(visitor,PulseShapeDurationField, ref _pulseShapeDuration);    
+            UInt16Type.Accept(visitor,PulseShapeDecayField, ref _pulseShapeDecay);    
+            UInt16Type.Accept(visitor,PulseSpacingField, ref _pulseSpacing);    
+            UInt16Type.Accept(visitor,ReqFreqField, ref _reqFreq);    
+            UInt16Type.Accept(visitor,HipFreqField, ref _hipFreq);    
+            Int8Type.Accept(visitor,PulseShapeAmplitudeField, ref _pulseShapeAmplitude);                
+            ArrayType.Accept(visitor,CodeIdField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
         }
@@ -3244,45 +3244,45 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
-            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
-            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
-            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
-            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
-            FloatType.Accept(visitor,Am90Field, Am90Field.DataType, ref _am90);    
-            FloatType.Accept(visitor,Am150Field, Am150Field.DataType, ref _am150);    
-            FloatType.Accept(visitor,Phi90LowVsHighField, Phi90LowVsHighField.DataType, ref _phi90LowVsHigh);    
-            FloatType.Accept(visitor,Phi150LowVsHighField, Phi150LowVsHighField.DataType, ref _phi150LowVsHigh);    
-            FloatType.Accept(visitor,LowPowerField, LowPowerField.DataType, ref _lowPower);    
-            FloatType.Accept(visitor,LowAm90Field, LowAm90Field.DataType, ref _lowAm90);    
-            FloatType.Accept(visitor,LowAm150Field, LowAm150Field.DataType, ref _lowAm150);    
-            FloatType.Accept(visitor,HighPowerField, HighPowerField.DataType, ref _highPower);    
-            FloatType.Accept(visitor,HighAm90Field, HighAm90Field.DataType, ref _highAm90);    
-            FloatType.Accept(visitor,HighAm150Field, HighAm150Field.DataType, ref _highAm150);    
-            FloatType.Accept(visitor,CodeIdAm1020Field, CodeIdAm1020Field.DataType, ref _codeIdAm1020);    
-            FloatType.Accept(visitor,CodeIdAmMin1020Field, CodeIdAmMin1020Field.DataType, ref _codeIdAmMin1020);    
-            FloatType.Accept(visitor,CodeIdAmMax1020Field, CodeIdAmMax1020Field.DataType, ref _codeIdAmMax1020);    
-            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
-            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
-            Int16Type.Accept(visitor,Freq90Field, Freq90Field.DataType, ref _freq90);
-            Int16Type.Accept(visitor,Freq150Field, Freq150Field.DataType, ref _freq150);
-            Int16Type.Accept(visitor,LowCarrierOffsetField, LowCarrierOffsetField.DataType, ref _lowCarrierOffset);
-            Int16Type.Accept(visitor,LowFreq90Field, LowFreq90Field.DataType, ref _lowFreq90);
-            Int16Type.Accept(visitor,LowFreq150Field, LowFreq150Field.DataType, ref _lowFreq150);
-            Int16Type.Accept(visitor,HighCarrierOffsetField, HighCarrierOffsetField.DataType, ref _highCarrierOffset);
-            Int16Type.Accept(visitor,HighFreq90Field, HighFreq90Field.DataType, ref _highFreq90);
-            Int16Type.Accept(visitor,HighFreq150Field, HighFreq150Field.DataType, ref _highFreq150);
-            UInt16Type.Accept(visitor,CodeIdDotTimeField, CodeIdDotTimeField.DataType, ref _codeIdDotTime);    
-            UInt16Type.Accept(visitor,CodeIdDashTimeField, CodeIdDashTimeField.DataType, ref _codeIdDashTime);    
-            UInt16Type.Accept(visitor,CodeIdSymbolPauseField, CodeIdSymbolPauseField.DataType, ref _codeIdSymbolPause);    
-            UInt16Type.Accept(visitor,CodeIdCharPauseField, CodeIdCharPauseField.DataType, ref _codeIdCharPause);    
-            UInt16Type.Accept(visitor,CodeIdDelayField, CodeIdDelayField.DataType, ref _codeIdDelay);    
-            ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
+            UInt64Type.Accept(visitor,RxFreqField, ref _rxFreq);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            FloatType.Accept(visitor,RxPowerField, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
+            FloatType.Accept(visitor,Am90Field, ref _am90);    
+            FloatType.Accept(visitor,Am150Field, ref _am150);    
+            FloatType.Accept(visitor,Phi90LowVsHighField, ref _phi90LowVsHigh);    
+            FloatType.Accept(visitor,Phi150LowVsHighField, ref _phi150LowVsHigh);    
+            FloatType.Accept(visitor,LowPowerField, ref _lowPower);    
+            FloatType.Accept(visitor,LowAm90Field, ref _lowAm90);    
+            FloatType.Accept(visitor,LowAm150Field, ref _lowAm150);    
+            FloatType.Accept(visitor,HighPowerField, ref _highPower);    
+            FloatType.Accept(visitor,HighAm90Field, ref _highAm90);    
+            FloatType.Accept(visitor,HighAm150Field, ref _highAm150);    
+            FloatType.Accept(visitor,CodeIdAm1020Field, ref _codeIdAm1020);    
+            FloatType.Accept(visitor,CodeIdAmMin1020Field, ref _codeIdAmMin1020);    
+            FloatType.Accept(visitor,CodeIdAmMax1020Field, ref _codeIdAmMax1020);    
+            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            Int16Type.Accept(visitor,RxFreqOffsetField, ref _rxFreqOffset);
+            Int16Type.Accept(visitor,Freq90Field, ref _freq90);
+            Int16Type.Accept(visitor,Freq150Field, ref _freq150);
+            Int16Type.Accept(visitor,LowCarrierOffsetField, ref _lowCarrierOffset);
+            Int16Type.Accept(visitor,LowFreq90Field, ref _lowFreq90);
+            Int16Type.Accept(visitor,LowFreq150Field, ref _lowFreq150);
+            Int16Type.Accept(visitor,HighCarrierOffsetField, ref _highCarrierOffset);
+            Int16Type.Accept(visitor,HighFreq90Field, ref _highFreq90);
+            Int16Type.Accept(visitor,HighFreq150Field, ref _highFreq150);
+            UInt16Type.Accept(visitor,CodeIdDotTimeField, ref _codeIdDotTime);    
+            UInt16Type.Accept(visitor,CodeIdDashTimeField, ref _codeIdDashTime);    
+            UInt16Type.Accept(visitor,CodeIdSymbolPauseField, ref _codeIdSymbolPause);    
+            UInt16Type.Accept(visitor,CodeIdCharPauseField, ref _codeIdCharPause);    
+            UInt16Type.Accept(visitor,CodeIdDelayField, ref _codeIdDelay);    
+            ArrayType.Accept(visitor,CodeIdField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
         }
@@ -3907,36 +3907,36 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
-            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
-            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
-            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
-            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
-            FloatType.Accept(visitor,LowPowerField, LowPowerField.DataType, ref _lowPower);    
-            FloatType.Accept(visitor,LowAm90Field, LowAm90Field.DataType, ref _lowAm90);    
-            FloatType.Accept(visitor,LowAm150Field, LowAm150Field.DataType, ref _lowAm150);    
-            FloatType.Accept(visitor,HighPowerField, HighPowerField.DataType, ref _highPower);    
-            FloatType.Accept(visitor,HighAm90Field, HighAm90Field.DataType, ref _highAm90);    
-            FloatType.Accept(visitor,HighAm150Field, HighAm150Field.DataType, ref _highAm150);    
-            FloatType.Accept(visitor,Am90Field, Am90Field.DataType, ref _am90);    
-            FloatType.Accept(visitor,Am150Field, Am150Field.DataType, ref _am150);    
-            FloatType.Accept(visitor,Phi90LowVsHighField, Phi90LowVsHighField.DataType, ref _phi90LowVsHigh);    
-            FloatType.Accept(visitor,Phi150LowVsHighField, Phi150LowVsHighField.DataType, ref _phi150LowVsHigh);    
-            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
-            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
-            Int16Type.Accept(visitor,LowCarrierOffsetField, LowCarrierOffsetField.DataType, ref _lowCarrierOffset);
-            Int16Type.Accept(visitor,LowFreq90Field, LowFreq90Field.DataType, ref _lowFreq90);
-            Int16Type.Accept(visitor,LowFreq150Field, LowFreq150Field.DataType, ref _lowFreq150);
-            Int16Type.Accept(visitor,HighCarrierOffsetField, HighCarrierOffsetField.DataType, ref _highCarrierOffset);
-            Int16Type.Accept(visitor,HighFreq90Field, HighFreq90Field.DataType, ref _highFreq90);
-            Int16Type.Accept(visitor,HighFreq150Field, HighFreq150Field.DataType, ref _highFreq150);
-            Int16Type.Accept(visitor,Freq90Field, Freq90Field.DataType, ref _freq90);
-            Int16Type.Accept(visitor,Freq150Field, Freq150Field.DataType, ref _freq150);
+            UInt64Type.Accept(visitor,RxFreqField, ref _rxFreq);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            FloatType.Accept(visitor,RxPowerField, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
+            FloatType.Accept(visitor,LowPowerField, ref _lowPower);    
+            FloatType.Accept(visitor,LowAm90Field, ref _lowAm90);    
+            FloatType.Accept(visitor,LowAm150Field, ref _lowAm150);    
+            FloatType.Accept(visitor,HighPowerField, ref _highPower);    
+            FloatType.Accept(visitor,HighAm90Field, ref _highAm90);    
+            FloatType.Accept(visitor,HighAm150Field, ref _highAm150);    
+            FloatType.Accept(visitor,Am90Field, ref _am90);    
+            FloatType.Accept(visitor,Am150Field, ref _am150);    
+            FloatType.Accept(visitor,Phi90LowVsHighField, ref _phi90LowVsHigh);    
+            FloatType.Accept(visitor,Phi150LowVsHighField, ref _phi150LowVsHigh);    
+            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            Int16Type.Accept(visitor,RxFreqOffsetField, ref _rxFreqOffset);
+            Int16Type.Accept(visitor,LowCarrierOffsetField, ref _lowCarrierOffset);
+            Int16Type.Accept(visitor,LowFreq90Field, ref _lowFreq90);
+            Int16Type.Accept(visitor,LowFreq150Field, ref _lowFreq150);
+            Int16Type.Accept(visitor,HighCarrierOffsetField, ref _highCarrierOffset);
+            Int16Type.Accept(visitor,HighFreq90Field, ref _highFreq90);
+            Int16Type.Accept(visitor,HighFreq150Field, ref _highFreq150);
+            Int16Type.Accept(visitor,Freq90Field, ref _freq90);
+            Int16Type.Accept(visitor,Freq150Field, ref _freq150);
 
         }
 
@@ -4454,33 +4454,33 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
-            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
-            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
-            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
-            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
-            FloatType.Accept(visitor,AzimuthField, AzimuthField.DataType, ref _azimuth);    
-            FloatType.Accept(visitor,Am30Field, Am30Field.DataType, ref _am30);    
-            FloatType.Accept(visitor,Am9960Field, Am9960Field.DataType, ref _am9960);    
-            FloatType.Accept(visitor,DeviationField, DeviationField.DataType, ref _deviation);    
-            FloatType.Accept(visitor,CodeIdAm1020Field, CodeIdAm1020Field.DataType, ref _codeIdAm1020);    
-            FloatType.Accept(visitor,CodeIdAmMin1020Field, CodeIdAmMin1020Field.DataType, ref _codeIdAmMin1020);    
-            FloatType.Accept(visitor,CodeIdAmMax1020Field, CodeIdAmMax1020Field.DataType, ref _codeIdAmMax1020);    
-            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
-            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
-            Int16Type.Accept(visitor,Freq30Field, Freq30Field.DataType, ref _freq30);
-            Int16Type.Accept(visitor,Freq9960Field, Freq9960Field.DataType, ref _freq9960);
-            UInt16Type.Accept(visitor,CodeIdDotTimeField, CodeIdDotTimeField.DataType, ref _codeIdDotTime);    
-            UInt16Type.Accept(visitor,CodeIdDashTimeField, CodeIdDashTimeField.DataType, ref _codeIdDashTime);    
-            UInt16Type.Accept(visitor,CodeIdSymbolPauseField, CodeIdSymbolPauseField.DataType, ref _codeIdSymbolPause);    
-            UInt16Type.Accept(visitor,CodeIdCharPauseField, CodeIdCharPauseField.DataType, ref _codeIdCharPause);    
-            UInt16Type.Accept(visitor,CodeIdDelayField, CodeIdDelayField.DataType, ref _codeIdDelay);    
-            ArrayType.Accept(visitor,CodeIdField, CodeIdField.DataType, 4, 
+            UInt64Type.Accept(visitor,RxFreqField, ref _rxFreq);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            FloatType.Accept(visitor,RxPowerField, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
+            FloatType.Accept(visitor,AzimuthField, ref _azimuth);    
+            FloatType.Accept(visitor,Am30Field, ref _am30);    
+            FloatType.Accept(visitor,Am9960Field, ref _am9960);    
+            FloatType.Accept(visitor,DeviationField, ref _deviation);    
+            FloatType.Accept(visitor,CodeIdAm1020Field, ref _codeIdAm1020);    
+            FloatType.Accept(visitor,CodeIdAmMin1020Field, ref _codeIdAmMin1020);    
+            FloatType.Accept(visitor,CodeIdAmMax1020Field, ref _codeIdAmMax1020);    
+            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            Int16Type.Accept(visitor,RxFreqOffsetField, ref _rxFreqOffset);
+            Int16Type.Accept(visitor,Freq30Field, ref _freq30);
+            Int16Type.Accept(visitor,Freq9960Field, ref _freq9960);
+            UInt16Type.Accept(visitor,CodeIdDotTimeField, ref _codeIdDotTime);    
+            UInt16Type.Accept(visitor,CodeIdDashTimeField, ref _codeIdDashTime);    
+            UInt16Type.Accept(visitor,CodeIdSymbolPauseField, ref _codeIdSymbolPause);    
+            UInt16Type.Accept(visitor,CodeIdCharPauseField, ref _codeIdCharPause);    
+            UInt16Type.Accept(visitor,CodeIdDelayField, ref _codeIdDelay);    
+            ArrayType.Accept(visitor,CodeIdField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
         }
@@ -5027,44 +5027,44 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
-            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
-            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
-            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
-            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
-            FloatType.Accept(visitor,Am400Field, Am400Field.DataType, ref _am400);    
-            FloatType.Accept(visitor,Am400MaxField, Am400MaxField.DataType, ref _am400Max);    
-            FloatType.Accept(visitor,Am400MinField, Am400MinField.DataType, ref _am400Min);    
-            FloatType.Accept(visitor,Dot400Field, Dot400Field.DataType, ref _dot400);    
-            FloatType.Accept(visitor,Dash400Field, Dash400Field.DataType, ref _dash400);    
-            FloatType.Accept(visitor,Gap400Field, Gap400Field.DataType, ref _gap400);    
-            FloatType.Accept(visitor,Am1300Field, Am1300Field.DataType, ref _am1300);    
-            FloatType.Accept(visitor,Am1300MaxField, Am1300MaxField.DataType, ref _am1300Max);    
-            FloatType.Accept(visitor,Am1300MinField, Am1300MinField.DataType, ref _am1300Min);    
-            FloatType.Accept(visitor,Dot1300Field, Dot1300Field.DataType, ref _dot1300);    
-            FloatType.Accept(visitor,Dash1300Field, Dash1300Field.DataType, ref _dash1300);    
-            FloatType.Accept(visitor,Gap1300Field, Gap1300Field.DataType, ref _gap1300);    
-            FloatType.Accept(visitor,Am3000Field, Am3000Field.DataType, ref _am3000);    
-            FloatType.Accept(visitor,Am3000MaxField, Am3000MaxField.DataType, ref _am3000Max);    
-            FloatType.Accept(visitor,Am3000MinField, Am3000MinField.DataType, ref _am3000Min);    
-            FloatType.Accept(visitor,Dot3000Field, Dot3000Field.DataType, ref _dot3000);    
-            FloatType.Accept(visitor,Dash3000Field, Dash3000Field.DataType, ref _dash3000);    
-            FloatType.Accept(visitor,Gap3000Field, Gap3000Field.DataType, ref _gap3000);    
-            Int16Type.Accept(visitor,MeasureTimeField, MeasureTimeField.DataType, ref _measureTime);
-            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
-            Int16Type.Accept(visitor,Freq400Field, Freq400Field.DataType, ref _freq400);
-            Int16Type.Accept(visitor,Freq1300Field, Freq1300Field.DataType, ref _freq1300);
-            Int16Type.Accept(visitor,Freq3000Field, Freq3000Field.DataType, ref _freq3000);
-            ArrayType.Accept(visitor,CodeId400Field, CodeId400Field.DataType, 3, 
+            UInt64Type.Accept(visitor,RxFreqField, ref _rxFreq);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            FloatType.Accept(visitor,RxPowerField, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
+            FloatType.Accept(visitor,Am400Field, ref _am400);    
+            FloatType.Accept(visitor,Am400MaxField, ref _am400Max);    
+            FloatType.Accept(visitor,Am400MinField, ref _am400Min);    
+            FloatType.Accept(visitor,Dot400Field, ref _dot400);    
+            FloatType.Accept(visitor,Dash400Field, ref _dash400);    
+            FloatType.Accept(visitor,Gap400Field, ref _gap400);    
+            FloatType.Accept(visitor,Am1300Field, ref _am1300);    
+            FloatType.Accept(visitor,Am1300MaxField, ref _am1300Max);    
+            FloatType.Accept(visitor,Am1300MinField, ref _am1300Min);    
+            FloatType.Accept(visitor,Dot1300Field, ref _dot1300);    
+            FloatType.Accept(visitor,Dash1300Field, ref _dash1300);    
+            FloatType.Accept(visitor,Gap1300Field, ref _gap1300);    
+            FloatType.Accept(visitor,Am3000Field, ref _am3000);    
+            FloatType.Accept(visitor,Am3000MaxField, ref _am3000Max);    
+            FloatType.Accept(visitor,Am3000MinField, ref _am3000Min);    
+            FloatType.Accept(visitor,Dot3000Field, ref _dot3000);    
+            FloatType.Accept(visitor,Dash3000Field, ref _dash3000);    
+            FloatType.Accept(visitor,Gap3000Field, ref _gap3000);    
+            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            Int16Type.Accept(visitor,RxFreqOffsetField, ref _rxFreqOffset);
+            Int16Type.Accept(visitor,Freq400Field, ref _freq400);
+            Int16Type.Accept(visitor,Freq1300Field, ref _freq1300);
+            Int16Type.Accept(visitor,Freq3000Field, ref _freq3000);
+            ArrayType.Accept(visitor,CodeId400Field,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId400[index]));
-            ArrayType.Accept(visitor,CodeId1300Field, CodeId1300Field.DataType, 3, 
+            ArrayType.Accept(visitor,CodeId1300Field,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId1300[index]));
-            ArrayType.Accept(visitor,CodeId3000Field, CodeId3000Field.DataType, 3, 
+            ArrayType.Accept(visitor,CodeId3000Field,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId3000[index]));
 
         }
@@ -5575,11 +5575,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
@@ -5771,34 +5771,34 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt64Type.Accept(visitor,TxFreqField, TxFreqField.DataType, ref _txFreq);    
-            UInt64Type.Accept(visitor,RxFreqField, RxFreqField.DataType, ref _rxFreq);    
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
-            FloatType.Accept(visitor,TxPowerField, TxPowerField.DataType, ref _txPower);    
-            FloatType.Accept(visitor,TxGainField, TxGainField.DataType, ref _txGain);    
-            FloatType.Accept(visitor,RxPowerField, RxPowerField.DataType, ref _rxPower);    
-            FloatType.Accept(visitor,RxFieldStrengthField, RxFieldStrengthField.DataType, ref _rxFieldStrength);    
-            FloatType.Accept(visitor,RxSignalOverflowField, RxSignalOverflowField.DataType, ref _rxSignalOverflow);    
-            FloatType.Accept(visitor,RxGainField, RxGainField.DataType, ref _rxGain);    
-            UInt32Type.Accept(visitor,IcaoAddressField, IcaoAddressField.DataType, ref _icaoAddress);    
+            UInt64Type.Accept(visitor,TxFreqField, ref _txFreq);    
+            UInt64Type.Accept(visitor,RxFreqField, ref _rxFreq);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            FloatType.Accept(visitor,TxPowerField, ref _txPower);    
+            FloatType.Accept(visitor,TxGainField, ref _txGain);    
+            FloatType.Accept(visitor,RxPowerField, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
+            UInt32Type.Accept(visitor,IcaoAddressField, ref _icaoAddress);    
             var tmpUfCounterFlag = (uint)UfCounterFlag;
-            UInt32Type.Accept(visitor,UfCounterFlagField, UfCounterFlagField.DataType, ref tmpUfCounterFlag);
+            UInt32Type.Accept(visitor,UfCounterFlagField, ref tmpUfCounterFlag);
             UfCounterFlag = (AsvRsgaRttAdsbMsgUf)tmpUfCounterFlag;
             var tmpDfCounterPresent = (uint)DfCounterPresent;
-            UInt32Type.Accept(visitor,DfCounterPresentField, DfCounterPresentField.DataType, ref tmpDfCounterPresent);
+            UInt32Type.Accept(visitor,DfCounterPresentField, ref tmpDfCounterPresent);
             DfCounterPresent = (AsvRsgaRttAdsbMsgDf)tmpDfCounterPresent;
-            Int16Type.Accept(visitor,RxFreqOffsetField, RxFreqOffsetField.DataType, ref _rxFreqOffset);
-            UInt16Type.Accept(visitor,RefIdField, RefIdField.DataType, ref _refId);    
-            UInt16Type.Accept(visitor,SquawkField, SquawkField.DataType, ref _squawk);    
-            ArrayType.Accept(visitor,CallSignField, CallSignField.DataType, 8, 
+            Int16Type.Accept(visitor,RxFreqOffsetField, ref _rxFreqOffset);
+            UInt16Type.Accept(visitor,RefIdField, ref _refId);    
+            UInt16Type.Accept(visitor,SquawkField, ref _squawk);    
+            ArrayType.Accept(visitor,CallSignField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CallSign[index]));
-            ArrayType.Accept(visitor,UfCounterField, UfCounterField.DataType, 25,
+            ArrayType.Accept(visitor,UfCounterField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref UfCounter[index]));    
-            ArrayType.Accept(visitor,DfCounterField, DfCounterField.DataType, 25,
+            ArrayType.Accept(visitor,DfCounterField, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref DfCounter[index]));    
 
         }
@@ -6127,11 +6127,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
@@ -6236,11 +6236,11 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Accept(IVisitor visitor)
         {
-            UInt64Type.Accept(visitor,TimeUnixUsecField, TimeUnixUsecField.DataType, ref _timeUnixUsec);    
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
             var tmpFlags = (ulong)Flags;
-            UInt64Type.Accept(visitor,FlagsField, FlagsField.DataType, ref tmpFlags);
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
-            UInt32Type.Accept(visitor,IndexField, IndexField.DataType, ref _index);    
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
 
         }
 
