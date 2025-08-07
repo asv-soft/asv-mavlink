@@ -38,4 +38,5 @@ public interface IFtpClientEx
         byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default);
     Task<int> BurstDownloadFile(string filePath, IBufferWriter<byte> bufferToSave, IProgress<double>? progress = null,
         byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default);
+    Task RemoveDirectory(string path, bool recursive = true, CancellationToken cancel = default);
 }
