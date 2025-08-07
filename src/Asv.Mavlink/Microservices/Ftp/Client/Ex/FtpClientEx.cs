@@ -460,6 +460,61 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
             await Base.TerminateSession(session, cancel).ConfigureAwait(false);
         }
     }
+    
+    public async Task RemoveDirectory(
+        string path,
+        bool recursive = false,
+        CancellationToken cancel = default)
+    {
+        ArgumentNullException.ThrowIfNull(path);
+        MavlinkFtpHelper.CheckFolderPath(path);
+        cancel.ThrowIfCancellationRequested();
+
+        if (recursive)
+        {
+            await RemoveDirectoryRecursive(path).ConfigureAwait(false);
+        }
+        else
+        {
+            await Base.RemoveDirectory(path, cancel).ConfigureAwait(false);
+            _entryCache.Remove(path);
+        }
+
+        _logger.LogInformation("Directory removed: {Path}", path);
+        return;
+
+        async Task RemoveDirectoryRecursive(string dirPath)
+        {
+            await Refresh(dirPath, recursive: false, cancel).ConfigureAwait(false);
+
+            var children = _entryCache
+                .Where(kv => kv.Value.ParentPath == dirPath)
+                .Select(kv => kv.Value)
+                .ToList();
+
+            foreach (var child in children)
+            {
+                cancel.ThrowIfCancellationRequested();
+
+                switch (child.Type)
+                {
+                    case FtpEntryType.Directory:
+                        await RemoveDirectoryRecursive(child.Path).ConfigureAwait(false);
+                        break;
+                    case FtpEntryType.File:
+                        await Base.RemoveFile(child.Path, cancel).ConfigureAwait(false);
+                        _entryCache.Remove(child.Path);
+                        break;
+                    default:
+                        _logger.LogWarning("Unknown FTP entry type: {Type}", child.Type);
+                        break;
+                }
+            }
+
+            await Base.RemoveDirectory(dirPath, cancel).ConfigureAwait(false);
+            _entryCache.Remove(dirPath);
+        }
+    }
 
     #region Dispose
 

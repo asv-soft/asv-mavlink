@@ -450,6 +450,93 @@ public class FtpExComplexTest(ITestOutputHelper log)
         });
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
+    
+    [Theory]
+    [InlineData("empty", "empty")]
+    [InlineData("empty", "/empty/")]
+    [InlineData("empty", "/empty")]
+    [InlineData("empty", "empty/")]
+    public async Task RemoveDirectoryAsync_NonRecursive_Success(string pathNameToCreate, string pathNameToRemove)
+    {
+        // Arrange
+        _ = Server;
+        var dir = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, pathNameToCreate);
+        _fileSystem.AddDirectory(dir);
+
+        // Act
+        await Client.RemoveDirectory(pathNameToRemove, recursive: false, _cts.Token);
+
+        // Assert
+        _fileSystem.Directory.Exists(dir).Should().BeFalse();
+        Link.Server.Statistic.TxMessages.Should().Be(Link.Client.Statistic.RxMessages);
+    }
+
+    [Theory]
+    [InlineData("folder", "/folder/")]
+    [InlineData("folder", "folder/")]
+    public async Task RemoveDirectoryAsync_Recursive_Success(string pathNameToCreate, string pathNameToRemove)
+    {
+        // Arrange
+        _ = Server;
+        var root = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, pathNameToCreate);
+        _fileSystem.AddDirectory(root);
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(root, "child"));
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(root, "child", "grand"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(root, "file1.txt"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(root, "child", "file2.txt"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(root, "child", "grand", "file3.txt"));
+
+        // Act
+        await Client.RemoveDirectory(pathNameToRemove, recursive: true, _cts.Token);
+
+        // Assert
+        _fileSystem.Directory.Exists(root).Should().BeFalse();
+        _fileSystem.File.Exists(_fileSystem.Path.Combine(root, "file1.txt")).Should().BeFalse();
+        Link.Server.Statistic.TxMessages.Should().Be(Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task RemoveDirectoryAsync_NonRecursive_ThrowsNack()
+    {
+        // Arrange
+        _ = Server;
+        var folderName = "folder";
+        var root = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, folderName);
+        _fileSystem.AddDirectory(root);
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(root, "child"));
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(root, "child", "grand"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(root, "file1.txt"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(root, "child", "file2.txt"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(root, "child", "grand", "file3.txt"));
+
+        // Act
+        var task = Client.RemoveDirectory($"/{folderName}", recursive: false, _cts.Token);
+
+        // Assert
+        await Assert.ThrowsAsync<FtpNackException>(async () => await task);
+        _fileSystem.Directory.Exists(root).Should().BeTrue();
+        _fileSystem.File.Exists(_fileSystem.Path.Combine(root, "file1.txt")).Should().BeTrue();
+        Link.Server.Statistic.TxMessages.Should().Be(Link.Client.Statistic.RxMessages);
+    }
+
+    [Fact]
+    public async Task RemoveDirectoryAsync_Recursive_ThrowsByCancellation()
+    {
+        // Arrange
+        _ = Server;
+        var folderName = "folder";
+        var root = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, folderName);
+        _fileSystem.AddDirectory(root);
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(root, "file1.txt"));
+        await _cts.CancelAsync();
+
+        // Act
+        var task = Client.RemoveDirectory($"/{folderName}", recursive: true, _cts.Token);
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(() => task);
+        Link.Server.Statistic.TxMessages.Should().Be(Link.Client.Statistic.RxMessages);
+    }
 
     protected override void Dispose(bool disposing)
     {
