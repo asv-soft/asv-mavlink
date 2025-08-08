@@ -23,7 +23,7 @@ Options:
 ```
 
 ### Possible outputs and behavior
-
+```bash
 | Scenario                     | Console Output                                                    | Type    |
 | ---------------------------- |-------------------------------------------------------------------| ------- |
 | Successful export            | Export completed. Data saved to <output-file>                     | Info    |
@@ -32,5 +32,4 @@ Options:
 | Incomplete record at the end | Warning: Incomplete record detected at the end of file. Skipping. | Warning |
 | Access denied                | Access denied: <error message>                                    | Error   |
 | Unexpected error             | Unexpected error: <error message>                                 | Error   |
-
-
+```
