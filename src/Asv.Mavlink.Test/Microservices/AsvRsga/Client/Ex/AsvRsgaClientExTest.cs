@@ -27,7 +27,7 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
     };
 
     private readonly HeartbeatClientConfig _heartbeatClientConfig = new();
-    private HeartbeatClient _heartbeatClient;
+    private HeartbeatClient? _heartbeatClient;
 
     protected override AsvRsgaClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
     {
@@ -45,6 +45,10 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
     [Fact]
     public void Constructor_Null_Throws()
     {
+        if (_heartbeatClient == null)
+        {
+            throw new NullReferenceException("_heartbeatClient is not initialized");
+        }
         // Act
         Assert.Throws<NullReferenceException>(() =>
             new AsvRsgaClientEx(null!, new CommandClient(Client.Base.Identity, _commandCore, Client.Base.Core),_heartbeatClient));

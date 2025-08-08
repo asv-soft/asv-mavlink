@@ -28,7 +28,7 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
     private readonly CommandProtocolConfig _commandConfig = new();
     
     private readonly MissionClientEx _client;
-    private CommandClient _command;
+    private CommandClient? _command;
     
 
     public MissionClientExTest(ITestOutputHelper log) : base(log)
@@ -45,6 +45,10 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
     [Fact]
     public void Constructor_Null_Throws()
     {
+        if (_command == null)
+        {
+            throw new NullReferenceException("Command client is not initialized");
+        }
         Assert.Throws<NullReferenceException>(() => new MissionClientEx(null!, _command, _config));
         Assert.Throws<ArgumentNullException>(() => new MissionClientEx(
             new MissionClient(Identity, _config, Context), 

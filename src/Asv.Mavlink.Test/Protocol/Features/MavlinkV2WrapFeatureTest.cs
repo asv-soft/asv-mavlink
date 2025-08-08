@@ -54,8 +54,7 @@ public class MavlinkV2WrapFeatureTest
 #pragma warning disable CS8604 // Possible null reference argument.
             await _link.Client.Send(origin);
 #pragma warning restore CS8604 // Possible null reference argument.
-            await tcs.Task;
-            var recv = tcs.Task.Result;
+            var recv = await tcs.Task;
             if (origin.WrapToV2Extension)
             {
                 Assert.IsType<V2ExtensionPacket>(recv);

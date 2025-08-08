@@ -31,7 +31,6 @@
     <PackageReference Include="ZLogger" Version="$(ZLoggerVersion)" />
     <PackageReference Include="TestableIO.System.IO.Abstractions" Version="$(SystemIOAbstractionsVersion)" />
     <PackageReference Include="System.IO.Abstractions" Version="$(SystemIOAbstractionsVersion)" />
-    <PackageReference Include="Geodesy" Version="4.1.0" />    
   </ItemGroup>
   <ItemGroup>
     <Compile Update="RS.Designer.cs">

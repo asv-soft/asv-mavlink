@@ -66,12 +66,12 @@ public class ClientModeTest(ITestOutputHelper log) : ClientTestBase<ModeClient>(
             });
             await Assert.ThrowsAsync<TimeoutException>(() => client.SetMode(mode));
             
-            await tcs.Task;
+            var result = await tcs.Task;
             mode.GetCommandLongArgs(out var baseMode, out var customMode, out var subMode); 
-            Assert.Equal(tcs.Task.Result.Param1,baseMode);
-            Assert.Equal(tcs.Task.Result.Param2,customMode);
-            Assert.Equal(tcs.Task.Result.Param3,subMode);
-            Assert.Equal(MavCmd.MavCmdDoSetMode,tcs.Task.Result.Command);
+            Assert.Equal(result.Param1,baseMode);
+            Assert.Equal(result.Param2,customMode);
+            Assert.Equal(result.Param3,subMode);
+            Assert.Equal(MavCmd.MavCmdDoSetMode,result.Command);
         }
     }
     

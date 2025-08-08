@@ -276,7 +276,7 @@ namespace Asv.Mavlink.Test
                     origin.ShouldDeepEqual(readPacket);
                     
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Debug.Assert(origin != null, nameof(origin) + " != null");
                     _output.WriteLine(

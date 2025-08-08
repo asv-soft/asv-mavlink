@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Common;
 using Asv.Mavlink.Common;
 
 using Microsoft.Extensions.Logging;
@@ -124,7 +125,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         await using var c1 = linkedCancel.Token.Register(() => tcs.TrySetCanceled(), false);
         var current = 0;
         var lastUpdateTime = DateTime.Now;
-        await using var checkTimer = Base.Core.TimeProvider.CreateTimer(x =>
+        await using var checkTimer = Base.Core.TimeProvider.CreateTimer(_ =>
         {
             if (DateTime.Now - lastUpdateTime <= _deviceUploadTimeout)
             {
@@ -134,8 +135,8 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
             _logger.ZLogWarning($"Mission upload timeout");
             tcs.TrySetException(new MavlinkException("Mission upload timeout"));
         }, null, _deviceUploadTimeout, _deviceUploadTimeout); 
-        using var sub1 = _client.OnMissionRequest.SubscribeAwait(
-            async (req, ct) =>
+        using var sub1 = _client.OnMissionRequest.SubscribeAwait(linkedCancel.Token,
+            async (req, _, c) =>
         {
             _logger.ZLogDebug($"UAV request {req.Seq} item");
             lastUpdateTime = DateTime.Now;
@@ -148,7 +149,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
                 return;
             }
             
-            await _client.WriteMissionItem(item, cancel).ConfigureAwait(false);
+            await _client.WriteMissionItem(item, c).ConfigureAwait(false);
         } );
 
         using var sub2 = _client.OnMissionAck.Subscribe(p =>
@@ -164,7 +165,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
             }
         });
 
-        await _client.MissionSetCount((ushort) _missionSource.Count, cancel).ConfigureAwait(false);
+        await _client.MissionSetCount((ushort) _missionSource.Count, linkedCancel.Token).ConfigureAwait(false);
         await tcs.Task.ConfigureAwait(false);
         progress?.Invoke(1);
         _isMissionSynced.Value = true;

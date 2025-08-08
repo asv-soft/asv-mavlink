@@ -69,7 +69,6 @@ public static class MavlinkTypesHelper
     
     public static void SetString(Span<byte> data,string value)
     {
-        if (data == null) throw new ArgumentNullException(nameof(data));
         if (value.IsNullOrWhiteSpace())
         {
             for (var i = 0; i < data.Length; i++)
@@ -106,7 +105,7 @@ public static class MavlinkTypesHelper
     
     public static string GetString(byte[] data)
     {
-        if (data == null) throw new ArgumentNullException(nameof(data));
+        ArgumentNullException.ThrowIfNull(data);
         var sb = new StringBuilder(data.Length);
         foreach (var _ in data)
         {
@@ -118,7 +117,6 @@ public static class MavlinkTypesHelper
     
     public static string GetString(ReadOnlySpan<byte> data)
     {
-        if (data == null) throw new ArgumentNullException(nameof(data));
         var sb = new StringBuilder(data.Length);
         foreach (var _ in data)
         {
