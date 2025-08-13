@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-08-13.
 
 using System;
 using System.Text;
@@ -80,6 +80,7 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest0Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_0";
+
     }
 
     /// <summary>
@@ -258,6 +259,7 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest1Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_1";
+
     }
 
     /// <summary>
@@ -344,6 +346,7 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest3Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_3";
+
     }
 
     /// <summary>
@@ -447,6 +450,7 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest4Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_4";
+
     }
 
     /// <summary>
@@ -550,6 +554,7 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest5Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_5";
+
     }
 
     /// <summary>
@@ -685,6 +690,7 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest6Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_6";
+
     }
 
     /// <summary>
@@ -1034,6 +1040,7 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest7Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_7";
+
     }
 
     /// <summary>
@@ -1332,6 +1339,7 @@ namespace Asv.Mavlink.PythonArrayTest
         public override ArrayTest8Payload Payload { get; } = new();
 
         public override string Name => "ARRAY_TEST_8";
+
     }
 
     /// <summary>

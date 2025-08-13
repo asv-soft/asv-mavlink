@@ -2,11 +2,29 @@ using System;
 
 namespace Asv.Mavlink;
 
-public class MavlinkIdentity(byte systemId, byte componentId) : IEquatable<MavlinkIdentity>
+public class MavlinkIdentity : IEquatable<MavlinkIdentity>
 {
-    public ushort FullId { get; } = MavlinkHelper.ConvertToFullId(componentId, systemId);
-    public byte ComponentId { get; } = componentId;
-    public byte SystemId { get; } = systemId;
+    private readonly byte _componentId;
+    private readonly byte _systemId;
+
+    public MavlinkIdentity(ushort fullId)
+    {
+        FullId = fullId;
+        MavlinkHelper.ConvertFromId(fullId, out _componentId, out _systemId);
+    }
+
+    public MavlinkIdentity(byte systemId, byte componentId)
+    {
+        FullId = MavlinkHelper.ConvertToFullId(componentId, systemId);
+        _componentId = componentId;
+        _systemId = systemId;
+    }
+
+    public ushort FullId { get; }
+
+    public byte ComponentId => _componentId;
+
+    public byte SystemId => _systemId;
 
     public bool Equals(MavlinkIdentity? other)
     {
@@ -42,6 +60,19 @@ public class MavlinkIdentity(byte systemId, byte componentId) : IEquatable<Mavli
     {
         return $"[{SystemId}.{ComponentId}]";
     }
+    
+    public static MavlinkIdentity Parse(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) throw new ArgumentNullException(nameof(value), "Mavlink identity cannot be null or empty");
+        value = value.Trim('[', ']', ' ', '\t', '\r', '\n');
+        var parts = value.Split('.');
+        if (parts.Length != 2) throw new ArgumentException("Mavlink identity must be in format 'systemId.componentId'", nameof(value));
+        if (!byte.TryParse(parts[0], out var systemId)) throw new ArgumentException("Invalid systemId in mavlink identity", nameof(value));
+        if (!byte.TryParse(parts[1], out var componentId)) throw new ArgumentException("Invalid componentId in mavlink identity", nameof(value));
+        return new MavlinkIdentity(systemId, componentId);
+    }
+
+    
 }
 
 public class MavlinkClientIdentity :IEquatable<MavlinkClientIdentity>

@@ -1,9 +1,9 @@
 <Project>
   <PropertyGroup>
-    <ProductVersion>4.0.17-dev.8</ProductVersion>
+    <ProductVersion>4.0.17-dev.9</ProductVersion>
     <TargetFrameworksValue>net8.0;net9.0</TargetFrameworksValue>
     <DotNetVersion>9.0.7</DotNetVersion>
-    <AsvCommonVersion>3.2.9-dev.5</AsvCommonVersion>
+    <AsvCommonVersion>3.2.9-dev.7</AsvCommonVersion>
     <ZLoggerVersion>2.5.10</ZLoggerVersion>
     <ConsoleAppFrameworkVersion>5.5.0</ConsoleAppFrameworkVersion>
     <SystemIOAbstractionsVersion>22.0.15</SystemIOAbstractionsVersion>

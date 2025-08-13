@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-08-13.
 
 using System;
 using System.Text;
@@ -602,6 +602,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrOutStatusPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_OUT_STATUS";
+
     }
 
     /// <summary>
@@ -911,6 +912,19 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_REQUEST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -1052,6 +1066,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_RESPONSE";
+
     }
 
     /// <summary>
@@ -1161,6 +1176,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD";
+
     }
 
     /// <summary>
@@ -1405,6 +1421,19 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDeleteRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DELETE_REQUEST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -1542,6 +1571,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDeleteResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DELETE_RESPONSE";
+
     }
 
     /// <summary>
@@ -1664,6 +1694,19 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordTagRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_TAG_REQUEST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -1835,6 +1878,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordTagResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_TAG_RESPONSE";
+
     }
 
     /// <summary>
@@ -1944,6 +1988,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordTagPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_TAG";
+
     }
 
     /// <summary>
@@ -2136,6 +2181,19 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordTagDeleteRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_TAG_DELETE_REQUEST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -2298,6 +2356,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordTagDeleteResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_TAG_DELETE_RESPONSE";
+
     }
 
     /// <summary>
@@ -2445,6 +2504,19 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDataRequestPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DATA_REQUEST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -2616,6 +2688,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDataResponsePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DATA_RESPONSE";
+
     }
 
     /// <summary>
@@ -2774,6 +2847,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibAccPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_ACC";
+
     }
 
     /// <summary>
@@ -2866,6 +2940,19 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTableReadPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE_READ";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -2990,6 +3077,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTablePayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE";
+
     }
 
     /// <summary>
@@ -3139,6 +3227,19 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTableRowReadPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE_ROW_READ";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -3280,6 +3381,19 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTableRowPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE_ROW";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -3472,6 +3586,19 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTableUploadStartPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE_UPLOAD_START";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -3630,6 +3757,19 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrCalibTableUploadReadCallbackPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_CALIB_TABLE_UPLOAD_READ_CALLBACK";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -3771,6 +3911,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrSignalRawPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_SIGNAL_RAW";
+
     }
 
     /// <summary>
@@ -4015,6 +4156,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDataLlzPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DATA_LLZ";
+
     }
 
     /// <summary>
@@ -4990,6 +5132,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDataGpPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DATA_GP";
+
     }
 
     /// <summary>
@@ -5894,6 +6037,7 @@ namespace Asv.Mavlink.AsvSdr
         public override AsvSdrRecordDataVorPayload Payload { get; } = new();
 
         public override string Name => "ASV_SDR_RECORD_DATA_VOR";
+
     }
 
     /// <summary>

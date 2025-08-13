@@ -12,8 +12,10 @@ namespace Asv.Mavlink.Shell
         public IList<MessageFieldModel> Fields { get; set; } = new List<MessageFieldModel>();
         public IList<MessageFieldModel> ExtendedFields { get; set; } = new List<MessageFieldModel>();
 
-        public bool HasArrayFields => Fields.Any(_ => _.IsArray) || ExtendedFields.Any(_=>_.IsArray);
+        public bool HasArrayFields => Fields.Any(m => m.IsArray) || ExtendedFields.Any(m=>m.IsArray);
         public bool WrapToV2Extension { get; set; }
+        public bool HasTargetSystemAndComponentIdFields => Fields.Any(x=> x is { Name: "target_system", Type: MessageFieldType.Uint8 }) &&
+                                                    Fields.Any(x=> x is { Name: "target_component", Type: MessageFieldType.Uint8 });
 
         public override string ToString()
         {

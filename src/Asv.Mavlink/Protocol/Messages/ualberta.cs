@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-08-13.
 
 using System;
 using System.Text;
@@ -201,6 +201,7 @@ namespace Asv.Mavlink.Ualberta
         public override NavFilterBiasPayload Payload { get; } = new();
 
         public override string Name => "NAV_FILTER_BIAS";
+
     }
 
     /// <summary>
@@ -376,6 +377,7 @@ namespace Asv.Mavlink.Ualberta
         public override RadioCalibrationPayload Payload { get; } = new();
 
         public override string Name => "RADIO_CALIBRATION";
+
     }
 
     /// <summary>
@@ -587,6 +589,7 @@ namespace Asv.Mavlink.Ualberta
         public override UalbertaSysStatusPayload Payload { get; } = new();
 
         public override string Name => "UALBERTA_SYS_STATUS";
+
     }
 
     /// <summary>

@@ -33,6 +33,18 @@ public abstract class MavlinkMessage : IProtocolMessage<int>
     
     public byte ComponentId { get; set; }
     
+    public virtual bool TrySetTargetId(byte systemId, byte componentId)
+    {
+        return false;
+    }
+    
+    public virtual bool TryGetTargetId(out byte systemId, out byte componentId)
+    {
+        systemId = 0;
+        componentId = 0;
+        return false;
+    }
+    
     public MavlinkIdentity FullId => new(SystemId, ComponentId);
     
 }

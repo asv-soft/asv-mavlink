@@ -64,6 +64,7 @@ namespace Asv.Mavlink.Shell
                                                              PayloadByteSize = msg.GetAllFields().Sum(_=>_.FieldByteSize),
                                                              ExtendedFieldsLength = msg.ExtendedFields.Sum(_=>_.FieldByteSize),
                                                              WrapToV2Extension = msg.WrapToV2Extension,
+                                                             HasTargetSystemIdComponentId = msg.HasTargetSystemAndComponentIdFields,
                                                              Fields = msg.GetAllFields().Select((field,i) =>
                                                                                             new
                                                                                             {

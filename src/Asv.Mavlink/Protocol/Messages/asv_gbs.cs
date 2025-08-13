@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-08-13.
 
 using System;
 using System.Text;
@@ -210,6 +210,7 @@ namespace Asv.Mavlink.AsvGbs
         public override AsvGbsOutStatusPayload Payload { get; } = new();
 
         public override string Name => "ASV_GBS_OUT_STATUS";
+
     }
 
     /// <summary>

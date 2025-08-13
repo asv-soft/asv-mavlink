@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-08-13.
 
 using System;
 using System.Text;
@@ -715,6 +715,7 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerInformationPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_INFORMATION";
+
     }
 
     /// <summary>
@@ -928,6 +929,7 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerStatusPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_STATUS";
+
     }
 
     /// <summary>
@@ -1077,6 +1079,19 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerControlPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CONTROL";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -1322,6 +1337,19 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerControlPitchyawPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CONTROL_PITCHYAW";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -1554,6 +1582,19 @@ namespace Asv.Mavlink.Storm32
         public override Storm32GimbalManagerCorrectRollPayload Payload { get; } = new();
 
         public override string Name => "STORM32_GIMBAL_MANAGER_CORRECT_ROLL";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -1697,6 +1738,7 @@ namespace Asv.Mavlink.Storm32
         public override QshotStatusPayload Payload { get; } = new();
 
         public override string Name => "QSHOT_STATUS";
+
     }
 
     /// <summary>
@@ -1789,6 +1831,7 @@ namespace Asv.Mavlink.Storm32
         public override RadioRcChannelsPayload Payload { get; } = new();
 
         public override string Name => "RADIO_RC_CHANNELS";
+
     }
 
     /// <summary>
@@ -1910,6 +1953,7 @@ namespace Asv.Mavlink.Storm32
         public override RadioLinkStatsPayload Payload { get; } = new();
 
         public override string Name => "RADIO_LINK_STATS";
+
     }
 
     /// <summary>
@@ -2223,6 +2267,7 @@ namespace Asv.Mavlink.Storm32
         public override FrskyPassthroughArrayPayload Payload { get; } = new();
 
         public override string Name => "FRSKY_PASSTHROUGH_ARRAY";
+
     }
 
     /// <summary>
@@ -2343,6 +2388,7 @@ namespace Asv.Mavlink.Storm32
         public override ParamValueArrayPayload Payload { get; } = new();
 
         public override string Name => "PARAM_VALUE_ARRAY";
+
     }
 
     /// <summary>

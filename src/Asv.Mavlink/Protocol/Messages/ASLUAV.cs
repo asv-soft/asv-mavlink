@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-08-13.
 
 using System;
 using System.Text;
@@ -211,6 +211,19 @@ namespace Asv.Mavlink.Asluav
         public override CommandIntStampedPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_INT_STAMPED";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -526,6 +539,19 @@ namespace Asv.Mavlink.Asluav
         public override CommandLongStampedPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_LONG_STAMPED";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -805,6 +831,7 @@ namespace Asv.Mavlink.Asluav
         public override SensPowerPayload Payload { get; } = new();
 
         public override string Name => "SENS_POWER";
+
     }
 
     /// <summary>
@@ -929,6 +956,7 @@ namespace Asv.Mavlink.Asluav
         public override SensMpptPayload Payload { get; } = new();
 
         public override string Name => "SENS_MPPT";
+
     }
 
     /// <summary>
@@ -1206,6 +1234,7 @@ namespace Asv.Mavlink.Asluav
         public override AslctrlDataPayload Payload { get; } = new();
 
         public override string Name => "ASLCTRL_DATA";
+
     }
 
     /// <summary>
@@ -1687,6 +1716,7 @@ namespace Asv.Mavlink.Asluav
         public override AslctrlDebugPayload Payload { get; } = new();
 
         public override string Name => "ASLCTRL_DEBUG";
+
     }
 
     /// <summary>
@@ -1930,6 +1960,7 @@ namespace Asv.Mavlink.Asluav
         public override AsluavStatusPayload Payload { get; } = new();
 
         public override string Name => "ASLUAV_STATUS";
+
     }
 
     /// <summary>
@@ -2067,6 +2098,7 @@ namespace Asv.Mavlink.Asluav
         public override EkfExtPayload Payload { get; } = new();
 
         public override string Name => "EKF_EXT";
+
     }
 
     /// <summary>
@@ -2242,6 +2274,7 @@ namespace Asv.Mavlink.Asluav
         public override AslObctrlPayload Payload { get; } = new();
 
         public override string Name => "ASL_OBCTRL";
+
     }
 
     /// <summary>
@@ -2434,6 +2467,7 @@ namespace Asv.Mavlink.Asluav
         public override SensAtmosPayload Payload { get; } = new();
 
         public override string Name => "SENS_ATMOS";
+
     }
 
     /// <summary>
@@ -2541,6 +2575,7 @@ namespace Asv.Mavlink.Asluav
         public override SensBatmonPayload Payload { get; } = new();
 
         public override string Name => "SENS_BATMON";
+
     }
 
     /// <summary>
@@ -2852,6 +2887,7 @@ namespace Asv.Mavlink.Asluav
         public override FwSoaringDataPayload Payload { get; } = new();
 
         public override string Name => "FW_SOARING_DATA";
+
     }
 
     /// <summary>
@@ -3333,6 +3369,7 @@ namespace Asv.Mavlink.Asluav
         public override SensorpodStatusPayload Payload { get; } = new();
 
         public override string Name => "SENSORPOD_STATUS";
+
     }
 
     /// <summary>
@@ -3525,6 +3562,7 @@ namespace Asv.Mavlink.Asluav
         public override SensPowerBoardPayload Payload { get; } = new();
 
         public override string Name => "SENS_POWER_BOARD";
+
     }
 
     /// <summary>
@@ -3785,6 +3823,7 @@ namespace Asv.Mavlink.Asluav
         public override GsmLinkStatusPayload Payload { get; } = new();
 
         public override string Name => "GSM_LINK_STATUS";
+
     }
 
     /// <summary>
@@ -3964,6 +4003,7 @@ namespace Asv.Mavlink.Asluav
         public override SatcomLinkStatusPayload Payload { get; } = new();
 
         public override string Name => "SATCOM_LINK_STATUS";
+
     }
 
     /// <summary>
@@ -4156,6 +4196,7 @@ namespace Asv.Mavlink.Asluav
         public override SensorAirflowAnglesPayload Payload { get; } = new();
 
         public override string Name => "SENSOR_AIRFLOW_ANGLES";
+
     }
 
     /// <summary>

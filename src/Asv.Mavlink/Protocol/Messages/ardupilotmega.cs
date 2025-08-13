@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-08-13.
 
 using System;
 using System.Text;
@@ -3266,6 +3266,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override SensorOffsetsPayload Payload { get; } = new();
 
         public override string Name => "SENSOR_OFFSETS";
+
     }
 
     /// <summary>
@@ -3526,6 +3527,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override SetMagOffsetsPayload Payload { get; } = new();
 
         public override string Name => "SET_MAG_OFFSETS";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -3667,6 +3681,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MeminfoPayload Payload { get; } = new();
 
         public override string Name => "MEMINFO";
+
     }
 
     /// <summary>
@@ -3776,6 +3791,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override ApAdcPayload Payload { get; } = new();
 
         public override string Name => "AP_ADC";
+
     }
 
     /// <summary>
@@ -3934,6 +3950,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DigicamConfigurePayload Payload { get; } = new();
 
         public override string Name => "DIGICAM_CONFIGURE";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -4177,6 +4206,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DigicamControlPayload Payload { get; } = new();
 
         public override string Name => "DIGICAM_CONTROL";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -4403,6 +4445,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MountConfigurePayload Payload { get; } = new();
 
         public override string Name => "MOUNT_CONFIGURE";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -4563,6 +4618,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MountControlPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_CONTROL";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -4721,6 +4789,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MountStatusPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_STATUS";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -4883,6 +4964,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override FencePointPayload Payload { get; } = new();
 
         public override string Name => "FENCE_POINT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -5041,6 +5135,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override FenceFetchPointPayload Payload { get; } = new();
 
         public override string Name => "FENCE_FETCH_POINT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -5148,6 +5255,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AhrsPayload Payload { get; } = new();
 
         public override string Name => "AHRS";
+
     }
 
     /// <summary>
@@ -5323,6 +5431,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override SimstatePayload Payload { get; } = new();
 
         public override string Name => "SIMSTATE";
+
     }
 
     /// <summary>
@@ -5566,6 +5675,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override HwstatusPayload Payload { get; } = new();
 
         public override string Name => "HWSTATUS";
+
     }
 
     /// <summary>
@@ -5656,6 +5766,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RadioPayload Payload { get; } = new();
 
         public override string Name => "RADIO";
+
     }
 
     /// <summary>
@@ -5831,6 +5942,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override LimitsStatusPayload Payload { get; } = new();
 
         public override string Name => "LIMITS_STATUS";
+
     }
 
     /// <summary>
@@ -6048,6 +6160,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override WindPayload Payload { get; } = new();
 
         public override string Name => "WIND";
+
     }
 
     /// <summary>
@@ -6155,6 +6268,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data16Payload Payload { get; } = new();
 
         public override string Name => "DATA16";
+
     }
 
     /// <summary>
@@ -6275,6 +6389,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data32Payload Payload { get; } = new();
 
         public override string Name => "DATA32";
+
     }
 
     /// <summary>
@@ -6395,6 +6510,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data64Payload Payload { get; } = new();
 
         public override string Name => "DATA64";
+
     }
 
     /// <summary>
@@ -6515,6 +6631,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Data96Payload Payload { get; } = new();
 
         public override string Name => "DATA96";
+
     }
 
     /// <summary>
@@ -6635,6 +6752,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RangefinderPayload Payload { get; } = new();
 
         public override string Name => "RANGEFINDER";
+
     }
 
     /// <summary>
@@ -6725,6 +6843,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AirspeedAutocalPayload Payload { get; } = new();
 
         public override string Name => "AIRSPEED_AUTOCAL";
+
     }
 
     /// <summary>
@@ -6985,6 +7104,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RallyPointPayload Payload { get; } = new();
 
         public override string Name => "RALLY_POINT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -7213,6 +7345,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RallyFetchPointPayload Payload { get; } = new();
 
         public override string Name => "RALLY_FETCH_POINT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -7320,6 +7465,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override CompassmotStatusPayload Payload { get; } = new();
 
         public override string Name => "COMPASSMOT_STATUS";
+
     }
 
     /// <summary>
@@ -7478,6 +7624,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Ahrs2Payload Payload { get; } = new();
 
         public override string Name => "AHRS2";
+
     }
 
     /// <summary>
@@ -7636,6 +7783,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override CameraStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_STATUS";
+
     }
 
     /// <summary>
@@ -7847,6 +7995,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override CameraFeedbackPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_FEEDBACK";
+
     }
 
     /// <summary>
@@ -8145,6 +8294,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Battery2Payload Payload { get; } = new();
 
         public override string Name => "BATTERY2";
+
     }
 
     /// <summary>
@@ -8235,6 +8385,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override Ahrs3Payload Payload { get; } = new();
 
         public override string Name => "AHRS3";
+
     }
 
     /// <summary>
@@ -8461,6 +8612,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AutopilotVersionRequestPayload Payload { get; } = new();
 
         public override string Name => "AUTOPILOT_VERSION_REQUEST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -8551,6 +8715,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RemoteLogDataBlockPayload Payload { get; } = new();
 
         public override string Name => "REMOTE_LOG_DATA_BLOCK";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -8690,6 +8867,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RemoteLogBlockStatusPayload Payload { get; } = new();
 
         public override string Name => "REMOTE_LOG_BLOCK_STATUS";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -8816,6 +9006,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override LedControlPayload Payload { get; } = new();
 
         public override string Name => "LED_CONTROL";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -8987,6 +9190,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override MagCalProgressPayload Payload { get; } = new();
 
         public override string Name => "MAG_CAL_PROGRESS";
+
     }
 
     /// <summary>
@@ -9211,6 +9415,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EkfStatusReportPayload Payload { get; } = new();
 
         public override string Name => "EKF_STATUS_REPORT";
+
     }
 
     /// <summary>
@@ -9390,6 +9595,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override PidTuningPayload Payload { get; } = new();
 
         public override string Name => "PID_TUNING";
+
     }
 
     /// <summary>
@@ -9605,6 +9811,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeepstallPayload Payload { get; } = new();
 
         public override string Name => "DEEPSTALL";
+
     }
 
     /// <summary>
@@ -9833,6 +10040,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GimbalReportPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_REPORT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -10093,6 +10313,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GimbalControlPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_CONTROL";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -10234,6 +10467,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GimbalTorqueCmdReportPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_TORQUE_CMD_REPORT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -10375,6 +10621,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproHeartbeatPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_HEARTBEAT";
+
     }
 
     /// <summary>
@@ -10488,6 +10735,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproGetRequestPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_GET_REQUEST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -10597,6 +10857,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproGetResponsePayload Payload { get; } = new();
 
         public override string Name => "GOPRO_GET_RESPONSE";
+
     }
 
     /// <summary>
@@ -10721,6 +10982,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproSetRequestPayload Payload { get; } = new();
 
         public override string Name => "GOPRO_SET_REQUEST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -10860,6 +11134,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override GoproSetResponsePayload Payload { get; } = new();
 
         public override string Name => "GOPRO_SET_RESPONSE";
+
     }
 
     /// <summary>
@@ -10954,6 +11229,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override RpmPayload Payload { get; } = new();
 
         public override string Name => "RPM";
+
     }
 
     /// <summary>
@@ -11044,6 +11320,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpReadPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_READ";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -11299,6 +11588,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpReadReplyPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_READ_REPLY";
+
     }
 
     /// <summary>
@@ -11472,6 +11762,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpWritePayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_WRITE";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -11752,6 +12055,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override DeviceOpWriteReplyPayload Payload { get; } = new();
 
         public override string Name => "DEVICE_OP_WRITE_REPLY";
+
     }
 
     /// <summary>
@@ -11842,6 +12146,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AdapTuningPayload Payload { get; } = new();
 
         public override string Name => "ADAP_TUNING";
+
     }
 
     /// <summary>
@@ -12121,6 +12426,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override VisionPositionDeltaPayload Payload { get; } = new();
 
         public override string Name => "VISION_POSITION_DELTA";
+
     }
 
     /// <summary>
@@ -12283,6 +12589,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override AoaSsaPayload Payload { get; } = new();
 
         public override string Name => "AOA_SSA";
+
     }
 
     /// <summary>
@@ -12390,6 +12697,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EscTelemetry1To4Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_1_TO_4";
+
     }
 
     /// <summary>
@@ -12601,6 +12909,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EscTelemetry5To8Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_5_TO_8";
+
     }
 
     /// <summary>
@@ -12812,6 +13121,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override EscTelemetry9To12Payload Payload { get; } = new();
 
         public override string Name => "ESC_TELEMETRY_9_TO_12";
+
     }
 
     /// <summary>
@@ -13023,6 +13333,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamConfigPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_CONFIG";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -13276,6 +13599,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamConfigReplyPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_CONFIG_REPLY";
+
     }
 
     /// <summary>
@@ -13368,6 +13692,19 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamShowConfigPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_SHOW_CONFIG";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -13509,6 +13846,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override OsdParamShowConfigReplyPayload Payload { get; } = new();
 
         public override string Name => "OSD_PARAM_SHOW_CONFIG_REPLY";
+
     }
 
     /// <summary>
@@ -13713,6 +14051,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override ObstacleDistance3dPayload Payload { get; } = new();
 
         public override string Name => "OBSTACLE_DISTANCE_3D";
+
     }
 
     /// <summary>
@@ -13926,6 +14265,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override WaterDepthPayload Payload { get; } = new();
 
         public override string Name => "WATER_DEPTH";
+
     }
 
     /// <summary>
@@ -14169,6 +14509,7 @@ namespace Asv.Mavlink.Ardupilotmega
         public override McuStatusPayload Payload { get; } = new();
 
         public override string Name => "MCU_STATUS";
+
     }
 
     /// <summary>

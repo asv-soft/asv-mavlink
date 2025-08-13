@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.11+05423b76b208fe780abe1cef9f7beeacb19cba77 25-08-04.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-08-13.
 
 using System;
 using System.Text;
@@ -12134,6 +12134,7 @@ namespace Asv.Mavlink.Common
         public override SysStatusPayload Payload { get; } = new();
 
         public override string Name => "SYS_STATUS";
+
     }
 
     /// <summary>
@@ -12480,6 +12481,7 @@ namespace Asv.Mavlink.Common
         public override SystemTimePayload Payload { get; } = new();
 
         public override string Name => "SYSTEM_TIME";
+
     }
 
     /// <summary>
@@ -12570,6 +12572,19 @@ namespace Asv.Mavlink.Common
         public override PingPayload Payload { get; } = new();
 
         public override string Name => "PING";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -12694,6 +12709,7 @@ namespace Asv.Mavlink.Common
         public override ChangeOperatorControlPayload Payload { get; } = new();
 
         public override string Name => "CHANGE_OPERATOR_CONTROL";
+
     }
 
     /// <summary>
@@ -12843,6 +12859,7 @@ namespace Asv.Mavlink.Common
         public override ChangeOperatorControlAckPayload Payload { get; } = new();
 
         public override string Name => "CHANGE_OPERATOR_CONTROL_ACK";
+
     }
 
     /// <summary>
@@ -12950,6 +12967,7 @@ namespace Asv.Mavlink.Common
         public override AuthKeyPayload Payload { get; } = new();
 
         public override string Name => "AUTH_KEY";
+
     }
 
     /// <summary>
@@ -13048,6 +13066,7 @@ namespace Asv.Mavlink.Common
         public override LinkNodeStatusPayload Payload { get; } = new();
 
         public override string Name => "LINK_NODE_STATUS";
+
     }
 
     /// <summary>
@@ -13291,6 +13310,7 @@ namespace Asv.Mavlink.Common
         public override SetModePayload Payload { get; } = new();
 
         public override string Name => "SET_MODE";
+
     }
 
     /// <summary>
@@ -13400,6 +13420,19 @@ namespace Asv.Mavlink.Common
         public override ParamRequestReadPayload Payload { get; } = new();
 
         public override string Name => "PARAM_REQUEST_READ";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -13549,6 +13582,19 @@ namespace Asv.Mavlink.Common
         public override ParamRequestListPayload Payload { get; } = new();
 
         public override string Name => "PARAM_REQUEST_LIST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -13639,6 +13685,7 @@ namespace Asv.Mavlink.Common
         public override ParamValuePayload Payload { get; } = new();
 
         public override string Name => "PARAM_VALUE";
+
     }
 
     /// <summary>
@@ -13809,6 +13856,19 @@ namespace Asv.Mavlink.Common
         public override ParamSetPayload Payload { get; } = new();
 
         public override string Name => "PARAM_SET";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -13978,6 +14038,7 @@ namespace Asv.Mavlink.Common
         public override GpsRawIntPayload Payload { get; } = new();
 
         public override string Name => "GPS_RAW_INT";
+
     }
 
     /// <summary>
@@ -14320,6 +14381,7 @@ namespace Asv.Mavlink.Common
         public override GpsStatusPayload Payload { get; } = new();
 
         public override string Name => "GPS_STATUS";
+
     }
 
     /// <summary>
@@ -14523,6 +14585,7 @@ namespace Asv.Mavlink.Common
         public override ScaledImuPayload Payload { get; } = new();
 
         public override string Name => "SCALED_IMU";
+
     }
 
     /// <summary>
@@ -14768,6 +14831,7 @@ namespace Asv.Mavlink.Common
         public override RawImuPayload Payload { get; } = new();
 
         public override string Name => "RAW_IMU";
+
     }
 
     /// <summary>
@@ -15032,6 +15096,7 @@ namespace Asv.Mavlink.Common
         public override RawPressurePayload Payload { get; } = new();
 
         public override string Name => "RAW_PRESSURE";
+
     }
 
     /// <summary>
@@ -15173,6 +15238,7 @@ namespace Asv.Mavlink.Common
         public override ScaledPressurePayload Payload { get; } = new();
 
         public override string Name => "SCALED_PRESSURE";
+
     }
 
     /// <summary>
@@ -15316,6 +15382,7 @@ namespace Asv.Mavlink.Common
         public override AttitudePayload Payload { get; } = new();
 
         public override string Name => "ATTITUDE";
+
     }
 
     /// <summary>
@@ -15491,6 +15558,7 @@ namespace Asv.Mavlink.Common
         public override AttitudeQuaternionPayload Payload { get; } = new();
 
         public override string Name => "ATTITUDE_QUATERNION";
+
     }
 
     /// <summary>
@@ -15712,6 +15780,7 @@ namespace Asv.Mavlink.Common
         public override LocalPositionNedPayload Payload { get; } = new();
 
         public override string Name => "LOCAL_POSITION_NED";
+
     }
 
     /// <summary>
@@ -15888,6 +15957,7 @@ namespace Asv.Mavlink.Common
         public override GlobalPositionIntPayload Payload { get; } = new();
 
         public override string Name => "GLOBAL_POSITION_INT";
+
     }
 
     /// <summary>
@@ -16097,6 +16167,7 @@ namespace Asv.Mavlink.Common
         public override RcChannelsScaledPayload Payload { get; } = new();
 
         public override string Name => "RC_CHANNELS_SCALED";
+
     }
 
     /// <summary>
@@ -16340,6 +16411,7 @@ namespace Asv.Mavlink.Common
         public override RcChannelsRawPayload Payload { get; } = new();
 
         public override string Name => "RC_CHANNELS_RAW";
+
     }
 
     /// <summary>
@@ -16583,6 +16655,7 @@ namespace Asv.Mavlink.Common
         public override ServoOutputRawPayload Payload { get; } = new();
 
         public override string Name => "SERVO_OUTPUT_RAW";
+
     }
 
     /// <summary>
@@ -16961,6 +17034,19 @@ namespace Asv.Mavlink.Common
         public override MissionRequestPartialListPayload Payload { get; } = new();
 
         public override string Name => "MISSION_REQUEST_PARTIAL_LIST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -17106,6 +17192,19 @@ namespace Asv.Mavlink.Common
         public override MissionWritePartialListPayload Payload { get; } = new();
 
         public override string Name => "MISSION_WRITE_PARTIAL_LIST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -17252,6 +17351,19 @@ namespace Asv.Mavlink.Common
         public override MissionItemPayload Payload { get; } = new();
 
         public override string Name => "MISSION_ITEM";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -17571,6 +17683,19 @@ namespace Asv.Mavlink.Common
         public override MissionRequestPayload Payload { get; } = new();
 
         public override string Name => "MISSION_REQUEST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -17707,6 +17832,19 @@ namespace Asv.Mavlink.Common
         public override MissionSetCurrentPayload Payload { get; } = new();
 
         public override string Name => "MISSION_SET_CURRENT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -17818,6 +17956,7 @@ namespace Asv.Mavlink.Common
         public override MissionCurrentPayload Payload { get; } = new();
 
         public override string Name => "MISSION_CURRENT";
+
     }
 
     /// <summary>
@@ -17950,6 +18089,19 @@ namespace Asv.Mavlink.Common
         public override MissionRequestListPayload Payload { get; } = new();
 
         public override string Name => "MISSION_REQUEST_LIST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -18061,6 +18213,19 @@ namespace Asv.Mavlink.Common
         public override MissionCountPayload Payload { get; } = new();
 
         public override string Name => "MISSION_COUNT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -18189,6 +18354,19 @@ namespace Asv.Mavlink.Common
         public override MissionClearAllPayload Payload { get; } = new();
 
         public override string Name => "MISSION_CLEAR_ALL";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -18300,6 +18478,7 @@ namespace Asv.Mavlink.Common
         public override MissionItemReachedPayload Payload { get; } = new();
 
         public override string Name => "MISSION_ITEM_REACHED";
+
     }
 
     /// <summary>
@@ -18373,6 +18552,19 @@ namespace Asv.Mavlink.Common
         public override MissionAckPayload Payload { get; } = new();
 
         public override string Name => "MISSION_ACK";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -18503,6 +18695,7 @@ namespace Asv.Mavlink.Common
         public override SetGpsGlobalOriginPayload Payload { get; } = new();
 
         public override string Name => "SET_GPS_GLOBAL_ORIGIN";
+
     }
 
     /// <summary>
@@ -18646,6 +18839,7 @@ namespace Asv.Mavlink.Common
         public override GpsGlobalOriginPayload Payload { get; } = new();
 
         public override string Name => "GPS_GLOBAL_ORIGIN";
+
     }
 
     /// <summary>
@@ -18772,6 +18966,19 @@ namespace Asv.Mavlink.Common
         public override ParamMapRcPayload Payload { get; } = new();
 
         public override string Name => "PARAM_MAP_RC";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -19006,6 +19213,19 @@ namespace Asv.Mavlink.Common
         public override MissionRequestIntPayload Payload { get; } = new();
 
         public override string Name => "MISSION_REQUEST_INT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -19134,6 +19354,19 @@ namespace Asv.Mavlink.Common
         public override SafetySetAllowedAreaPayload Payload { get; } = new();
 
         public override string Name => "SAFETY_SET_ALLOWED_AREA";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -19345,6 +19578,7 @@ namespace Asv.Mavlink.Common
         public override SafetyAllowedAreaPayload Payload { get; } = new();
 
         public override string Name => "SAFETY_ALLOWED_AREA";
+
     }
 
     /// <summary>
@@ -19522,6 +19756,7 @@ namespace Asv.Mavlink.Common
         public override AttitudeQuaternionCovPayload Payload { get; } = new();
 
         public override string Name => "ATTITUDE_QUATERNION_COV";
+
     }
 
     /// <summary>
@@ -19701,6 +19936,7 @@ namespace Asv.Mavlink.Common
         public override NavControllerOutputPayload Payload { get; } = new();
 
         public override string Name => "NAV_CONTROLLER_OUTPUT";
+
     }
 
     /// <summary>
@@ -19893,6 +20129,7 @@ namespace Asv.Mavlink.Common
         public override GlobalPositionIntCovPayload Payload { get; } = new();
 
         public override string Name => "GLOBAL_POSITION_INT_COV";
+
     }
 
     /// <summary>
@@ -20134,6 +20371,7 @@ namespace Asv.Mavlink.Common
         public override LocalPositionNedCovPayload Payload { get; } = new();
 
         public override string Name => "LOCAL_POSITION_NED_COV";
+
     }
 
     /// <summary>
@@ -20409,6 +20647,7 @@ namespace Asv.Mavlink.Common
         public override RcChannelsPayload Payload { get; } = new();
 
         public override string Name => "RC_CHANNELS";
+
     }
 
     /// <summary>
@@ -20822,6 +21061,19 @@ namespace Asv.Mavlink.Common
         public override RequestDataStreamPayload Payload { get; } = new();
 
         public override string Name => "REQUEST_DATA_STREAM";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -20963,6 +21215,7 @@ namespace Asv.Mavlink.Common
         public override DataStreamPayload Payload { get; } = new();
 
         public override string Name => "DATA_STREAM";
+
     }
 
     /// <summary>
@@ -21070,6 +21323,7 @@ namespace Asv.Mavlink.Common
         public override ManualControlPayload Payload { get; } = new();
 
         public override string Name => "MANUAL_CONTROL";
+
     }
 
     /// <summary>
@@ -21418,6 +21672,19 @@ namespace Asv.Mavlink.Common
         public override RcChannelsOverridePayload Payload { get; } = new();
 
         public override string Name => "RC_CHANNELS_OVERRIDE";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -21835,6 +22102,19 @@ namespace Asv.Mavlink.Common
         public override MissionItemIntPayload Payload { get; } = new();
 
         public override string Name => "MISSION_ITEM_INT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -22154,6 +22434,7 @@ namespace Asv.Mavlink.Common
         public override VfrHudPayload Payload { get; } = new();
 
         public override string Name => "VFR_HUD";
+
     }
 
     /// <summary>
@@ -22312,6 +22593,19 @@ namespace Asv.Mavlink.Common
         public override CommandIntPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_INT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -22593,6 +22887,19 @@ namespace Asv.Mavlink.Common
         public override CommandLongPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_LONG";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -22838,6 +23145,7 @@ namespace Asv.Mavlink.Common
         public override CommandAckPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_ACK";
+
     }
 
     /// <summary>
@@ -23008,6 +23316,19 @@ namespace Asv.Mavlink.Common
         public override CommandCancelPayload Payload { get; } = new();
 
         public override string Name => "COMMAND_CANCEL";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -23117,6 +23438,7 @@ namespace Asv.Mavlink.Common
         public override ManualSetpointPayload Payload { get; } = new();
 
         public override string Name => "MANUAL_SETPOINT";
+
     }
 
     /// <summary>
@@ -23292,6 +23614,19 @@ namespace Asv.Mavlink.Common
         public override SetAttitudeTargetPayload Payload { get; } = new();
 
         public override string Name => "SET_ATTITUDE_TARGET";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -23543,6 +23878,7 @@ namespace Asv.Mavlink.Common
         public override AttitudeTargetPayload Payload { get; } = new();
 
         public override string Name => "ATTITUDE_TARGET";
+
     }
 
     /// <summary>
@@ -23733,6 +24069,19 @@ namespace Asv.Mavlink.Common
         public override SetPositionTargetLocalNedPayload Payload { get; } = new();
 
         public override string Name => "SET_POSITION_TARGET_LOCAL_NED";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -24065,6 +24414,7 @@ namespace Asv.Mavlink.Common
         public override PositionTargetLocalNedPayload Payload { get; } = new();
 
         public override string Name => "POSITION_TARGET_LOCAL_NED";
+
     }
 
     /// <summary>
@@ -24363,6 +24713,19 @@ namespace Asv.Mavlink.Common
         public override SetPositionTargetGlobalIntPayload Payload { get; } = new();
 
         public override string Name => "SET_POSITION_TARGET_GLOBAL_INT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -24695,6 +25058,7 @@ namespace Asv.Mavlink.Common
         public override PositionTargetGlobalIntPayload Payload { get; } = new();
 
         public override string Name => "POSITION_TARGET_GLOBAL_INT";
+
     }
 
     /// <summary>
@@ -24993,6 +25357,7 @@ namespace Asv.Mavlink.Common
         public override LocalPositionNedSystemGlobalOffsetPayload Payload { get; } = new();
 
         public override string Name => "LOCAL_POSITION_NED_SYSTEM_GLOBAL_OFFSET";
+
     }
 
     /// <summary>
@@ -25168,6 +25533,7 @@ namespace Asv.Mavlink.Common
         public override HilStatePayload Payload { get; } = new();
 
         public override string Name => "HIL_STATE";
+
     }
 
     /// <summary>
@@ -25496,6 +25862,7 @@ namespace Asv.Mavlink.Common
         public override HilControlsPayload Payload { get; } = new();
 
         public override string Name => "HIL_CONTROLS";
+
     }
 
     /// <summary>
@@ -25741,6 +26108,7 @@ namespace Asv.Mavlink.Common
         public override HilRcInputsRawPayload Payload { get; } = new();
 
         public override string Name => "HIL_RC_INPUTS_RAW";
+
     }
 
     /// <summary>
@@ -26035,6 +26403,7 @@ namespace Asv.Mavlink.Common
         public override HilActuatorControlsPayload Payload { get; } = new();
 
         public override string Name => "HIL_ACTUATOR_CONTROLS";
+
     }
 
     /// <summary>
@@ -26174,6 +26543,7 @@ namespace Asv.Mavlink.Common
         public override OpticalFlowPayload Payload { get; } = new();
 
         public override string Name => "OPTICAL_FLOW";
+
     }
 
     /// <summary>
@@ -26404,6 +26774,7 @@ namespace Asv.Mavlink.Common
         public override GlobalVisionPositionEstimatePayload Payload { get; } = new();
 
         public override string Name => "GLOBAL_VISION_POSITION_ESTIMATE";
+
     }
 
     /// <summary>
@@ -26627,6 +26998,7 @@ namespace Asv.Mavlink.Common
         public override VisionPositionEstimatePayload Payload { get; } = new();
 
         public override string Name => "VISION_POSITION_ESTIMATE";
+
     }
 
     /// <summary>
@@ -26850,6 +27222,7 @@ namespace Asv.Mavlink.Common
         public override VisionSpeedEstimatePayload Payload { get; } = new();
 
         public override string Name => "VISION_SPEED_ESTIMATE";
+
     }
 
     /// <summary>
@@ -27022,6 +27395,7 @@ namespace Asv.Mavlink.Common
         public override ViconPositionEstimatePayload Payload { get; } = new();
 
         public override string Name => "VICON_POSITION_ESTIMATE";
+
     }
 
     /// <summary>
@@ -27226,6 +27600,7 @@ namespace Asv.Mavlink.Common
         public override HighresImuPayload Payload { get; } = new();
 
         public override string Name => "HIGHRES_IMU";
+
     }
 
     /// <summary>
@@ -27558,6 +27933,7 @@ namespace Asv.Mavlink.Common
         public override OpticalFlowRadPayload Payload { get; } = new();
 
         public override string Name => "OPTICAL_FLOW_RAD";
+
     }
 
     /// <summary>
@@ -27818,6 +28194,7 @@ namespace Asv.Mavlink.Common
         public override HilSensorPayload Payload { get; } = new();
 
         public override string Name => "HIL_SENSOR";
+
     }
 
     /// <summary>
@@ -28150,6 +28527,7 @@ namespace Asv.Mavlink.Common
         public override SimStatePayload Payload { get; } = new();
 
         public override string Name => "SIM_STATE";
+
     }
 
     /// <summary>
@@ -28601,6 +28979,7 @@ namespace Asv.Mavlink.Common
         public override RadioStatusPayload Payload { get; } = new();
 
         public override string Name => "RADIO_STATUS";
+
     }
 
     /// <summary>
@@ -28776,6 +29155,19 @@ namespace Asv.Mavlink.Common
         public override FileTransferProtocolPayload Payload { get; } = new();
 
         public override string Name => "FILE_TRANSFER_PROTOCOL";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -28922,6 +29314,7 @@ namespace Asv.Mavlink.Common
         public override TimesyncPayload Payload { get; } = new();
 
         public override string Name => "TIMESYNC";
+
     }
 
     /// <summary>
@@ -29050,6 +29443,7 @@ namespace Asv.Mavlink.Common
         public override CameraTriggerPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_TRIGGER";
+
     }
 
     /// <summary>
@@ -29141,6 +29535,7 @@ namespace Asv.Mavlink.Common
         public override HilGpsPayload Payload { get; } = new();
 
         public override string Name => "HIL_GPS";
+
     }
 
     /// <summary>
@@ -29456,6 +29851,7 @@ namespace Asv.Mavlink.Common
         public override HilOpticalFlowPayload Payload { get; } = new();
 
         public override string Name => "HIL_OPTICAL_FLOW";
+
     }
 
     /// <summary>
@@ -29716,6 +30112,7 @@ namespace Asv.Mavlink.Common
         public override HilStateQuaternionPayload Payload { get; } = new();
 
         public override string Name => "HIL_STATE_QUATERNION";
+
     }
 
     /// <summary>
@@ -30057,6 +30454,7 @@ namespace Asv.Mavlink.Common
         public override ScaledImu2Payload Payload { get; } = new();
 
         public override string Name => "SCALED_IMU2";
+
     }
 
     /// <summary>
@@ -30302,6 +30700,19 @@ namespace Asv.Mavlink.Common
         public override LogRequestListPayload Payload { get; } = new();
 
         public override string Name => "LOG_REQUEST_LIST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -30426,6 +30837,7 @@ namespace Asv.Mavlink.Common
         public override LogEntryPayload Payload { get; } = new();
 
         public override string Name => "LOG_ENTRY";
+
     }
 
     /// <summary>
@@ -30567,6 +30979,19 @@ namespace Asv.Mavlink.Common
         public override LogRequestDataPayload Payload { get; } = new();
 
         public override string Name => "LOG_REQUEST_DATA";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -30708,6 +31133,7 @@ namespace Asv.Mavlink.Common
         public override LogDataPayload Payload { get; } = new();
 
         public override string Name => "LOG_DATA";
+
     }
 
     /// <summary>
@@ -30845,6 +31271,19 @@ namespace Asv.Mavlink.Common
         public override LogErasePayload Payload { get; } = new();
 
         public override string Name => "LOG_ERASE";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -30935,6 +31374,19 @@ namespace Asv.Mavlink.Common
         public override LogRequestEndPayload Payload { get; } = new();
 
         public override string Name => "LOG_REQUEST_END";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -31025,6 +31477,19 @@ namespace Asv.Mavlink.Common
         public override GpsInjectDataPayload Payload { get; } = new();
 
         public override string Name => "GPS_INJECT_DATA";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -31162,6 +31627,7 @@ namespace Asv.Mavlink.Common
         public override Gps2RawPayload Payload { get; } = new();
 
         public override string Name => "GPS2_RAW";
+
     }
 
     /// <summary>
@@ -31538,6 +32004,7 @@ namespace Asv.Mavlink.Common
         public override PowerStatusPayload Payload { get; } = new();
 
         public override string Name => "POWER_STATUS";
+
     }
 
     /// <summary>
@@ -31647,6 +32114,7 @@ namespace Asv.Mavlink.Common
         public override SerialControlPayload Payload { get; } = new();
 
         public override string Name => "SERIAL_CONTROL";
+
     }
 
     /// <summary>
@@ -31860,6 +32328,7 @@ namespace Asv.Mavlink.Common
         public override GpsRtkPayload Payload { get; } = new();
 
         public override string Name => "GPS_RTK";
+
     }
 
     /// <summary>
@@ -32139,6 +32608,7 @@ namespace Asv.Mavlink.Common
         public override Gps2RtkPayload Payload { get; } = new();
 
         public override string Name => "GPS2_RTK";
+
     }
 
     /// <summary>
@@ -32418,6 +32888,7 @@ namespace Asv.Mavlink.Common
         public override ScaledImu3Payload Payload { get; } = new();
 
         public override string Name => "SCALED_IMU3";
+
     }
 
     /// <summary>
@@ -32663,6 +33134,7 @@ namespace Asv.Mavlink.Common
         public override DataTransmissionHandshakePayload Payload { get; } = new();
 
         public override string Name => "DATA_TRANSMISSION_HANDSHAKE";
+
     }
 
     /// <summary>
@@ -32840,6 +33312,7 @@ namespace Asv.Mavlink.Common
         public override EncapsulatedDataPayload Payload { get; } = new();
 
         public override string Name => "ENCAPSULATED_DATA";
+
     }
 
     /// <summary>
@@ -32943,6 +33416,7 @@ namespace Asv.Mavlink.Common
         public override DistanceSensorPayload Payload { get; } = new();
 
         public override string Name => "DISTANCE_SENSOR";
+
     }
 
     /// <summary>
@@ -33225,6 +33699,7 @@ namespace Asv.Mavlink.Common
         public override TerrainRequestPayload Payload { get; } = new();
 
         public override string Name => "TERRAIN_REQUEST";
+
     }
 
     /// <summary>
@@ -33349,6 +33824,7 @@ namespace Asv.Mavlink.Common
         public override TerrainDataPayload Payload { get; } = new();
 
         public override string Name => "TERRAIN_DATA";
+
     }
 
     /// <summary>
@@ -33503,6 +33979,7 @@ namespace Asv.Mavlink.Common
         public override TerrainCheckPayload Payload { get; } = new();
 
         public override string Name => "TERRAIN_CHECK";
+
     }
 
     /// <summary>
@@ -33593,6 +34070,7 @@ namespace Asv.Mavlink.Common
         public override TerrainReportPayload Payload { get; } = new();
 
         public override string Name => "TERRAIN_REPORT";
+
     }
 
     /// <summary>
@@ -33768,6 +34246,7 @@ namespace Asv.Mavlink.Common
         public override ScaledPressure2Payload Payload { get; } = new();
 
         public override string Name => "SCALED_PRESSURE2";
+
     }
 
     /// <summary>
@@ -33911,6 +34390,7 @@ namespace Asv.Mavlink.Common
         public override AttPosMocapPayload Payload { get; } = new();
 
         public override string Name => "ATT_POS_MOCAP";
+
     }
 
     /// <summary>
@@ -34092,6 +34572,19 @@ namespace Asv.Mavlink.Common
         public override SetActuatorControlTargetPayload Payload { get; } = new();
 
         public override string Name => "SET_ACTUATOR_CONTROL_TARGET";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -34246,6 +34739,7 @@ namespace Asv.Mavlink.Common
         public override ActuatorControlTargetPayload Payload { get; } = new();
 
         public override string Name => "ACTUATOR_CONTROL_TARGET";
+
     }
 
     /// <summary>
@@ -34366,6 +34860,7 @@ namespace Asv.Mavlink.Common
         public override AltitudePayload Payload { get; } = new();
 
         public override string Name => "ALTITUDE";
+
     }
 
     /// <summary>
@@ -34541,6 +35036,7 @@ namespace Asv.Mavlink.Common
         public override ResourceRequestPayload Payload { get; } = new();
 
         public override string Name => "RESOURCE_REQUEST";
+
     }
 
     /// <summary>
@@ -34703,6 +35199,7 @@ namespace Asv.Mavlink.Common
         public override ScaledPressure3Payload Payload { get; } = new();
 
         public override string Name => "SCALED_PRESSURE3";
+
     }
 
     /// <summary>
@@ -34846,6 +35343,7 @@ namespace Asv.Mavlink.Common
         public override FollowTargetPayload Payload { get; } = new();
 
         public override string Name => "FOLLOW_TARGET";
+
     }
 
     /// <summary>
@@ -35134,6 +35632,7 @@ namespace Asv.Mavlink.Common
         public override ControlSystemStatePayload Payload { get; } = new();
 
         public override string Name => "CONTROL_SYSTEM_STATE";
+
     }
 
     /// <summary>
@@ -35508,6 +36007,7 @@ namespace Asv.Mavlink.Common
         public override BatteryStatusPayload Payload { get; } = new();
 
         public override string Name => "BATTERY_STATUS";
+
     }
 
     /// <summary>
@@ -35843,6 +36343,7 @@ namespace Asv.Mavlink.Common
         public override AutopilotVersionPayload Payload { get; } = new();
 
         public override string Name => "AUTOPILOT_VERSION";
+
     }
 
     /// <summary>
@@ -36144,6 +36645,7 @@ namespace Asv.Mavlink.Common
         public override LandingTargetPayload Payload { get; } = new();
 
         public override string Name => "LANDING_TARGET";
+
     }
 
     /// <summary>
@@ -36464,6 +36966,7 @@ namespace Asv.Mavlink.Common
         public override FenceStatusPayload Payload { get; } = new();
 
         public override string Name => "FENCE_STATUS";
+
     }
 
     /// <summary>
@@ -36611,6 +37114,7 @@ namespace Asv.Mavlink.Common
         public override MagCalReportPayload Payload { get; } = new();
 
         public override string Name => "MAG_CAL_REPORT";
+
     }
 
     /// <summary>
@@ -36987,6 +37491,7 @@ namespace Asv.Mavlink.Common
         public override EfiStatusPayload Payload { get; } = new();
 
         public override string Name => "EFI_STATUS";
+
     }
 
     /// <summary>
@@ -37370,6 +37875,7 @@ namespace Asv.Mavlink.Common
         public override EstimatorStatusPayload Payload { get; } = new();
 
         public override string Name => "ESTIMATOR_STATUS";
+
     }
 
     /// <summary>
@@ -37598,6 +38104,7 @@ namespace Asv.Mavlink.Common
         public override WindCovPayload Payload { get; } = new();
 
         public override string Name => "WIND_COV";
+
     }
 
     /// <summary>
@@ -37807,6 +38314,7 @@ namespace Asv.Mavlink.Common
         public override GpsInputPayload Payload { get; } = new();
 
         public override string Name => "GPS_INPUT";
+
     }
 
     /// <summary>
@@ -38190,6 +38698,7 @@ namespace Asv.Mavlink.Common
         public override GpsRtcmDataPayload Payload { get; } = new();
 
         public override string Name => "GPS_RTCM_DATA";
+
     }
 
     /// <summary>
@@ -38310,6 +38819,7 @@ namespace Asv.Mavlink.Common
         public override HighLatencyPayload Payload { get; } = new();
 
         public override string Name => "HIGH_LATENCY";
+
     }
 
     /// <summary>
@@ -38780,6 +39290,7 @@ namespace Asv.Mavlink.Common
         public override HighLatency2Payload Payload { get; } = new();
 
         public override string Name => "HIGH_LATENCY2";
+
     }
 
     /// <summary>
@@ -39301,6 +39812,7 @@ namespace Asv.Mavlink.Common
         public override VibrationPayload Payload { get; } = new();
 
         public override string Name => "VIBRATION";
+
     }
 
     /// <summary>
@@ -39484,6 +39996,7 @@ namespace Asv.Mavlink.Common
         public override HomePositionPayload Payload { get; } = new();
 
         public override string Name => "HOME_POSITION";
+
     }
 
     /// <summary>
@@ -39754,6 +40267,7 @@ namespace Asv.Mavlink.Common
         public override SetHomePositionPayload Payload { get; } = new();
 
         public override string Name => "SET_HOME_POSITION";
+
     }
 
     /// <summary>
@@ -40033,6 +40547,7 @@ namespace Asv.Mavlink.Common
         public override MessageIntervalPayload Payload { get; } = new();
 
         public override string Name => "MESSAGE_INTERVAL";
+
     }
 
     /// <summary>
@@ -40123,6 +40638,7 @@ namespace Asv.Mavlink.Common
         public override ExtendedSysStatePayload Payload { get; } = new();
 
         public override string Name => "EXTENDED_SYS_STATE";
+
     }
 
     /// <summary>
@@ -40217,6 +40733,7 @@ namespace Asv.Mavlink.Common
         public override AdsbVehiclePayload Payload { get; } = new();
 
         public override string Name => "ADSB_VEHICLE";
+
     }
 
     /// <summary>
@@ -40525,6 +41042,7 @@ namespace Asv.Mavlink.Common
         public override CollisionPayload Payload { get; } = new();
 
         public override string Name => "COLLISION";
+
     }
 
     /// <summary>
@@ -40706,6 +41224,19 @@ namespace Asv.Mavlink.Common
         public override V2ExtensionPayload Payload { get; } = new();
 
         public override string Name => "V2_EXTENSION";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -40860,6 +41391,7 @@ namespace Asv.Mavlink.Common
         public override MemoryVectPayload Payload { get; } = new();
 
         public override string Name => "MEMORY_VECT";
+
     }
 
     /// <summary>
@@ -40997,6 +41529,7 @@ namespace Asv.Mavlink.Common
         public override DebugVectPayload Payload { get; } = new();
 
         public override string Name => "DEBUG_VECT";
+
     }
 
     /// <summary>
@@ -41163,6 +41696,7 @@ namespace Asv.Mavlink.Common
         public override NamedValueFloatPayload Payload { get; } = new();
 
         public override string Name => "NAMED_VALUE_FLOAT";
+
     }
 
     /// <summary>
@@ -41295,6 +41829,7 @@ namespace Asv.Mavlink.Common
         public override NamedValueIntPayload Payload { get; } = new();
 
         public override string Name => "NAMED_VALUE_INT";
+
     }
 
     /// <summary>
@@ -41427,6 +41962,7 @@ namespace Asv.Mavlink.Common
         public override StatustextPayload Payload { get; } = new();
 
         public override string Name => "STATUSTEXT";
+
     }
 
     /// <summary>
@@ -41582,6 +42118,7 @@ namespace Asv.Mavlink.Common
         public override DebugPayload Payload { get; } = new();
 
         public override string Name => "DEBUG";
+
     }
 
     /// <summary>
@@ -41689,6 +42226,19 @@ namespace Asv.Mavlink.Common
         public override SetupSigningPayload Payload { get; } = new();
 
         public override string Name => "SETUP_SIGNING";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -41826,6 +42376,7 @@ namespace Asv.Mavlink.Common
         public override ButtonChangePayload Payload { get; } = new();
 
         public override string Name => "BUTTON_CHANGE";
+
     }
 
     /// <summary>
@@ -41933,6 +42484,19 @@ namespace Asv.Mavlink.Common
         public override PlayTunePayload Payload { get; } = new();
 
         public override string Name => "PLAY_TUNE";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -42104,6 +42668,7 @@ namespace Asv.Mavlink.Common
         public override CameraInformationPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_INFORMATION";
+
     }
 
     /// <summary>
@@ -42443,6 +43008,7 @@ namespace Asv.Mavlink.Common
         public override CameraSettingsPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_SETTINGS";
+
     }
 
     /// <summary>
@@ -42573,6 +43139,7 @@ namespace Asv.Mavlink.Common
         public override StorageInformationPayload Payload { get; } = new();
 
         public override string Name => "STORAGE_INFORMATION";
+
     }
 
     /// <summary>
@@ -42870,6 +43437,7 @@ namespace Asv.Mavlink.Common
         public override CameraCaptureStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_CAPTURE_STATUS";
+
     }
 
     /// <summary>
@@ -43053,6 +43621,7 @@ namespace Asv.Mavlink.Common
         public override CameraImageCapturedPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_IMAGE_CAPTURED";
+
     }
 
     /// <summary>
@@ -43331,6 +43900,7 @@ namespace Asv.Mavlink.Common
         public override FlightInformationPayload Payload { get; } = new();
 
         public override string Name => "FLIGHT_INFORMATION";
+
     }
 
     /// <summary>
@@ -43455,6 +44025,7 @@ namespace Asv.Mavlink.Common
         public override MountOrientationPayload Payload { get; } = new();
 
         public override string Name => "MOUNT_ORIENTATION";
+
     }
 
     /// <summary>
@@ -43598,6 +44169,19 @@ namespace Asv.Mavlink.Common
         public override LoggingDataPayload Payload { get; } = new();
 
         public override string Name => "LOGGING_DATA";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -43769,6 +44353,19 @@ namespace Asv.Mavlink.Common
         public override LoggingDataAckedPayload Payload { get; } = new();
 
         public override string Name => "LOGGING_DATA_ACKED";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -43940,6 +44537,19 @@ namespace Asv.Mavlink.Common
         public override LoggingAckPayload Payload { get; } = new();
 
         public override string Name => "LOGGING_ACK";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -44047,6 +44657,7 @@ namespace Asv.Mavlink.Common
         public override VideoStreamInformationPayload Payload { get; } = new();
 
         public override string Name => "VIDEO_STREAM_INFORMATION";
+
     }
 
     /// <summary>
@@ -44356,6 +44967,7 @@ namespace Asv.Mavlink.Common
         public override VideoStreamStatusPayload Payload { get; } = new();
 
         public override string Name => "VIDEO_STREAM_STATUS";
+
     }
 
     /// <summary>
@@ -44550,6 +45162,7 @@ namespace Asv.Mavlink.Common
         public override CameraFovStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_FOV_STATUS";
+
     }
 
     /// <summary>
@@ -44789,6 +45402,7 @@ namespace Asv.Mavlink.Common
         public override CameraTrackingImageStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_TRACKING_IMAGE_STATUS";
+
     }
 
     /// <summary>
@@ -45021,6 +45635,7 @@ namespace Asv.Mavlink.Common
         public override CameraTrackingGeoStatusPayload Payload { get; } = new();
 
         public override string Name => "CAMERA_TRACKING_GEO_STATUS";
+
     }
 
     /// <summary>
@@ -45300,6 +45915,7 @@ namespace Asv.Mavlink.Common
         public override GimbalManagerInformationPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_MANAGER_INFORMATION";
+
     }
 
     /// <summary>
@@ -45511,6 +46127,7 @@ namespace Asv.Mavlink.Common
         public override GimbalManagerStatusPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_MANAGER_STATUS";
+
     }
 
     /// <summary>
@@ -45688,6 +46305,19 @@ namespace Asv.Mavlink.Common
         public override GimbalManagerSetAttitudePayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_MANAGER_SET_ATTITUDE";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -45895,6 +46525,7 @@ namespace Asv.Mavlink.Common
         public override GimbalDeviceInformationPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_DEVICE_INFORMATION";
+
     }
 
     /// <summary>
@@ -46303,6 +46934,19 @@ namespace Asv.Mavlink.Common
         public override GimbalDeviceSetAttitudePayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_DEVICE_SET_ATTITUDE";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -46507,6 +47151,19 @@ namespace Asv.Mavlink.Common
         public override GimbalDeviceAttitudeStatusPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_DEVICE_ATTITUDE_STATUS";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -46790,6 +47447,19 @@ namespace Asv.Mavlink.Common
         public override AutopilotStateForGimbalDevicePayload Payload { get; } = new();
 
         public override string Name => "AUTOPILOT_STATE_FOR_GIMBAL_DEVICE";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -47086,6 +47756,19 @@ namespace Asv.Mavlink.Common
         public override GimbalManagerSetPitchyawPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_MANAGER_SET_PITCHYAW";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -47280,6 +47963,19 @@ namespace Asv.Mavlink.Common
         public override GimbalManagerSetManualControlPayload Payload { get; } = new();
 
         public override string Name => "GIMBAL_MANAGER_SET_MANUAL_CONTROL";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -47474,6 +48170,7 @@ namespace Asv.Mavlink.Common
         public override EscInfoPayload Payload { get; } = new();
 
         public override string Name => "ESC_INFO";
+
     }
 
     /// <summary>
@@ -47720,6 +48417,7 @@ namespace Asv.Mavlink.Common
         public override EscStatusPayload Payload { get; } = new();
 
         public override string Name => "ESC_STATUS";
+
     }
 
     /// <summary>
@@ -47890,6 +48588,7 @@ namespace Asv.Mavlink.Common
         public override WifiConfigApPayload Payload { get; } = new();
 
         public override string Name => "WIFI_CONFIG_AP";
+
     }
 
     /// <summary>
@@ -48067,6 +48766,7 @@ namespace Asv.Mavlink.Common
         public override AisVesselPayload Payload { get; } = new();
 
         public override string Name => "AIS_VESSEL";
+
     }
 
     /// <summary>
@@ -48463,6 +49163,7 @@ namespace Asv.Mavlink.Common
         public override UavcanNodeStatusPayload Payload { get; } = new();
 
         public override string Name => "UAVCAN_NODE_STATUS";
+
     }
 
     /// <summary>
@@ -48625,6 +49326,7 @@ namespace Asv.Mavlink.Common
         public override UavcanNodeInfoPayload Payload { get; } = new();
 
         public override string Name => "UAVCAN_NODE_INFO";
+
     }
 
     /// <summary>
@@ -48867,6 +49569,19 @@ namespace Asv.Mavlink.Common
         public override ParamExtRequestReadPayload Payload { get; } = new();
 
         public override string Name => "PARAM_EXT_REQUEST_READ";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -49016,6 +49731,19 @@ namespace Asv.Mavlink.Common
         public override ParamExtRequestListPayload Payload { get; } = new();
 
         public override string Name => "PARAM_EXT_REQUEST_LIST";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -49106,6 +49834,7 @@ namespace Asv.Mavlink.Common
         public override ParamExtValuePayload Payload { get; } = new();
 
         public override string Name => "PARAM_EXT_VALUE";
+
     }
 
     /// <summary>
@@ -49294,6 +50023,19 @@ namespace Asv.Mavlink.Common
         public override ParamExtSetPayload Payload { get; } = new();
 
         public override string Name => "PARAM_EXT_SET";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -49482,6 +50224,7 @@ namespace Asv.Mavlink.Common
         public override ParamExtAckPayload Payload { get; } = new();
 
         public override string Name => "PARAM_EXT_ACK";
+
     }
 
     /// <summary>
@@ -49655,6 +50398,7 @@ namespace Asv.Mavlink.Common
         public override ObstacleDistancePayload Payload { get; } = new();
 
         public override string Name => "OBSTACLE_DISTANCE";
+
     }
 
     /// <summary>
@@ -49887,6 +50631,7 @@ namespace Asv.Mavlink.Common
         public override OdometryPayload Payload { get; } = new();
 
         public override string Name => "ODOMETRY";
+
     }
 
     /// <summary>
@@ -50290,6 +51035,7 @@ namespace Asv.Mavlink.Common
         public override TrajectoryRepresentationWaypointsPayload Payload { get; } = new();
 
         public override string Name => "TRAJECTORY_REPRESENTATION_WAYPOINTS";
+
     }
 
     /// <summary>
@@ -50691,6 +51437,7 @@ namespace Asv.Mavlink.Common
         public override TrajectoryRepresentationBezierPayload Payload { get; } = new();
 
         public override string Name => "TRAJECTORY_REPRESENTATION_BEZIER";
+
     }
 
     /// <summary>
@@ -50911,6 +51658,7 @@ namespace Asv.Mavlink.Common
         public override CellularStatusPayload Payload { get; } = new();
 
         public override string Name => "CELLULAR_STATUS";
+
     }
 
     /// <summary>
@@ -51092,6 +51840,7 @@ namespace Asv.Mavlink.Common
         public override IsbdLinkStatusPayload Payload { get; } = new();
 
         public override string Name => "ISBD_LINK_STATUS";
+
     }
 
     /// <summary>
@@ -51286,6 +52035,7 @@ namespace Asv.Mavlink.Common
         public override CellularConfigPayload Payload { get; } = new();
 
         public override string Name => "CELLULAR_CONFIG";
+
     }
 
     /// <summary>
@@ -51565,6 +52315,7 @@ namespace Asv.Mavlink.Common
         public override RawRpmPayload Payload { get; } = new();
 
         public override string Name => "RAW_RPM";
+
     }
 
     /// <summary>
@@ -51655,6 +52406,7 @@ namespace Asv.Mavlink.Common
         public override UtmGlobalPositionPayload Payload { get; } = new();
 
         public override string Name => "UTM_GLOBAL_POSITION";
+
     }
 
     /// <summary>
@@ -52034,6 +52786,7 @@ namespace Asv.Mavlink.Common
         public override DebugFloatArrayPayload Payload { get; } = new();
 
         public override string Name => "DEBUG_FLOAT_ARRAY";
+
     }
 
     /// <summary>
@@ -52193,6 +52946,7 @@ namespace Asv.Mavlink.Common
         public override OrbitExecutionStatusPayload Payload { get; } = new();
 
         public override string Name => "ORBIT_EXECUTION_STATUS";
+
     }
 
     /// <summary>
@@ -52353,6 +53107,7 @@ namespace Asv.Mavlink.Common
         public override SmartBatteryInfoPayload Payload { get; } = new();
 
         public override string Name => "SMART_BATTERY_INFO";
+
     }
 
     /// <summary>
@@ -52777,6 +53532,7 @@ namespace Asv.Mavlink.Common
         public override GeneratorStatusPayload Payload { get; } = new();
 
         public override string Name => "GENERATOR_STATUS";
+
     }
 
     /// <summary>
@@ -53022,6 +53778,7 @@ namespace Asv.Mavlink.Common
         public override ActuatorOutputStatusPayload Payload { get; } = new();
 
         public override string Name => "ACTUATOR_OUTPUT_STATUS";
+
     }
 
     /// <summary>
@@ -53142,6 +53899,7 @@ namespace Asv.Mavlink.Common
         public override TimeEstimateToTargetPayload Payload { get; } = new();
 
         public override string Name => "TIME_ESTIMATE_TO_TARGET";
+
     }
 
     /// <summary>
@@ -53283,6 +54041,19 @@ namespace Asv.Mavlink.Common
         public override TunnelPayload Payload { get; } = new();
 
         public override string Name => "TUNNEL";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -53439,6 +54210,19 @@ namespace Asv.Mavlink.Common
         public override CanFramePayload Payload { get; } = new();
 
         public override string Name => "CAN_FRAME";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -53610,6 +54394,7 @@ namespace Asv.Mavlink.Common
         public override OnboardComputerStatusPayload Payload { get; } = new();
 
         public override string Name => "ONBOARD_COMPUTER_STATUS";
+
     }
 
     /// <summary>
@@ -54125,6 +54910,7 @@ namespace Asv.Mavlink.Common
         public override ComponentInformationPayload Payload { get; } = new();
 
         public override string Name => "COMPONENT_INFORMATION";
+
     }
 
     /// <summary>
@@ -54322,6 +55108,7 @@ namespace Asv.Mavlink.Common
         public override ComponentMetadataPayload Payload { get; } = new();
 
         public override string Name => "COMPONENT_METADATA";
+
     }
 
     /// <summary>
@@ -54454,6 +55241,19 @@ namespace Asv.Mavlink.Common
         public override PlayTuneV2Payload Payload { get; } = new();
 
         public override string Name => "PLAY_TUNE_V2";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -54605,6 +55405,19 @@ namespace Asv.Mavlink.Common
         public override SupportedTunesPayload Payload { get; } = new();
 
         public override string Name => "SUPPORTED_TUNES";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -54714,6 +55527,7 @@ namespace Asv.Mavlink.Common
         public override EventPayload Payload { get; } = new();
 
         public override string Name => "EVENT";
+
     }
 
     /// <summary>
@@ -54902,6 +55716,7 @@ namespace Asv.Mavlink.Common
         public override CurrentEventSequencePayload Payload { get; } = new();
 
         public override string Name => "CURRENT_EVENT_SEQUENCE";
+
     }
 
     /// <summary>
@@ -54994,6 +55809,19 @@ namespace Asv.Mavlink.Common
         public override RequestEventPayload Payload { get; } = new();
 
         public override string Name => "REQUEST_EVENT";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -55118,6 +55946,19 @@ namespace Asv.Mavlink.Common
         public override ResponseEventErrorPayload Payload { get; } = new();
 
         public override string Name => "RESPONSE_EVENT_ERROR";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -55261,6 +56102,19 @@ namespace Asv.Mavlink.Common
         public override CanfdFramePayload Payload { get; } = new();
 
         public override string Name => "CANFD_FRAME";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -55432,6 +56286,19 @@ namespace Asv.Mavlink.Common
         public override CanFilterModifyPayload Payload { get; } = new();
 
         public override string Name => "CAN_FILTER_MODIFY";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -55605,6 +56472,7 @@ namespace Asv.Mavlink.Common
         public override WheelDistancePayload Payload { get; } = new();
 
         public override string Name => "WHEEL_DISTANCE";
+
     }
 
     /// <summary>
@@ -55725,6 +56593,7 @@ namespace Asv.Mavlink.Common
         public override WinchStatusPayload Payload { get; } = new();
 
         public override string Name => "WINCH_STATUS";
+
     }
 
     /// <summary>
@@ -55919,6 +56788,19 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdBasicIdPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_BASIC_ID";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -56102,6 +56984,19 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdLocationPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_LOCATION";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -56508,6 +57403,19 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdAuthenticationPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_AUTHENTICATION";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -56740,6 +57648,19 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdSelfIdPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_SELF_ID";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -56916,6 +57837,19 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdSystemPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_SYSTEM";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -57248,6 +58182,19 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdOperatorIdPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_OPERATOR_ID";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -57424,6 +58371,19 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdMessagePackPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_MESSAGE_PACK";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -57603,6 +58563,7 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdArmStatusPayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_ARM_STATUS";
+
     }
 
     /// <summary>
@@ -57720,6 +58681,19 @@ namespace Asv.Mavlink.Common
         public override OpenDroneIdSystemUpdatePayload Payload { get; } = new();
 
         public override string Name => "OPEN_DRONE_ID_SYSTEM_UPDATE";
+
+        public override bool TrySetTargetId(byte systemId, byte componentId)
+        {
+            Payload.TargetSystem = systemId;
+            Payload.TargetComponent = componentId;
+            return true;
+        }
+        public override bool TryGetTargetId(out byte systemId, out byte componentId)
+        {
+            systemId = Payload.TargetSystem;
+            componentId = Payload.TargetComponent;
+            return true;
+        }
     }
 
     /// <summary>
@@ -57878,6 +58852,7 @@ namespace Asv.Mavlink.Common
         public override HygrometerSensorPayload Payload { get; } = new();
 
         public override string Name => "HYGROMETER_SENSOR";
+
     }
 
     /// <summary>
