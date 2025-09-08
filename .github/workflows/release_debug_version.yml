@@ -25,7 +25,6 @@ jobs:
           dotnet-version: |
             9.x.x
  
-
       - name: Set version variable
         env:
           TAG: ${{ github.ref_name }}
