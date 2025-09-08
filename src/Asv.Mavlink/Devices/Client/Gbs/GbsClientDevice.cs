@@ -33,7 +33,7 @@ public class GbsClientDeviceConfig:MavlinkClientDeviceConfig
 
 public class GbsClientDevice : MavlinkClientDevice
 {
-    public const string DeviceClass = "Adsb";
+    public const string DeviceClass = "GBS";
     private readonly GbsClientDeviceConfig _config;
     private readonly ILogger _logger;
 

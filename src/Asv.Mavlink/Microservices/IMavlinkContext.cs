@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;
 
-public interface IMavlinkContext:IMicroserviceContext
+public interface IMavlinkContext : IMicroserviceContext
 {
     IPacketSequenceCalculator Sequence { get; }
 }

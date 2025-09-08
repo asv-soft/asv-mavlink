@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-
 using Microsoft.Extensions.Logging;
 using ZLogger;
 
@@ -10,51 +9,64 @@ namespace Asv.Mavlink
 {
     public class DgpsClient : MavlinkMicroserviceClient, IDgpsClient
     {
-
         private readonly int _maxMessageLength = new GpsRtcmDataPayload().Data.Length;
         private readonly ILogger _logger;
-        private uint _seqNumber;
+
+        // 5-битный счетчик последовательности; используем int для Interlocked
+        private uint _seqCounter;
 
         public DgpsClient(MavlinkClientIdentity identity, IMavlinkContext core)
-            :base("DGPS", identity, core)
+            : base(DgpsMixin.MicroserviceTypeName, identity, core)
         {
             _logger = core.LoggerFactory.CreateLogger<DgpsClient>();
         }
 
         public async Task SendRtcmData(byte[] data, int length, CancellationToken cancel)
         {
+            if (data is null)
+                throw new ArgumentNullException(nameof(data));
+            if (length < 0 || length > data.Length)
+                throw new ArgumentOutOfRangeException(nameof(length), "Invalid RTCM length");
+
+            // Протокольный предел: максимум 4 фрагмента на одно сообщение
             if (length > _maxMessageLength * 4)
             {
-                _logger.ZLogError($"RTCM message for DGPS is too large '{length}'");
+                _logger.ZLogError($"RTCM message for DGPS is too large: {length}");
                 return;
             }
 
-            // number of packets we need, including a termination packet if needed
-            var pktCount = length / _maxMessageLength + 1;
-            if (pktCount >= 4)
-            {
-                pktCount = 4;
-            }
+            // Округление вверх
+            var pktCount = (length + _maxMessageLength - 1) / _maxMessageLength;
+            if (pktCount == 0) pktCount = 1;          // пустое сообщение — отправим 0 длины
+            if (pktCount > 4) pktCount = 4;           // жесткий лимит на фрагменты
 
             for (var i = 0; i < pktCount; i++)
             {
-                var i1 = i;
+                cancel.ThrowIfCancellationRequested();
+
+                var offset = i * _maxMessageLength;
+                var dataLength = Math.Min(length - offset, _maxMessageLength);
+                if (dataLength < 0) dataLength = 0;
+
                 await InternalSend<GpsRtcmDataPacket>(pkt =>
                 {
-                    // 1 means message is fragmented
-                    pkt.Payload.Flags = (byte)(pktCount > 1 ? 1 : 0);
-                    //  next 2 bits are the fragment ID
-                    pkt.Payload.Flags += (byte)((i1 & 0x3) << 1);
-                    // the remaining 5 bits are used for the sequence ID
-                    var increment = Interlocked.Increment(ref _seqNumber) % 31;
-                    pkt.Payload.Flags += (byte)((increment& 0x1f) << 3);
+                    // Сборка флагов
+                    byte flags = 0;
+                    if (pktCount > 1) flags |= 0b00000001;               // fragmented
+                    flags |= (byte)((i & 0x3) << 1);                      // fragment id (2 бита)
 
-                    var dataLength = Math.Min(length - i1 * _maxMessageLength, _maxMessageLength);
-                    Array.Copy(data, i1 * _maxMessageLength, pkt.Payload.Data, 0, dataLength);
+                    var seq = Interlocked.Increment(ref _seqCounter);     // потокобезопасно
+                    seq %= 31;                                       // 5 бит
+                    flags |= (byte)((seq & 0x1F) << 3);                   // sequence id (5 бит)
+
+                    pkt.Payload.Flags = flags;
+
+                    if (dataLength > 0)
+                        Array.Copy(data, offset, pkt.Payload.Data, 0, dataLength);
+
                     pkt.Payload.Len = (byte)dataLength;
                 }, cancel).ConfigureAwait(false);
             }
-
         }
     }
 }
