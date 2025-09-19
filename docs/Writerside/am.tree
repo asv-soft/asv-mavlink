@@ -32,5 +32,77 @@
         <toc-element topic="licensing-information.md"/>
         <toc-element topic="contact-information-for-feedback.md"/>
     </toc-element>
+    <toc-element toc-title="Microservices">
+        <toc-element topic="about-microservices.md"/>
+        <toc-element toc-title="Adsb">
+            <toc-element topic="adsb.md"/>
+        </toc-element>
+        <toc-element toc-title="AsvAudio">
+            <toc-element topic="AsvAudio.md"/>
+        </toc-element>
+        <toc-element toc-title="AsvChart">
+            <toc-element topic="AsvChart.md"/>
+        </toc-element>
+        <toc-element toc-title="AsvGbs">
+            <toc-element topic="AsvGbs.md"/>
+        </toc-element>
+        <toc-element toc-title="AsvRadio">
+            <toc-element topic="AsvRadio.md"/>
+        </toc-element>
+        <toc-element toc-title="AsvRsga">
+            <toc-element topic="AsvRsga.md"/>
+        </toc-element>
+        <toc-element toc-title="AsvSdr">
+            <toc-element topic="AsvSdr.md"/>
+        </toc-element>
+        <toc-element toc-title="Commands">
+            <toc-element topic="Commands.md"/>
+        </toc-element>
+        <toc-element toc-title="Control">
+            <toc-element topic="Control.md"/>
+        </toc-element>
+        <toc-element toc-title="Dgps">
+            <toc-element topic="Dgps.md"/>
+        </toc-element>
+        <toc-element toc-title="Diagnostic">
+            <toc-element topic="Diagnostic.md"/>
+        </toc-element>
+        <toc-element toc-title="Ftp">
+            <toc-element topic="Ftp.md"/>
+        </toc-element>
+        <toc-element toc-title="Gnss">
+            <toc-element topic="Gnss.md"/>
+        </toc-element>
+        <toc-element toc-title="Heartbeat">
+            <toc-element topic="Heartbeat.md"/>
+        </toc-element>
+        <toc-element toc-title="Logging">
+            <toc-element topic="Logging.md"/>
+        </toc-element>
+        <toc-element toc-title="Missions">
+            <toc-element topic="Missions.md"/>
+        </toc-element>
+        <toc-element toc-title="Mode">
+            <toc-element topic="Mode.md"/>
+        </toc-element>
+        <toc-element toc-title="Params">
+            <toc-element topic="Params.md"/>
+        </toc-element>
+        <toc-element toc-title="ParamsExt">
+            <toc-element topic="ParamsExt.md"/>
+        </toc-element>
+        <toc-element toc-title="Position">
+            <toc-element topic="Position.md"/>
+        </toc-element>
+        <toc-element toc-title="StatusText">
+            <toc-element topic="StatusText.md"/>
+        </toc-element>
+        <toc-element toc-title="Telemetry">
+            <toc-element topic="Telemetry.md"/>
+        </toc-element>
+        <toc-element toc-title="V2Extention">
+            <toc-element topic="V2Extention.md"/>
+        </toc-element>
+    </toc-element>
     <toc-element topic="for-developers.md"/>
 </instance-profile>
