@@ -5,6 +5,7 @@ using Asv.IO;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
+using R3;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -56,7 +57,20 @@ public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<MavlinkCl
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
         var core = new CoreServices(link.Client,seq,NullLoggerFactory.Instance, time, meter);
+
+        var device = new MavlinkClientDevice(new MavlinkClientDeviceId("TEST", new MavlinkClientIdentity(1,2,3,4)), new MavlinkClientDeviceConfig
+        {
+            Heartbeat = null
+        },ImmutableArray<IClientDeviceExtender>.Empty,Context);
+
+        var heartbeat = device.GetMicroservice<IHeartbeatClient>() ?? throw new Exception("Heartbeat client not found");
+
+        var sub = heartbeat.RawHeartbeat.Subscribe(p =>
+        {
+            Console.WriteLine($"MavType = {p.Type}");
+        });
         
+        sub.Dispose();
         Assert.Throws<ArgumentNullException>(() => new MavlinkClientDevice(new MavlinkClientDeviceId("TEST", new MavlinkClientIdentity(1,2,3,4)), new MavlinkClientDeviceConfig
         {
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
