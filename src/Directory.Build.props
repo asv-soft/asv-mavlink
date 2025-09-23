@@ -1,11 +1,11 @@
 <Project>
   <PropertyGroup>
-    <ProductVersion>4.0.18-dev.2</ProductVersion>
+    <ProductVersion>4.0.18-dev.3</ProductVersion>
     <TargetFrameworksValue>net9.0</TargetFrameworksValue>
-    <DotNetVersion>9.0.7</DotNetVersion>
-    <AsvCommonVersion>3.2.11-dev.2</AsvCommonVersion>
+    <DotNetVersion>9.0.8</DotNetVersion>
+    <AsvCommonVersion>3.3.0-dev.0</AsvCommonVersion>
     <ZLoggerVersion>2.5.10</ZLoggerVersion>
     <ConsoleAppFrameworkVersion>5.5.0</ConsoleAppFrameworkVersion>
-    <SystemIOAbstractionsVersion>22.0.15</SystemIOAbstractionsVersion>
+    <SystemIOAbstractionsVersion>22.0.16</SystemIOAbstractionsVersion>
   </PropertyGroup>
 </Project>
