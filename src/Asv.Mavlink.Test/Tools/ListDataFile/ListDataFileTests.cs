@@ -524,7 +524,7 @@ public class ListDataFileTests
             Type = "TestFilef",
             Version = SemVersion.Parse("0.0.1")
         };
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        Assert.Throws<IndexOutOfRangeException>(() =>
         {
             using var file = new ListDataFile<AsvSdrRecordFileMetadata>(strm, format, false, _fileSystem);
         });

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Immutable;
+using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
 using JetBrains.Annotations;
@@ -46,7 +47,7 @@ public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<MavlinkCl
     }
     
     [Fact]
-    public void Ctor_WithNullSubConfigArgs_Fail()
+    public async Task Ctor_WithNullSubConfigArgs_Fail()
     {
         var protocol = Protocol.Create(builder =>
         {
@@ -60,14 +61,15 @@ public class ClientDeviceTests(ITestOutputHelper log) : ClientTestBase<MavlinkCl
 
         var device = new MavlinkClientDevice(new MavlinkClientDeviceId("TEST", new MavlinkClientIdentity(1,2,3,4)), new MavlinkClientDeviceConfig
         {
-            Heartbeat = null
+            Heartbeat = new HeartbeatClientConfig()
         },ImmutableArray<IClientDeviceExtender>.Empty,Context);
-
+        device.Initialize();
+        await device.State.Where(x => x == ClientDeviceState.Complete).FirstAsync();
         var heartbeat = device.GetMicroservice<IHeartbeatClient>() ?? throw new Exception("Heartbeat client not found");
 
         var sub = heartbeat.RawHeartbeat.Subscribe(p =>
         {
-            Console.WriteLine($"MavType = {p.Type}");
+            
         });
         
         sub.Dispose();

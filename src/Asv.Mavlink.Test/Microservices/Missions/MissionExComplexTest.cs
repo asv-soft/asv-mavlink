@@ -190,10 +190,9 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
         });
         
         // Act
-        var task = _client.SetCurrent(1234, cancel.Token);
         
         // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
+        await Assert.ThrowsAsync<OperationCanceledException>(async () => await _client.SetCurrent(1234, cancel.Token));
         Assert.Equal(0, called);
     }
     

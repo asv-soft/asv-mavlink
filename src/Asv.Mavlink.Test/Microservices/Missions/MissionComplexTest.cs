@@ -154,11 +154,8 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
             }
         );
         
-        // Act
-        var task = _client.MissionSetCurrent(missionItemsIndex, _cancellationTokenSource.Token);
-        
         // Assert
-        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await task);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await _client.MissionSetCurrent(missionItemsIndex, _cancellationTokenSource.Token));
         Assert.Equal(0, called);
     }
 
@@ -774,15 +771,13 @@ public class MissionComplexTest : ComplexTestBase<MissionClient, MissionServer>
             called++;
         });
         
-        // Act
-        var task = _server.RequestMissionItem(
+
+        // Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(async () => await _server.RequestMissionItem(
             10,
             MavMissionType.MavMissionTypeAll,
             cancel: cancel.Token
-        );
-
-        // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
+        ));
         Assert.Equal(0, called);
     }
     
