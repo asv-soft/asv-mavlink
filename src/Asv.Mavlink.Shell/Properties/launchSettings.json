@@ -1,10 +1,8 @@
 {
   "profiles": {
-    "Asv.Mavlink.Shell": {
+    "Run proxy": {
       "commandName": "Project",
-      "commandLineArgs": "ftp-browser -cs tcp://127.0.0.1:7343"    },
-    "Second": {
-      "commandName": "Project",
-      "commandLineArgs": "run-ftp-server"    }
+      "commandLineArgs": "proxy -l tcp://127.0.0.1:5760,udp://127.0.0.1:14600 -o out.txt"
+    }
   }
 }
