@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-08-13.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-26.
 
 using System;
 using System.Text;
@@ -43,6 +43,7 @@ namespace Asv.Mavlink.AsvRsga
         {
             src.Add(AsvRsgaCompatibilityRequestPacket.MessageId, ()=>new AsvRsgaCompatibilityRequestPacket());
             src.Add(AsvRsgaCompatibilityResponsePacket.MessageId, ()=>new AsvRsgaCompatibilityResponsePacket());
+            src.Add(AsvRsgaRttChartPacket.MessageId, ()=>new AsvRsgaRttChartPacket());
             src.Add(AsvRsgaRttGnssPacket.MessageId, ()=>new AsvRsgaRttGnssPacket());
             src.Add(AsvRsgaRttSpectrumPacket.MessageId, ()=>new AsvRsgaRttSpectrumPacket());
             src.Add(AsvRsgaRttTxLlzPacket.MessageId, ()=>new AsvRsgaRttTxLlzPacket());
@@ -910,6 +911,220 @@ namespace Asv.Mavlink.AsvRsga
         }
     }
     /// <summary>
+    /// Chart unit type for RF signal visualization
+    ///  ASV_RSGA_RTT_CHART_UNIT_TYPE
+    /// </summary>
+    public enum AsvRsgaRttChartUnitType : ulong
+    {
+        /// <summary>
+        /// Custom unit (user-defined).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_CUSTOM
+        /// </summary>
+        AsvRsgaRttChartUnitTypeCustom = 0,
+        /// <summary>
+        /// Seconds (s).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_SEC
+        /// </summary>
+        AsvRsgaRttChartUnitTypeSec = 1,
+        /// <summary>
+        /// Milliseconds (ms).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_MSEC
+        /// </summary>
+        AsvRsgaRttChartUnitTypeMsec = 2,
+        /// <summary>
+        /// Microseconds (µs).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_USEC
+        /// </summary>
+        AsvRsgaRttChartUnitTypeUsec = 3,
+        /// <summary>
+        /// Nanoseconds (ns).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_NSEC
+        /// </summary>
+        AsvRsgaRttChartUnitTypeNsec = 4,
+        /// <summary>
+        /// Hertz (Hz).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_HZ
+        /// </summary>
+        AsvRsgaRttChartUnitTypeHz = 5,
+        /// <summary>
+        /// Kilohertz (kHz).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_KHZ
+        /// </summary>
+        AsvRsgaRttChartUnitTypeKhz = 6,
+        /// <summary>
+        /// Megahertz (MHz).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_MHZ
+        /// </summary>
+        AsvRsgaRttChartUnitTypeMhz = 7,
+        /// <summary>
+        /// Gigahertz (GHz).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_GHZ
+        /// </summary>
+        AsvRsgaRttChartUnitTypeGhz = 8,
+        /// <summary>
+        /// Power in dBm.
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_DBM
+        /// </summary>
+        AsvRsgaRttChartUnitTypeDbm = 9,
+        /// <summary>
+        /// Relative level in dB.
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_DB
+        /// </summary>
+        AsvRsgaRttChartUnitTypeDb = 10,
+        /// <summary>
+        /// Power in Watts (W).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_WATT
+        /// </summary>
+        AsvRsgaRttChartUnitTypeWatt = 11,
+        /// <summary>
+        /// Power in milliwatts (mW).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_MWATT
+        /// </summary>
+        AsvRsgaRttChartUnitTypeMwatt = 12,
+        /// <summary>
+        /// Voltage in Volts (V).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_VOLT
+        /// </summary>
+        AsvRsgaRttChartUnitTypeVolt = 13,
+        /// <summary>
+        /// Voltage in millivolts (mV).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_MVOLT
+        /// </summary>
+        AsvRsgaRttChartUnitTypeMvolt = 14,
+        /// <summary>
+        /// Current in Amperes (A).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_AMPERE
+        /// </summary>
+        AsvRsgaRttChartUnitTypeAmpere = 15,
+        /// <summary>
+        /// Current in milliamperes (mA).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_MILLIAMPERE
+        /// </summary>
+        AsvRsgaRttChartUnitTypeMilliampere = 16,
+        /// <summary>
+        /// Field strength in dBµV/m.
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_DBUV_M
+        /// </summary>
+        AsvRsgaRttChartUnitTypeDbuvM = 17,
+        /// <summary>
+        /// Field strength in µV/m.
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_UV_M
+        /// </summary>
+        AsvRsgaRttChartUnitTypeUvM = 18,
+        /// <summary>
+        /// Phase in degrees (°).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_DEGREE
+        /// </summary>
+        AsvRsgaRttChartUnitTypeDegree = 19,
+        /// <summary>
+        /// Phase in radians (rad).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_RADIAN
+        /// </summary>
+        AsvRsgaRttChartUnitTypeRadian = 20,
+        /// <summary>
+        /// Power spectral density in dB/Hz.
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_DB_HZ
+        /// </summary>
+        AsvRsgaRttChartUnitTypeDbHz = 21,
+        /// <summary>
+        /// Voltage spectral density in V/√Hz.
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_V_SQRT_HZ
+        /// </summary>
+        AsvRsgaRttChartUnitTypeVSqrtHz = 22,
+    }
+    public static class AsvRsgaRttChartUnitTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(3);
+            yield return converter(4);
+            yield return converter(5);
+            yield return converter(6);
+            yield return converter(7);
+            yield return converter(8);
+            yield return converter(9);
+            yield return converter(10);
+            yield return converter(11);
+            yield return converter(12);
+            yield return converter(13);
+            yield return converter(14);
+            yield return converter(15);
+            yield return converter(16);
+            yield return converter(17);
+            yield return converter(18);
+            yield return converter(19);
+            yield return converter(20);
+            yield return converter(21);
+            yield return converter(22);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_RSGA_RTT_CHART_UNIT_TYPE_CUSTOM");
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_CHART_UNIT_TYPE_SEC");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_CHART_UNIT_TYPE_MSEC");
+            yield return new EnumValue<T>(converter(3),"ASV_RSGA_RTT_CHART_UNIT_TYPE_USEC");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_RTT_CHART_UNIT_TYPE_NSEC");
+            yield return new EnumValue<T>(converter(5),"ASV_RSGA_RTT_CHART_UNIT_TYPE_HZ");
+            yield return new EnumValue<T>(converter(6),"ASV_RSGA_RTT_CHART_UNIT_TYPE_KHZ");
+            yield return new EnumValue<T>(converter(7),"ASV_RSGA_RTT_CHART_UNIT_TYPE_MHZ");
+            yield return new EnumValue<T>(converter(8),"ASV_RSGA_RTT_CHART_UNIT_TYPE_GHZ");
+            yield return new EnumValue<T>(converter(9),"ASV_RSGA_RTT_CHART_UNIT_TYPE_DBM");
+            yield return new EnumValue<T>(converter(10),"ASV_RSGA_RTT_CHART_UNIT_TYPE_DB");
+            yield return new EnumValue<T>(converter(11),"ASV_RSGA_RTT_CHART_UNIT_TYPE_WATT");
+            yield return new EnumValue<T>(converter(12),"ASV_RSGA_RTT_CHART_UNIT_TYPE_MWATT");
+            yield return new EnumValue<T>(converter(13),"ASV_RSGA_RTT_CHART_UNIT_TYPE_VOLT");
+            yield return new EnumValue<T>(converter(14),"ASV_RSGA_RTT_CHART_UNIT_TYPE_MVOLT");
+            yield return new EnumValue<T>(converter(15),"ASV_RSGA_RTT_CHART_UNIT_TYPE_AMPERE");
+            yield return new EnumValue<T>(converter(16),"ASV_RSGA_RTT_CHART_UNIT_TYPE_MILLIAMPERE");
+            yield return new EnumValue<T>(converter(17),"ASV_RSGA_RTT_CHART_UNIT_TYPE_DBUV_M");
+            yield return new EnumValue<T>(converter(18),"ASV_RSGA_RTT_CHART_UNIT_TYPE_UV_M");
+            yield return new EnumValue<T>(converter(19),"ASV_RSGA_RTT_CHART_UNIT_TYPE_DEGREE");
+            yield return new EnumValue<T>(converter(20),"ASV_RSGA_RTT_CHART_UNIT_TYPE_RADIAN");
+            yield return new EnumValue<T>(converter(21),"ASV_RSGA_RTT_CHART_UNIT_TYPE_DB_HZ");
+            yield return new EnumValue<T>(converter(22),"ASV_RSGA_RTT_CHART_UNIT_TYPE_V_SQRT_HZ");
+        }
+    }
+    /// <summary>
+    /// Chart data transmission data type
+    ///  ASV_RSGA_RTT_CHART_DATA_FORMAT
+    /// </summary>
+    public enum AsvRsgaRttChartDataFormat : ulong
+    {
+        /// <summary>
+        /// Write a value as a fraction between a given minimum and maximum. Uses 8 bits so we have '256' steps between min and max.
+        /// ASV_RSGA_RTT_CHART_DATA_FORMAT_RANGE_FLOAT_8BIT
+        /// </summary>
+        AsvRsgaRttChartDataFormatRangeFloat8bit = 0,
+        /// <summary>
+        /// Write a value as a fraction between a given minimum and maximum. Uses 16 bits so we have '65535' steps between min and max.
+        /// ASV_RSGA_RTT_CHART_DATA_FORMAT_RANGE_FLOAT_16BIT
+        /// </summary>
+        AsvRsgaRttChartDataFormatRangeFloat16bit = 1,
+        /// <summary>
+        /// Write a value as a float. Uses 32 bits.
+        /// ASV_RSGA_RTT_CHART_DATA_FORMAT_FLOAT
+        /// </summary>
+        AsvRsgaRttChartDataFormatFloat = 2,
+    }
+    public static class AsvRsgaRttChartDataFormatHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_RSGA_RTT_CHART_DATA_FORMAT_RANGE_FLOAT_8BIT");
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_CHART_DATA_FORMAT_RANGE_FLOAT_16BIT");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_CHART_DATA_FORMAT_FLOAT");
+        }
+    }
+    /// <summary>
     ///  MAV_CMD
     /// </summary>
     public enum MavCmd : ulong
@@ -1213,6 +1428,271 @@ namespace Asv.Mavlink.AsvRsga
         public byte[] SupportedModes { get; } = new byte[32];
         [Obsolete("This method is deprecated. Use GetSupportedModesMaxItemsCount instead.")]
         public byte GetSupportedModesMaxItemsCount() => 32;
+    }
+    /// <summary>
+    /// Common chart data. Can be transmitted for all supported modes (e.g. spectrum for LLZ\GP\VOR or pulse shape for DME) [!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_RSGA_RTT_CHART
+    /// </summary>
+    public class AsvRsgaRttChartPacket : MavlinkV2Message<AsvRsgaRttChartPayload>
+    {
+        public const int MessageId = 13449;
+        
+        public const byte CrcExtra = 227;
+        
+        public override int Id => MessageId;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
+        public override bool WrapToV2Extension => true;
+
+        public override AsvRsgaRttChartPayload Payload { get; } = new();
+
+        public override string Name => "ASV_RSGA_RTT_CHART";
+
+    }
+
+    /// <summary>
+    ///  ASV_RSGA_RTT_CHART
+    /// </summary>
+    public class AsvRsgaRttChartPayload : IPayload
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMaxByteSize() => 239; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMinByteSize() => 239; // of byte sized of fields (exclude extended)
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public int GetByteSize()
+        {
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t data_index
+            +4 // float axes_x_min
+            +4 // float axes_x_max
+            +4 // float axes_y_min
+            +4 // float axes_y_max
+            + 1 // uint8_t axes_x_unit
+            + 1 // uint8_t axes_y_unit
+            + 1 // uint8_t format
+            +Data.Length // uint8_t[200] data
+            );
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
+            TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
+            Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
+            DataIndex = BinSerialize.ReadUInt(ref buffer);
+            AxesXMin = BinSerialize.ReadFloat(ref buffer);
+            AxesXMax = BinSerialize.ReadFloat(ref buffer);
+            AxesYMin = BinSerialize.ReadFloat(ref buffer);
+            AxesYMax = BinSerialize.ReadFloat(ref buffer);
+            AxesXUnit = (AsvRsgaRttChartUnitType)BinSerialize.ReadByte(ref buffer);
+            AxesYUnit = (AsvRsgaRttChartUnitType)BinSerialize.ReadByte(ref buffer);
+            Format = (AsvRsgaRttChartDataFormat)BinSerialize.ReadByte(ref buffer);
+            arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/239 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            
+            for(var i=0;i<arraySize;i++)
+            {
+                Data[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
+            BinSerialize.WriteULong(ref buffer,(ulong)Flags);
+            BinSerialize.WriteUInt(ref buffer,DataIndex);
+            BinSerialize.WriteFloat(ref buffer,AxesXMin);
+            BinSerialize.WriteFloat(ref buffer,AxesXMax);
+            BinSerialize.WriteFloat(ref buffer,AxesYMin);
+            BinSerialize.WriteFloat(ref buffer,AxesYMax);
+            BinSerialize.WriteByte(ref buffer,(byte)AxesXUnit);
+            BinSerialize.WriteByte(ref buffer,(byte)AxesYUnit);
+            BinSerialize.WriteByte(ref buffer,(byte)Format);
+            for(var i=0;i<Data.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Data[i]);
+            }
+            /* PayloadByteSize = 239 */;
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,DataIndexField, ref _dataIndex);    
+            FloatType.Accept(visitor,AxesXMinField, ref _axesXMin);    
+            FloatType.Accept(visitor,AxesXMaxField, ref _axesXMax);    
+            FloatType.Accept(visitor,AxesYMinField, ref _axesYMin);    
+            FloatType.Accept(visitor,AxesYMaxField, ref _axesYMax);    
+            var tmpAxesXUnit = (byte)AxesXUnit;
+            UInt8Type.Accept(visitor,AxesXUnitField, ref tmpAxesXUnit);
+            AxesXUnit = (AsvRsgaRttChartUnitType)tmpAxesXUnit;
+            var tmpAxesYUnit = (byte)AxesYUnit;
+            UInt8Type.Accept(visitor,AxesYUnitField, ref tmpAxesYUnit);
+            AxesYUnit = (AsvRsgaRttChartUnitType)tmpAxesYUnit;
+            var tmpFormat = (byte)Format;
+            UInt8Type.Accept(visitor,FormatField, ref tmpFormat);
+            Format = (AsvRsgaRttChartDataFormat)tmpFormat;
+            ArrayType.Accept(visitor,DataField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Data[index]));    
+
+        }
+
+        /// <summary>
+        /// Timestamp (UNIX epoch time)
+        /// OriginName: time_unix_usec, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time)")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
+        /// <summary>
+        /// Data flags
+        /// OriginName: flags, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
+        /// <summary>
+        /// Data index in record
+        /// OriginName: data_index, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field DataIndexField = new Field.Builder()
+            .Name(nameof(DataIndex))
+            .Title("data_index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _dataIndex;
+        public uint DataIndex { get => _dataIndex; set => _dataIndex = value; }
+        /// <summary>
+        /// Minimum value of Axis X.
+        /// OriginName: axes_x_min, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field AxesXMinField = new Field.Builder()
+            .Name(nameof(AxesXMin))
+            .Title("axes_x_min")
+            .Description("Minimum value of Axis X.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _axesXMin;
+        public float AxesXMin { get => _axesXMin; set => _axesXMin = value; }
+        /// <summary>
+        /// Maximum value of Axis X.
+        /// OriginName: axes_x_max, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field AxesXMaxField = new Field.Builder()
+            .Name(nameof(AxesXMax))
+            .Title("axes_x_max")
+            .Description("Maximum value of Axis X.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _axesXMax;
+        public float AxesXMax { get => _axesXMax; set => _axesXMax = value; }
+        /// <summary>
+        /// Minimum value of Axis Y.
+        /// OriginName: axes_y_min, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field AxesYMinField = new Field.Builder()
+            .Name(nameof(AxesYMin))
+            .Title("axes_y_min")
+            .Description("Minimum value of Axis Y.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _axesYMin;
+        public float AxesYMin { get => _axesYMin; set => _axesYMin = value; }
+        /// <summary>
+        /// Maximum value of Axis Y.
+        /// OriginName: axes_y_max, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field AxesYMaxField = new Field.Builder()
+            .Name(nameof(AxesYMax))
+            .Title("axes_y_max")
+            .Description("Maximum value of Axis Y.")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _axesYMax;
+        public float AxesYMax { get => _axesYMax; set => _axesYMax = value; }
+        /// <summary>
+        /// Axis X unit.
+        /// OriginName: axes_x_unit, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field AxesXUnitField = new Field.Builder()
+            .Name(nameof(AxesXUnit))
+            .Title("axes_x_unit")
+            .Description("Axis X unit.")
+            .DataType(new UInt8Type(AsvRsgaRttChartUnitTypeHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRttChartUnitTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvRsgaRttChartUnitTypeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private AsvRsgaRttChartUnitType _axesXUnit;
+        public AsvRsgaRttChartUnitType AxesXUnit { get => _axesXUnit; set => _axesXUnit = value; } 
+        /// <summary>
+        /// Axis Y unit.
+        /// OriginName: axes_y_unit, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field AxesYUnitField = new Field.Builder()
+            .Name(nameof(AxesYUnit))
+            .Title("axes_y_unit")
+            .Description("Axis Y unit.")
+            .DataType(new UInt8Type(AsvRsgaRttChartUnitTypeHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRttChartUnitTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvRsgaRttChartUnitTypeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private AsvRsgaRttChartUnitType _axesYUnit;
+        public AsvRsgaRttChartUnitType AxesYUnit { get => _axesYUnit; set => _axesYUnit = value; } 
+        /// <summary>
+        /// Format of one measure.
+        /// OriginName: format, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field FormatField = new Field.Builder()
+            .Name(nameof(Format))
+            .Title("format")
+            .Description("Format of one measure.")
+            .DataType(new UInt8Type(AsvRsgaRttChartDataFormatHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRttChartDataFormatHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvRsgaRttChartDataFormatHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private AsvRsgaRttChartDataFormat _format;
+        public AsvRsgaRttChartDataFormat Format { get => _format; set => _format = value; } 
+        /// <summary>
+        /// Chart data.
+        /// OriginName: data, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field DataField = new Field.Builder()
+            .Name(nameof(Data))
+            .Title("data")
+            .Description("Chart data.")
+
+            .DataType(new ArrayType(UInt8Type.Default,200))
+        .Build();
+        public const int DataMaxItemsCount = 200;
+        public byte[] Data { get; } = new byte[200];
+        [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
+        public byte GetDataMaxItemsCount() => 200;
     }
     /// <summary>
     /// Global position from GNSS receiver. Can be transmitted for all supported modes. [!WRAP_TO_V2_EXTENSION_PACKET!]
@@ -2177,7 +2657,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13456;
         
-        public const byte CrcExtra = 44;
+        public const byte CrcExtra = 12;
         
         public override int Id => MessageId;
         
@@ -2198,16 +2678,33 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttDmeRepPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 79; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 79; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
             return (byte)(
             +8 // uint64_t time_unix_usec
             + 8 // uint64_t flags
+            +8 // uint64_t tx_freq
+            +8 // uint64_t rx_freq
             +4 // uint32_t index
+            +4 // float tx_power
+            +4 // float tx_gain
+            +4 // float rx_power
+            +4 // float rx_field_strength
+            +4 // float rx_signal_overflow
+            +4 // float rx_gain
+            +2 // int16_t rx_freq_offset
+            +2 // uint16_t pulse_shape_rise
+            +2 // uint16_t pulse_shape_duration
+            +2 // uint16_t pulse_shape_decay
+            +2 // uint16_t pulse_spacing
+            +2 // uint16_t req_freq
+            +2 // int16_t measure_time
+            +1 // int8_t pulse_shape_amplitude
+            +CodeId.Length // char[4] code_id
             );
         }
 
@@ -2215,9 +2712,39 @@ namespace Asv.Mavlink.AsvRsga
 
         public void Deserialize(ref ReadOnlySpan<byte> buffer)
         {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
+            TxFreq = BinSerialize.ReadULong(ref buffer);
+            RxFreq = BinSerialize.ReadULong(ref buffer);
             Index = BinSerialize.ReadUInt(ref buffer);
+            TxPower = BinSerialize.ReadFloat(ref buffer);
+            TxGain = BinSerialize.ReadFloat(ref buffer);
+            RxPower = BinSerialize.ReadFloat(ref buffer);
+            RxFieldStrength = BinSerialize.ReadFloat(ref buffer);
+            RxSignalOverflow = BinSerialize.ReadFloat(ref buffer);
+            RxGain = BinSerialize.ReadFloat(ref buffer);
+            RxFreqOffset = BinSerialize.ReadShort(ref buffer);
+            PulseShapeRise = BinSerialize.ReadUShort(ref buffer);
+            PulseShapeDuration = BinSerialize.ReadUShort(ref buffer);
+            PulseShapeDecay = BinSerialize.ReadUShort(ref buffer);
+            PulseSpacing = BinSerialize.ReadUShort(ref buffer);
+            ReqFreq = BinSerialize.ReadUShort(ref buffer);
+            MeasureTime = BinSerialize.ReadShort(ref buffer);
+            PulseShapeAmplitude = (sbyte)BinSerialize.ReadByte(ref buffer);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/79 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CodeId)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, CodeId.Length);
+                }
+            }
+            buffer = buffer[arraySize..];
+           
 
         }
 
@@ -2225,8 +2752,34 @@ namespace Asv.Mavlink.AsvRsga
         {
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
+            BinSerialize.WriteULong(ref buffer,TxFreq);
+            BinSerialize.WriteULong(ref buffer,RxFreq);
             BinSerialize.WriteUInt(ref buffer,Index);
-            /* PayloadByteSize = 20 */;
+            BinSerialize.WriteFloat(ref buffer,TxPower);
+            BinSerialize.WriteFloat(ref buffer,TxGain);
+            BinSerialize.WriteFloat(ref buffer,RxPower);
+            BinSerialize.WriteFloat(ref buffer,RxFieldStrength);
+            BinSerialize.WriteFloat(ref buffer,RxSignalOverflow);
+            BinSerialize.WriteFloat(ref buffer,RxGain);
+            BinSerialize.WriteShort(ref buffer,RxFreqOffset);
+            BinSerialize.WriteUShort(ref buffer,PulseShapeRise);
+            BinSerialize.WriteUShort(ref buffer,PulseShapeDuration);
+            BinSerialize.WriteUShort(ref buffer,PulseShapeDecay);
+            BinSerialize.WriteUShort(ref buffer,PulseSpacing);
+            BinSerialize.WriteUShort(ref buffer,ReqFreq);
+            BinSerialize.WriteShort(ref buffer,MeasureTime);
+            BinSerialize.WriteByte(ref buffer,(byte)PulseShapeAmplitude);
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = CodeId)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, CodeId.Length, bytePointer, CodeId.Length);
+                }
+            }
+            buffer = buffer.Slice(CodeId.Length);
+            
+            /* PayloadByteSize = 79 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -2235,7 +2788,25 @@ namespace Asv.Mavlink.AsvRsga
             var tmpFlags = (ulong)Flags;
             UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt64Type.Accept(visitor,TxFreqField, ref _txFreq);    
+            UInt64Type.Accept(visitor,RxFreqField, ref _rxFreq);    
             UInt32Type.Accept(visitor,IndexField, ref _index);    
+            FloatType.Accept(visitor,TxPowerField, ref _txPower);    
+            FloatType.Accept(visitor,TxGainField, ref _txGain);    
+            FloatType.Accept(visitor,RxPowerField, ref _rxPower);    
+            FloatType.Accept(visitor,RxFieldStrengthField, ref _rxFieldStrength);    
+            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
+            Int16Type.Accept(visitor,RxFreqOffsetField, ref _rxFreqOffset);
+            UInt16Type.Accept(visitor,PulseShapeRiseField, ref _pulseShapeRise);    
+            UInt16Type.Accept(visitor,PulseShapeDurationField, ref _pulseShapeDuration);    
+            UInt16Type.Accept(visitor,PulseShapeDecayField, ref _pulseShapeDecay);    
+            UInt16Type.Accept(visitor,PulseSpacingField, ref _pulseSpacing);    
+            UInt16Type.Accept(visitor,ReqFreqField, ref _reqFreq);    
+            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            Int8Type.Accept(visitor,PulseShapeAmplitudeField, ref _pulseShapeAmplitude);                
+            ArrayType.Accept(visitor,CodeIdField,  
+                (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
         }
 
@@ -2266,6 +2837,32 @@ namespace Asv.Mavlink.AsvRsga
         private AsvRsgaDataFlags _flags;
         public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
         /// <summary>
+        /// TX frequency
+        /// OriginName: tx_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field TxFreqField = new Field.Builder()
+            .Name(nameof(TxFreq))
+            .Title("tx_freq")
+            .Description("TX frequency")
+.Units(@"Hz")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _txFreq;
+        public ulong TxFreq { get => _txFreq; set => _txFreq = value; }
+        /// <summary>
+        /// RX frequency
+        /// OriginName: rx_freq, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field RxFreqField = new Field.Builder()
+            .Name(nameof(RxFreq))
+            .Title("rx_freq")
+            .Description("RX frequency")
+.Units(@"Hz")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _rxFreq;
+        public ulong RxFreq { get => _rxFreq; set => _rxFreq = value; }
+        /// <summary>
         /// Data index in record
         /// OriginName: index, Units: , IsExtended: false
         /// </summary>
@@ -2278,6 +2875,203 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
+        /// <summary>
+        /// Output power
+        /// OriginName: tx_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field TxPowerField = new Field.Builder()
+            .Name(nameof(TxPower))
+            .Title("tx_power")
+            .Description("Output power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _txPower;
+        public float TxPower { get => _txPower; set => _txPower = value; }
+        /// <summary>
+        /// Percent of total TX gain level (0.0 - 1.0)
+        /// OriginName: tx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field TxGainField = new Field.Builder()
+            .Name(nameof(TxGain))
+            .Title("tx_gain")
+            .Description("Percent of total TX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _txGain;
+        public float TxGain { get => _txGain; set => _txGain = value; }
+        /// <summary>
+        /// Receive power (peak)
+        /// OriginName: rx_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field RxPowerField = new Field.Builder()
+            .Name(nameof(RxPower))
+            .Title("rx_power")
+            .Description("Receive power (peak)")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxPower;
+        public float RxPower { get => _rxPower; set => _rxPower = value; }
+        /// <summary>
+        /// Receive power field strength.
+        /// OriginName: rx_field_strength, Units: uV/m, IsExtended: false
+        /// </summary>
+        public static readonly Field RxFieldStrengthField = new Field.Builder()
+            .Name(nameof(RxFieldStrength))
+            .Title("rx_field_strength")
+            .Description("Receive power field strength.")
+.Units(@"uV/m")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxFieldStrength;
+        public float RxFieldStrength { get => _rxFieldStrength; set => _rxFieldStrength = value; }
+        /// <summary>
+        /// Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong).
+        /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxSignalOverflowField = new Field.Builder()
+            .Name(nameof(RxSignalOverflow))
+            .Title("rx_signal_overflow")
+            .Description("Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong).")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxSignalOverflow;
+        public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
+        /// <summary>
+        /// Percent of total RX gain level (0.0 - 1.0)
+        /// OriginName: rx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxGainField = new Field.Builder()
+            .Name(nameof(RxGain))
+            .Title("rx_gain")
+            .Description("Percent of total RX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxGain;
+        public float RxGain { get => _rxGain; set => _rxGain = value; }
+        /// <summary>
+        /// RX frequency offset
+        /// OriginName: rx_freq_offset, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field RxFreqOffsetField = new Field.Builder()
+            .Name(nameof(RxFreqOffset))
+            .Title("rx_freq_offset")
+            .Description("RX frequency offset")
+.Units(@"Hz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _rxFreqOffset;
+        public short RxFreqOffset { get => _rxFreqOffset; set => _rxFreqOffset = value; }
+        /// <summary>
+        /// Pulse shape: rise time (≤3 μs)
+        /// OriginName: pulse_shape_rise, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeRiseField = new Field.Builder()
+            .Name(nameof(PulseShapeRise))
+            .Title("pulse_shape_rise")
+            .Description("Pulse shape: rise time (\u22643 \u03BCs)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeRise;
+        public ushort PulseShapeRise { get => _pulseShapeRise; set => _pulseShapeRise = value; }
+        /// <summary>
+        /// Pulse shape: rise time (3.5 μs, ±0.5 μs)
+        /// OriginName: pulse_shape_duration, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeDurationField = new Field.Builder()
+            .Name(nameof(PulseShapeDuration))
+            .Title("pulse_shape_duration")
+            .Description("Pulse shape: rise time (3.5 \u03BCs, \u00B10.5 \u03BCs)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeDuration;
+        public ushort PulseShapeDuration { get => _pulseShapeDuration; set => _pulseShapeDuration = value; }
+        /// <summary>
+        /// Pulse shape: rise time (≤3.5 μs)
+        /// OriginName: pulse_shape_decay, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeDecayField = new Field.Builder()
+            .Name(nameof(PulseShapeDecay))
+            .Title("pulse_shape_decay")
+            .Description("Pulse shape: rise time (\u22643.5 \u03BCs)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeDecay;
+        public ushort PulseShapeDecay { get => _pulseShapeDecay; set => _pulseShapeDecay = value; }
+        /// <summary>
+        /// Pulse spacing (X channel 12 ±0.25 us, Y channel: 30 ±0.25 us)
+        /// OriginName: pulse_spacing, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseSpacingField = new Field.Builder()
+            .Name(nameof(PulseSpacing))
+            .Title("pulse_spacing")
+            .Description("Pulse spacing (X channel 12 \u00B10.25 us, Y channel: 30 \u00B10.25 us)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseSpacing;
+        public ushort PulseSpacing { get => _pulseSpacing; set => _pulseSpacing = value; }
+        /// <summary>
+        /// Number of our request
+        /// OriginName: req_freq, Units: pps, IsExtended: false
+        /// </summary>
+        public static readonly Field ReqFreqField = new Field.Builder()
+            .Name(nameof(ReqFreq))
+            .Title("req_freq")
+            .Description("Number of our request")
+.Units(@"pps")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _reqFreq;
+        public ushort ReqFreq { get => _reqFreq; set => _reqFreq = value; }
+        /// <summary>
+        /// Measure time.
+        /// OriginName: measure_time, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field MeasureTimeField = new Field.Builder()
+            .Name(nameof(MeasureTime))
+            .Title("measure_time")
+            .Description("Measure time.")
+.Units(@"ms")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _measureTime;
+        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
+        /// <summary>
+        /// Pulse shape: amplitude (between 95% rise/fall amplitudes, ≥95% of maximum amplitude)
+        /// OriginName: pulse_shape_amplitude, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeAmplitudeField = new Field.Builder()
+            .Name(nameof(PulseShapeAmplitude))
+            .Title("pulse_shape_amplitude")
+            .Description("Pulse shape: amplitude (between 95% rise/fall amplitudes, \u226595% of maximum amplitude)")
+.Units(@"%")
+            .DataType(Int8Type.Default)
+        .Build();
+        private sbyte _pulseShapeAmplitude;
+        public sbyte PulseShapeAmplitude { get => _pulseShapeAmplitude; set => _pulseShapeAmplitude = value; }
+        /// <summary>
+        /// Code identification
+        /// OriginName: code_id, Units: Letters, IsExtended: false
+        /// </summary>
+        public static readonly Field CodeIdField = new Field.Builder()
+            .Name(nameof(CodeId))
+            .Title("code_id")
+            .Description("Code identification")
+.Units(@"Letters")
+            .DataType(new ArrayType(CharType.Ascii,4))
+        .Build();
+        public const int CodeIdMaxItemsCount = 4;
+        public char[] CodeId { get; } = new char[4];
+        [Obsolete("This method is deprecated. Use GetCodeIdMaxItemsCount instead.")]
+        public byte GetCodeIdMaxItemsCount() => 4;
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_TX_GBAS mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
