@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-29.
 
 using System;
 using System.Text;
@@ -911,6 +911,43 @@ namespace Asv.Mavlink.AsvRsga
         }
     }
     /// <summary>
+    /// Chart type
+    ///  ASV_RSGA_RTT_CHART_TYPE
+    /// </summary>
+    public enum AsvRsgaRttChartType : ulong
+    {
+        /// <summary>
+        /// Custom chart (user-defined).
+        /// ASV_RSGA_RTT_CHART_TYPE_CUSTOM
+        /// </summary>
+        AsvRsgaRttChartTypeCustom = 0,
+        /// <summary>
+        /// DME pulse shape for X channel.
+        /// ASV_RSGA_RTT_CHART_TYPE_DME_PULSE_SHAPE_X_CHANNEL
+        /// </summary>
+        AsvRsgaRttChartTypeDmePulseShapeXChannel = 1,
+        /// <summary>
+        /// DME pulse shape for Y channel.
+        /// ASV_RSGA_RTT_CHART_TYPE_DME_PULSE_SHAPE_Y_CHANNEL
+        /// </summary>
+        AsvRsgaRttChartTypeDmePulseShapeYChannel = 2,
+    }
+    public static class AsvRsgaRttChartTypeHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(0);
+            yield return converter(1);
+            yield return converter(2);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(0),"ASV_RSGA_RTT_CHART_TYPE_CUSTOM");
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_CHART_TYPE_DME_PULSE_SHAPE_X_CHANNEL");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_CHART_TYPE_DME_PULSE_SHAPE_Y_CHANNEL");
+        }
+    }
+    /// <summary>
     /// Chart unit type for RF signal visualization
     ///  ASV_RSGA_RTT_CHART_UNIT_TYPE
     /// </summary>
@@ -1031,6 +1068,11 @@ namespace Asv.Mavlink.AsvRsga
         /// ASV_RSGA_RTT_CHART_UNIT_TYPE_V_SQRT_HZ
         /// </summary>
         AsvRsgaRttChartUnitTypeVSqrtHz = 22,
+        /// <summary>
+        /// Relative amplitude in percent (% of maximum).
+        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_PERCENT
+        /// </summary>
+        AsvRsgaRttChartUnitTypePercent = 23,
     }
     public static class AsvRsgaRttChartUnitTypeHelper
     {
@@ -1059,6 +1101,7 @@ namespace Asv.Mavlink.AsvRsga
             yield return converter(20);
             yield return converter(21);
             yield return converter(22);
+            yield return converter(23);
         }
         public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
         {
@@ -1085,6 +1128,7 @@ namespace Asv.Mavlink.AsvRsga
             yield return new EnumValue<T>(converter(20),"ASV_RSGA_RTT_CHART_UNIT_TYPE_RADIAN");
             yield return new EnumValue<T>(converter(21),"ASV_RSGA_RTT_CHART_UNIT_TYPE_DB_HZ");
             yield return new EnumValue<T>(converter(22),"ASV_RSGA_RTT_CHART_UNIT_TYPE_V_SQRT_HZ");
+            yield return new EnumValue<T>(converter(23),"ASV_RSGA_RTT_CHART_UNIT_TYPE_PERCENT");
         }
     }
     /// <summary>
@@ -1430,14 +1474,14 @@ namespace Asv.Mavlink.AsvRsga
         public byte GetSupportedModesMaxItemsCount() => 32;
     }
     /// <summary>
-    /// Common chart data. Can be transmitted for all supported modes (e.g. spectrum for LLZ\GP\VOR or pulse shape for DME) [!WRAP_TO_V2_EXTENSION_PACKET!]
+    /// Common chart data. Can be transmitted for all supported modes (e.g. spectrum for LLZ/GP/VOR or pulse shape for DME) [!WRAP_TO_V2_EXTENSION_PACKET!]
     ///  ASV_RSGA_RTT_CHART
     /// </summary>
     public class AsvRsgaRttChartPacket : MavlinkV2Message<AsvRsgaRttChartPayload>
     {
         public const int MessageId = 13449;
         
-        public const byte CrcExtra = 227;
+        public const byte CrcExtra = 0;
         
         public override int Id => MessageId;
         
@@ -1458,9 +1502,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttChartPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 239; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 240; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 239; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 240; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -1472,6 +1516,7 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float axes_x_max
             +4 // float axes_y_min
             +4 // float axes_y_max
+            + 1 // uint8_t chart_type
             + 1 // uint8_t axes_x_unit
             + 1 // uint8_t axes_y_unit
             + 1 // uint8_t format
@@ -1492,10 +1537,11 @@ namespace Asv.Mavlink.AsvRsga
             AxesXMax = BinSerialize.ReadFloat(ref buffer);
             AxesYMin = BinSerialize.ReadFloat(ref buffer);
             AxesYMax = BinSerialize.ReadFloat(ref buffer);
+            ChartType = (AsvRsgaRttChartType)BinSerialize.ReadByte(ref buffer);
             AxesXUnit = (AsvRsgaRttChartUnitType)BinSerialize.ReadByte(ref buffer);
             AxesYUnit = (AsvRsgaRttChartUnitType)BinSerialize.ReadByte(ref buffer);
             Format = (AsvRsgaRttChartDataFormat)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/239 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/240 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             for(var i=0;i<arraySize;i++)
             {
@@ -1513,6 +1559,7 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,AxesXMax);
             BinSerialize.WriteFloat(ref buffer,AxesYMin);
             BinSerialize.WriteFloat(ref buffer,AxesYMax);
+            BinSerialize.WriteByte(ref buffer,(byte)ChartType);
             BinSerialize.WriteByte(ref buffer,(byte)AxesXUnit);
             BinSerialize.WriteByte(ref buffer,(byte)AxesYUnit);
             BinSerialize.WriteByte(ref buffer,(byte)Format);
@@ -1520,7 +1567,7 @@ namespace Asv.Mavlink.AsvRsga
             {
                 BinSerialize.WriteByte(ref buffer,(byte)Data[i]);
             }
-            /* PayloadByteSize = 239 */;
+            /* PayloadByteSize = 240 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -1534,6 +1581,9 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,AxesXMaxField, ref _axesXMax);    
             FloatType.Accept(visitor,AxesYMinField, ref _axesYMin);    
             FloatType.Accept(visitor,AxesYMaxField, ref _axesYMax);    
+            var tmpChartType = (byte)ChartType;
+            UInt8Type.Accept(visitor,ChartTypeField, ref tmpChartType);
+            ChartType = (AsvRsgaRttChartType)tmpChartType;
             var tmpAxesXUnit = (byte)AxesXUnit;
             UInt8Type.Accept(visitor,AxesXUnitField, ref tmpAxesXUnit);
             AxesXUnit = (AsvRsgaRttChartUnitType)tmpAxesXUnit;
@@ -1549,13 +1599,13 @@ namespace Asv.Mavlink.AsvRsga
         }
 
         /// <summary>
-        /// Timestamp (UNIX epoch time)
+        /// Timestamp (UNIX epoch time, μs resolution)
         /// OriginName: time_unix_usec, Units: us, IsExtended: false
         /// </summary>
         public static readonly Field TimeUnixUsecField = new Field.Builder()
             .Name(nameof(TimeUnixUsec))
             .Title("time_unix_usec")
-            .Description("Timestamp (UNIX epoch time)")
+            .Description("Timestamp (UNIX epoch time, \u03BCs resolution)")
 .Units(@"us")
             .DataType(UInt64Type.Default)
         .Build();
@@ -1640,6 +1690,19 @@ namespace Asv.Mavlink.AsvRsga
         private float _axesYMax;
         public float AxesYMax { get => _axesYMax; set => _axesYMax = value; }
         /// <summary>
+        /// Chart type (e.g. spectrum, pulse shape).
+        /// OriginName: chart_type, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field ChartTypeField = new Field.Builder()
+            .Name(nameof(ChartType))
+            .Title("chart_type")
+            .Description("Chart type (e.g. spectrum, pulse shape).")
+            .DataType(new UInt8Type(AsvRsgaRttChartTypeHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRttChartTypeHelper.GetValues(x=>(byte)x).Max()))
+            .Enum(AsvRsgaRttChartTypeHelper.GetEnumValues(x=>(byte)x))
+            .Build();
+        private AsvRsgaRttChartType _chartType;
+        public AsvRsgaRttChartType ChartType { get => _chartType; set => _chartType = value; } 
+        /// <summary>
         /// Axis X unit.
         /// OriginName: axes_x_unit, Units: , IsExtended: false
         /// </summary>
@@ -1679,13 +1742,13 @@ namespace Asv.Mavlink.AsvRsga
         private AsvRsgaRttChartDataFormat _format;
         public AsvRsgaRttChartDataFormat Format { get => _format; set => _format = value; } 
         /// <summary>
-        /// Chart data.
+        /// Encoded chart data (interpretation depends on "format").
         /// OriginName: data, Units: , IsExtended: false
         /// </summary>
         public static readonly Field DataField = new Field.Builder()
             .Name(nameof(Data))
             .Title("data")
-            .Description("Chart data.")
+            .Description("Encoded chart data (interpretation depends on \"format\").")
 
             .DataType(new ArrayType(UInt8Type.Default,200))
         .Build();
@@ -2657,7 +2720,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13456;
         
-        public const byte CrcExtra = 12;
+        public const byte CrcExtra = 37;
         
         public override int Id => MessageId;
         
@@ -2678,9 +2741,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttDmeRepPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 79; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 88; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 79; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 88; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -2698,12 +2761,17 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float rx_gain
             +2 // int16_t rx_freq_offset
             +2 // uint16_t pulse_shape_rise
+            +2 // uint16_t pulse_shape_rise_sd
             +2 // uint16_t pulse_shape_duration
+            +2 // uint16_t pulse_shape_duration_sd
             +2 // uint16_t pulse_shape_decay
+            +2 // uint16_t pulse_shape_decay_sd
             +2 // uint16_t pulse_spacing
+            +2 // uint16_t pulse_spacing_sd
             +2 // uint16_t req_freq
             +2 // int16_t measure_time
             +1 // int8_t pulse_shape_amplitude
+            +1 // int8_t pulse_shape_amplitude_sd
             +CodeId.Length // char[4] code_id
             );
         }
@@ -2727,13 +2795,18 @@ namespace Asv.Mavlink.AsvRsga
             RxGain = BinSerialize.ReadFloat(ref buffer);
             RxFreqOffset = BinSerialize.ReadShort(ref buffer);
             PulseShapeRise = BinSerialize.ReadUShort(ref buffer);
+            PulseShapeRiseSd = BinSerialize.ReadUShort(ref buffer);
             PulseShapeDuration = BinSerialize.ReadUShort(ref buffer);
+            PulseShapeDurationSd = BinSerialize.ReadUShort(ref buffer);
             PulseShapeDecay = BinSerialize.ReadUShort(ref buffer);
+            PulseShapeDecaySd = BinSerialize.ReadUShort(ref buffer);
             PulseSpacing = BinSerialize.ReadUShort(ref buffer);
+            PulseSpacingSd = BinSerialize.ReadUShort(ref buffer);
             ReqFreq = BinSerialize.ReadUShort(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
             PulseShapeAmplitude = (sbyte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/79 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            PulseShapeAmplitudeSd = (sbyte)BinSerialize.ReadByte(ref buffer);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/88 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             unsafe
             {
@@ -2763,12 +2836,17 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,RxGain);
             BinSerialize.WriteShort(ref buffer,RxFreqOffset);
             BinSerialize.WriteUShort(ref buffer,PulseShapeRise);
+            BinSerialize.WriteUShort(ref buffer,PulseShapeRiseSd);
             BinSerialize.WriteUShort(ref buffer,PulseShapeDuration);
+            BinSerialize.WriteUShort(ref buffer,PulseShapeDurationSd);
             BinSerialize.WriteUShort(ref buffer,PulseShapeDecay);
+            BinSerialize.WriteUShort(ref buffer,PulseShapeDecaySd);
             BinSerialize.WriteUShort(ref buffer,PulseSpacing);
+            BinSerialize.WriteUShort(ref buffer,PulseSpacingSd);
             BinSerialize.WriteUShort(ref buffer,ReqFreq);
             BinSerialize.WriteShort(ref buffer,MeasureTime);
             BinSerialize.WriteByte(ref buffer,(byte)PulseShapeAmplitude);
+            BinSerialize.WriteByte(ref buffer,(byte)PulseShapeAmplitudeSd);
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -2779,7 +2857,7 @@ namespace Asv.Mavlink.AsvRsga
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 79 */;
+            /* PayloadByteSize = 88 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -2799,12 +2877,17 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,RxGainField, ref _rxGain);    
             Int16Type.Accept(visitor,RxFreqOffsetField, ref _rxFreqOffset);
             UInt16Type.Accept(visitor,PulseShapeRiseField, ref _pulseShapeRise);    
+            UInt16Type.Accept(visitor,PulseShapeRiseSdField, ref _pulseShapeRiseSd);    
             UInt16Type.Accept(visitor,PulseShapeDurationField, ref _pulseShapeDuration);    
+            UInt16Type.Accept(visitor,PulseShapeDurationSdField, ref _pulseShapeDurationSd);    
             UInt16Type.Accept(visitor,PulseShapeDecayField, ref _pulseShapeDecay);    
+            UInt16Type.Accept(visitor,PulseShapeDecaySdField, ref _pulseShapeDecaySd);    
             UInt16Type.Accept(visitor,PulseSpacingField, ref _pulseSpacing);    
+            UInt16Type.Accept(visitor,PulseSpacingSdField, ref _pulseSpacingSd);    
             UInt16Type.Accept(visitor,ReqFreqField, ref _reqFreq);    
             Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
             Int8Type.Accept(visitor,PulseShapeAmplitudeField, ref _pulseShapeAmplitude);                
+            Int8Type.Accept(visitor,PulseShapeAmplitudeSdField, ref _pulseShapeAmplitudeSd);                
             ArrayType.Accept(visitor,CodeIdField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
@@ -2967,44 +3050,83 @@ namespace Asv.Mavlink.AsvRsga
         private short _rxFreqOffset;
         public short RxFreqOffset { get => _rxFreqOffset; set => _rxFreqOffset = value; }
         /// <summary>
-        /// Pulse shape: rise time (≤3 μs)
+        /// Pulse shape: rise time (≤3 μs, measured between 10% and 90% of amplitude) 
         /// OriginName: pulse_shape_rise, Units: ns, IsExtended: false
         /// </summary>
         public static readonly Field PulseShapeRiseField = new Field.Builder()
             .Name(nameof(PulseShapeRise))
             .Title("pulse_shape_rise")
-            .Description("Pulse shape: rise time (\u22643 \u03BCs)")
+            .Description("Pulse shape: rise time (\u22643 \u03BCs, measured between 10% and 90% of amplitude) ")
 .Units(@"ns")
             .DataType(UInt16Type.Default)
         .Build();
         private ushort _pulseShapeRise;
         public ushort PulseShapeRise { get => _pulseShapeRise; set => _pulseShapeRise = value; }
         /// <summary>
-        /// Pulse shape: rise time (3.5 μs, ±0.5 μs)
+        /// Pulse shape: standard deviation of rise time (≤3 μs, measured between 10% and 90% of amplitude) 
+        /// OriginName: pulse_shape_rise_sd, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeRiseSdField = new Field.Builder()
+            .Name(nameof(PulseShapeRiseSd))
+            .Title("pulse_shape_rise_sd")
+            .Description("Pulse shape: standard deviation of rise time (\u22643 \u03BCs, measured between 10% and 90% of amplitude) ")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeRiseSd;
+        public ushort PulseShapeRiseSd { get => _pulseShapeRiseSd; set => _pulseShapeRiseSd = value; }
+        /// <summary>
+        /// Pulse shape: pulse duration (3.5 μs ±0.5 μs, measured at 50% amplitude points)
         /// OriginName: pulse_shape_duration, Units: ns, IsExtended: false
         /// </summary>
         public static readonly Field PulseShapeDurationField = new Field.Builder()
             .Name(nameof(PulseShapeDuration))
             .Title("pulse_shape_duration")
-            .Description("Pulse shape: rise time (3.5 \u03BCs, \u00B10.5 \u03BCs)")
+            .Description("Pulse shape: pulse duration (3.5 \u03BCs \u00B10.5 \u03BCs, measured at 50% amplitude points)")
 .Units(@"ns")
             .DataType(UInt16Type.Default)
         .Build();
         private ushort _pulseShapeDuration;
         public ushort PulseShapeDuration { get => _pulseShapeDuration; set => _pulseShapeDuration = value; }
         /// <summary>
-        /// Pulse shape: rise time (≤3.5 μs)
+        /// Pulse shape: standard deviation of pulse duration (3.5 μs ±0.5 μs, measured at 50% amplitude points)
+        /// OriginName: pulse_shape_duration_sd, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeDurationSdField = new Field.Builder()
+            .Name(nameof(PulseShapeDurationSd))
+            .Title("pulse_shape_duration_sd")
+            .Description("Pulse shape: standard deviation of pulse duration (3.5 \u03BCs \u00B10.5 \u03BCs, measured at 50% amplitude points)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeDurationSd;
+        public ushort PulseShapeDurationSd { get => _pulseShapeDurationSd; set => _pulseShapeDurationSd = value; }
+        /// <summary>
+        /// Pulse shape: fall time (≤3.5 μs, measured between 90% and 10% of amplitude)
         /// OriginName: pulse_shape_decay, Units: ns, IsExtended: false
         /// </summary>
         public static readonly Field PulseShapeDecayField = new Field.Builder()
             .Name(nameof(PulseShapeDecay))
             .Title("pulse_shape_decay")
-            .Description("Pulse shape: rise time (\u22643.5 \u03BCs)")
+            .Description("Pulse shape: fall time (\u22643.5 \u03BCs, measured between 90% and 10% of amplitude)")
 .Units(@"ns")
             .DataType(UInt16Type.Default)
         .Build();
         private ushort _pulseShapeDecay;
         public ushort PulseShapeDecay { get => _pulseShapeDecay; set => _pulseShapeDecay = value; }
+        /// <summary>
+        /// Pulse shape: standard deviation of fall time (≤3.5 μs, measured between 90% and 10% of amplitude)
+        /// OriginName: pulse_shape_decay_sd, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeDecaySdField = new Field.Builder()
+            .Name(nameof(PulseShapeDecaySd))
+            .Title("pulse_shape_decay_sd")
+            .Description("Pulse shape: standard deviation of fall time (\u22643.5 \u03BCs, measured between 90% and 10% of amplitude)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeDecaySd;
+        public ushort PulseShapeDecaySd { get => _pulseShapeDecaySd; set => _pulseShapeDecaySd = value; }
         /// <summary>
         /// Pulse spacing (X channel 12 ±0.25 us, Y channel: 30 ±0.25 us)
         /// OriginName: pulse_spacing, Units: ns, IsExtended: false
@@ -3018,6 +3140,19 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private ushort _pulseSpacing;
         public ushort PulseSpacing { get => _pulseSpacing; set => _pulseSpacing = value; }
+        /// <summary>
+        /// Standard deviation of pulse spacing (X channel 12 ±0.25 us, Y channel: 30 ±0.25 us)
+        /// OriginName: pulse_spacing_sd, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseSpacingSdField = new Field.Builder()
+            .Name(nameof(PulseSpacingSd))
+            .Title("pulse_spacing_sd")
+            .Description("Standard deviation of pulse spacing (X channel 12 \u00B10.25 us, Y channel: 30 \u00B10.25 us)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseSpacingSd;
+        public ushort PulseSpacingSd { get => _pulseSpacingSd; set => _pulseSpacingSd = value; }
         /// <summary>
         /// Number of our request
         /// OriginName: req_freq, Units: pps, IsExtended: false
@@ -3045,18 +3180,31 @@ namespace Asv.Mavlink.AsvRsga
         private short _measureTime;
         public short MeasureTime { get => _measureTime; set => _measureTime = value; }
         /// <summary>
-        /// Pulse shape: amplitude (between 95% rise/fall amplitudes, ≥95% of maximum amplitude)
+        /// Pulse shape: amplitude (between 95% rise and 95% fall points, ≥95% of maximum amplitude)
         /// OriginName: pulse_shape_amplitude, Units: %, IsExtended: false
         /// </summary>
         public static readonly Field PulseShapeAmplitudeField = new Field.Builder()
             .Name(nameof(PulseShapeAmplitude))
             .Title("pulse_shape_amplitude")
-            .Description("Pulse shape: amplitude (between 95% rise/fall amplitudes, \u226595% of maximum amplitude)")
+            .Description("Pulse shape: amplitude (between 95% rise and 95% fall points, \u226595% of maximum amplitude)")
 .Units(@"%")
             .DataType(Int8Type.Default)
         .Build();
         private sbyte _pulseShapeAmplitude;
         public sbyte PulseShapeAmplitude { get => _pulseShapeAmplitude; set => _pulseShapeAmplitude = value; }
+        /// <summary>
+        /// Pulse shape: standard deviation of amplitude (between 95% rise and 95% fall points, ≥95% of maximum amplitude)
+        /// OriginName: pulse_shape_amplitude_sd, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeAmplitudeSdField = new Field.Builder()
+            .Name(nameof(PulseShapeAmplitudeSd))
+            .Title("pulse_shape_amplitude_sd")
+            .Description("Pulse shape: standard deviation of amplitude (between 95% rise and 95% fall points, \u226595% of maximum amplitude)")
+.Units(@"%")
+            .DataType(Int8Type.Default)
+        .Build();
+        private sbyte _pulseShapeAmplitudeSd;
+        public sbyte PulseShapeAmplitudeSd { get => _pulseShapeAmplitudeSd; set => _pulseShapeAmplitudeSd = value; }
         /// <summary>
         /// Code identification
         /// OriginName: code_id, Units: Letters, IsExtended: false
@@ -3411,7 +3559,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13460;
         
-        public const byte CrcExtra = 243;
+        public const byte CrcExtra = 82;
         
         public override int Id => MessageId;
         
@@ -3432,9 +3580,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttDmeReqPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 89; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 98; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 89; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -3455,12 +3603,17 @@ namespace Asv.Mavlink.AsvRsga
             +2 // int16_t measure_time
             +2 // int16_t rx_freq_offset
             +2 // uint16_t pulse_shape_rise
+            +2 // uint16_t pulse_shape_rise_sd
             +2 // uint16_t pulse_shape_duration
+            +2 // uint16_t pulse_shape_duration_sd
             +2 // uint16_t pulse_shape_decay
+            +2 // uint16_t pulse_shape_decay_sd
             +2 // uint16_t pulse_spacing
+            +2 // uint16_t pulse_spacing_sd
             +2 // uint16_t req_freq
             +2 // uint16_t hip_freq
             +1 // int8_t pulse_shape_amplitude
+            +1 // int8_t pulse_shape_amplitude_sd
             +CodeId.Length // char[4] code_id
             );
         }
@@ -3487,13 +3640,18 @@ namespace Asv.Mavlink.AsvRsga
             MeasureTime = BinSerialize.ReadShort(ref buffer);
             RxFreqOffset = BinSerialize.ReadShort(ref buffer);
             PulseShapeRise = BinSerialize.ReadUShort(ref buffer);
+            PulseShapeRiseSd = BinSerialize.ReadUShort(ref buffer);
             PulseShapeDuration = BinSerialize.ReadUShort(ref buffer);
+            PulseShapeDurationSd = BinSerialize.ReadUShort(ref buffer);
             PulseShapeDecay = BinSerialize.ReadUShort(ref buffer);
+            PulseShapeDecaySd = BinSerialize.ReadUShort(ref buffer);
             PulseSpacing = BinSerialize.ReadUShort(ref buffer);
+            PulseSpacingSd = BinSerialize.ReadUShort(ref buffer);
             ReqFreq = BinSerialize.ReadUShort(ref buffer);
             HipFreq = BinSerialize.ReadUShort(ref buffer);
             PulseShapeAmplitude = (sbyte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/89 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            PulseShapeAmplitudeSd = (sbyte)BinSerialize.ReadByte(ref buffer);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/98 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             unsafe
             {
@@ -3526,12 +3684,17 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteShort(ref buffer,MeasureTime);
             BinSerialize.WriteShort(ref buffer,RxFreqOffset);
             BinSerialize.WriteUShort(ref buffer,PulseShapeRise);
+            BinSerialize.WriteUShort(ref buffer,PulseShapeRiseSd);
             BinSerialize.WriteUShort(ref buffer,PulseShapeDuration);
+            BinSerialize.WriteUShort(ref buffer,PulseShapeDurationSd);
             BinSerialize.WriteUShort(ref buffer,PulseShapeDecay);
+            BinSerialize.WriteUShort(ref buffer,PulseShapeDecaySd);
             BinSerialize.WriteUShort(ref buffer,PulseSpacing);
+            BinSerialize.WriteUShort(ref buffer,PulseSpacingSd);
             BinSerialize.WriteUShort(ref buffer,ReqFreq);
             BinSerialize.WriteUShort(ref buffer,HipFreq);
             BinSerialize.WriteByte(ref buffer,(byte)PulseShapeAmplitude);
+            BinSerialize.WriteByte(ref buffer,(byte)PulseShapeAmplitudeSd);
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -3542,7 +3705,7 @@ namespace Asv.Mavlink.AsvRsga
             }
             buffer = buffer.Slice(CodeId.Length);
             
-            /* PayloadByteSize = 89 */;
+            /* PayloadByteSize = 98 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -3565,12 +3728,17 @@ namespace Asv.Mavlink.AsvRsga
             Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
             Int16Type.Accept(visitor,RxFreqOffsetField, ref _rxFreqOffset);
             UInt16Type.Accept(visitor,PulseShapeRiseField, ref _pulseShapeRise);    
+            UInt16Type.Accept(visitor,PulseShapeRiseSdField, ref _pulseShapeRiseSd);    
             UInt16Type.Accept(visitor,PulseShapeDurationField, ref _pulseShapeDuration);    
+            UInt16Type.Accept(visitor,PulseShapeDurationSdField, ref _pulseShapeDurationSd);    
             UInt16Type.Accept(visitor,PulseShapeDecayField, ref _pulseShapeDecay);    
+            UInt16Type.Accept(visitor,PulseShapeDecaySdField, ref _pulseShapeDecaySd);    
             UInt16Type.Accept(visitor,PulseSpacingField, ref _pulseSpacing);    
+            UInt16Type.Accept(visitor,PulseSpacingSdField, ref _pulseSpacingSd);    
             UInt16Type.Accept(visitor,ReqFreqField, ref _reqFreq);    
             UInt16Type.Accept(visitor,HipFreqField, ref _hipFreq);    
             Int8Type.Accept(visitor,PulseShapeAmplitudeField, ref _pulseShapeAmplitude);                
+            Int8Type.Accept(visitor,PulseShapeAmplitudeSdField, ref _pulseShapeAmplitudeSd);                
             ArrayType.Accept(visitor,CodeIdField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref CodeId[index]));
 
@@ -3772,44 +3940,83 @@ namespace Asv.Mavlink.AsvRsga
         private short _rxFreqOffset;
         public short RxFreqOffset { get => _rxFreqOffset; set => _rxFreqOffset = value; }
         /// <summary>
-        /// Pulse shape: rise time (≤3 μs)
+        /// Pulse shape: rise time (≤3 μs, measured between 10% and 90% of amplitude) 
         /// OriginName: pulse_shape_rise, Units: ns, IsExtended: false
         /// </summary>
         public static readonly Field PulseShapeRiseField = new Field.Builder()
             .Name(nameof(PulseShapeRise))
             .Title("pulse_shape_rise")
-            .Description("Pulse shape: rise time (\u22643 \u03BCs)")
+            .Description("Pulse shape: rise time (\u22643 \u03BCs, measured between 10% and 90% of amplitude) ")
 .Units(@"ns")
             .DataType(UInt16Type.Default)
         .Build();
         private ushort _pulseShapeRise;
         public ushort PulseShapeRise { get => _pulseShapeRise; set => _pulseShapeRise = value; }
         /// <summary>
-        /// Pulse shape: rise time (3.5 μs, ±0.5 μs)
+        /// Pulse shape: standard deviation of rise time (≤3 μs, measured between 10% and 90% of amplitude) 
+        /// OriginName: pulse_shape_rise_sd, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeRiseSdField = new Field.Builder()
+            .Name(nameof(PulseShapeRiseSd))
+            .Title("pulse_shape_rise_sd")
+            .Description("Pulse shape: standard deviation of rise time (\u22643 \u03BCs, measured between 10% and 90% of amplitude) ")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeRiseSd;
+        public ushort PulseShapeRiseSd { get => _pulseShapeRiseSd; set => _pulseShapeRiseSd = value; }
+        /// <summary>
+        /// Pulse shape: pulse duration (3.5 μs ±0.5 μs, measured at 50% amplitude points)
         /// OriginName: pulse_shape_duration, Units: ns, IsExtended: false
         /// </summary>
         public static readonly Field PulseShapeDurationField = new Field.Builder()
             .Name(nameof(PulseShapeDuration))
             .Title("pulse_shape_duration")
-            .Description("Pulse shape: rise time (3.5 \u03BCs, \u00B10.5 \u03BCs)")
+            .Description("Pulse shape: pulse duration (3.5 \u03BCs \u00B10.5 \u03BCs, measured at 50% amplitude points)")
 .Units(@"ns")
             .DataType(UInt16Type.Default)
         .Build();
         private ushort _pulseShapeDuration;
         public ushort PulseShapeDuration { get => _pulseShapeDuration; set => _pulseShapeDuration = value; }
         /// <summary>
-        /// Pulse shape: rise time (≤3.5 μs)
+        /// Pulse shape: standard deviation of pulse duration (3.5 μs ±0.5 μs, measured at 50% amplitude points)
+        /// OriginName: pulse_shape_duration_sd, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeDurationSdField = new Field.Builder()
+            .Name(nameof(PulseShapeDurationSd))
+            .Title("pulse_shape_duration_sd")
+            .Description("Pulse shape: standard deviation of pulse duration (3.5 \u03BCs \u00B10.5 \u03BCs, measured at 50% amplitude points)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeDurationSd;
+        public ushort PulseShapeDurationSd { get => _pulseShapeDurationSd; set => _pulseShapeDurationSd = value; }
+        /// <summary>
+        /// Pulse shape: fall time (≤3.5 μs, measured between 90% and 10% of amplitude)
         /// OriginName: pulse_shape_decay, Units: ns, IsExtended: false
         /// </summary>
         public static readonly Field PulseShapeDecayField = new Field.Builder()
             .Name(nameof(PulseShapeDecay))
             .Title("pulse_shape_decay")
-            .Description("Pulse shape: rise time (\u22643.5 \u03BCs)")
+            .Description("Pulse shape: fall time (\u22643.5 \u03BCs, measured between 90% and 10% of amplitude)")
 .Units(@"ns")
             .DataType(UInt16Type.Default)
         .Build();
         private ushort _pulseShapeDecay;
         public ushort PulseShapeDecay { get => _pulseShapeDecay; set => _pulseShapeDecay = value; }
+        /// <summary>
+        /// Pulse shape: standard deviation of fall time (≤3.5 μs, measured between 90% and 10% of amplitude)
+        /// OriginName: pulse_shape_decay_sd, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeDecaySdField = new Field.Builder()
+            .Name(nameof(PulseShapeDecaySd))
+            .Title("pulse_shape_decay_sd")
+            .Description("Pulse shape: standard deviation of fall time (\u22643.5 \u03BCs, measured between 90% and 10% of amplitude)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseShapeDecaySd;
+        public ushort PulseShapeDecaySd { get => _pulseShapeDecaySd; set => _pulseShapeDecaySd = value; }
         /// <summary>
         /// Pulse spacing (X channel 12 ±0.25 us, Y channel: 30 ±0.25 us)
         /// OriginName: pulse_spacing, Units: ns, IsExtended: false
@@ -3823,6 +4030,19 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private ushort _pulseSpacing;
         public ushort PulseSpacing { get => _pulseSpacing; set => _pulseSpacing = value; }
+        /// <summary>
+        /// Standard deviation of pulse spacing (X channel 12 ±0.25 us, Y channel: 30 ±0.25 us)
+        /// OriginName: pulse_spacing_sd, Units: ns, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseSpacingSdField = new Field.Builder()
+            .Name(nameof(PulseSpacingSd))
+            .Title("pulse_spacing_sd")
+            .Description("Standard deviation of pulse spacing (X channel 12 \u00B10.25 us, Y channel: 30 \u00B10.25 us)")
+.Units(@"ns")
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _pulseSpacingSd;
+        public ushort PulseSpacingSd { get => _pulseSpacingSd; set => _pulseSpacingSd = value; }
         /// <summary>
         /// Number of our request
         /// OriginName: req_freq, Units: pps, IsExtended: false
@@ -3850,18 +4070,31 @@ namespace Asv.Mavlink.AsvRsga
         private ushort _hipFreq;
         public ushort HipFreq { get => _hipFreq; set => _hipFreq = value; }
         /// <summary>
-        /// Pulse shape: amplitude (between 95% rise/fall amplitudes, ≥95% of maximum amplitude)
+        /// Pulse shape: amplitude (between 95% rise and 95% fall points, ≥95% of maximum amplitude)
         /// OriginName: pulse_shape_amplitude, Units: %, IsExtended: false
         /// </summary>
         public static readonly Field PulseShapeAmplitudeField = new Field.Builder()
             .Name(nameof(PulseShapeAmplitude))
             .Title("pulse_shape_amplitude")
-            .Description("Pulse shape: amplitude (between 95% rise/fall amplitudes, \u226595% of maximum amplitude)")
+            .Description("Pulse shape: amplitude (between 95% rise and 95% fall points, \u226595% of maximum amplitude)")
 .Units(@"%")
             .DataType(Int8Type.Default)
         .Build();
         private sbyte _pulseShapeAmplitude;
         public sbyte PulseShapeAmplitude { get => _pulseShapeAmplitude; set => _pulseShapeAmplitude = value; }
+        /// <summary>
+        /// Pulse shape: standard deviation of amplitude (between 95% rise and 95% fall points, ≥95% of maximum amplitude)
+        /// OriginName: pulse_shape_amplitude_sd, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseShapeAmplitudeSdField = new Field.Builder()
+            .Name(nameof(PulseShapeAmplitudeSd))
+            .Title("pulse_shape_amplitude_sd")
+            .Description("Pulse shape: standard deviation of amplitude (between 95% rise and 95% fall points, \u226595% of maximum amplitude)")
+.Units(@"%")
+            .DataType(Int8Type.Default)
+        .Build();
+        private sbyte _pulseShapeAmplitudeSd;
+        public sbyte PulseShapeAmplitudeSd { get => _pulseShapeAmplitudeSd; set => _pulseShapeAmplitudeSd = value; }
         /// <summary>
         /// Code identification
         /// OriginName: code_id, Units: Letters, IsExtended: false

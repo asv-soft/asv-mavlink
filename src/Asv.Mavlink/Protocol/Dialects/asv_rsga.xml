@@ -363,6 +363,19 @@
                 <description>[DF24] Comm-D (ELM)</description>
             </entry>
         </enum>
+        <enum name="ASV_RSGA_RTT_CHART_TYPE">
+            <description>Chart type</description>
+
+            <entry name="ASV_RSGA_RTT_CHART_TYPE_CUSTOM" value="0">
+                <description>Custom chart (user-defined).</description>
+            </entry>
+            <entry name="ASV_RSGA_RTT_CHART_TYPE_DME_PULSE_SHAPE_X_CHANNEL" value="1">
+                <description>DME pulse shape for X channel.</description>
+            </entry>
+            <entry name="ASV_RSGA_RTT_CHART_TYPE_DME_PULSE_SHAPE_Y_CHANNEL" value="2">
+                <description>DME pulse shape for Y channel.</description>
+            </entry>
+        </enum>
         <enum name="ASV_RSGA_RTT_CHART_UNIT_TYPE">
             <description>Chart unit type for RF signal visualization</description>
 
@@ -450,7 +463,12 @@
                 <description>Voltage spectral density in V/√Hz.</description>
             </entry>
 
+            <!-- PERCENTAGE -->
+            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_PERCENT" value="23">
+                <description>Relative amplitude in percent (% of maximum).</description>
+            </entry>
         </enum>
+
 
         <enum name="ASV_RSGA_RTT_CHART_DATA_FORMAT">
             <description>Chart data transmission data type</description>
@@ -520,21 +538,28 @@
         <!--==================================================-->
 
         <message id="13449" name="ASV_RSGA_RTT_CHART">
-            <description>Common chart data. Can be transmitted for all supported modes (e.g. spectrum for LLZ\GP\VOR or pulse shape for DME) [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+            <description>Common chart data. Can be transmitted for all supported modes (e.g. spectrum for LLZ/GP/VOR or pulse shape for DME) [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+
             <field type="uint32_t" name="data_index">Data index in record</field>
-            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time, μs resolution)</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
+
+            <!-- Chart type -->
+            <field type="uint8_t" name="chart_type" enum="ASV_RSGA_RTT_CHART_TYPE">Chart type (e.g. spectrum, pulse shape).</field>
+
             <!-- Axis X -->
             <field type="uint8_t" name="axes_x_unit" enum="ASV_RSGA_RTT_CHART_UNIT_TYPE">Axis X unit.</field>
             <field type="float" name="axes_x_min">Minimum value of Axis X.</field>
             <field type="float" name="axes_x_max">Maximum value of Axis X.</field>
+
             <!-- Axis Y -->
             <field type="uint8_t" name="axes_y_unit" enum="ASV_RSGA_RTT_CHART_UNIT_TYPE">Axis Y unit.</field>
             <field type="float" name="axes_y_min">Minimum value of Axis Y.</field>
             <field type="float" name="axes_y_max">Maximum value of Axis Y.</field>
+
             <!-- Data -->
             <field type="uint8_t" name="format" enum="ASV_RSGA_RTT_CHART_DATA_FORMAT">Format of one measure.</field>
-            <field type="uint8_t[200]" name="data">Chart data.</field>
+            <field type="uint8_t[200]" name="data">Encoded chart data (interpretation depends on "format").</field>
         </message>
         
         <message id="13450" name="ASV_RSGA_RTT_GNSS">
@@ -632,12 +657,17 @@
             <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong).</field>
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             <!--Pulse shape-->
-            <field type="uint16_t" name="pulse_shape_rise" units="ns">Pulse shape: rise time (≤3 μs)</field>
-            <field type="uint16_t" name="pulse_shape_duration" units="ns">Pulse shape: rise time (3.5 μs, ±0.5 μs)</field>
-            <field type="uint16_t" name="pulse_shape_decay" units="ns">Pulse shape: rise time (≤3.5 μs)</field>
-            <field type="int8_t" name="pulse_shape_amplitude" units="%">Pulse shape: amplitude (between 95% rise/fall amplitudes, ≥95% of maximum amplitude)</field>
+            <field type="uint16_t" name="pulse_shape_rise" units="ns">Pulse shape: rise time (≤3 μs, measured between 10% and 90% of amplitude) </field>
+            <field type="uint16_t" name="pulse_shape_rise_sd" units="ns">Pulse shape: standard deviation of rise time (≤3 μs, measured between 10% and 90% of amplitude) </field>
+            <field type="uint16_t" name="pulse_shape_duration" units="ns">Pulse shape: pulse duration (3.5 μs ±0.5 μs, measured at 50% amplitude points)</field>
+            <field type="uint16_t" name="pulse_shape_duration_sd" units="ns">Pulse shape: standard deviation of pulse duration (3.5 μs ±0.5 μs, measured at 50% amplitude points)</field>
+            <field type="uint16_t" name="pulse_shape_decay" units="ns">Pulse shape: fall time (≤3.5 μs, measured between 90% and 10% of amplitude)</field>
+            <field type="uint16_t" name="pulse_shape_decay_sd" units="ns">Pulse shape: standard deviation of fall time (≤3.5 μs, measured between 90% and 10% of amplitude)</field>
+            <field type="int8_t" name="pulse_shape_amplitude" units="%">Pulse shape: amplitude (between 95% rise and 95% fall points, ≥95% of maximum amplitude)</field>
+            <field type="int8_t" name="pulse_shape_amplitude_sd" units="%">Pulse shape: standard deviation of amplitude (between 95% rise and 95% fall points, ≥95% of maximum amplitude)</field>
 
             <field type="uint16_t" name="pulse_spacing" units="ns">Pulse spacing (X channel 12 ±0.25 us, Y channel: 30 ±0.25 us)</field>
+            <field type="uint16_t" name="pulse_spacing_sd" units="ns">Standard deviation of pulse spacing (X channel 12 ±0.25 us, Y channel: 30 ±0.25 us)</field>
 
             <field type="char[4]" name="code_id" units="Letters">Code identification</field>
 
@@ -695,11 +725,18 @@
             <!--Specific measure-->
             <field type="float" name="distance" units="m">Measured distance</field>
             <!--Pulse shape-->
-            <field type="uint16_t" name="pulse_shape_rise" units="ns">Pulse shape: rise time (≤3 μs)</field>
-            <field type="uint16_t" name="pulse_shape_duration" units="ns">Pulse shape: rise time (3.5 μs, ±0.5 μs)</field>
-            <field type="uint16_t" name="pulse_shape_decay" units="ns">Pulse shape: rise time (≤3.5 μs)</field>
-            <field type="int8_t" name="pulse_shape_amplitude" units="%">Pulse shape: amplitude (between 95% rise/fall amplitudes, ≥95% of maximum amplitude)</field>
+            <field type="uint16_t" name="pulse_shape_rise" units="ns">Pulse shape: rise time (≤3 μs, measured between 10% and 90% of amplitude) </field>
+            <field type="uint16_t" name="pulse_shape_rise_sd" units="ns">Pulse shape: standard deviation of rise time (≤3 μs, measured between 10% and 90% of amplitude) </field>
+            <field type="uint16_t" name="pulse_shape_duration" units="ns">Pulse shape: pulse duration (3.5 μs ±0.5 μs, measured at 50% amplitude points)</field>
+            <field type="uint16_t" name="pulse_shape_duration_sd" units="ns">Pulse shape: standard deviation of pulse duration (3.5 μs ±0.5 μs, measured at 50% amplitude points)</field>
+            <field type="uint16_t" name="pulse_shape_decay" units="ns">Pulse shape: fall time (≤3.5 μs, measured between 90% and 10% of amplitude)</field>
+            <field type="uint16_t" name="pulse_shape_decay_sd" units="ns">Pulse shape: standard deviation of fall time (≤3.5 μs, measured between 90% and 10% of amplitude)</field>
+            <field type="int8_t" name="pulse_shape_amplitude" units="%">Pulse shape: amplitude (between 95% rise and 95% fall points, ≥95% of maximum amplitude)</field>
+            <field type="int8_t" name="pulse_shape_amplitude_sd" units="%">Pulse shape: standard deviation of amplitude (between 95% rise and 95% fall points, ≥95% of maximum amplitude)</field>
+
             <field type="uint16_t" name="pulse_spacing" units="ns">Pulse spacing (X channel 12 ±0.25 us, Y channel: 30 ±0.25 us)</field>
+            <field type="uint16_t" name="pulse_spacing_sd" units="ns">Standard deviation of pulse spacing (X channel 12 ±0.25 us, Y channel: 30 ±0.25 us)</field>
+            
             <field type="char[4]" name="code_id" units="Letters">Code identification</field>
             <field type="uint16_t" name="req_freq" units="pps">Number of our request</field>
             <field type="uint16_t" name="hip_freq" units="pps">Measured number of all replies, that was recognised as beacon HIP</field>
