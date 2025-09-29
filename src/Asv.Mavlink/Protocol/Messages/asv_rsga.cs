@@ -948,190 +948,6 @@ namespace Asv.Mavlink.AsvRsga
         }
     }
     /// <summary>
-    /// Chart unit type for RF signal visualization
-    ///  ASV_RSGA_RTT_CHART_UNIT_TYPE
-    /// </summary>
-    public enum AsvRsgaRttChartUnitType : ulong
-    {
-        /// <summary>
-        /// Custom unit (user-defined).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_CUSTOM
-        /// </summary>
-        AsvRsgaRttChartUnitTypeCustom = 0,
-        /// <summary>
-        /// Seconds (s).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_SEC
-        /// </summary>
-        AsvRsgaRttChartUnitTypeSec = 1,
-        /// <summary>
-        /// Milliseconds (ms).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_MSEC
-        /// </summary>
-        AsvRsgaRttChartUnitTypeMsec = 2,
-        /// <summary>
-        /// Microseconds (µs).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_USEC
-        /// </summary>
-        AsvRsgaRttChartUnitTypeUsec = 3,
-        /// <summary>
-        /// Nanoseconds (ns).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_NSEC
-        /// </summary>
-        AsvRsgaRttChartUnitTypeNsec = 4,
-        /// <summary>
-        /// Hertz (Hz).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_HZ
-        /// </summary>
-        AsvRsgaRttChartUnitTypeHz = 5,
-        /// <summary>
-        /// Kilohertz (kHz).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_KHZ
-        /// </summary>
-        AsvRsgaRttChartUnitTypeKhz = 6,
-        /// <summary>
-        /// Megahertz (MHz).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_MHZ
-        /// </summary>
-        AsvRsgaRttChartUnitTypeMhz = 7,
-        /// <summary>
-        /// Gigahertz (GHz).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_GHZ
-        /// </summary>
-        AsvRsgaRttChartUnitTypeGhz = 8,
-        /// <summary>
-        /// Power in dBm.
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_DBM
-        /// </summary>
-        AsvRsgaRttChartUnitTypeDbm = 9,
-        /// <summary>
-        /// Relative level in dB.
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_DB
-        /// </summary>
-        AsvRsgaRttChartUnitTypeDb = 10,
-        /// <summary>
-        /// Power in Watts (W).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_WATT
-        /// </summary>
-        AsvRsgaRttChartUnitTypeWatt = 11,
-        /// <summary>
-        /// Power in milliwatts (mW).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_MWATT
-        /// </summary>
-        AsvRsgaRttChartUnitTypeMwatt = 12,
-        /// <summary>
-        /// Voltage in Volts (V).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_VOLT
-        /// </summary>
-        AsvRsgaRttChartUnitTypeVolt = 13,
-        /// <summary>
-        /// Voltage in millivolts (mV).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_MVOLT
-        /// </summary>
-        AsvRsgaRttChartUnitTypeMvolt = 14,
-        /// <summary>
-        /// Current in Amperes (A).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_AMPERE
-        /// </summary>
-        AsvRsgaRttChartUnitTypeAmpere = 15,
-        /// <summary>
-        /// Current in milliamperes (mA).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_MILLIAMPERE
-        /// </summary>
-        AsvRsgaRttChartUnitTypeMilliampere = 16,
-        /// <summary>
-        /// Field strength in dBµV/m.
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_DBUV_M
-        /// </summary>
-        AsvRsgaRttChartUnitTypeDbuvM = 17,
-        /// <summary>
-        /// Field strength in µV/m.
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_UV_M
-        /// </summary>
-        AsvRsgaRttChartUnitTypeUvM = 18,
-        /// <summary>
-        /// Phase in degrees (°).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_DEGREE
-        /// </summary>
-        AsvRsgaRttChartUnitTypeDegree = 19,
-        /// <summary>
-        /// Phase in radians (rad).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_RADIAN
-        /// </summary>
-        AsvRsgaRttChartUnitTypeRadian = 20,
-        /// <summary>
-        /// Power spectral density in dB/Hz.
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_DB_HZ
-        /// </summary>
-        AsvRsgaRttChartUnitTypeDbHz = 21,
-        /// <summary>
-        /// Voltage spectral density in V/√Hz.
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_V_SQRT_HZ
-        /// </summary>
-        AsvRsgaRttChartUnitTypeVSqrtHz = 22,
-        /// <summary>
-        /// Relative amplitude in percent (% of maximum).
-        /// ASV_RSGA_RTT_CHART_UNIT_TYPE_PERCENT
-        /// </summary>
-        AsvRsgaRttChartUnitTypePercent = 23,
-    }
-    public static class AsvRsgaRttChartUnitTypeHelper
-    {
-        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
-        {
-            yield return converter(0);
-            yield return converter(1);
-            yield return converter(2);
-            yield return converter(3);
-            yield return converter(4);
-            yield return converter(5);
-            yield return converter(6);
-            yield return converter(7);
-            yield return converter(8);
-            yield return converter(9);
-            yield return converter(10);
-            yield return converter(11);
-            yield return converter(12);
-            yield return converter(13);
-            yield return converter(14);
-            yield return converter(15);
-            yield return converter(16);
-            yield return converter(17);
-            yield return converter(18);
-            yield return converter(19);
-            yield return converter(20);
-            yield return converter(21);
-            yield return converter(22);
-            yield return converter(23);
-        }
-        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
-        {
-            yield return new EnumValue<T>(converter(0),"ASV_RSGA_RTT_CHART_UNIT_TYPE_CUSTOM");
-            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_CHART_UNIT_TYPE_SEC");
-            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_CHART_UNIT_TYPE_MSEC");
-            yield return new EnumValue<T>(converter(3),"ASV_RSGA_RTT_CHART_UNIT_TYPE_USEC");
-            yield return new EnumValue<T>(converter(4),"ASV_RSGA_RTT_CHART_UNIT_TYPE_NSEC");
-            yield return new EnumValue<T>(converter(5),"ASV_RSGA_RTT_CHART_UNIT_TYPE_HZ");
-            yield return new EnumValue<T>(converter(6),"ASV_RSGA_RTT_CHART_UNIT_TYPE_KHZ");
-            yield return new EnumValue<T>(converter(7),"ASV_RSGA_RTT_CHART_UNIT_TYPE_MHZ");
-            yield return new EnumValue<T>(converter(8),"ASV_RSGA_RTT_CHART_UNIT_TYPE_GHZ");
-            yield return new EnumValue<T>(converter(9),"ASV_RSGA_RTT_CHART_UNIT_TYPE_DBM");
-            yield return new EnumValue<T>(converter(10),"ASV_RSGA_RTT_CHART_UNIT_TYPE_DB");
-            yield return new EnumValue<T>(converter(11),"ASV_RSGA_RTT_CHART_UNIT_TYPE_WATT");
-            yield return new EnumValue<T>(converter(12),"ASV_RSGA_RTT_CHART_UNIT_TYPE_MWATT");
-            yield return new EnumValue<T>(converter(13),"ASV_RSGA_RTT_CHART_UNIT_TYPE_VOLT");
-            yield return new EnumValue<T>(converter(14),"ASV_RSGA_RTT_CHART_UNIT_TYPE_MVOLT");
-            yield return new EnumValue<T>(converter(15),"ASV_RSGA_RTT_CHART_UNIT_TYPE_AMPERE");
-            yield return new EnumValue<T>(converter(16),"ASV_RSGA_RTT_CHART_UNIT_TYPE_MILLIAMPERE");
-            yield return new EnumValue<T>(converter(17),"ASV_RSGA_RTT_CHART_UNIT_TYPE_DBUV_M");
-            yield return new EnumValue<T>(converter(18),"ASV_RSGA_RTT_CHART_UNIT_TYPE_UV_M");
-            yield return new EnumValue<T>(converter(19),"ASV_RSGA_RTT_CHART_UNIT_TYPE_DEGREE");
-            yield return new EnumValue<T>(converter(20),"ASV_RSGA_RTT_CHART_UNIT_TYPE_RADIAN");
-            yield return new EnumValue<T>(converter(21),"ASV_RSGA_RTT_CHART_UNIT_TYPE_DB_HZ");
-            yield return new EnumValue<T>(converter(22),"ASV_RSGA_RTT_CHART_UNIT_TYPE_V_SQRT_HZ");
-            yield return new EnumValue<T>(converter(23),"ASV_RSGA_RTT_CHART_UNIT_TYPE_PERCENT");
-        }
-    }
-    /// <summary>
     /// Chart data transmission data type
     ///  ASV_RSGA_RTT_CHART_DATA_FORMAT
     /// </summary>
@@ -1481,7 +1297,7 @@ namespace Asv.Mavlink.AsvRsga
     {
         public const int MessageId = 13449;
         
-        public const byte CrcExtra = 0;
+        public const byte CrcExtra = 167;
         
         public override int Id => MessageId;
         
@@ -1502,9 +1318,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttChartPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 240; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 239; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 240; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 239; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -1516,9 +1332,7 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float axes_x_max
             +4 // float axes_y_min
             +4 // float axes_y_max
-            + 1 // uint8_t chart_type
-            + 1 // uint8_t axes_x_unit
-            + 1 // uint8_t axes_y_unit
+            + 2 // uint16_t chart_type
             + 1 // uint8_t format
             +Data.Length // uint8_t[200] data
             );
@@ -1537,11 +1351,9 @@ namespace Asv.Mavlink.AsvRsga
             AxesXMax = BinSerialize.ReadFloat(ref buffer);
             AxesYMin = BinSerialize.ReadFloat(ref buffer);
             AxesYMax = BinSerialize.ReadFloat(ref buffer);
-            ChartType = (AsvRsgaRttChartType)BinSerialize.ReadByte(ref buffer);
-            AxesXUnit = (AsvRsgaRttChartUnitType)BinSerialize.ReadByte(ref buffer);
-            AxesYUnit = (AsvRsgaRttChartUnitType)BinSerialize.ReadByte(ref buffer);
+            ChartType = (AsvRsgaRttChartType)BinSerialize.ReadUShort(ref buffer);
             Format = (AsvRsgaRttChartDataFormat)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/240 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/239 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             for(var i=0;i<arraySize;i++)
             {
@@ -1559,15 +1371,13 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,AxesXMax);
             BinSerialize.WriteFloat(ref buffer,AxesYMin);
             BinSerialize.WriteFloat(ref buffer,AxesYMax);
-            BinSerialize.WriteByte(ref buffer,(byte)ChartType);
-            BinSerialize.WriteByte(ref buffer,(byte)AxesXUnit);
-            BinSerialize.WriteByte(ref buffer,(byte)AxesYUnit);
+            BinSerialize.WriteUShort(ref buffer,(ushort)ChartType);
             BinSerialize.WriteByte(ref buffer,(byte)Format);
             for(var i=0;i<Data.Length;i++)
             {
                 BinSerialize.WriteByte(ref buffer,(byte)Data[i]);
             }
-            /* PayloadByteSize = 240 */;
+            /* PayloadByteSize = 239 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -1581,15 +1391,9 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,AxesXMaxField, ref _axesXMax);    
             FloatType.Accept(visitor,AxesYMinField, ref _axesYMin);    
             FloatType.Accept(visitor,AxesYMaxField, ref _axesYMax);    
-            var tmpChartType = (byte)ChartType;
-            UInt8Type.Accept(visitor,ChartTypeField, ref tmpChartType);
+            var tmpChartType = (ushort)ChartType;
+            UInt16Type.Accept(visitor,ChartTypeField, ref tmpChartType);
             ChartType = (AsvRsgaRttChartType)tmpChartType;
-            var tmpAxesXUnit = (byte)AxesXUnit;
-            UInt8Type.Accept(visitor,AxesXUnitField, ref tmpAxesXUnit);
-            AxesXUnit = (AsvRsgaRttChartUnitType)tmpAxesXUnit;
-            var tmpAxesYUnit = (byte)AxesYUnit;
-            UInt8Type.Accept(visitor,AxesYUnitField, ref tmpAxesYUnit);
-            AxesYUnit = (AsvRsgaRttChartUnitType)tmpAxesYUnit;
             var tmpFormat = (byte)Format;
             UInt8Type.Accept(visitor,FormatField, ref tmpFormat);
             Format = (AsvRsgaRttChartDataFormat)tmpFormat;
@@ -1697,37 +1501,11 @@ namespace Asv.Mavlink.AsvRsga
             .Name(nameof(ChartType))
             .Title("chart_type")
             .Description("Chart type (e.g. spectrum, pulse shape).")
-            .DataType(new UInt8Type(AsvRsgaRttChartTypeHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRttChartTypeHelper.GetValues(x=>(byte)x).Max()))
-            .Enum(AsvRsgaRttChartTypeHelper.GetEnumValues(x=>(byte)x))
+            .DataType(new UInt16Type(AsvRsgaRttChartTypeHelper.GetValues(x=>(ushort)x).Min(),AsvRsgaRttChartTypeHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(AsvRsgaRttChartTypeHelper.GetEnumValues(x=>(ushort)x))
             .Build();
         private AsvRsgaRttChartType _chartType;
         public AsvRsgaRttChartType ChartType { get => _chartType; set => _chartType = value; } 
-        /// <summary>
-        /// Axis X unit.
-        /// OriginName: axes_x_unit, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field AxesXUnitField = new Field.Builder()
-            .Name(nameof(AxesXUnit))
-            .Title("axes_x_unit")
-            .Description("Axis X unit.")
-            .DataType(new UInt8Type(AsvRsgaRttChartUnitTypeHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRttChartUnitTypeHelper.GetValues(x=>(byte)x).Max()))
-            .Enum(AsvRsgaRttChartUnitTypeHelper.GetEnumValues(x=>(byte)x))
-            .Build();
-        private AsvRsgaRttChartUnitType _axesXUnit;
-        public AsvRsgaRttChartUnitType AxesXUnit { get => _axesXUnit; set => _axesXUnit = value; } 
-        /// <summary>
-        /// Axis Y unit.
-        /// OriginName: axes_y_unit, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field AxesYUnitField = new Field.Builder()
-            .Name(nameof(AxesYUnit))
-            .Title("axes_y_unit")
-            .Description("Axis Y unit.")
-            .DataType(new UInt8Type(AsvRsgaRttChartUnitTypeHelper.GetValues(x=>(byte)x).Min(),AsvRsgaRttChartUnitTypeHelper.GetValues(x=>(byte)x).Max()))
-            .Enum(AsvRsgaRttChartUnitTypeHelper.GetEnumValues(x=>(byte)x))
-            .Build();
-        private AsvRsgaRttChartUnitType _axesYUnit;
-        public AsvRsgaRttChartUnitType AxesYUnit { get => _axesYUnit; set => _axesYUnit = value; } 
         /// <summary>
         /// Format of one measure.
         /// OriginName: format, Units: , IsExtended: false

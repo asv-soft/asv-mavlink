@@ -376,98 +376,7 @@
                 <description>DME pulse shape for Y channel.</description>
             </entry>
         </enum>
-        <enum name="ASV_RSGA_RTT_CHART_UNIT_TYPE">
-            <description>Chart unit type for RF signal visualization</description>
-
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_CUSTOM" value="0">
-                <description>Custom unit (user-defined).</description>
-            </entry>
-
-            <!-- TIME -->
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_SEC" value="1">
-                <description>Seconds (s).</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_MSEC" value="2">
-                <description>Milliseconds (ms).</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_USEC" value="3">
-                <description>Microseconds (µs).</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_NSEC" value="4">
-                <description>Nanoseconds (ns).</description>
-            </entry>
-
-            <!-- FREQUENCY -->
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_HZ" value="5">
-                <description>Hertz (Hz).</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_KHZ" value="6">
-                <description>Kilohertz (kHz).</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_MHZ" value="7">
-                <description>Megahertz (MHz).</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_GHZ" value="8">
-                <description>Gigahertz (GHz).</description>
-            </entry>
-
-            <!-- POWER / LEVEL -->
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_DBM" value="9">
-                <description>Power in dBm.</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_DB" value="10">
-                <description>Relative level in dB.</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_WATT" value="11">
-                <description>Power in Watts (W).</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_MWATT" value="12">
-                <description>Power in milliwatts (mW).</description>
-            </entry>
-
-            <!-- VOLTAGE / CURRENT / AMPLITUDE -->
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_VOLT" value="13">
-                <description>Voltage in Volts (V).</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_MVOLT" value="14">
-                <description>Voltage in millivolts (mV).</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_AMPERE" value="15">
-                <description>Current in Amperes (A).</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_MILLIAMPERE" value="16">
-                <description>Current in milliamperes (mA).</description>
-            </entry>
-
-            <!-- FIELD STRENGTH -->
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_DBUV_M" value="17">
-                <description>Field strength in dBµV/m.</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_UV_M" value="18">
-                <description>Field strength in µV/m.</description>
-            </entry>
-
-            <!-- PHASE -->
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_DEGREE" value="19">
-                <description>Phase in degrees (°).</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_RADIAN" value="20">
-                <description>Phase in radians (rad).</description>
-            </entry>
-
-            <!-- SPECTRAL DENSITY -->
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_DB_HZ" value="21">
-                <description>Power spectral density in dB/Hz.</description>
-            </entry>
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_V_SQRT_HZ" value="22">
-                <description>Voltage spectral density in V/√Hz.</description>
-            </entry>
-
-            <!-- PERCENTAGE -->
-            <entry name="ASV_RSGA_RTT_CHART_UNIT_TYPE_PERCENT" value="23">
-                <description>Relative amplitude in percent (% of maximum).</description>
-            </entry>
-        </enum>
+        
 
 
         <enum name="ASV_RSGA_RTT_CHART_DATA_FORMAT">
@@ -545,15 +454,13 @@
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
 
             <!-- Chart type -->
-            <field type="uint8_t" name="chart_type" enum="ASV_RSGA_RTT_CHART_TYPE">Chart type (e.g. spectrum, pulse shape).</field>
+            <field type="uint16_t" name="chart_type" enum="ASV_RSGA_RTT_CHART_TYPE">Chart type (e.g. spectrum, pulse shape).</field>
 
             <!-- Axis X -->
-            <field type="uint8_t" name="axes_x_unit" enum="ASV_RSGA_RTT_CHART_UNIT_TYPE">Axis X unit.</field>
             <field type="float" name="axes_x_min">Minimum value of Axis X.</field>
             <field type="float" name="axes_x_max">Maximum value of Axis X.</field>
 
             <!-- Axis Y -->
-            <field type="uint8_t" name="axes_y_unit" enum="ASV_RSGA_RTT_CHART_UNIT_TYPE">Axis Y unit.</field>
             <field type="float" name="axes_y_min">Minimum value of Axis Y.</field>
             <field type="float" name="axes_y_max">Maximum value of Axis Y.</field>
 
