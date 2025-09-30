@@ -16,6 +16,7 @@ class Program
         
         var app = ConsoleApp.Create();
         app.Add<ExampleCommand>();
+        app.Add<GenerateCommand>();
         app.Add<FtpTreeDirectory>();
         app.Add<FtpBrowserDirectory>();
         app.Add<DevicesInfoCommand>();
@@ -26,7 +27,6 @@ class Program
         app.Add<BenchmarkSerializationPacket>();
         //app.Add<BenchmarkFtpServerExCommand>();
         //app.Add<ShowParams>();
-        app.Add<GenerateCommand>();
         app.Add<MavlinkCommand>();
         app.Add<PacketViewerCommand>();
         app.Add<CreateVirtualFtpServerCommand>();
