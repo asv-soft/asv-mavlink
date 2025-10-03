@@ -32,8 +32,10 @@ public class MavlinkV2WrapFeature(IProtocolMessageFactory<MavlinkMessage, int>? 
         if (mavlink.Payload.MessageType != V2ExtensionMessageId) return ValueTask.FromResult<IProtocolMessage?>(message);
         var messageId = MavlinkV2Protocol.GetMessageId(mavlink.Payload.Payload,0);
         var innerMessage = _factory.Create((ushort)messageId);
+        
         if (innerMessage == null) return ValueTask.FromResult<IProtocolMessage?>(message);
         innerMessage.Deserialize(mavlink.Payload.Payload);
+        innerMessage.Tags.AddRange(mavlink.Tags);
         return ValueTask.FromResult<IProtocolMessage?>(innerMessage);
     }
 
@@ -63,9 +65,9 @@ public class MavlinkV2WrapFeature(IProtocolMessageFactory<MavlinkMessage, int>? 
                 TargetNetwork = 0,
                 MessageType = V2ExtensionMessageId,
             },
-            Tags = message.Tags
         };
         // copy all tags
+        message.Serialize(wrappedPacket.Payload.Payload);
         wrappedPacket.Tags.AddRange(mavlink.Tags);
         
         

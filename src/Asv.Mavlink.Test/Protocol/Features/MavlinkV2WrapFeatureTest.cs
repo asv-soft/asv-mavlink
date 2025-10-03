@@ -42,14 +42,11 @@ public class MavlinkV2WrapFeatureTest
         {
             var origin = MavlinkV2MessageFactory.Instance.Create(id) as MavlinkV2Message;
             Assert.NotNull(origin);
-            
+            origin.GetPayload().Randomize();
             
             var tcs = new TaskCompletionSource<MavlinkV2Message>();
             using var sub = _link.Server.RxFilterByType<MavlinkV2Message>()
-                .Subscribe(x =>
-                {
-                    tcs.SetResult(x);
-                });
+                .Subscribe(x => tcs.SetResult(x));
             
 #pragma warning disable CS8604 // Possible null reference argument.
             await _link.Client.Send(origin);

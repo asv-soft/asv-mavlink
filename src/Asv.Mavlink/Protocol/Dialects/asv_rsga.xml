@@ -452,21 +452,11 @@
             <field type="uint32_t" name="data_index">Data index in record</field>
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time, μs resolution)</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
-
             <!-- Chart type -->
             <field type="uint16_t" name="chart_type" enum="ASV_RSGA_RTT_CHART_TYPE">Chart type (e.g. spectrum, pulse shape).</field>
-
-            <!-- Axis X -->
-            <field type="float" name="axes_x_min">Minimum value of Axis X.</field>
-            <field type="float" name="axes_x_max">Maximum value of Axis X.</field>
-
-            <!-- Axis Y -->
-            <field type="float" name="axes_y_min">Minimum value of Axis Y.</field>
-            <field type="float" name="axes_y_max">Maximum value of Axis Y.</field>
-
             <!-- Data -->
             <field type="uint8_t" name="format" enum="ASV_RSGA_RTT_CHART_DATA_FORMAT">Format of one measure.</field>
-            <field type="uint8_t[200]" name="data">Encoded chart data (interpretation depends on "format").</field>
+            <field type="uint8_t[214]" name="data">Encoded chart data (interpretation depends on "format").</field>
         </message>
         
         <message id="13450" name="ASV_RSGA_RTT_GNSS">

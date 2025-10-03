@@ -1306,7 +1306,7 @@ namespace Asv.Mavlink.AsvRsga
         public const int MessageId = 13449; 
         public const string MessageIdAsString = "13449";
         
-        public const byte CrcExtra = 167;
+        public const byte CrcExtra = 81;
         
         public override int Id => MessageId;
                             
@@ -1330,9 +1330,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttChartPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 239; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 237; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 239; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 237; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -1340,13 +1340,9 @@ namespace Asv.Mavlink.AsvRsga
             +8 // uint64_t time_unix_usec
             + 8 // uint64_t flags
             +4 // uint32_t data_index
-            +4 // float axes_x_min
-            +4 // float axes_x_max
-            +4 // float axes_y_min
-            +4 // float axes_y_max
             + 2 // uint16_t chart_type
             + 1 // uint8_t format
-            +Data.Length // uint8_t[200] data
+            +Data.Length // uint8_t[214] data
             );
         }
 
@@ -1359,13 +1355,9 @@ namespace Asv.Mavlink.AsvRsga
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
             DataIndex = BinSerialize.ReadUInt(ref buffer);
-            AxesXMin = BinSerialize.ReadFloat(ref buffer);
-            AxesXMax = BinSerialize.ReadFloat(ref buffer);
-            AxesYMin = BinSerialize.ReadFloat(ref buffer);
-            AxesYMax = BinSerialize.ReadFloat(ref buffer);
             ChartType = (AsvRsgaRttChartType)BinSerialize.ReadUShort(ref buffer);
             Format = (AsvRsgaRttChartDataFormat)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/200 - Math.Max(0,((/*PayloadByteSize*/239 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/214 - Math.Max(0,((/*PayloadByteSize*/237 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             for(var i=0;i<arraySize;i++)
             {
@@ -1379,17 +1371,13 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
             BinSerialize.WriteUInt(ref buffer,DataIndex);
-            BinSerialize.WriteFloat(ref buffer,AxesXMin);
-            BinSerialize.WriteFloat(ref buffer,AxesXMax);
-            BinSerialize.WriteFloat(ref buffer,AxesYMin);
-            BinSerialize.WriteFloat(ref buffer,AxesYMax);
             BinSerialize.WriteUShort(ref buffer,(ushort)ChartType);
             BinSerialize.WriteByte(ref buffer,(byte)Format);
             for(var i=0;i<Data.Length;i++)
             {
                 BinSerialize.WriteByte(ref buffer,(byte)Data[i]);
             }
-            /* PayloadByteSize = 239 */;
+            /* PayloadByteSize = 237 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -1399,10 +1387,6 @@ namespace Asv.Mavlink.AsvRsga
             UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
             UInt32Type.Accept(visitor,DataIndexField, ref _dataIndex);    
-            FloatType.Accept(visitor,AxesXMinField, ref _axesXMin);    
-            FloatType.Accept(visitor,AxesXMaxField, ref _axesXMax);    
-            FloatType.Accept(visitor,AxesYMinField, ref _axesYMin);    
-            FloatType.Accept(visitor,AxesYMaxField, ref _axesYMax);    
             var tmpChartType = (ushort)ChartType;
             UInt16Type.Accept(visitor,ChartTypeField, ref tmpChartType);
             ChartType = (AsvRsgaRttChartType)tmpChartType;
@@ -1454,58 +1438,6 @@ namespace Asv.Mavlink.AsvRsga
         private uint _dataIndex;
         public uint DataIndex { get => _dataIndex; set => _dataIndex = value; }
         /// <summary>
-        /// Minimum value of Axis X.
-        /// OriginName: axes_x_min, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field AxesXMinField = new Field.Builder()
-            .Name(nameof(AxesXMin))
-            .Title("axes_x_min")
-            .Description("Minimum value of Axis X.")
-
-            .DataType(FloatType.Default)
-        .Build();
-        private float _axesXMin;
-        public float AxesXMin { get => _axesXMin; set => _axesXMin = value; }
-        /// <summary>
-        /// Maximum value of Axis X.
-        /// OriginName: axes_x_max, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field AxesXMaxField = new Field.Builder()
-            .Name(nameof(AxesXMax))
-            .Title("axes_x_max")
-            .Description("Maximum value of Axis X.")
-
-            .DataType(FloatType.Default)
-        .Build();
-        private float _axesXMax;
-        public float AxesXMax { get => _axesXMax; set => _axesXMax = value; }
-        /// <summary>
-        /// Minimum value of Axis Y.
-        /// OriginName: axes_y_min, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field AxesYMinField = new Field.Builder()
-            .Name(nameof(AxesYMin))
-            .Title("axes_y_min")
-            .Description("Minimum value of Axis Y.")
-
-            .DataType(FloatType.Default)
-        .Build();
-        private float _axesYMin;
-        public float AxesYMin { get => _axesYMin; set => _axesYMin = value; }
-        /// <summary>
-        /// Maximum value of Axis Y.
-        /// OriginName: axes_y_max, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field AxesYMaxField = new Field.Builder()
-            .Name(nameof(AxesYMax))
-            .Title("axes_y_max")
-            .Description("Maximum value of Axis Y.")
-
-            .DataType(FloatType.Default)
-        .Build();
-        private float _axesYMax;
-        public float AxesYMax { get => _axesYMax; set => _axesYMax = value; }
-        /// <summary>
         /// Chart type (e.g. spectrum, pulse shape).
         /// OriginName: chart_type, Units: , IsExtended: false
         /// </summary>
@@ -1540,12 +1472,12 @@ namespace Asv.Mavlink.AsvRsga
             .Title("data")
             .Description("Encoded chart data (interpretation depends on \"format\").")
 
-            .DataType(new ArrayType(UInt8Type.Default,200))
+            .DataType(new ArrayType(UInt8Type.Default,214))
         .Build();
-        public const int DataMaxItemsCount = 200;
-        public byte[] Data { get; } = new byte[200];
+        public const int DataMaxItemsCount = 214;
+        public byte[] Data { get; } = new byte[214];
         [Obsolete("This method is deprecated. Use GetDataMaxItemsCount instead.")]
-        public byte GetDataMaxItemsCount() => 200;
+        public byte GetDataMaxItemsCount() => 214;
     }
     /// <summary>
     /// Global position from GNSS receiver. Can be transmitted for all supported modes. [!WRAP_TO_V2_EXTENSION_PACKET!]
