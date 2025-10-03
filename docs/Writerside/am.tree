@@ -3,7 +3,8 @@
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
 <instance-profile id="am"
-                  name="Asv Mavlink" start-page="welcome-page.md">
+                  name="Asv Mavlink" 
+                  start-page="welcome-page.md">
     <toc-element topic="welcome-page.md">
         <toc-element topic="get-started.md">
             <toc-element topic="With-Virtual-Connection.md"/>
@@ -11,22 +12,22 @@
         </toc-element>
     </toc-element>
     <toc-element toc-title="CLI">
-        <toc-element topic="code-gen-example.md"/>
-        <toc-element topic="print-vehicle-state.md"/>
-        <toc-element topic="params.md"/>
-        <toc-element topic="packet-code-generation.md"/>
-        <toc-element topic="packet-viewer.md"/>
-        <toc-element topic="proxy.md"/>
-        <toc-element topic="mavlink.md"/>
-        <toc-element topic="benchmark-serialization.md"/>
-        <toc-element topic="devices-info.md"/>
-        <toc-element topic="emulate-adsb-receiver.md"/>
-        <toc-element topic="export-sdr-data.md"/>
-        <toc-element topic="ftp-browser.md"/>
-        <toc-element topic="ftp-tree.md"/>
-        <toc-element topic="ftp-server.md"/>
-        <toc-element topic="generate-fake-diagnostic-data.md"/>
-        <toc-element topic="download-mission-items.md"/>
+        <toc-element topic="code-gen-example-command.md"/>
+        <toc-element topic="print-vehicle-state-command.md"/>
+        <toc-element topic="params-command.md"/>
+        <toc-element topic="packet-code-generation-command.md"/>
+        <toc-element topic="packet-viewer-command.md"/>
+        <toc-element topic="proxy-command.md"/>
+        <toc-element topic="mavlink-command.md"/>
+        <toc-element topic="benchmark-serialization-command.md"/>
+        <toc-element topic="devices-info-command.md"/>
+        <toc-element topic="emulate-adsb-receiver-command.md"/>
+        <toc-element topic="export-sdr-data-command.md"/>
+        <toc-element topic="ftp-browser-command.md"/>
+        <toc-element topic="ftp-tree-command.md"/>
+        <toc-element topic="ftp-server-command.md"/>
+        <toc-element topic="generate-fake-diagnostic-data-command.md"/>
+        <toc-element topic="download-mission-items-command.md"/>
     </toc-element>
     <toc-element toc-title="About">
         <toc-element topic="licensing-information.md"/>
@@ -34,74 +35,53 @@
     </toc-element>
     <toc-element toc-title="Microservices">
         <toc-element topic="about-microservices.md"/>
-        <toc-element toc-title="Adsb">
-            <toc-element topic="adsb.md"/>
+        <toc-element topic="Adsb.md">
         </toc-element>
-        <toc-element toc-title="AsvAudio">
-            <toc-element topic="AsvAudio.md"/>
+        <toc-element topic="AsvAudio.md">
         </toc-element>
-        <toc-element toc-title="AsvChart">
-            <toc-element topic="AsvChart.md"/>
+        <toc-element topic="AsvChart.md">
         </toc-element>
-        <toc-element toc-title="AsvGbs">
-            <toc-element topic="AsvGbs.md"/>
+        <toc-element topic="AsvGbs.md">
         </toc-element>
-        <toc-element toc-title="AsvRadio">
-            <toc-element topic="AsvRadio.md"/>
+        <toc-element topic="AsvRadio.md">
         </toc-element>
-        <toc-element toc-title="AsvRsga">
-            <toc-element topic="AsvRsga.md"/>
+        <toc-element topic="AsvRsga.md">
         </toc-element>
-        <toc-element toc-title="AsvSdr">
-            <toc-element topic="AsvSdr.md"/>
+        <toc-element topic="AsvSdr.md">
         </toc-element>
-        <toc-element toc-title="Commands">
-            <toc-element topic="Commands.md"/>
+        <toc-element topic="Commands.md">
         </toc-element>
-        <toc-element toc-title="Control">
-            <toc-element topic="Control.md"/>
+        <toc-element topic="Control.md">
         </toc-element>
-        <toc-element toc-title="Dgps">
-            <toc-element topic="Dgps.md"/>
+        <toc-element topic="Dgps.md">
         </toc-element>
-        <toc-element toc-title="Diagnostic">
-            <toc-element topic="Diagnostic.md"/>
+        <toc-element topic="Diagnostic.md">
         </toc-element>
-        <toc-element toc-title="Ftp">
-            <toc-element topic="Ftp.md"/>
+        <toc-element topic="Ftp.md">
         </toc-element>
-        <toc-element toc-title="Gnss">
-            <toc-element topic="Gnss.md"/>
+        <toc-element topic="Gnss.md">
         </toc-element>
-        <toc-element toc-title="Heartbeat">
-            <toc-element topic="Heartbeat.md"/>
+        <toc-element topic="Heartbeat.md">
+            <toc-element toc-title="Client" topic="HeartbeatClient.md"/>
+            <toc-element toc-title="Server" topic="HeartbeatServer.md"/>
         </toc-element>
-        <toc-element toc-title="Logging">
-            <toc-element topic="Logging.md"/>
+        <toc-element topic="Logging.md">
         </toc-element>
-        <toc-element toc-title="Missions">
-            <toc-element topic="Missions.md"/>
+        <toc-element topic="Missions.md">
         </toc-element>
-        <toc-element toc-title="Mode">
-            <toc-element topic="Mode.md"/>
+        <toc-element topic="Mode.md">
         </toc-element>
-        <toc-element toc-title="Params">
-            <toc-element topic="Params.md"/>
+        <toc-element topic="Params.md">
         </toc-element>
-        <toc-element toc-title="ParamsExt">
-            <toc-element topic="ParamsExt.md"/>
+        <toc-element topic="ParamsExt.md">
         </toc-element>
-        <toc-element toc-title="Position">
-            <toc-element topic="Position.md"/>
+        <toc-element topic="Position.md">
         </toc-element>
-        <toc-element toc-title="StatusText">
-            <toc-element topic="StatusText.md"/>
+        <toc-element topic="StatusText.md">
         </toc-element>
-        <toc-element toc-title="Telemetry">
-            <toc-element topic="Telemetry.md"/>
+        <toc-element topic="Telemetry.md">
         </toc-element>
-        <toc-element toc-title="V2Extention">
-            <toc-element topic="V2Extention.md"/>
+        <toc-element topic="V2Extention.md">
         </toc-element>
     </toc-element>
     <toc-element topic="for-developers.md"/>
