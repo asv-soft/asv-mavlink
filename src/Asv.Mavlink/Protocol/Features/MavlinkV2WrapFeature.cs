@@ -46,7 +46,8 @@ public class MavlinkV2WrapFeature(IProtocolMessageFactory<MavlinkMessage, int>? 
         {
             return ValueTask.FromResult<IProtocolMessage?>(message);
         }
-        
+
+        mavlink.TryGetTargetId(out var systemId, out var componentId);
         var wrappedPacket = new V2ExtensionPacket
         {
             IncompatFlags = mavlink.IncompatFlags,
@@ -57,14 +58,17 @@ public class MavlinkV2WrapFeature(IProtocolMessageFactory<MavlinkMessage, int>? 
             Payload =
             {
                 // broadcast
-                TargetComponent = 0,
-                TargetSystem = 0,
+                TargetComponent = componentId,
+                TargetSystem = systemId,
                 TargetNetwork = 0,
                 MessageType = V2ExtensionMessageId,
             },
             Tags = message.Tags
         };
-        var size = message.Serialize(wrappedPacket.Payload.Payload);
+        // copy all tags
+        wrappedPacket.Tags.AddRange(mavlink.Tags);
+        
+        
         return ValueTask.FromResult<IProtocolMessage?>(wrappedPacket);
 
     }
