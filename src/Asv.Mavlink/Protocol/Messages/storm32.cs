@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -701,7 +701,8 @@ namespace Asv.Mavlink.Storm32
     /// </summary>
     public class Storm32GimbalManagerInformationPacket : MavlinkV2Message<Storm32GimbalManagerInformationPayload>
     {
-        public const int MessageId = 60010;
+        public const int MessageId = 60010; 
+        public const string MessageIdAsString = "60010";
         
         public const byte CrcExtra = 208;
         
@@ -915,7 +916,8 @@ namespace Asv.Mavlink.Storm32
     /// </summary>
     public class Storm32GimbalManagerStatusPacket : MavlinkV2Message<Storm32GimbalManagerStatusPayload>
     {
-        public const int MessageId = 60011;
+        public const int MessageId = 60011; 
+        public const string MessageIdAsString = "60011";
         
         public const byte CrcExtra = 183;
         
@@ -1065,7 +1067,8 @@ namespace Asv.Mavlink.Storm32
     /// </summary>
     public class Storm32GimbalManagerControlPacket : MavlinkV2Message<Storm32GimbalManagerControlPayload>
     {
-        public const int MessageId = 60012;
+        public const int MessageId = 60012; 
+        public const string MessageIdAsString = "60012";
         
         public const byte CrcExtra = 99;
         
@@ -1323,7 +1326,8 @@ namespace Asv.Mavlink.Storm32
     /// </summary>
     public class Storm32GimbalManagerControlPitchyawPacket : MavlinkV2Message<Storm32GimbalManagerControlPitchyawPayload>
     {
-        public const int MessageId = 60013;
+        public const int MessageId = 60013; 
+        public const string MessageIdAsString = "60013";
         
         public const byte CrcExtra = 129;
         
@@ -1568,7 +1572,8 @@ namespace Asv.Mavlink.Storm32
     /// </summary>
     public class Storm32GimbalManagerCorrectRollPacket : MavlinkV2Message<Storm32GimbalManagerCorrectRollPayload>
     {
-        public const int MessageId = 60014;
+        public const int MessageId = 60014; 
+        public const string MessageIdAsString = "60014";
         
         public const byte CrcExtra = 134;
         
@@ -1724,7 +1729,8 @@ namespace Asv.Mavlink.Storm32
     /// </summary>
     public class QshotStatusPacket : MavlinkV2Message<QshotStatusPayload>
     {
-        public const int MessageId = 60020;
+        public const int MessageId = 60020; 
+        public const string MessageIdAsString = "60020";
         
         public const byte CrcExtra = 202;
         
@@ -1817,7 +1823,8 @@ namespace Asv.Mavlink.Storm32
     /// </summary>
     public class RadioRcChannelsPacket : MavlinkV2Message<RadioRcChannelsPayload>
     {
-        public const int MessageId = 60045;
+        public const int MessageId = 60045; 
+        public const string MessageIdAsString = "60045";
         
         public const byte CrcExtra = 89;
         
@@ -1939,7 +1946,8 @@ namespace Asv.Mavlink.Storm32
     /// </summary>
     public class RadioLinkStatsPacket : MavlinkV2Message<RadioLinkStatsPayload>
     {
-        public const int MessageId = 60046;
+        public const int MessageId = 60046; 
+        public const string MessageIdAsString = "60046";
         
         public const byte CrcExtra = 238;
         
@@ -2253,7 +2261,8 @@ namespace Asv.Mavlink.Storm32
     /// </summary>
     public class FrskyPassthroughArrayPacket : MavlinkV2Message<FrskyPassthroughArrayPayload>
     {
-        public const int MessageId = 60040;
+        public const int MessageId = 60040; 
+        public const string MessageIdAsString = "60040";
         
         public const byte CrcExtra = 156;
         
@@ -2374,7 +2383,8 @@ namespace Asv.Mavlink.Storm32
     /// </summary>
     public class ParamValueArrayPacket : MavlinkV2Message<ParamValueArrayPayload>
     {
-        public const int MessageId = 60041;
+        public const int MessageId = 60041; 
+        public const string MessageIdAsString = "60041";
         
         public const byte CrcExtra = 191;
         

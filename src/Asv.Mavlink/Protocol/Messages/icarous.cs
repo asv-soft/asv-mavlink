@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -144,7 +144,8 @@ namespace Asv.Mavlink.Icarous
     /// </summary>
     public class IcarousHeartbeatPacket : MavlinkV2Message<IcarousHeartbeatPayload>
     {
-        public const int MessageId = 42000;
+        public const int MessageId = 42000; 
+        public const string MessageIdAsString = "42000";
         
         public const byte CrcExtra = 227;
         
@@ -220,7 +221,8 @@ namespace Asv.Mavlink.Icarous
     /// </summary>
     public class IcarousKinematicBandsPacket : MavlinkV2Message<IcarousKinematicBandsPayload>
     {
-        public const int MessageId = 42001;
+        public const int MessageId = 42001; 
+        public const string MessageIdAsString = "42001";
         
         public const byte CrcExtra = 239;
         

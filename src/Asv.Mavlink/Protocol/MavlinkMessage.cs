@@ -18,7 +18,7 @@ public abstract class MavlinkMessage : IProtocolMessage<int>
 
     public ref ProtocolTags Tags => ref _tags;
 
-    public string GetIdAsString() => Id.ToString();
+    public virtual string GetIdAsString() => Id.ToString();
 
     public abstract ProtocolInfo Protocol { get; }
     

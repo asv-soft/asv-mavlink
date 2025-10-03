@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -197,7 +197,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class CommandIntStampedPacket : MavlinkV2Message<CommandIntStampedPayload>
     {
-        public const int MessageId = 223;
+        public const int MessageId = 223; 
+        public const string MessageIdAsString = "223";
         
         public const byte CrcExtra = 119;
         
@@ -525,7 +526,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class CommandLongStampedPacket : MavlinkV2Message<CommandLongStampedPayload>
     {
-        public const int MessageId = 224;
+        public const int MessageId = 224; 
+        public const string MessageIdAsString = "224";
         
         public const byte CrcExtra = 102;
         
@@ -817,7 +819,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class SensPowerPacket : MavlinkV2Message<SensPowerPayload>
     {
-        public const int MessageId = 8002;
+        public const int MessageId = 8002; 
+        public const string MessageIdAsString = "8002";
         
         public const byte CrcExtra = 218;
         
@@ -942,7 +945,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class SensMpptPacket : MavlinkV2Message<SensMpptPayload>
     {
-        public const int MessageId = 8003;
+        public const int MessageId = 8003; 
+        public const string MessageIdAsString = "8003";
         
         public const byte CrcExtra = 231;
         
@@ -1220,7 +1224,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class AslctrlDataPacket : MavlinkV2Message<AslctrlDataPayload>
     {
-        public const int MessageId = 8004;
+        public const int MessageId = 8004; 
+        public const string MessageIdAsString = "8004";
         
         public const byte CrcExtra = 172;
         
@@ -1702,7 +1707,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class AslctrlDebugPacket : MavlinkV2Message<AslctrlDebugPayload>
     {
-        public const int MessageId = 8005;
+        public const int MessageId = 8005; 
+        public const string MessageIdAsString = "8005";
         
         public const byte CrcExtra = 251;
         
@@ -1946,7 +1952,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class AsluavStatusPacket : MavlinkV2Message<AsluavStatusPayload>
     {
-        public const int MessageId = 8006;
+        public const int MessageId = 8006; 
+        public const string MessageIdAsString = "8006";
         
         public const byte CrcExtra = 97;
         
@@ -2084,7 +2091,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class EkfExtPacket : MavlinkV2Message<EkfExtPayload>
     {
-        public const int MessageId = 8007;
+        public const int MessageId = 8007; 
+        public const string MessageIdAsString = "8007";
         
         public const byte CrcExtra = 64;
         
@@ -2260,7 +2268,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class AslObctrlPacket : MavlinkV2Message<AslObctrlPayload>
     {
-        public const int MessageId = 8008;
+        public const int MessageId = 8008; 
+        public const string MessageIdAsString = "8008";
         
         public const byte CrcExtra = 234;
         
@@ -2453,7 +2462,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class SensAtmosPacket : MavlinkV2Message<SensAtmosPayload>
     {
-        public const int MessageId = 8009;
+        public const int MessageId = 8009; 
+        public const string MessageIdAsString = "8009";
         
         public const byte CrcExtra = 144;
         
@@ -2561,7 +2571,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class SensBatmonPacket : MavlinkV2Message<SensBatmonPayload>
     {
-        public const int MessageId = 8010;
+        public const int MessageId = 8010; 
+        public const string MessageIdAsString = "8010";
         
         public const byte CrcExtra = 155;
         
@@ -2873,7 +2884,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class FwSoaringDataPacket : MavlinkV2Message<FwSoaringDataPayload>
     {
-        public const int MessageId = 8011;
+        public const int MessageId = 8011; 
+        public const string MessageIdAsString = "8011";
         
         public const byte CrcExtra = 20;
         
@@ -3355,7 +3367,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class SensorpodStatusPacket : MavlinkV2Message<SensorpodStatusPayload>
     {
-        public const int MessageId = 8012;
+        public const int MessageId = 8012; 
+        public const string MessageIdAsString = "8012";
         
         public const byte CrcExtra = 54;
         
@@ -3548,7 +3561,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class SensPowerBoardPacket : MavlinkV2Message<SensPowerBoardPayload>
     {
-        public const int MessageId = 8013;
+        public const int MessageId = 8013; 
+        public const string MessageIdAsString = "8013";
         
         public const byte CrcExtra = 222;
         
@@ -3809,7 +3823,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class GsmLinkStatusPacket : MavlinkV2Message<GsmLinkStatusPayload>
     {
-        public const int MessageId = 8014;
+        public const int MessageId = 8014; 
+        public const string MessageIdAsString = "8014";
         
         public const byte CrcExtra = 200;
         
@@ -3989,7 +4004,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class SatcomLinkStatusPacket : MavlinkV2Message<SatcomLinkStatusPayload>
     {
-        public const int MessageId = 8015;
+        public const int MessageId = 8015; 
+        public const string MessageIdAsString = "8015";
         
         public const byte CrcExtra = 23;
         
@@ -4182,7 +4198,8 @@ namespace Asv.Mavlink.Asluav
     /// </summary>
     public class SensorAirflowAnglesPacket : MavlinkV2Message<SensorAirflowAnglesPayload>
     {
-        public const int MessageId = 8016;
+        public const int MessageId = 8016; 
+        public const string MessageIdAsString = "8016";
         
         public const byte CrcExtra = 149;
         

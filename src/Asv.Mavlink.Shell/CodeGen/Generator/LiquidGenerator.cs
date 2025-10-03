@@ -59,6 +59,7 @@ namespace Asv.Mavlink.Shell
                                                              CamelCaseName = NameConverter(msg.Name ?? throw new InvalidOperationException()),
                                                              Desc = msg.Desc,
                                                              Id = msg.Id,
+                                                             IdString = msg.Id.ToString(),
                                                              CrcExtra = msg.CrcExtra,
                                                              HasArrayFields = msg.HasArrayFields,
                                                              PayloadByteSize = msg.GetAllFields().Sum(_=>_.FieldByteSize),

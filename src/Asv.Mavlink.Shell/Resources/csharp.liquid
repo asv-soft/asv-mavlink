@@ -108,11 +108,15 @@ namespace Asv.Mavlink.{{ Namespace }}
     /// </summary>
     public class {{ msg.CamelCaseName }}Packet : MavlinkV2Message<{{ msg.CamelCaseName }}Payload>
     {
-        public const int MessageId = {{ msg.Id }};
+        public const int MessageId = {{ msg.Id }}; 
+        public const string MessageIdAsString = "{{ msg.IdString }}";
         
         public const byte CrcExtra = {{ msg.CrcExtra }};
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-29.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -196,11 +196,15 @@ namespace Asv.Mavlink.AsvGbs
     /// </summary>
     public class AsvGbsOutStatusPacket : MavlinkV2Message<AsvGbsOutStatusPayload>
     {
-        public const int MessageId = 13000;
+        public const int MessageId = 13000; 
+        public const string MessageIdAsString = "13000";
         
         public const byte CrcExtra = 216;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

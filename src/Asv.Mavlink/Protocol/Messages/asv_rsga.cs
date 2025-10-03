@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-29.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -1052,11 +1052,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaCompatibilityRequestPacket : MavlinkV2Message<AsvRsgaCompatibilityRequestPayload>
     {
-        public const int MessageId = 13400;
+        public const int MessageId = 13400; 
+        public const string MessageIdAsString = "13400";
         
         public const byte CrcExtra = 16;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1172,11 +1176,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaCompatibilityResponsePacket : MavlinkV2Message<AsvRsgaCompatibilityResponsePayload>
     {
-        public const int MessageId = 13401;
+        public const int MessageId = 13401; 
+        public const string MessageIdAsString = "13401";
         
         public const byte CrcExtra = 196;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1295,11 +1303,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttChartPacket : MavlinkV2Message<AsvRsgaRttChartPayload>
     {
-        public const int MessageId = 13449;
+        public const int MessageId = 13449; 
+        public const string MessageIdAsString = "13449";
         
         public const byte CrcExtra = 167;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1541,11 +1553,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttGnssPacket : MavlinkV2Message<AsvRsgaRttGnssPayload>
     {
-        public const int MessageId = 13450;
+        public const int MessageId = 13450; 
+        public const string MessageIdAsString = "13450";
         
         public const byte CrcExtra = 15;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1946,11 +1962,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttSpectrumPacket : MavlinkV2Message<AsvRsgaRttSpectrumPayload>
     {
-        public const int MessageId = 13451;
+        public const int MessageId = 13451; 
+        public const string MessageIdAsString = "13451";
         
         public const byte CrcExtra = 255;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2056,11 +2076,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttTxLlzPacket : MavlinkV2Message<AsvRsgaRttTxLlzPayload>
     {
-        public const int MessageId = 13452;
+        public const int MessageId = 13452; 
+        public const string MessageIdAsString = "13452";
         
         public const byte CrcExtra = 184;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2166,11 +2190,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttTxGpPacket : MavlinkV2Message<AsvRsgaRttTxGpPayload>
     {
-        public const int MessageId = 13453;
+        public const int MessageId = 13453; 
+        public const string MessageIdAsString = "13453";
         
         public const byte CrcExtra = 219;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2276,11 +2304,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttTxVorPacket : MavlinkV2Message<AsvRsgaRttTxVorPayload>
     {
-        public const int MessageId = 13454;
+        public const int MessageId = 13454; 
+        public const string MessageIdAsString = "13454";
         
         public const byte CrcExtra = 29;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2386,11 +2418,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttTxMarkerPacket : MavlinkV2Message<AsvRsgaRttTxMarkerPayload>
     {
-        public const int MessageId = 13455;
+        public const int MessageId = 13455; 
+        public const string MessageIdAsString = "13455";
         
         public const byte CrcExtra = 69;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -2496,11 +2532,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttDmeRepPacket : MavlinkV2Message<AsvRsgaRttDmeRepPayload>
     {
-        public const int MessageId = 13456;
+        public const int MessageId = 13456; 
+        public const string MessageIdAsString = "13456";
         
         public const byte CrcExtra = 37;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3005,11 +3045,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttTxGbasPacket : MavlinkV2Message<AsvRsgaRttTxGbasPayload>
     {
-        public const int MessageId = 13457;
+        public const int MessageId = 13457; 
+        public const string MessageIdAsString = "13457";
         
         public const byte CrcExtra = 123;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3115,11 +3159,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttAdsbReqPacket : MavlinkV2Message<AsvRsgaRttAdsbReqPayload>
     {
-        public const int MessageId = 13458;
+        public const int MessageId = 13458; 
+        public const string MessageIdAsString = "13458";
         
         public const byte CrcExtra = 98;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3225,11 +3273,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttTxGnssPacket : MavlinkV2Message<AsvRsgaRttTxGnssPayload>
     {
-        public const int MessageId = 13459;
+        public const int MessageId = 13459; 
+        public const string MessageIdAsString = "13459";
         
         public const byte CrcExtra = 198;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3335,11 +3387,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttDmeReqPacket : MavlinkV2Message<AsvRsgaRttDmeReqPayload>
     {
-        public const int MessageId = 13460;
+        public const int MessageId = 13460; 
+        public const string MessageIdAsString = "13460";
         
         public const byte CrcExtra = 82;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -3895,11 +3951,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttRxLlzPacket : MavlinkV2Message<AsvRsgaRttRxLlzPayload>
     {
-        public const int MessageId = 13461;
+        public const int MessageId = 13461; 
+        public const string MessageIdAsString = "13461";
         
         public const byte CrcExtra = 59;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -4608,11 +4668,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttRxGpPacket : MavlinkV2Message<AsvRsgaRttRxGpPayload>
     {
-        public const int MessageId = 13462;
+        public const int MessageId = 13462; 
+        public const string MessageIdAsString = "13462";
         
         public const byte CrcExtra = 130;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -5143,11 +5207,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttRxVorPacket : MavlinkV2Message<AsvRsgaRttRxVorPayload>
     {
-        public const int MessageId = 13463;
+        public const int MessageId = 13463; 
+        public const string MessageIdAsString = "13463";
         
         public const byte CrcExtra = 94;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -5652,11 +5720,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttRxMarkerPacket : MavlinkV2Message<AsvRsgaRttRxMarkerPayload>
     {
-        public const int MessageId = 13464;
+        public const int MessageId = 13464; 
+        public const string MessageIdAsString = "13464";
         
         public const byte CrcExtra = 237;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6354,11 +6426,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttRxGbasPacket : MavlinkV2Message<AsvRsgaRttRxGbasPayload>
     {
-        public const int MessageId = 13465;
+        public const int MessageId = 13465; 
+        public const string MessageIdAsString = "13465";
         
         public const byte CrcExtra = 3;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6464,11 +6540,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttAdsbRepPacket : MavlinkV2Message<AsvRsgaRttAdsbRepPayload>
     {
-        public const int MessageId = 13466;
+        public const int MessageId = 13466; 
+        public const string MessageIdAsString = "13466";
         
         public const byte CrcExtra = 151;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -6908,11 +6988,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttRxGnssPacket : MavlinkV2Message<AsvRsgaRttRxGnssPayload>
     {
-        public const int MessageId = 13467;
+        public const int MessageId = 13467; 
+        public const string MessageIdAsString = "13467";
         
         public const byte CrcExtra = 190;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -7018,11 +7102,15 @@ namespace Asv.Mavlink.AsvRsga
     /// </summary>
     public class AsvRsgaRttRdfPacket : MavlinkV2Message<AsvRsgaRttRdfPayload>
     {
-        public const int MessageId = 13468;
+        public const int MessageId = 13468; 
+        public const string MessageIdAsString = "13468";
         
         public const byte CrcExtra = 120;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

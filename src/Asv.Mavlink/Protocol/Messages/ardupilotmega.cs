@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -3252,7 +3252,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class SensorOffsetsPacket : MavlinkV2Message<SensorOffsetsPayload>
     {
-        public const int MessageId = 150;
+        public const int MessageId = 150; 
+        public const string MessageIdAsString = "150";
         
         public const byte CrcExtra = 134;
         
@@ -3513,7 +3514,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class SetMagOffsetsPacket : MavlinkV2Message<SetMagOffsetsPayload>
     {
-        public const int MessageId = 151;
+        public const int MessageId = 151; 
+        public const string MessageIdAsString = "151";
         
         public const byte CrcExtra = 219;
         
@@ -3667,7 +3669,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class MeminfoPacket : MavlinkV2Message<MeminfoPayload>
     {
-        public const int MessageId = 152;
+        public const int MessageId = 152; 
+        public const string MessageIdAsString = "152";
         
         public const byte CrcExtra = 208;
         
@@ -3777,7 +3780,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class ApAdcPacket : MavlinkV2Message<ApAdcPayload>
     {
-        public const int MessageId = 153;
+        public const int MessageId = 153; 
+        public const string MessageIdAsString = "153";
         
         public const byte CrcExtra = 188;
         
@@ -3936,7 +3940,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class DigicamConfigurePacket : MavlinkV2Message<DigicamConfigurePayload>
     {
-        public const int MessageId = 154;
+        public const int MessageId = 154; 
+        public const string MessageIdAsString = "154";
         
         public const byte CrcExtra = 84;
         
@@ -4192,7 +4197,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class DigicamControlPacket : MavlinkV2Message<DigicamControlPayload>
     {
-        public const int MessageId = 155;
+        public const int MessageId = 155; 
+        public const string MessageIdAsString = "155";
         
         public const byte CrcExtra = 22;
         
@@ -4431,7 +4437,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class MountConfigurePacket : MavlinkV2Message<MountConfigurePayload>
     {
-        public const int MessageId = 156;
+        public const int MessageId = 156; 
+        public const string MessageIdAsString = "156";
         
         public const byte CrcExtra = 19;
         
@@ -4604,7 +4611,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class MountControlPacket : MavlinkV2Message<MountControlPayload>
     {
-        public const int MessageId = 157;
+        public const int MessageId = 157; 
+        public const string MessageIdAsString = "157";
         
         public const byte CrcExtra = 21;
         
@@ -4775,7 +4783,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class MountStatusPacket : MavlinkV2Message<MountStatusPayload>
     {
-        public const int MessageId = 158;
+        public const int MessageId = 158; 
+        public const string MessageIdAsString = "158";
         
         public const byte CrcExtra = 134;
         
@@ -4950,7 +4959,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class FencePointPacket : MavlinkV2Message<FencePointPayload>
     {
-        public const int MessageId = 160;
+        public const int MessageId = 160; 
+        public const string MessageIdAsString = "160";
         
         public const byte CrcExtra = 78;
         
@@ -5121,7 +5131,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class FenceFetchPointPacket : MavlinkV2Message<FenceFetchPointPayload>
     {
-        public const int MessageId = 161;
+        public const int MessageId = 161; 
+        public const string MessageIdAsString = "161";
         
         public const byte CrcExtra = 68;
         
@@ -5241,7 +5252,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class AhrsPacket : MavlinkV2Message<AhrsPayload>
     {
-        public const int MessageId = 163;
+        public const int MessageId = 163; 
+        public const string MessageIdAsString = "163";
         
         public const byte CrcExtra = 127;
         
@@ -5417,7 +5429,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class SimstatePacket : MavlinkV2Message<SimstatePayload>
     {
-        public const int MessageId = 164;
+        public const int MessageId = 164; 
+        public const string MessageIdAsString = "164";
         
         public const byte CrcExtra = 154;
         
@@ -5661,7 +5674,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class HwstatusPacket : MavlinkV2Message<HwstatusPayload>
     {
-        public const int MessageId = 165;
+        public const int MessageId = 165; 
+        public const string MessageIdAsString = "165";
         
         public const byte CrcExtra = 21;
         
@@ -5752,7 +5766,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class RadioPacket : MavlinkV2Message<RadioPayload>
     {
-        public const int MessageId = 166;
+        public const int MessageId = 166; 
+        public const string MessageIdAsString = "166";
         
         public const byte CrcExtra = 21;
         
@@ -5928,7 +5943,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class LimitsStatusPacket : MavlinkV2Message<LimitsStatusPayload>
     {
-        public const int MessageId = 167;
+        public const int MessageId = 167; 
+        public const string MessageIdAsString = "167";
         
         public const byte CrcExtra = 144;
         
@@ -6146,7 +6162,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class WindPacket : MavlinkV2Message<WindPayload>
     {
-        public const int MessageId = 168;
+        public const int MessageId = 168; 
+        public const string MessageIdAsString = "168";
         
         public const byte CrcExtra = 1;
         
@@ -6254,7 +6271,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class Data16Packet : MavlinkV2Message<Data16Payload>
     {
-        public const int MessageId = 169;
+        public const int MessageId = 169; 
+        public const string MessageIdAsString = "169";
         
         public const byte CrcExtra = 234;
         
@@ -6375,7 +6393,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class Data32Packet : MavlinkV2Message<Data32Payload>
     {
-        public const int MessageId = 170;
+        public const int MessageId = 170; 
+        public const string MessageIdAsString = "170";
         
         public const byte CrcExtra = 73;
         
@@ -6496,7 +6515,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class Data64Packet : MavlinkV2Message<Data64Payload>
     {
-        public const int MessageId = 171;
+        public const int MessageId = 171; 
+        public const string MessageIdAsString = "171";
         
         public const byte CrcExtra = 181;
         
@@ -6617,7 +6637,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class Data96Packet : MavlinkV2Message<Data96Payload>
     {
-        public const int MessageId = 172;
+        public const int MessageId = 172; 
+        public const string MessageIdAsString = "172";
         
         public const byte CrcExtra = 22;
         
@@ -6738,7 +6759,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class RangefinderPacket : MavlinkV2Message<RangefinderPayload>
     {
-        public const int MessageId = 173;
+        public const int MessageId = 173; 
+        public const string MessageIdAsString = "173";
         
         public const byte CrcExtra = 83;
         
@@ -6829,7 +6851,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class AirspeedAutocalPacket : MavlinkV2Message<AirspeedAutocalPayload>
     {
-        public const int MessageId = 174;
+        public const int MessageId = 174; 
+        public const string MessageIdAsString = "174";
         
         public const byte CrcExtra = 167;
         
@@ -7090,7 +7113,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class RallyPointPacket : MavlinkV2Message<RallyPointPayload>
     {
-        public const int MessageId = 175;
+        public const int MessageId = 175; 
+        public const string MessageIdAsString = "175";
         
         public const byte CrcExtra = 138;
         
@@ -7331,7 +7355,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class RallyFetchPointPacket : MavlinkV2Message<RallyFetchPointPayload>
     {
-        public const int MessageId = 176;
+        public const int MessageId = 176; 
+        public const string MessageIdAsString = "176";
         
         public const byte CrcExtra = 234;
         
@@ -7451,7 +7476,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class CompassmotStatusPacket : MavlinkV2Message<CompassmotStatusPayload>
     {
-        public const int MessageId = 177;
+        public const int MessageId = 177; 
+        public const string MessageIdAsString = "177";
         
         public const byte CrcExtra = 240;
         
@@ -7610,7 +7636,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class Ahrs2Packet : MavlinkV2Message<Ahrs2Payload>
     {
-        public const int MessageId = 178;
+        public const int MessageId = 178; 
+        public const string MessageIdAsString = "178";
         
         public const byte CrcExtra = 47;
         
@@ -7769,7 +7796,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class CameraStatusPacket : MavlinkV2Message<CameraStatusPayload>
     {
-        public const int MessageId = 179;
+        public const int MessageId = 179; 
+        public const string MessageIdAsString = "179";
         
         public const byte CrcExtra = 189;
         
@@ -7981,7 +8009,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class CameraFeedbackPacket : MavlinkV2Message<CameraFeedbackPayload>
     {
-        public const int MessageId = 180;
+        public const int MessageId = 180; 
+        public const string MessageIdAsString = "180";
         
         public const byte CrcExtra = 52;
         
@@ -8280,7 +8309,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class Battery2Packet : MavlinkV2Message<Battery2Payload>
     {
-        public const int MessageId = 181;
+        public const int MessageId = 181; 
+        public const string MessageIdAsString = "181";
         
         public const byte CrcExtra = 174;
         
@@ -8371,7 +8401,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class Ahrs3Packet : MavlinkV2Message<Ahrs3Payload>
     {
-        public const int MessageId = 182;
+        public const int MessageId = 182; 
+        public const string MessageIdAsString = "182";
         
         public const byte CrcExtra = 229;
         
@@ -8598,7 +8629,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class AutopilotVersionRequestPacket : MavlinkV2Message<AutopilotVersionRequestPayload>
     {
-        public const int MessageId = 183;
+        public const int MessageId = 183; 
+        public const string MessageIdAsString = "183";
         
         public const byte CrcExtra = 85;
         
@@ -8701,7 +8733,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class RemoteLogDataBlockPacket : MavlinkV2Message<RemoteLogDataBlockPayload>
     {
-        public const int MessageId = 184;
+        public const int MessageId = 184; 
+        public const string MessageIdAsString = "184";
         
         public const byte CrcExtra = 159;
         
@@ -8853,7 +8886,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class RemoteLogBlockStatusPacket : MavlinkV2Message<RemoteLogBlockStatusPayload>
     {
-        public const int MessageId = 185;
+        public const int MessageId = 185; 
+        public const string MessageIdAsString = "185";
         
         public const byte CrcExtra = 186;
         
@@ -8992,7 +9026,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class LedControlPacket : MavlinkV2Message<LedControlPayload>
     {
-        public const int MessageId = 186;
+        public const int MessageId = 186; 
+        public const string MessageIdAsString = "186";
         
         public const byte CrcExtra = 72;
         
@@ -9176,7 +9211,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class MagCalProgressPacket : MavlinkV2Message<MagCalProgressPayload>
     {
-        public const int MessageId = 191;
+        public const int MessageId = 191; 
+        public const string MessageIdAsString = "191";
         
         public const byte CrcExtra = 92;
         
@@ -9401,7 +9437,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class EkfStatusReportPacket : MavlinkV2Message<EkfStatusReportPayload>
     {
-        public const int MessageId = 193;
+        public const int MessageId = 193; 
+        public const string MessageIdAsString = "193";
         
         public const byte CrcExtra = 71;
         
@@ -9581,7 +9618,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class PidTuningPacket : MavlinkV2Message<PidTuningPayload>
     {
-        public const int MessageId = 194;
+        public const int MessageId = 194; 
+        public const string MessageIdAsString = "194";
         
         public const byte CrcExtra = 98;
         
@@ -9797,7 +9835,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class DeepstallPacket : MavlinkV2Message<DeepstallPayload>
     {
-        public const int MessageId = 195;
+        public const int MessageId = 195; 
+        public const string MessageIdAsString = "195";
         
         public const byte CrcExtra = 120;
         
@@ -10026,7 +10065,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class GimbalReportPacket : MavlinkV2Message<GimbalReportPayload>
     {
-        public const int MessageId = 200;
+        public const int MessageId = 200; 
+        public const string MessageIdAsString = "200";
         
         public const byte CrcExtra = 134;
         
@@ -10299,7 +10339,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class GimbalControlPacket : MavlinkV2Message<GimbalControlPayload>
     {
-        public const int MessageId = 201;
+        public const int MessageId = 201; 
+        public const string MessageIdAsString = "201";
         
         public const byte CrcExtra = 205;
         
@@ -10453,7 +10494,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class GimbalTorqueCmdReportPacket : MavlinkV2Message<GimbalTorqueCmdReportPayload>
     {
-        public const int MessageId = 214;
+        public const int MessageId = 214; 
+        public const string MessageIdAsString = "214";
         
         public const byte CrcExtra = 69;
         
@@ -10607,7 +10649,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class GoproHeartbeatPacket : MavlinkV2Message<GoproHeartbeatPayload>
     {
-        public const int MessageId = 215;
+        public const int MessageId = 215; 
+        public const string MessageIdAsString = "215";
         
         public const byte CrcExtra = 101;
         
@@ -10721,7 +10764,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class GoproGetRequestPacket : MavlinkV2Message<GoproGetRequestPayload>
     {
-        public const int MessageId = 216;
+        public const int MessageId = 216; 
+        public const string MessageIdAsString = "216";
         
         public const byte CrcExtra = 50;
         
@@ -10843,7 +10887,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class GoproGetResponsePacket : MavlinkV2Message<GoproGetResponsePayload>
     {
-        public const int MessageId = 217;
+        public const int MessageId = 217; 
+        public const string MessageIdAsString = "217";
         
         public const byte CrcExtra = 202;
         
@@ -10968,7 +11013,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class GoproSetRequestPacket : MavlinkV2Message<GoproSetRequestPayload>
     {
-        public const int MessageId = 218;
+        public const int MessageId = 218; 
+        public const string MessageIdAsString = "218";
         
         public const byte CrcExtra = 17;
         
@@ -11120,7 +11166,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class GoproSetResponsePacket : MavlinkV2Message<GoproSetResponsePayload>
     {
-        public const int MessageId = 219;
+        public const int MessageId = 219; 
+        public const string MessageIdAsString = "219";
         
         public const byte CrcExtra = 162;
         
@@ -11215,7 +11262,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class RpmPacket : MavlinkV2Message<RpmPayload>
     {
-        public const int MessageId = 226;
+        public const int MessageId = 226; 
+        public const string MessageIdAsString = "226";
         
         public const byte CrcExtra = 207;
         
@@ -11306,7 +11354,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class DeviceOpReadPacket : MavlinkV2Message<DeviceOpReadPayload>
     {
-        public const int MessageId = 11000;
+        public const int MessageId = 11000; 
+        public const string MessageIdAsString = "11000";
         
         public const byte CrcExtra = 134;
         
@@ -11574,7 +11623,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class DeviceOpReadReplyPacket : MavlinkV2Message<DeviceOpReadReplyPayload>
     {
-        public const int MessageId = 11001;
+        public const int MessageId = 11001; 
+        public const string MessageIdAsString = "11001";
         
         public const byte CrcExtra = 15;
         
@@ -11748,7 +11798,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class DeviceOpWritePacket : MavlinkV2Message<DeviceOpWritePayload>
     {
-        public const int MessageId = 11002;
+        public const int MessageId = 11002; 
+        public const string MessageIdAsString = "11002";
         
         public const byte CrcExtra = 234;
         
@@ -12041,7 +12092,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class DeviceOpWriteReplyPacket : MavlinkV2Message<DeviceOpWriteReplyPayload>
     {
-        public const int MessageId = 11003;
+        public const int MessageId = 11003; 
+        public const string MessageIdAsString = "11003";
         
         public const byte CrcExtra = 64;
         
@@ -12132,7 +12184,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class AdapTuningPacket : MavlinkV2Message<AdapTuningPayload>
     {
-        public const int MessageId = 11010;
+        public const int MessageId = 11010; 
+        public const string MessageIdAsString = "11010";
         
         public const byte CrcExtra = 46;
         
@@ -12412,7 +12465,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class VisionPositionDeltaPacket : MavlinkV2Message<VisionPositionDeltaPayload>
     {
-        public const int MessageId = 11011;
+        public const int MessageId = 11011; 
+        public const string MessageIdAsString = "11011";
         
         public const byte CrcExtra = 106;
         
@@ -12575,7 +12629,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class AoaSsaPacket : MavlinkV2Message<AoaSsaPayload>
     {
-        public const int MessageId = 11020;
+        public const int MessageId = 11020; 
+        public const string MessageIdAsString = "11020";
         
         public const byte CrcExtra = 205;
         
@@ -12683,7 +12738,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class EscTelemetry1To4Packet : MavlinkV2Message<EscTelemetry1To4Payload>
     {
-        public const int MessageId = 11030;
+        public const int MessageId = 11030; 
+        public const string MessageIdAsString = "11030";
         
         public const byte CrcExtra = 144;
         
@@ -12895,7 +12951,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class EscTelemetry5To8Packet : MavlinkV2Message<EscTelemetry5To8Payload>
     {
-        public const int MessageId = 11031;
+        public const int MessageId = 11031; 
+        public const string MessageIdAsString = "11031";
         
         public const byte CrcExtra = 133;
         
@@ -13107,7 +13164,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class EscTelemetry9To12Packet : MavlinkV2Message<EscTelemetry9To12Payload>
     {
-        public const int MessageId = 11032;
+        public const int MessageId = 11032; 
+        public const string MessageIdAsString = "11032";
         
         public const byte CrcExtra = 85;
         
@@ -13319,7 +13377,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class OsdParamConfigPacket : MavlinkV2Message<OsdParamConfigPayload>
     {
-        public const int MessageId = 11033;
+        public const int MessageId = 11033; 
+        public const string MessageIdAsString = "11033";
         
         public const byte CrcExtra = 195;
         
@@ -13585,7 +13644,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class OsdParamConfigReplyPacket : MavlinkV2Message<OsdParamConfigReplyPayload>
     {
-        public const int MessageId = 11034;
+        public const int MessageId = 11034; 
+        public const string MessageIdAsString = "11034";
         
         public const byte CrcExtra = 79;
         
@@ -13678,7 +13738,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class OsdParamShowConfigPacket : MavlinkV2Message<OsdParamShowConfigPayload>
     {
-        public const int MessageId = 11035;
+        public const int MessageId = 11035; 
+        public const string MessageIdAsString = "11035";
         
         public const byte CrcExtra = 128;
         
@@ -13832,7 +13893,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class OsdParamShowConfigReplyPacket : MavlinkV2Message<OsdParamShowConfigReplyPayload>
     {
-        public const int MessageId = 11036;
+        public const int MessageId = 11036; 
+        public const string MessageIdAsString = "11036";
         
         public const byte CrcExtra = 177;
         
@@ -14037,7 +14099,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class ObstacleDistance3dPacket : MavlinkV2Message<ObstacleDistance3dPayload>
     {
-        public const int MessageId = 11037;
+        public const int MessageId = 11037; 
+        public const string MessageIdAsString = "11037";
         
         public const byte CrcExtra = 130;
         
@@ -14251,7 +14314,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class WaterDepthPacket : MavlinkV2Message<WaterDepthPayload>
     {
-        public const int MessageId = 11038;
+        public const int MessageId = 11038; 
+        public const string MessageIdAsString = "11038";
         
         public const byte CrcExtra = 47;
         
@@ -14495,7 +14559,8 @@ namespace Asv.Mavlink.Ardupilotmega
     /// </summary>
     public class McuStatusPacket : MavlinkV2Message<McuStatusPayload>
     {
-        public const int MessageId = 11039;
+        public const int MessageId = 11039; 
+        public const string MessageIdAsString = "11039";
         
         public const byte CrcExtra = 142;
         

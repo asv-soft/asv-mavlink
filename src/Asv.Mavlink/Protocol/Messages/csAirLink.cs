@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -89,7 +89,8 @@ namespace Asv.Mavlink.Csairlink
     /// </summary>
     public class AirlinkAuthPacket : MavlinkV2Message<AirlinkAuthPayload>
     {
-        public const int MessageId = 52000;
+        public const int MessageId = 52000; 
+        public const string MessageIdAsString = "52000";
         
         public const byte CrcExtra = 13;
         
@@ -225,7 +226,8 @@ namespace Asv.Mavlink.Csairlink
     /// </summary>
     public class AirlinkAuthResponsePacket : MavlinkV2Message<AirlinkAuthResponsePayload>
     {
-        public const int MessageId = 52001;
+        public const int MessageId = 52001; 
+        public const string MessageIdAsString = "52001";
         
         public const byte CrcExtra = 239;
         

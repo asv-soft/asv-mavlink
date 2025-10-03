@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-29.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -257,11 +257,15 @@ namespace Asv.Mavlink.AsvChart
     /// </summary>
     public class AsvChartInfoRequestPacket : MavlinkV2Message<AsvChartInfoRequestPayload>
     {
-        public const int MessageId = 13350;
+        public const int MessageId = 13350; 
+        public const string MessageIdAsString = "13350";
         
         public const byte CrcExtra = 131;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -411,11 +415,15 @@ namespace Asv.Mavlink.AsvChart
     /// </summary>
     public class AsvChartInfoResponsePacket : MavlinkV2Message<AsvChartInfoResponsePayload>
     {
-        public const int MessageId = 13351;
+        public const int MessageId = 13351; 
+        public const string MessageIdAsString = "13351";
         
         public const byte CrcExtra = 109;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -538,11 +546,15 @@ namespace Asv.Mavlink.AsvChart
     /// </summary>
     public class AsvChartInfoUpdatedEventPacket : MavlinkV2Message<AsvChartInfoUpdatedEventPayload>
     {
-        public const int MessageId = 13352;
+        public const int MessageId = 13352; 
+        public const string MessageIdAsString = "13352";
         
         public const byte CrcExtra = 37;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -629,11 +641,15 @@ namespace Asv.Mavlink.AsvChart
     /// </summary>
     public class AsvChartInfoPacket : MavlinkV2Message<AsvChartInfoPayload>
     {
-        public const int MessageId = 13353;
+        public const int MessageId = 13353; 
+        public const string MessageIdAsString = "13353";
         
         public const byte CrcExtra = 159;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1014,11 +1030,15 @@ namespace Asv.Mavlink.AsvChart
     /// </summary>
     public class AsvChartDataRequestPacket : MavlinkV2Message<AsvChartDataRequestPayload>
     {
-        public const int MessageId = 13354;
+        public const int MessageId = 13354; 
+        public const string MessageIdAsString = "13354";
         
         public const byte CrcExtra = 4;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1187,11 +1207,15 @@ namespace Asv.Mavlink.AsvChart
     /// </summary>
     public class AsvChartDataResponsePacket : MavlinkV2Message<AsvChartDataResponsePayload>
     {
-        public const int MessageId = 13355;
+        public const int MessageId = 13355; 
+        public const string MessageIdAsString = "13355";
         
         public const byte CrcExtra = 185;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -1333,11 +1357,15 @@ namespace Asv.Mavlink.AsvChart
     /// </summary>
     public class AsvChartDataPacket : MavlinkV2Message<AsvChartDataPayload>
     {
-        public const int MessageId = 13360;
+        public const int MessageId = 13360; 
+        public const string MessageIdAsString = "13360";
         
         public const byte CrcExtra = 66;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

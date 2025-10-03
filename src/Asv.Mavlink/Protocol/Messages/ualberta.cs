@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -187,7 +187,8 @@ namespace Asv.Mavlink.Ualberta
     /// </summary>
     public class NavFilterBiasPacket : MavlinkV2Message<NavFilterBiasPayload>
     {
-        public const int MessageId = 220;
+        public const int MessageId = 220; 
+        public const string MessageIdAsString = "220";
         
         public const byte CrcExtra = 34;
         
@@ -363,7 +364,8 @@ namespace Asv.Mavlink.Ualberta
     /// </summary>
     public class RadioCalibrationPacket : MavlinkV2Message<RadioCalibrationPayload>
     {
-        public const int MessageId = 221;
+        public const int MessageId = 221; 
+        public const string MessageIdAsString = "221";
         
         public const byte CrcExtra = 71;
         
@@ -575,7 +577,8 @@ namespace Asv.Mavlink.Ualberta
     /// </summary>
     public class UalbertaSysStatusPacket : MavlinkV2Message<UalbertaSysStatusPayload>
     {
-        public const int MessageId = 222;
+        public const int MessageId = 222; 
+        public const string MessageIdAsString = "222";
         
         public const byte CrcExtra = 15;
         

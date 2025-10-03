@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-29.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -224,11 +224,15 @@ namespace Asv.Mavlink.AsvRadio
     /// </summary>
     public class AsvRadioStatusPacket : MavlinkV2Message<AsvRadioStatusPayload>
     {
-        public const int MessageId = 13250;
+        public const int MessageId = 13250; 
+        public const string MessageIdAsString = "13250";
         
         public const byte CrcExtra = 154;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -387,11 +391,15 @@ namespace Asv.Mavlink.AsvRadio
     /// </summary>
     public class AsvRadioCapabilitiesRequestPacket : MavlinkV2Message<AsvRadioCapabilitiesRequestPayload>
     {
-        public const int MessageId = 13251;
+        public const int MessageId = 13251; 
+        public const string MessageIdAsString = "13251";
         
         public const byte CrcExtra = 10;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -490,11 +498,15 @@ namespace Asv.Mavlink.AsvRadio
     /// </summary>
     public class AsvRadioCapabilitiesResponsePacket : MavlinkV2Message<AsvRadioCapabilitiesResponsePayload>
     {
-        public const int MessageId = 13252;
+        public const int MessageId = 13252; 
+        public const string MessageIdAsString = "13252";
         
         public const byte CrcExtra = 62;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -679,11 +691,15 @@ namespace Asv.Mavlink.AsvRadio
     /// </summary>
     public class AsvRadioCodecCapabilitiesRequestPacket : MavlinkV2Message<AsvRadioCodecCapabilitiesRequestPayload>
     {
-        public const int MessageId = 13253;
+        public const int MessageId = 13253; 
+        public const string MessageIdAsString = "13253";
         
         public const byte CrcExtra = 205;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;
@@ -816,11 +832,15 @@ namespace Asv.Mavlink.AsvRadio
     /// </summary>
     public class AsvRadioCodecCapabilitiesResponsePacket : MavlinkV2Message<AsvRadioCodecCapabilitiesResponsePayload>
     {
-        public const int MessageId = 13254;
+        public const int MessageId = 13254; 
+        public const string MessageIdAsString = "13254";
         
         public const byte CrcExtra = 228;
         
         public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override byte GetCrcExtra() => CrcExtra;

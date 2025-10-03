@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -66,7 +66,8 @@ namespace Asv.Mavlink.PythonArrayTest
     /// </summary>
     public class ArrayTest0Packet : MavlinkV2Message<ArrayTest0Payload>
     {
-        public const int MessageId = 17150;
+        public const int MessageId = 17150; 
+        public const string MessageIdAsString = "17150";
         
         public const byte CrcExtra = 26;
         
@@ -245,7 +246,8 @@ namespace Asv.Mavlink.PythonArrayTest
     /// </summary>
     public class ArrayTest1Packet : MavlinkV2Message<ArrayTest1Payload>
     {
-        public const int MessageId = 17151;
+        public const int MessageId = 17151; 
+        public const string MessageIdAsString = "17151";
         
         public const byte CrcExtra = 72;
         
@@ -332,7 +334,8 @@ namespace Asv.Mavlink.PythonArrayTest
     /// </summary>
     public class ArrayTest3Packet : MavlinkV2Message<ArrayTest3Payload>
     {
-        public const int MessageId = 17153;
+        public const int MessageId = 17153; 
+        public const string MessageIdAsString = "17153";
         
         public const byte CrcExtra = 19;
         
@@ -436,7 +439,8 @@ namespace Asv.Mavlink.PythonArrayTest
     /// </summary>
     public class ArrayTest4Packet : MavlinkV2Message<ArrayTest4Payload>
     {
-        public const int MessageId = 17154;
+        public const int MessageId = 17154; 
+        public const string MessageIdAsString = "17154";
         
         public const byte CrcExtra = 89;
         
@@ -540,7 +544,8 @@ namespace Asv.Mavlink.PythonArrayTest
     /// </summary>
     public class ArrayTest5Packet : MavlinkV2Message<ArrayTest5Payload>
     {
-        public const int MessageId = 17155;
+        public const int MessageId = 17155; 
+        public const string MessageIdAsString = "17155";
         
         public const byte CrcExtra = 27;
         
@@ -676,7 +681,8 @@ namespace Asv.Mavlink.PythonArrayTest
     /// </summary>
     public class ArrayTest6Packet : MavlinkV2Message<ArrayTest6Payload>
     {
-        public const int MessageId = 17156;
+        public const int MessageId = 17156; 
+        public const string MessageIdAsString = "17156";
         
         public const byte CrcExtra = 14;
         
@@ -1026,7 +1032,8 @@ namespace Asv.Mavlink.PythonArrayTest
     /// </summary>
     public class ArrayTest7Packet : MavlinkV2Message<ArrayTest7Payload>
     {
-        public const int MessageId = 17157;
+        public const int MessageId = 17157; 
+        public const string MessageIdAsString = "17157";
         
         public const byte CrcExtra = 187;
         
@@ -1325,7 +1332,8 @@ namespace Asv.Mavlink.PythonArrayTest
     /// </summary>
     public class ArrayTest8Packet : MavlinkV2Message<ArrayTest8Payload>
     {
-        public const int MessageId = 17158;
+        public const int MessageId = 17158; 
+        public const string MessageIdAsString = "17158";
         
         public const byte CrcExtra = 106;
         

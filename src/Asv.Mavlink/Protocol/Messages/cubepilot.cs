@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -63,7 +63,8 @@ namespace Asv.Mavlink.Cubepilot
     /// </summary>
     public class CubepilotRawRcPacket : MavlinkV2Message<CubepilotRawRcPayload>
     {
-        public const int MessageId = 50001;
+        public const int MessageId = 50001; 
+        public const string MessageIdAsString = "50001";
         
         public const byte CrcExtra = 246;
         
@@ -150,7 +151,8 @@ namespace Asv.Mavlink.Cubepilot
     /// </summary>
     public class HerelinkVideoStreamInformationPacket : MavlinkV2Message<HerelinkVideoStreamInformationPayload>
     {
-        public const int MessageId = 50002;
+        public const int MessageId = 50002; 
+        public const string MessageIdAsString = "50002";
         
         public const byte CrcExtra = 181;
         
@@ -368,7 +370,8 @@ namespace Asv.Mavlink.Cubepilot
     /// </summary>
     public class HerelinkTelemPacket : MavlinkV2Message<HerelinkTelemPayload>
     {
-        public const int MessageId = 50003;
+        public const int MessageId = 50003; 
+        public const string MessageIdAsString = "50003";
         
         public const byte CrcExtra = 62;
         
@@ -544,7 +547,8 @@ namespace Asv.Mavlink.Cubepilot
     /// </summary>
     public class CubepilotFirmwareUpdateStartPacket : MavlinkV2Message<CubepilotFirmwareUpdateStartPayload>
     {
-        public const int MessageId = 50004;
+        public const int MessageId = 50004; 
+        public const string MessageIdAsString = "50004";
         
         public const byte CrcExtra = 240;
         
@@ -681,7 +685,8 @@ namespace Asv.Mavlink.Cubepilot
     /// </summary>
     public class CubepilotFirmwareUpdateRespPacket : MavlinkV2Message<CubepilotFirmwareUpdateRespPayload>
     {
-        public const int MessageId = 50005;
+        public const int MessageId = 50005; 
+        public const string MessageIdAsString = "50005";
         
         public const byte CrcExtra = 152;
         

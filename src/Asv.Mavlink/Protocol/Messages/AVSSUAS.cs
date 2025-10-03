@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.17-dev.8+356100e330ee3351d1c0a76be38f09294117ae6a 25-09-26.
+// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
 
 using System;
 using System.Text;
@@ -374,7 +374,8 @@ namespace Asv.Mavlink.Avssuas
     /// </summary>
     public class AvssPrsSysStatusPacket : MavlinkV2Message<AvssPrsSysStatusPayload>
     {
-        public const int MessageId = 60050;
+        public const int MessageId = 60050; 
+        public const string MessageIdAsString = "60050";
         
         public const byte CrcExtra = 220;
         
@@ -516,7 +517,8 @@ namespace Asv.Mavlink.Avssuas
     /// </summary>
     public class AvssDronePositionPacket : MavlinkV2Message<AvssDronePositionPayload>
     {
-        public const int MessageId = 60051;
+        public const int MessageId = 60051; 
+        public const string MessageIdAsString = "60051";
         
         public const byte CrcExtra = 245;
         
@@ -675,7 +677,8 @@ namespace Asv.Mavlink.Avssuas
     /// </summary>
     public class AvssDroneImuPacket : MavlinkV2Message<AvssDroneImuPayload>
     {
-        public const int MessageId = 60052;
+        public const int MessageId = 60052; 
+        public const string MessageIdAsString = "60052";
         
         public const byte CrcExtra = 101;
         
@@ -919,7 +922,8 @@ namespace Asv.Mavlink.Avssuas
     /// </summary>
     public class AvssDroneOperationModePacket : MavlinkV2Message<AvssDroneOperationModePayload>
     {
-        public const int MessageId = 60053;
+        public const int MessageId = 60053; 
+        public const string MessageIdAsString = "60053";
         
         public const byte CrcExtra = 45;
         
