@@ -52,6 +52,7 @@
         <toc-element topic="Commands.md">
         </toc-element>
         <toc-element topic="Control.md">
+            <toc-element toc-title="Client" topic="ControlClient.md"/>
         </toc-element>
         <toc-element topic="Dgps.md">
         </toc-element>
