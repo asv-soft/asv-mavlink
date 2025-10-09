@@ -48,58 +48,58 @@ Represents a higher-level wrapper over `IPositionClient` providing convenient re
 | `ArmedTime`                                                                          | `ReadOnlyReactiveProperty<TimeSpan>`  | Gets the armed time as an observable value of type TimeSpan.         |
 | `Roi`                                                                                | `ReadOnlyReactiveProperty<GeoPoint?>` | Gets the Roi property.                                               |
 
-| Method                                                                               | Type                                  | Description                                                          |
-|--------------------------------------------------------------------------------------|---------------------------------------|----------------------------------------------------------------------|
-| `GetHomePosition(CancellationToken cancel)`                                          | `Task`                                | Gets the home position.                                              |
-| `ArmDisarm(bool isArm, CancellationToken cancel)`                                    | `Task`                                | Arms or disarms the system.                                          |
-| `SetRoi(GeoPoint location, CancellationToken cancel)`                                | `Task`                                | Sets the region of interest (ROI) using the specified location.      |
-| `ClearRoi(CancellationToken cancel)`                                                 | `Task`                                | Clears the region of interest (ROI).                                 |
-| `SetTarget(GeoPoint point, CancellationToken cancel)`                                | `ValueTask`                           | Sets the target for the application.                                 |
-| `TakeOff(double altInMeters, CancellationToken cancel)`                              | `Task`                                | Initiates the takeoff process.                                       |
-| `QTakeOff(double altInMeters, CancellationToken cancel)`                             | `Task`                                | Initiates vertical takeoff.                                          |
-| `QLand(NavVtolLandOptions landOption, double approachAlt, CancellationToken cancel)` | `Task`                                | VTOL landing procedure.                                              |
+| Method                                                                               | Return Type | Description                                                          |
+|--------------------------------------------------------------------------------------|-------------|----------------------------------------------------------------------|
+| `GetHomePosition(CancellationToken cancel)`                                          | `Task`      | Gets the home position.                                              |
+| `ArmDisarm(bool isArm, CancellationToken cancel)`                                    | `Task`      | Arms or disarms the system.                                          |
+| `SetRoi(GeoPoint location, CancellationToken cancel)`                                | `Task`      | Sets the region of interest (ROI) using the specified location.      |
+| `ClearRoi(CancellationToken cancel)`                                                 | `Task`      | Clears the region of interest (ROI).                                 |
+| `SetTarget(GeoPoint point, CancellationToken cancel)`                                | `ValueTask` | Sets the target for the application.                                 |
+| `TakeOff(double altInMeters, CancellationToken cancel)`                              | `Task`      | Initiates the takeoff process.                                       |
+| `QTakeOff(double altInMeters, CancellationToken cancel)`                             | `Task`      | Initiates vertical takeoff.                                          |
+| `QLand(NavVtolLandOptions landOption, double approachAlt, CancellationToken cancel)` | `Task`      | VTOL landing procedure.                                              |
 
-#### `IPositionClientEx.GetHomePosition`
+### `IPositionClientEx.GetHomePosition`
 | Parameter | Type                | Description                   |
 |-----------|---------------------|-------------------------------|
 | `cancel`  | `CancellationToken` | Optional cancellation token.  |
 
-#### `IPositionClientEx.ArmDisarm`
+### `IPositionClientEx.ArmDisarm`
 | Parameter | Type                | Description                   |
 |-----------|---------------------|-------------------------------|
 | `isArm`   | `bool`              | True to arm, false to disarm. |
 | `cancel`  | `CancellationToken` | Optional cancellation token.  |
 
-#### `IPositionClientEx.SetRoi`
+### `IPositionClientEx.SetRoi`
 | Parameter  | Type                | Description                                                  |
 |------------|---------------------|--------------------------------------------------------------|
 | `location` | `GeoPoint`          | The geographical point representing the location of the ROI. |
 | `cancel`   | `CancellationToken` | Optional cancellation token.                                 |
 
-#### `IPositionClientEx.ClearRoi`
+### `IPositionClientEx.ClearRoi`
 | Parameter | Type                | Description                   |
 |-----------|---------------------|-------------------------------|
 | `cancel`  | `CancellationToken` | Optional cancellation token.  |
 
-#### `IPositionClientEx.SetTarget`
+### `IPositionClientEx.SetTarget`
 | Parameter | Type                | Description                  |
 |-----------|---------------------|------------------------------|
 | `point`   | `GeoPoint`          | Target position to set.      |
 | `none`    | `CancellationToken` | Optional cancellation token. |
 
-#### `IPositionClientEx.TakeOff`
+### `IPositionClientEx.TakeOff`
 | Parameter     | Type                | Description                  |
 |---------------|---------------------|------------------------------|
 | `altInMeters` | `double`            | Target altitude in meters.   |
 | `cancel`      | `CancellationToken` | Optional cancellation token. |
 
-#### `IPositionClientEx.QTakeOff`
+### `IPositionClientEx.QTakeOff`
 | Parameter     | Type                | Description                  |
 |---------------|---------------------|------------------------------|
 | `altInMeters` | `double`            | Target altitude in meters.   |
 | `cancel`      | `CancellationToken` | Optional cancellation token. |
 
-#### `IPositionClientEx.QLand`
+### `IPositionClientEx.QLand`
 | Parameter     | Type                 | Description                            |
 |---------------|----------------------|----------------------------------------|
 | `landOption`  | `NavVtolLandOptions` | VTOL landing option.                   |

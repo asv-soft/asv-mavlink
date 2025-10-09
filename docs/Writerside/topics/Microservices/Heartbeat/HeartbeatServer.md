@@ -37,10 +37,10 @@ heartbeatServer.SetCustomMode(bits =>
 
 Defines the interface for a heartbeat server.
 
-| Method                                               | Type   | Description                                             |
-|------------------------------------------------------|--------|---------------------------------------------------------|
-| `Set(Action<HeartbeatPayload> changeCallback)`       | `void` | Sets the change callback for the heartbeat payload.     |
-| `SetCustomMode(Action<UintBitArray> changeCallback)` | `void` | Sets the change callback for the `CustomMode` bitfield. |
+| Method                                               | Return Type | Description                                             |
+|------------------------------------------------------|-------------|---------------------------------------------------------|
+| `Set(Action<HeartbeatPayload> changeCallback)`       | `void`      | Sets the change callback for the heartbeat payload.     |
+| `SetCustomMode(Action<UintBitArray> changeCallback)` | `void`      | Sets the change callback for the `CustomMode` bitfield. |
 
 #### `IHeartbeatServer.Set`
 | Parameter        | Type                        | Description                                                                                                             |
