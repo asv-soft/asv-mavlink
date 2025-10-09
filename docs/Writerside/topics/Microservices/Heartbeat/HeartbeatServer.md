@@ -33,7 +33,7 @@ heartbeatServer.SetCustomMode(bits =>
 });
 ```
 
-## IHeartbeatServer ([source](https://github.com/asv-soft/asv-mavlink/blob/2ae4bb9c1dbca2c916379c9bfac36e1f8fe94789/src/Asv.Mavlink/Microservices/Heartbeat/Server/IHeartbeatServer.cs#L11))
+## IHeartbeatServer ([source](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Heartbeat/Server/IHeartbeatServer.cs#L11))
 
 Defines the interface for a heartbeat server.
 
