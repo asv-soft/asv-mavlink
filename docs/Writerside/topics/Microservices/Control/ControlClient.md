@@ -37,7 +37,7 @@ For example, `GoTo` returns once the target is set, not when the point is reache
 
 Represents a client that can control a vehicle.
 
-| Method                                                                 | Type              | Description                                                                    |
+| Method                                                                 | Return Type       | Description                                                                    |
 |------------------------------------------------------------------------|-------------------|--------------------------------------------------------------------------------|
 | `ValueTask<bool> IsAutoMode(CancellationToken cancel = default)`       | `ValueTask<bool>` | Returns true if the vehicle is currently in Auto mode.                         |
 | `Task SetAutoMode(CancellationToken cancel = default)`                 | `Task`            | Switches the vehicle to Auto mode.                                             |
@@ -48,7 +48,7 @@ Represents a client that can control a vehicle.
 | `Task DoRtl(CancellationToken cancel = default)`                       | `Task`            | Performs a return to launch operation asynchronously.                          |
 | `Task TakeOff(double altInMeters, CancellationToken cancel = default)` | `Task`            | Initiates the takeoff process and ascends to the specified altitude in meters. |
 
-#### Parameters:
+### Parameters:
 `GeoPoint` represents a location on Earth using [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84) coordinates. It consists of latitude, longitude, and altitude in meters. 
 
 The `CancellationToken` parameter allows cancelling the operation before it completes, for example if the navigation or takeoff should be aborted.

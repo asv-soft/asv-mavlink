@@ -70,6 +70,8 @@
         <toc-element topic="Missions.md">
         </toc-element>
         <toc-element topic="Mode.md">
+            <toc-element toc-title="Client" topic="ModeClient.md"/>
+            <toc-element toc-title="Server" topic="ModeServer.md"/>
         </toc-element>
         <toc-element topic="Params.md">
         </toc-element>
