@@ -81,7 +81,7 @@ namespace Asv.Mavlink.Shell
                                                                                                 EscDesc = EscapeCSharpString(string.Join(" ",field.Desc)),
                                                                                                 Display = EscapeCSharpString(field.Display),
                                                                                                 PrintFormat = EscapeCSharpString(field.PrintFormat),
-                                                                                                InvalidValue = field.Inavlid,
+                                                                                                InvalidValue = field.Invalid,
                                                                                                 IsArray = field.IsArray,
                                                                                                 IsTheLargestArrayInMessage = field.IsTheLargestArrayInMessage,
                                                                                                 IsEnum = field.Enum != null,
