@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Immutable;
 using Asv.IO;
 
 namespace Asv.Mavlink;
@@ -16,6 +15,8 @@ public abstract class MavlinkMessage : IProtocolMessage<int>
 
     public abstract int GetByteSize();
 
+    [Newtonsoft.Json.JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
     public ref ProtocolTags Tags => ref _tags;
 
     public virtual string GetIdAsString() => Id.ToString();
