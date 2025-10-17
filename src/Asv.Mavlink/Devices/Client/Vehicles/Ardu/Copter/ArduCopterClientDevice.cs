@@ -9,18 +9,18 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class ArduPlaneClientDevice : ArduVehicleClientDevice
+public class ArduCopterClientDevice : ArduVehicleClientDevice
 {
-    private readonly ILogger<ArduPlaneClientDevice> _logger;
+    private readonly ILogger<ArduCopterClientDevice> _logger;
 
-    public ArduPlaneClientDevice(
-        MavlinkClientDeviceId identity,
+    public ArduCopterClientDevice(
+        MavlinkClientDeviceId identity, 
         VehicleClientDeviceConfig config,
-        ImmutableArray<IClientDeviceExtender> extenders,
+        ImmutableArray<IClientDeviceExtender> extenders, 
         IMavlinkContext core) 
         : base(identity, config, extenders, core)
     {
-        _logger = core.LoggerFactory.CreateLogger<ArduPlaneClientDevice>();
+        _logger = core.LoggerFactory.CreateLogger<ArduCopterClientDevice>();
     }
 
     protected override async IAsyncEnumerable<IMicroserviceClient> InternalCreateMicroservices(
@@ -48,10 +48,10 @@ public class ArduPlaneClientDevice : ArduVehicleClientDevice
                     heartbeatClient = client;
                     break;
             }
-
+            
             yield return microservice;
         }
-        
+
         if (commandClient == null)
         {
             _logger.ZLogWarning($"{Id}: command microservice not found");
@@ -72,21 +72,10 @@ public class ArduPlaneClientDevice : ArduVehicleClientDevice
             _logger.ZLogWarning($"{Id}: heartbeat microservice not found");
             yield break;
         }
-
-        var value = await paramsClientEx.ReadOnce("Q_ENABLE", cancel).ConfigureAwait(false);
-        var quadPlaneEnabled = (int)value != 0;
-        if (quadPlaneEnabled)
-        {
-            var mode = new ArduQuadPlaneModeClient(heartbeatClient, commandClient);
-            yield return mode;
-            yield return new ArduQuadPlaneControlClient(heartbeatClient, mode,positionClientEx);   
-            yield return new ArduQuadPlaneFrameClient(heartbeatClient, paramsClientEx);
-        }
-        else
-        {
-            var mode = new ArduPlaneModeClient(heartbeatClient, commandClient);
-            yield return mode;
-            yield return new ArduPlaneControlClient(heartbeatClient, mode,positionClientEx);
-        }
+        
+        var mode = new ArduCopterModeClient(heartbeatClient, commandClient);
+        yield return mode;
+        yield return new ArduCopterControlClient(heartbeatClient, mode, positionClientEx);
+        yield return new ArduCopterFrameClient(heartbeatClient, paramsClientEx);
     }
 }
