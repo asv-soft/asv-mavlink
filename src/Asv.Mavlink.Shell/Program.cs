@@ -32,6 +32,7 @@ class Program
         app.Add<ParamsCommand>();
         app.Add<PrintVehicleStateCommand>();
         app.Add<DownloadMissionItemsCommand>();
+        app.Add<MototTestCommand>();
         
         await app.RunAsync(args);
     }
