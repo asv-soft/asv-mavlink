@@ -1,8 +1,12 @@
 {
   "profiles": {
-    "Run setup frame": {
+    "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "setup-frame -cs tcp://127.0.0.1:7341"    
+      "commandLineArgs": "motor-test --connection tcp://127.0.0.1:7341"
+    },
+    "Second": {
+      "commandName": "Project",
+      "commandLineArgs": "run-ftp-server"
     }
   }
 }
