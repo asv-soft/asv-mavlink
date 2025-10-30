@@ -32,6 +32,7 @@
     <PackageReference Include="TestableIO.System.IO.Abstractions" Version="$(SystemIOAbstractionsVersion)" />
     <PackageReference Include="System.IO.Abstractions" Version="$(SystemIOAbstractionsVersion)" />
   </ItemGroup>
+    
   <ItemGroup>
     <Compile Update="RS.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -44,6 +45,7 @@
       <DependentUpon>ParamsDesc.resx</DependentUpon>
     </Compile>
   </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Update="RS.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -71,5 +73,9 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+    
+  <ItemGroup>
+    <InternalsVisibleTo Include="Asv.Mavlink.Test" />
   </ItemGroup>
 </Project>
