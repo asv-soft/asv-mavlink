@@ -80,6 +80,14 @@
             <toc-element toc-title="Server" topic="ModeServer.md"/>
         </toc-element>
         <toc-element topic="Params.md">
+            <toc-element toc-title="Client" topic="ParamsClient.md"/>
+            <toc-element toc-title="Server" topic="ParamsServer.md"/>
+            <toc-element toc-title="ClientEx" topic="ParamsClientEx.md">
+                <toc-element topic="ParamItem.md"/>
+            </toc-element>>
+            <toc-element toc-title="ServerEx" topic="ParamsServerEx.md">
+                <toc-element toc-title="Metadata" topic="ParamsMetadata.md"/>
+            </toc-element>
         </toc-element>
         <toc-element topic="ParamsExt.md">
         </toc-element>
