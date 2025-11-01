@@ -29,6 +29,7 @@ public class ArduCopterClientDevice: ArduVehicleClientDevice
         ICommandClient? cmd = null;
         IPositionClientEx? pos = null;
         IHeartbeatClient? hb = null;
+        IParamsClientEx? pcEx = null;
         
         await foreach (var microservice in base.InternalCreateMicroservices(cancel).ConfigureAwait(false))
         {
@@ -44,6 +45,11 @@ public class ArduCopterClientDevice: ArduVehicleClientDevice
             {
                 pos = position;
             }
+            if (microservice is IParamsClientEx paramsClientEx)
+            {
+                pcEx = paramsClientEx;
+            }
+
             yield return microservice;
         }
 
@@ -63,8 +69,16 @@ public class ArduCopterClientDevice: ArduVehicleClientDevice
             _logger.ZLogWarning($"{Id}: heartbeat microservice not found");
             yield break;
         }
+
+        if (pcEx == null)
+        {
+            _logger.ZLogWarning($"{Id}: paramsClientEx microservice not found");
+            yield break;
+        }
+
         var mode = new ArduCopterModeClient(hb, cmd);
         yield return mode;
         yield return new ArduCopterControlClient(hb, mode, pos);
+        yield return new ArduCopterMotorTestClient(Identity, Core, cmd, pcEx);
     }
 }

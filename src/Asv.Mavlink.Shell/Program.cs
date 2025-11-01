@@ -32,7 +32,7 @@ class Program
         app.Add<ParamsCommand>();
         app.Add<PrintVehicleStateCommand>();
         app.Add<DownloadMissionItemsCommand>();
-        app.Add<MototTestCommand>();
+        app.Add<MotorTestCommand>();
         
         await app.RunAsync(args);
     }
