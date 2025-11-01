@@ -16,9 +16,13 @@ namespace Asv.Mavlink.Test;
 public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexTestBase<FrameClient, ParamsServerEx>(log)
 {
     private const int ParamsDefaultValue = 0;
-
+    private const int ParamsClientChunkUpdateBufferMs = 100;
+    
     private readonly HeartbeatClientConfig _heartbeatConfig = new();
-    private readonly ParamsClientExConfig _paramsClientConfig = new();
+    private readonly ParamsClientExConfig _paramsClientConfig = new()
+    {
+        ChunkUpdateBufferMs = ParamsClientChunkUpdateBufferMs
+    };
     private readonly ParamsServerExConfig _paramsServerConfig = new();
     private readonly MavParamCStyleEncoding _encoding = new();
 
@@ -88,7 +92,7 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
         Assert.True(correctAvailableMotorFrames.IsDeepEqual(Client.MotorFrames));
     }
 
-    [Fact(Skip = "Doesn't work here but works with real mav params")]
+    [Fact]
     public async Task SetFrame_ValidValue_Success()
     {
         // Arrange
@@ -97,7 +101,7 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
         var availableFrameToSet = Client.MotorFrames.First();
         var tsc = new TaskCompletionSource<bool>();
         using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromMilliseconds(100));
+        cts.CancelAfter(TimeSpan.FromMilliseconds(1000));
         cts.Token.Register(() => tsc.TrySetResult(false));
         using var sub = Client.CurrentMotorFrame.WhereNotNull().Subscribe(v =>
         {
@@ -109,6 +113,7 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
         
         // Act
         await Client.SetFrame(availableFrameToSet.Value, cts.Token);
+        ClientTime.Advance(TimeSpan.FromMilliseconds(ParamsClientChunkUpdateBufferMs + 50));
         var res = await tsc.Task;
 
         // Assert
