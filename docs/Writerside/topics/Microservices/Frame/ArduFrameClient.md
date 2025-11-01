@@ -8,7 +8,7 @@ This page describes the ArduPilot-specific implementations of the `IFrameClient`
 Both clients work with the [Params client](Params.md) to read and write the underlying ArduPilot parameters. 
 The concrete parameter names differ between Copter and QuadPlane.
 
-They share a common `IMotorFrame` implementation — [`ArduMotorFrame`](#ardumotorframe-source).
+They share a common `IDroneFrame` implementation — [`ArduDroneFrame`](#ardudroneframe-source).
 
 ## Implementations
 
@@ -28,9 +28,9 @@ Reads/writes ArduPilot params:
 
 Uses [map](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Plane/Quad/Microservices/Frame/ArduQuadPlaneFrameCompability.cs) as a compability reference.
 
-### ArduMotorFrame ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Microservices/Frame/ArduMotorFrame.cs))
+### ArduDroneFrame ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Microservices/Frame/ArduDroneFrame.cs))
 
-Represents an ArduPilot motor frame. It exposes the `MotorFrameClass` and an optional `MotorFrameType`; 
+Represents an ArduPilot frame. It exposes the `FrameClass` and an optional `FrameType`; 
 their values align with the corresponding device parameters.
 
 The optional `Meta` dictionary contains device‑specific parameter metadata and maps parameter names to enum names 
