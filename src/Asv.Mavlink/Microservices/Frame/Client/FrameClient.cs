@@ -8,13 +8,13 @@ namespace Asv.Mavlink;
 public abstract class FrameClient(MavlinkClientIdentity identity, IMavlinkContext core)
     : MavlinkMicroserviceClient("FRAME", identity, core), IFrameClient
 {
-    public abstract IReadOnlyObservableDictionary<string, IMotorFrame> MotorFrames { get; }
+    public abstract IReadOnlyObservableDictionary<string, IDroneFrame> Frames { get; }
     
-    public abstract ReadOnlyReactiveProperty<IMotorFrame?> CurrentMotorFrame { get; }
+    public abstract ReadOnlyReactiveProperty<IDroneFrame?> CurrentFrame { get; }
     
     public abstract ValueTask RefreshAvailableFrames(CancellationToken cancel = default);
 
-    public abstract Task SetFrame(IMotorFrame motorFrameToSet, CancellationToken cancel = default);
+    public abstract Task SetFrame(IDroneFrame droneFrameToSet, CancellationToken cancel = default);
     
     public abstract Task RefreshCurrentFrame(CancellationToken cancel = default);
 

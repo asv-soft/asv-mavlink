@@ -12,9 +12,9 @@ public abstract class ArduFrameClientBase : FrameClient
 {
     private readonly IParamsClientEx _paramsClient;
     private readonly ReadOnlyDictionary<ArduFrameClass, IReadOnlyList<ArduFrameType>> _availableFramesMap;
-    private readonly ObservableDictionary<string, IMotorFrame> _motorFrames;
-    private readonly ReactiveProperty<IMotorFrame?> _currentMotorFrame;
-    private IDisposable? _currentFrameUpdateSub;
+    private readonly ObservableDictionary<string, IDroneFrame> _droneFrames;
+    private readonly ReactiveProperty<IDroneFrame?> _currentDroneFrame;
+    private readonly SerialDisposable _currentFrameUpdateSub = new();
 
     protected ArduFrameClientBase(
         IHeartbeatClient heartbeat,
@@ -24,24 +24,24 @@ public abstract class ArduFrameClientBase : FrameClient
     {
         _paramsClient = paramsClient;
         _availableFramesMap = availableFramesMap;
-        _motorFrames = [];
+        _droneFrames = [];
 
-        _currentMotorFrame = new ReactiveProperty<IMotorFrame?>(null);
-        CurrentMotorFrame = _currentMotorFrame.ToReadOnlyReactiveProperty();
+        _currentDroneFrame = new ReactiveProperty<IDroneFrame?>(null);
+        CurrentFrame = _currentDroneFrame.ToReadOnlyReactiveProperty();
     }
 
     public abstract string FrameClassParamName { get; }
     public abstract string FrameTypeParamName { get; }
     
-    public override IReadOnlyObservableDictionary<string, IMotorFrame> MotorFrames => _motorFrames;
+    public override IReadOnlyObservableDictionary<string, IDroneFrame> Frames => _droneFrames;
     
-    public override ReadOnlyReactiveProperty<IMotorFrame?> CurrentMotorFrame { get; }
+    public override ReadOnlyReactiveProperty<IDroneFrame?> CurrentFrame { get; }
     
     public override ValueTask RefreshAvailableFrames(CancellationToken cancel = default)
     {
         cancel.ThrowIfCancellationRequested();
         
-        _motorFrames.Clear();
+        _droneFrames.Clear();
 
         foreach (var (frameClass, types) in _availableFramesMap)
         {
@@ -51,8 +51,8 @@ public abstract class ArduFrameClientBase : FrameClient
                 {
                     [FrameClassParamName] = frameClass.ToString()
                 };  
-                var motorFrame = new ArduMotorFrame(frameClass, null, meta);
-                _motorFrames.Add(motorFrame.Id, motorFrame);
+                var droneFrame = new ArduDroneFrame(frameClass, null, meta);
+                _droneFrames.Add(droneFrame.Id, droneFrame);
             }
             else
             {
@@ -63,8 +63,8 @@ public abstract class ArduFrameClientBase : FrameClient
                         [FrameClassParamName] = frameClass.ToString(),
                         [FrameTypeParamName] = type.ToString()
                     };
-                    var motorFrame = new ArduMotorFrame(frameClass, type, meta);
-                    _motorFrames.Add(motorFrame.Id, motorFrame);
+                    var droneFrame = new ArduDroneFrame(frameClass, type, meta);
+                    _droneFrames.Add(droneFrame.Id, droneFrame);
                 }
             }
         }
@@ -72,31 +72,31 @@ public abstract class ArduFrameClientBase : FrameClient
         return ValueTask.CompletedTask;
     }
     
-    public override async Task SetFrame(IMotorFrame motorFrameToSet, CancellationToken cancel = default)
+    public override async Task SetFrame(IDroneFrame droneFrameToSet, CancellationToken cancel = default)
     {
         cancel.ThrowIfCancellationRequested();
         
-        if (motorFrameToSet is not ArduMotorFrame arduMotorFrame)
+        if (droneFrameToSet is not ArduDroneFrame arduDroneFrame)
         {
             // ReSharper disable once LocalizableElement
-            throw new ArgumentException($"Instance of {nameof(ArduMotorFrame)} expected", nameof(motorFrameToSet));
+            throw new ArgumentException($"Instance of {nameof(ArduDroneFrame)} expected", nameof(droneFrameToSet));
         }
         
-        if (!_motorFrames.ContainsKey(motorFrameToSet.Id))
+        if (!_droneFrames.ContainsKey(droneFrameToSet.Id))
         {
-            throw new MotorFrameIsNotAvailableException();
+            throw new DroneFrameIsNotAvailableException();
         }
         
         await _paramsClient.WriteOnce(
             FrameClassParamName,
-            (int) arduMotorFrame.MotorFrameClass,
+            (int) arduDroneFrame.FrameClass,
             cancel).ConfigureAwait(false);
 
-        if (arduMotorFrame.MotorFrameType is not null)
+        if (arduDroneFrame.FrameType is not null)
         {
             await _paramsClient.WriteOnce(
                 FrameTypeParamName,
-                (int) arduMotorFrame.MotorFrameType.Value,
+                (int) arduDroneFrame.FrameType.Value,
                 cancel).ConfigureAwait(false);
         }
     }
@@ -108,10 +108,9 @@ public abstract class ArduFrameClientBase : FrameClient
         var currentFrameClassRaw = await _paramsClient.ReadOnce(FrameClassParamName, cancel).ConfigureAwait(false);
         var currentFrameTypeRaw = await _paramsClient.ReadOnce(FrameTypeParamName, cancel).ConfigureAwait(false);
         
-        _currentMotorFrame.Value = GetMotorFrameFromParams(currentFrameClassRaw, currentFrameTypeRaw);
-
-        _currentFrameUpdateSub?.Dispose();
-        _currentFrameUpdateSub = _paramsClient.OnValueChanged
+        _currentDroneFrame.Value = GetDroneFrameFromParams(currentFrameClassRaw, currentFrameTypeRaw);
+        
+        _currentFrameUpdateSub.Disposable = _paramsClient.OnValueChanged
             .Where(kvp => kvp.Item1 == FrameClassParamName || kvp.Item1 == FrameTypeParamName)
             .Subscribe(v =>{
                 var frameClassPresent = _paramsClient.Items.ContainsKey(FrameClassParamName);
@@ -137,11 +136,11 @@ public abstract class ArduFrameClientBase : FrameClient
                     return;
                 }
             
-                _currentMotorFrame.Value = GetMotorFrameFromParams(currentFrameClassRaw, currentFrameTypeRaw);
+                _currentDroneFrame.Value = GetDroneFrameFromParams(currentFrameClassRaw, currentFrameTypeRaw);
             });
     }
 
-    private IMotorFrame? GetMotorFrameFromParams(
+    private IDroneFrame? GetDroneFrameFromParams(
         MavParamValue currentFrameClassRaw, 
         MavParamValue currentFrameTypeRaw)
     {
@@ -159,8 +158,8 @@ public abstract class ArduFrameClientBase : FrameClient
         }
         
         EnsureValidFrameType(currentFrameClass, ref currentFrameType);
-        var motorFrameId = ArduMotorFrame.GenerateId(currentFrameClass, currentFrameType);
-        return _motorFrames.GetValueOrDefault(motorFrameId);
+        var droneFrameId = ArduDroneFrame.GenerateId(currentFrameClass, currentFrameType);
+        return _droneFrames.GetValueOrDefault(droneFrameId);
     }
 
     /// <summary>
@@ -184,9 +183,9 @@ public abstract class ArduFrameClientBase : FrameClient
     {
         if (disposing)
         {
-            _currentFrameUpdateSub?.Dispose();
-            _currentMotorFrame.Dispose();
-            CurrentMotorFrame.Dispose();
+            _currentFrameUpdateSub.Dispose();
+            _currentDroneFrame.Dispose();
+            CurrentFrame.Dispose();
         }
         
         base.Dispose(disposing);
