@@ -29,8 +29,8 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
     <PackageReference Include="ConsoleAppFramework" Version="$(ConsoleAppFrameworkVersion)"/>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(DotNetVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(DotNetVersion)" />
     <PackageReference Include="DotLiquid" Version="2.3.197" />
     <PackageReference Include="DynamicData" Version="9.4.1" />
     <PackageReference Include="Geodesy" Version="4.1.0" />
