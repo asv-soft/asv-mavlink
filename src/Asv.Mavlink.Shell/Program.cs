@@ -9,29 +9,29 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        //Assembly.GetExecutingAssembly().PrintWelcomeToConsole();
         Console.InputEncoding = Encoding.UTF8;
         Console.OutputEncoding = Encoding.UTF8;
         Console.BackgroundColor = ConsoleColor.Black;
         
         var app = ConsoleApp.Create();
         app.Add<ExampleCommand>();
+        app.Add<GenerateCommand>();
         app.Add<FtpTreeDirectory>();
         app.Add<FtpBrowserDirectory>();
         app.Add<DevicesInfoCommand>();
         app.Add<VirtualAdsbCommand>();
         app.Add<ExportSdrData>();
-        // app.Add<MavProxy>();
+        app.Add<MavProxy>();
+        app.Add<SetupFrameCommand>();
         app.Add<BenchmarkBinSerializationCommand>();
         app.Add<BenchmarkSerializationPacket>();
-        app.Add<GenerateCommand>();
         app.Add<MavlinkCommand>();
         app.Add<PacketViewerCommand>();
         app.Add<CreateVirtualFtpServerCommand>();
         app.Add<GenerateDiagnostics>();
         app.Add<TestGenerateDiagnosticsCommand>();
-        app.Add<PrintVehicleStateCommand>();
         app.Add<ParamsCommand>();
+        app.Add<PrintVehicleStateCommand>();
         app.Add<DownloadMissionItemsCommand>();
         
         await app.RunAsync(args);

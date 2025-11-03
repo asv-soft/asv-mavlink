@@ -28,6 +28,7 @@
         <toc-element topic="ftp-server-command.md"/>
         <toc-element topic="generate-fake-diagnostic-data-command.md"/>
         <toc-element topic="download-mission-items-command.md"/>
+        <toc-element topic="setup-frame-command.md"/>
     </toc-element>
     <toc-element toc-title="About">
         <toc-element topic="licensing-information.md"/>
@@ -57,6 +58,11 @@
         </toc-element>
         <toc-element topic="Diagnostic.md">
         </toc-element>
+        <toc-element topic="Frame.md">
+            <toc-element toc-title="Client" topic="FrameClient.md">
+                <toc-element toc-title="Ardu" topic="ArduFrameClient.md"/>
+            </toc-element>
+        </toc-element>
         <toc-element topic="Ftp.md">
         </toc-element>
         <toc-element topic="Gnss.md">
@@ -74,6 +80,14 @@
             <toc-element toc-title="Server" topic="ModeServer.md"/>
         </toc-element>
         <toc-element topic="Params.md">
+            <toc-element toc-title="Client" topic="ParamsClient.md"/>
+            <toc-element toc-title="Server" topic="ParamsServer.md"/>
+            <toc-element toc-title="ClientEx" topic="ParamsClientEx.md">
+                <toc-element topic="ParamItem.md"/>
+            </toc-element>>
+            <toc-element toc-title="ServerEx" topic="ParamsServerEx.md">
+                <toc-element toc-title="Metadata" topic="ParamsMetadata.md"/>
+            </toc-element>
         </toc-element>
         <toc-element topic="ParamsExt.md">
         </toc-element>

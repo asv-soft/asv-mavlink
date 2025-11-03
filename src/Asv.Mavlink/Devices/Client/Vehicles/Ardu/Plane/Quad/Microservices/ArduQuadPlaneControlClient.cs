@@ -4,13 +4,12 @@ using Asv.Common;
 using Asv.Mavlink.Ardupilotmega;
 using Asv.Mavlink.Minimal;
 
-
 using Microsoft.Extensions.Logging;
 using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class ArduCopterControlClient(
+public class ArduQuadPlaneControlClient(
     IHeartbeatClient heartbeat,
     IModeClient mode,
     IPositionClientEx pos)
@@ -22,13 +21,13 @@ public class ArduCopterControlClient(
     {
         if (heartbeat.RawHeartbeat.CurrentValue == null) return ValueTask.FromResult(false);
         return ValueTask.FromResult(heartbeat.RawHeartbeat.CurrentValue.BaseMode.HasFlag(MavModeFlag.MavModeFlagCustomModeEnabled) &&
-                                    heartbeat.RawHeartbeat.CurrentValue.CustomMode == (int)CopterMode.CopterModeAuto);
+                                    heartbeat.RawHeartbeat.CurrentValue.CustomMode == (int)PlaneMode.PlaneModeAuto);
     }
 
     public override Task SetAutoMode(CancellationToken cancel = default)
     {
         _logger.LogInformation("Set auto mode");
-        return mode.SetMode(ArduCopterMode.Auto, cancel);
+        return mode.SetMode(ArduPlaneMode.Auto, cancel);
     }
 
     public override ValueTask<bool> IsGuidedMode(CancellationToken cancel = default)
@@ -36,13 +35,13 @@ public class ArduCopterControlClient(
         if (heartbeat.RawHeartbeat.CurrentValue == null) return ValueTask.FromResult(false);
         return ValueTask.FromResult(
             heartbeat.RawHeartbeat.CurrentValue.BaseMode.HasFlag(MavModeFlag.MavModeFlagCustomModeEnabled) &&
-            heartbeat.RawHeartbeat.CurrentValue.CustomMode == (int)CopterMode.CopterModeGuided);
+            heartbeat.RawHeartbeat.CurrentValue.CustomMode == (int)PlaneMode.PlaneModeGuided);
     }
 
     public override Task SetGuidedMode(CancellationToken cancel = default)
     {
         _logger.LogInformation("Set guided mode");
-        return mode.SetMode(ArduCopterMode.Guided, cancel);
+        return mode.SetMode(ArduPlaneMode.Guided, cancel);
     }
 
     public override async Task GoTo(GeoPoint point, CancellationToken cancel = default)
@@ -56,14 +55,14 @@ public class ArduCopterControlClient(
     {
         _logger.LogInformation("DoLand");
         await this.EnsureGuidedMode(cancel).ConfigureAwait(false);
-        await mode.SetMode(ArduCopterMode.Land, cancel).ConfigureAwait(false);
+        await mode.SetMode(ArduPlaneMode.Qland, cancel).ConfigureAwait(false);
     }
 
     public override async Task DoRtl(CancellationToken cancel = default)
     {
         _logger.LogInformation("DoRtl");
         await this.EnsureGuidedMode(cancel).ConfigureAwait(false);
-        await mode.SetMode(ArduCopterMode.Rtl, cancel).ConfigureAwait(false);
+        await mode.SetMode(ArduPlaneMode.Qrtl, cancel).ConfigureAwait(false);
     }
 
     public override async Task TakeOff(double altInMeters, CancellationToken cancel = default)

@@ -50,7 +50,7 @@ public class CreateVirtualFtpServerCommand
         await using var router = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(); })
             .CreateRouter("ROUTER");
         
-        AnsiConsole.MarkupLine("[green]Note[/]: The actual connection strings may differ from those shown below"); 
+        AnsiConsole.MarkupLine("[green]note[/]: The actual connection strings may differ from those shown below"); 
 
         foreach (var port in cfg.Ports)
         {

@@ -1,6 +1,8 @@
 # Code-gen example
 This command generates example of files for the mavlink code generator.
 
+> It is usually used together with the [packet code generator](packet-code-generation-command.md) command
+
 ```bash
 Asv.Mavlink.Shell.exe code-gen-example
 ```

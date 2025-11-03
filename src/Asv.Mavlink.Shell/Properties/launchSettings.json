@@ -1,11 +1,8 @@
 {
   "profiles": {
-    "Asv.Mavlink.Shell": {
+    "Run setup frame": {
       "commandName": "Project",
-      "commandLineArgs": "print-vehicle-state -c tcp://127.0.0.1:5763"    },
-    "Second": {
-      "commandName": "Project",
-      "commandLineArgs": "run-ftp-server"
+      "commandLineArgs": "setup-frame -cs tcp://127.0.0.1:7341"    
     }
   }
 }
