@@ -15,8 +15,8 @@ First, load the list of available frame configurations from the connected device
 // Load available frames from the device
 await frameClient.LoadAvailableFrames();
 
-// Access the available frames through the MotorFrames property
-foreach (var frame in frameClient.MotorFrames.Values)
+// Access the available frames through the Frames property
+foreach (var frame in frameClient.Frames.Values)
 {
     Console.WriteLine($"Frame: {frame.Id}");
 }
@@ -30,7 +30,7 @@ await frameClient.LoadAvailableFrames();
 
 await frameClient.LoadCurrentFrame();
 
-var subscription = frameClient.CurrentMotorFrame.Subscribe(currentFrame =>
+var subscription = frameClient.CurrentFrame.Subscribe(currentFrame =>
 {
     if (currentFrame is null) 
     {
@@ -50,28 +50,28 @@ Update the frame configuration:
 // Load available frames first
 await frameClient.LoadAvailableFrames();
 
-// Select a frame from the MotorFrames collection
-var selectedFrame = frameClient.MotorFrames.Values.First();
+// Select a frame from the Frames collection
+var selectedFrame = frameClient.Frames.Values.First();
 
 // Apply the new frame configuration
 await frameClient.SetFrame(selectedFrame);
 ```
 
-> Always use frames from the `MotorFrames` collection. 
-> Do not create custom `IMotorFrame` instances — they may not be supported by the device.
+> Always use frames from the `Frames` collection. 
+> Do not create custom `IDroneFrame` instances — they may not be supported by the device.
 {style="warning"}
 
 ## IFrameClient ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Frame/Client/IFrameClient.cs))
 
-| Property      | Type                                                 | Description                                                   |
-|---------------|------------------------------------------------------|---------------------------------------------------------------|
-| `MotorFrames` | `IReadOnlyObservableDictionary<string, IMotorFrame>` | Available motor frames. Populated by `LoadAvailableFrames()`. |
+| Property | Type                                                 | Description                                                   |
+|----------|------------------------------------------------------|---------------------------------------------------------------|
+| `Frames` | `IReadOnlyObservableDictionary<string, IDroneFrame>` | Available drone frames. Populated by `LoadAvailableFrames()`. |
 
-| Method                                                                      | Return Type | Description                                                                                                                                      |
-|-----------------------------------------------------------------------------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| `LoadAvailableFrames(CancellationToken cancel = default)`                   | `ValueTask` | Loads available frame types from the device and updates the `MotorFrames` collection.                                                            |
-| `SetFrame(IMotorFrame motorFrameToSet, CancellationToken cancel = default)` | `Task`      | Updates the frame type for the current device.                                                                                                   |
-| `LoadCurrentFrame(CancellationToken cancel = default)`                      | `Task`      | Loads the current motor frame configuration from the device and starts reactively updating `CurrentMotorFrame` when the frame parameters change. |
+| Method                                                                      | Return Type | Description                                                                                                                           |
+|-----------------------------------------------------------------------------|-------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `LoadAvailableFrames(CancellationToken cancel = default)`                   | `ValueTask` | Loads available frame types from the device and updates the `Frames` collection.                                                      |
+| `SetFrame(IDroneFrame droneFrameToSet, CancellationToken cancel = default)` | `Task`      | Updates the frame type for the current device.                                                                                        |
+| `LoadCurrentFrame(CancellationToken cancel = default)`                      | `Task`      | Loads the current frame configuration from the device and starts reactively updating `CurrentFrame` when the frame parameters change. |
 
 ### `IFrameClient.LoadAvailableFrames`
 
@@ -83,7 +83,7 @@ await frameClient.SetFrame(selectedFrame);
 
 | Parameter         | Type                | Description                                |
 |-------------------|---------------------|--------------------------------------------|
-| `motorFrameToSet` | `IMotorFrame`       | Frame type to use.                         |
+| `droneFrameToSet` | `IDroneFrame`       | Frame type to use.                         |
 | `cancel`          | `CancellationToken` | An optional token to cancel the operation. |
 
 ### `IFrameClient.LoadCurrentFrame`

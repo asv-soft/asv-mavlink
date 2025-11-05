@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Asv.Mavlink;
 
-public interface IMotorFrame
+public interface IDroneFrame
 {
     /// <summary>
     /// Unique identifier of the frame.

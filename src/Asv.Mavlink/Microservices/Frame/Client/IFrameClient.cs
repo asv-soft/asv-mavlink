@@ -10,7 +10,7 @@ public interface IFrameClient
     /// <summary>
     /// Available motor frames. Populated by <see cref="RefreshAvailableFrames"/>.
     /// </summary>
-    IReadOnlyObservableDictionary<string, IMotorFrame> MotorFrames { get; }
+    IReadOnlyObservableDictionary<string, IDroneFrame> Frames { get; }
     
     /// <summary>
     /// Currently selected motor frame.
@@ -22,10 +22,10 @@ public interface IFrameClient
     /// <item><see cref="RefreshCurrentFrame"/> has not been called yet.</item>
     /// </list>
     /// </remarks>
-    ReadOnlyReactiveProperty<IMotorFrame?> CurrentMotorFrame { get; }
+    ReadOnlyReactiveProperty<IDroneFrame?> CurrentFrame { get; }
 
     /// <summary>
-    /// Refreshes available frame types from the device and updates <see cref="MotorFrames"/> collection.
+    /// Refreshes available frame types from the device and updates <see cref="Frames"/> collection.
     /// </summary>
     /// <param name="cancel">An optional token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
@@ -34,17 +34,17 @@ public interface IFrameClient
     /// <summary>
     /// Updates the frame type for the current device.
     /// </summary>
-    /// <param name="motorFrameToSet">Frame type to use.</param>
+    /// <param name="droneFrameToSet">Frame type to use.</param>
     /// <param name="cancel">An optional token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <remarks>
-    /// Only use frames from the <see cref="MotorFrames"/> collection when calling this method.
+    /// Only use frames from the <see cref="Frames"/> collection when calling this method.
     /// </remarks>
-    Task SetFrame(IMotorFrame motorFrameToSet, CancellationToken cancel = default);
+    Task SetFrame(IDroneFrame droneFrameToSet, CancellationToken cancel = default);
 
     /// <summary>
     /// Refreshes the current motor frame configuration from the device
-    /// and starts reactively updating <see cref="CurrentMotorFrame"/> when the frame parameters change.
+    /// and starts reactively updating <see cref="CurrentFrame"/> when the frame parameters change.
     /// </summary>
     /// <param name="cancel">An optional token to cancel the operation.</param>
     Task RefreshCurrentFrame(CancellationToken cancel = default);
