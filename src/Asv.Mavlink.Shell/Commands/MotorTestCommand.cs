@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
-using Asv.Mavlink.Common;
 using ConsoleAppFramework;
 using Spectre.Console;
 using Spectre.Console.Rendering;
@@ -12,10 +11,8 @@ namespace Asv.Mavlink.Shell;
 
 public class MotorTestCommand
 {
-	private IMotorTestClient _motorTestClient;
-
 	[Command("motor-test")]
-	public async Task RunMotorTestAsync(string connection = "tcp://127.0.0.1:5760")
+	public async Task<int> RunMotorTestAsync(string connection, CancellationToken cancellationToken)
 	{
 		ShellCommandsHelper.CreateDeviceExplorer(connection, out var deviceExplorer);
 
@@ -23,67 +20,27 @@ public class MotorTestCommand
 		if (device is null)
 		{
 			AnsiConsole.MarkupLine("[red]error:[/] cannot connect to the device.");
-			return;
+			return 1;
 		}
 
 		var motorTestClient = device.GetMicroservice<IMotorTestClient>();
 		if (motorTestClient is null)
 		{
 			AnsiConsole.MarkupLine("[red]error:[/] this device is unsupported yet.");
-			return;
+			return 1;
 		}
-		var paramsClient = device.GetMicroservice<IParamsClient>();
-		if (paramsClient is null)
-		{
-			AnsiConsole.MarkupLine("[red]error:[/] this device is unsupported yet.");
-			return;
-		}
-		
-		_ = Task.Run(async () => 
-			{
-				while (true)
-				{
-					await Task.Delay(5000);
-
-					await paramsClient.Write("FRAME_CLASS", MavParamType.MavParamTypeInt8, 2); // HEXA
-
-					// await paramsClient.Read("FRAME_CLASS");
-
-					await paramsClient.Write("FRAME_TYPE", MavParamType.MavParamTypeInt8, 0); // H type
-
-					// await paramsClient.Read("FRAME_TYPE");
-
-					await Task.Delay(5000);
-
-					await paramsClient.Write("FRAME_CLASS", MavParamType.MavParamTypeInt8, 1); // HEXA
-
-					// await paramsClient.Read("FRAME_CLASS");
-
-					await paramsClient.Write("FRAME_TYPE", MavParamType.MavParamTypeInt8, 0); // H type
-
-					// await paramsClient.Read("FRAME_TYPE");
-
-				}
-
-			});
-
-		_motorTestClient = motorTestClient;
 
 		var appExit = false;
+		cancellationToken.Register(() => appExit = true);
 
-		// Основной цикл: запускаем Live, параллельно слушаем клавиши
 		while (!appExit)
 		{
-			// Создаём токен для текущего Live-режима
 			using var liveCts = new CancellationTokenSource();
 
-			// Task для Live-рендера
-			var liveTask = RunLiveAsync(liveCts.Token);
+			var liveTask = RunLiveAsync(motorTestClient, liveCts.Token);
 
-			// Task для обработки клавиш (работает параллельно)
 			var keyTask = Task.Run(async () =>
 			{
-				// Пока Live не отменён и приложение не выходит, проверяем клавиши
 				while (!liveCts.IsCancellationRequested && !appExit)
 				{
 					if (Console.KeyAvailable)
@@ -91,81 +48,60 @@ public class MotorTestCommand
 						var key = Console.ReadKey(intercept: true).Key;
 						if (key == ConsoleKey.Q)
 						{
-							// Выход: отменяем Live и ставим флаг выхода
 							liveCts.Cancel();
 							appExit = true;
 							break;
 						}
-						else if (key == ConsoleKey.E)
+
+						if (key == ConsoleKey.E)
 						{
-							// Переход в режим редактирования: отменяем Live и выходим из loop
 							liveCts.Cancel();
 							break;
 						}
 					}
 
-					// Небольшая задержка, чтобы не жрать CPU
 					await Task.Delay(80);
 				}
 			});
 
-			// Ждём окончания Live (либо по отмене, либо по ошибке)
 			await Task.WhenAny(liveTask, keyTask);
 
-			// Если keyTask отменил live (например, нажали E), дожидаемся завершения liveTask
 			try
 			{
 				await liveTask;
 			}
-			catch
-			{
-				/* игнорируем исключения от отмены */
-			}
+			catch { }
 
-			// Если пользователь нажал Q — выходим
 			if (appExit)
 				break;
 
-			// Теперь: переходим в режим промта (редактирование параметров)
-			// (Live уже остановлен — безопасно вызывать блокирующие промты)
 			Console.Clear();
-			AnsiConsole.MarkupLine("[bold cyan]Режим редактирования параметров[/]\n");
+			AnsiConsole.MarkupLine("[bold cyan]Motor Configuration[/]\n");
+			var motorsCount = motorTestClient.TestMotors.Count;
 
-			var motorsCount = _motorTestClient.TestMotors.Count;
+			var motor = AnsiConsole.Ask<int>($"Enter motor number (1-{motorsCount})");
+			var throttle = AnsiConsole.Ask<int>("Throttle level, % (0-100)");
+			var timeout = AnsiConsole.Ask<int>("Test duration, s");
 
-			// Пример промтов — можно менять/расширять
-			var motor = AnsiConsole.Ask<int>($"Введите номер мотора (1-{motorsCount})");
-			// newCount = Math.Clamp(newCount, 1, 20);
+			var startTask = AnsiConsole.Confirm("Start test?");
+			if (!startTask)
+				continue;
 
-			var throttle = AnsiConsole.Ask<int>("Мощность, % (0-100)");
-			// throttle = Math.Clamp(throttle, 0, 100);
-
-			var timeout = AnsiConsole.Ask<int>("Продолжительность, с");
-			// timeout = Math.Clamp(throttle, 0, 1000);
-
-			// Короткое сообщение о старте фоновой задачи (например, запуск теста)
-			var startTask = AnsiConsole.Confirm("Запустить тест?");
-			if (startTask)
-			{
-				var testMotor = _motorTestClient.TestMotors.First(m => m.Id == motor);
-
-				AnsiConsole.MarkupLine($"[green]Запуск теста для мотора № {motor} ... ({timeout}с)[/]");
-
-				// Простейшая фоновая задача, эмулирующая работу
-				await Task.Run(async () => { await testMotor.StartTest(throttle, timeout, CancellationToken.None); },
-					CancellationToken.None);
-				AnsiConsole.MarkupLine("[green]Тест запущен.[/]");
-			}
+			var testMotor = motorTestClient.TestMotors.First(m => m.Id == motor);
+			AnsiConsole.MarkupLine($"[green]Starting motor test # {motor} ... ({timeout}s)[/]");
+			await Task.Run(async () => { await testMotor.StartTest(throttle, timeout, CancellationToken.None); },
+				CancellationToken.None);
+			AnsiConsole.MarkupLine("[green]Test started.[/]");
 		}
 
-		AnsiConsole.MarkupLine("[grey]Выход...[/]");
+		AnsiConsole.MarkupLine("[grey]Exit...[/]");
+
+		return 0;
 	}
 
-	// Запускает Live-рендер и возвращает задачу, завершится когда токен отменят
-	private async Task RunLiveAsync(CancellationToken token)
+	private async Task RunLiveAsync(IMotorTestClient motorTestClient, CancellationToken token)
 	{
-		// Инициализация начального тултайпа (пустая)
-		var initialLayout = BuildLayout();
+		var initialLayout = BuildLayout(motorTestClient);
 
 		await AnsiConsole.Live(initialLayout)
 			.AutoClear(false)
@@ -173,10 +109,8 @@ public class MotorTestCommand
 			{
 				while (!token.IsCancellationRequested)
 				{
-					// Строим новую таблицу/макет и обновляем
-					ctx.UpdateTarget(BuildLayout());
+					ctx.UpdateTarget(BuildLayout(motorTestClient));
 
-					// Пробуем обновлять с ~300ms интервалом
 					try
 					{
 						await Task.Delay(300, token);
@@ -189,21 +123,21 @@ public class MotorTestCommand
 			});
 	}
 
-	private IRenderable BuildLayout()
+	private IRenderable BuildLayout(IMotorTestClient motorTestClient)
 	{
 		var table = new Table();
 		table.AddColumns("[blue]Motor[/]", "[blue]Servo[/]", "[blue]PWM[/]", "[blue]Test[/]");
 
-		foreach (var item in _motorTestClient.TestMotors)
+		foreach (var motor in motorTestClient.TestMotors)
 		{
 			table.AddRow(
-				new Markup($"[blue]{item.Id}[/]"),
-				new Markup($"[blue]{item.ServoChannel}[/]"),
-				new Markup($"[blue]{item.Pwm.CurrentValue.ToString()}[/]"),
-				new Markup($"[green]{item.IsTestRun}[/]"));
+				new Markup($"[blue]{motor.Id}[/]"),
+				new Markup($"[blue]{motor.ServoChannel}[/]"),
+				new Markup($"[blue]{motor.Pwm.CurrentValue.ToString()}[/]"),
+				new Markup($"[green]{motor.IsTestRun}[/]"));
 		}
 
-		var footer = new Panel(new Markup("[blue]Нажмите [yellow]E[/] — испытание, [red]Q[/] — выйти[/]"))
+		var footer = new Panel(new Markup("[blue]Press [yellow]E[/] — test, [red]Q[/] — quit[/]"))
 		{
 			Border = BoxBorder.None,
 			Padding = new Padding(0, 1, 0, 0)
