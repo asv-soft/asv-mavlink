@@ -10,9 +10,9 @@ internal sealed class TestMotor : ITestMotor, IDisposable
 {
 	private const double ArduCopterTimeoutScale = 10.0;
 
+	private readonly SerialDisposable _timerSubscription = new();
 	private readonly ReactiveProperty<bool> _isRun;
 	private readonly ICommandClient _commandClient;
-	private IDisposable? _timerSubscription;
 	public int Id { get; }
 	public int ServoChannel { get; }
 
@@ -47,9 +47,7 @@ internal sealed class TestMotor : ITestMotor, IDisposable
 			return ack.Result;
 
 		_isRun.Value = true;
-		_timerSubscription?.Dispose();
-
-		_timerSubscription = Observable.Timer(TimeSpan.FromSeconds(timeout), cancel)
+		_timerSubscription.Disposable = Observable.Timer(TimeSpan.FromSeconds(timeout), cancel)
 			.Subscribe(t => _isRun.Value = false);
 
 		return ack.Result;
@@ -69,7 +67,7 @@ internal sealed class TestMotor : ITestMotor, IDisposable
 			.ConfigureAwait(false);
 
 		_isRun.Value = false;
-		_timerSubscription?.Dispose();
+		_timerSubscription.Dispose();
 
 		return ack.Result;
 	}
@@ -79,6 +77,6 @@ internal sealed class TestMotor : ITestMotor, IDisposable
 		Pwm.Dispose();
 		IsTestRun.Dispose();
 		_isRun.Dispose();
-		_timerSubscription?.Dispose();
+		_timerSubscription.Dispose();
 	}
 }

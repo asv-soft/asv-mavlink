@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
 using DotNext.Collections.Generic;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 
@@ -23,22 +20,21 @@ public class ArduCopterMotorTestClient : MavlinkMicroserviceClient, IMotorTestCl
 	private readonly CompositeDisposable _disposable = new();
 	private readonly ObservableList<ITestMotor> _testMotors = [];
 
-	private ArduCopterVehicle _vehicle = ArduCopterVehicle.CreateUnknownVehicle();
+	private readonly IDisposable _testMotorsSubscription;
 
-	public ArduCopterMotorTestClient(MavlinkClientIdentity identity,
-		IMavlinkContext core, ICommandClient commandClient, IParamsClientEx paramsClientEx)
-		: base("MOTOR_TEST", identity, core)
+	public ArduCopterMotorTestClient(IHeartbeatClient heartbeatClient, ICommandClient commandClient, IParamsClientEx paramsClientEx)
+		: base("MOTOR_TEST", heartbeatClient.Identity, heartbeatClient.Core)
 	{
 		_commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
 		_paramsClientEx = paramsClientEx ?? throw new ArgumentNullException(nameof(paramsClientEx));
 
-		paramsClientEx
+		_testMotorsSubscription = paramsClientEx
 			.Filter(FrameTypeParam)
 			.CombineLatest(paramsClientEx.Filter(FrameClassParam),
-				(frameType, frameClass) => ArduCopterVehicle.CreateVehicle(frameClass, frameType))
-			.Subscribe(vehicle =>
+				(frameType, frameClass) => new ArduCopterFrame(frameClass, frameType))
+			.Subscribe(frame =>
 			{
-				var motors = GetMotors(vehicle);
+				var motors = CreateTestMotors(frame);
 				_testMotors.Clear();
 				_testMotors.AddRange(motors);
 
@@ -49,65 +45,41 @@ public class ArduCopterMotorTestClient : MavlinkMicroserviceClient, IMotorTestCl
 
 	public IReadOnlyObservableList<ITestMotor> TestMotors => _testMotors;
 
+	public async Task Refresh(CancellationToken cancellationToken = default)
+	{
+		await _paramsClientEx.ReadOnce(FrameClassParam, cancellationToken).ConfigureAwait(false);
+		await _paramsClientEx.ReadOnce(FrameTypeParam, cancellationToken).ConfigureAwait(false);
+	}
+
 	protected override async Task InternalInit(CancellationToken cancel)
 	{
 		await base.InternalInit(cancel).ConfigureAwait(false);
-		_vehicle = await GetVehicle(cancel).ConfigureAwait(false);
+		await Refresh(cancel).ConfigureAwait(false);
 	}
 
-	private static Layout? FindFrameLayout(ArduCopterVehicle vehicle)
+	private List<TestMotor> CreateTestMotors(ArduCopterFrame frame)
 	{
-		try
-		{
-			var config = GetMotorsMatrixConfig();
-			return config.Layouts.FirstOrDefault(layout =>
-				layout.Class == (int)vehicle.FrameClass && layout.Type == (int)vehicle.FrameType);
-		}
-		catch (Exception ex)
-		{
-			throw new ArduCopterMotorsMatrixConfigException("ArduCopter motors matrix configuration is not provided", ex);
-		}
-	}
-
-	private static ArduCopterMotorsMatrixConfig GetMotorsMatrixConfig()
-	{
-		var file = Path.GetDirectoryName(Path.GetFullPath(Assembly.GetExecutingAssembly().Location)) + Path.DirectorySeparatorChar +
-			"APMotorLayout.json";
-		using var streamReader = new StreamReader(file);
-		var json = streamReader.ReadToEnd();
-		var motorsMatrixConfig = JsonConvert.DeserializeObject<ArduCopterMotorsMatrixConfig>(json);
-		return motorsMatrixConfig ?? throw new NullReferenceException();
-	}
-
-	private async Task<ArduCopterVehicle> GetVehicle(CancellationToken cancel)
-	{
-		var frameClass = await _paramsClientEx.ReadOnce(FrameClassParam, cancel).ConfigureAwait(false);
-		var frameType = await _paramsClientEx.ReadOnce(FrameTypeParam, cancel).ConfigureAwait(false);
-
-		return ArduCopterVehicle.CreateVehicle(frameClass, frameType);
-	}
-
-	private List<TestMotor> GetMotors(ArduCopterVehicle vehicle)
-	{
-		var layout = FindFrameLayout(vehicle);
-		if (layout is null)
+		var motorsLayout = ArduPilotMotorsLayout.Layouts.FirstOrDefault(layout =>
+			layout.Class == (int)frame.FrameClass && layout.Type == (int?)frame.FrameType);
+		
+		if (motorsLayout is null)
 			throw new UnsupportedVehicleException("Unsupported ArduCopter frame");
 
 		var motors = new List<TestMotor>();
 
-		foreach (var motorDef in layout.Motors)
+		foreach (var motor in motorsLayout.Motors)
 		{
 			var pwm = InternalFilter<ServoOutputRawPacket>()
-				.Select(packet => GetPwm(packet.Payload, motorDef.Number));
+				.Select(packet => GetPwm(packet.Payload, motor.Number));
 
-			var motor = new TestMotor(motorDef.TestOrder, motorDef.Number, pwm, _commandClient);
-			motors.Add(motor);
+			var testMotor = new TestMotor(motor.TestOrder, motor.Number, pwm, _commandClient);
+			motors.Add(testMotor);
 		}
 
 		return motors;
 	}
 
-	private ushort GetPwm(ServoOutputRawPayload message, int servoOutput)
+	private static ushort GetPwm(ServoOutputRawPayload message, int servoOutput)
 	{
 		return servoOutput switch
 		{
@@ -138,6 +110,7 @@ public class ArduCopterMotorTestClient : MavlinkMicroserviceClient, IMotorTestCl
 		if (disposing)
 		{
 			_disposable.Dispose();
+			_testMotorsSubscription.Dispose();
 		}
 
 		base.Dispose(disposing);
@@ -146,6 +119,7 @@ public class ArduCopterMotorTestClient : MavlinkMicroserviceClient, IMotorTestCl
 	protected override async ValueTask DisposeAsyncCore()
 	{
 		await CastAndDispose(_disposable).ConfigureAwait(false);
+		await CastAndDispose(_testMotorsSubscription).ConfigureAwait(false);
 
 		await base.DisposeAsyncCore().ConfigureAwait(false);
 
@@ -161,4 +135,16 @@ public class ArduCopterMotorTestClient : MavlinkMicroserviceClient, IMotorTestCl
 	}
 
 	#endregion
+
+	private class ArduCopterFrame
+	{
+		public ArduCopterFrame(int frameClass, int frameType)
+		{
+			FrameClass = (ArduFrameClass)frameClass;
+			FrameType = (ArduFrameType)frameType;
+		}
+
+		public ArduFrameClass FrameClass { get; }
+		public ArduFrameType FrameType { get; }
+	}
 }

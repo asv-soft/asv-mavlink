@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
+using Asv.Mavlink.Common;
 using ConsoleAppFramework;
 using Spectre.Console;
 using Spectre.Console.Rendering;
@@ -31,6 +32,40 @@ public class MotorTestCommand
 			AnsiConsole.MarkupLine("[red]error:[/] this device is unsupported yet.");
 			return;
 		}
+		var paramsClient = device.GetMicroservice<IParamsClient>();
+		if (paramsClient is null)
+		{
+			AnsiConsole.MarkupLine("[red]error:[/] this device is unsupported yet.");
+			return;
+		}
+		
+		_ = Task.Run(async () => 
+			{
+				while (true)
+				{
+					await Task.Delay(5000);
+
+					await paramsClient.Write("FRAME_CLASS", MavParamType.MavParamTypeInt8, 2); // HEXA
+
+					// await paramsClient.Read("FRAME_CLASS");
+
+					await paramsClient.Write("FRAME_TYPE", MavParamType.MavParamTypeInt8, 0); // H type
+
+					// await paramsClient.Read("FRAME_TYPE");
+
+					await Task.Delay(5000);
+
+					await paramsClient.Write("FRAME_CLASS", MavParamType.MavParamTypeInt8, 1); // HEXA
+
+					// await paramsClient.Read("FRAME_CLASS");
+
+					await paramsClient.Write("FRAME_TYPE", MavParamType.MavParamTypeInt8, 0); // H type
+
+					// await paramsClient.Read("FRAME_TYPE");
+
+				}
+
+			});
 
 		_motorTestClient = motorTestClient;
 
