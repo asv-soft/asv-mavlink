@@ -30,76 +30,116 @@ public class MotorTestCommand
 			return 1;
 		}
 
-		var appExit = false;
-		cancellationToken.Register(() => appExit = true);
-
-		while (!appExit)
-		{
-			using var liveCts = new CancellationTokenSource();
-
-			var liveTask = RunLiveAsync(motorTestClient, liveCts.Token);
-
-			var keyTask = Task.Run(async () =>
-			{
-				while (!liveCts.IsCancellationRequested && !appExit)
-				{
-					if (Console.KeyAvailable)
-					{
-						var key = Console.ReadKey(intercept: true).Key;
-						if (key == ConsoleKey.Q)
-						{
-							liveCts.Cancel();
-							appExit = true;
-							break;
-						}
-
-						if (key == ConsoleKey.E)
-						{
-							liveCts.Cancel();
-							break;
-						}
-					}
-
-					await Task.Delay(80);
-				}
-			});
-
-			await Task.WhenAny(liveTask, keyTask);
-
-			try
-			{
-				await liveTask;
-			}
-			catch { }
-
-			if (appExit)
-				break;
-
-			Console.Clear();
-			AnsiConsole.MarkupLine("[bold cyan]Motor Configuration[/]\n");
-			var motorsCount = motorTestClient.TestMotors.Count;
-
-			var motor = AnsiConsole.Ask<int>($"Enter motor number (1-{motorsCount})");
-			var throttle = AnsiConsole.Ask<int>("Throttle level, % (0-100)");
-			var timeout = AnsiConsole.Ask<int>("Test duration, s");
-
-			var startTask = AnsiConsole.Confirm("Start test?");
-			if (!startTask)
-				continue;
-
-			var testMotor = motorTestClient.TestMotors.First(m => m.Id == motor);
-			AnsiConsole.MarkupLine($"[green]Starting motor test # {motor} ... ({timeout}s)[/]");
-			await Task.Run(async () => { await testMotor.StartTest(throttle, timeout, CancellationToken.None); },
-				CancellationToken.None);
-			AnsiConsole.MarkupLine("[green]Test started.[/]");
-		}
-
-		AnsiConsole.MarkupLine("[grey]Exit...[/]");
-
+		using var appLifetimeCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+		await RunMainLoopAsync(motorTestClient, appLifetimeCts);
 		return 0;
 	}
 
-	private async Task RunLiveAsync(IMotorTestClient motorTestClient, CancellationToken token)
+	private async Task RunMainLoopAsync(IMotorTestClient motorTestClient, CancellationTokenSource appLifetimeCts)
+	{
+		while (!appLifetimeCts.IsCancellationRequested)
+		{
+			await RunInteractiveSessionAsync(motorTestClient, appLifetimeCts);
+
+			if (appLifetimeCts.IsCancellationRequested)
+				break;
+
+			Console.Clear();
+			await RunMotorConfigurationAsync(motorTestClient, appLifetimeCts.Token);
+		}
+
+		AnsiConsole.MarkupLine("[grey]Exit...[/]");
+	}
+
+	private async Task RunInteractiveSessionAsync(IMotorTestClient motorTestClient, CancellationTokenSource appLifetimeCts)
+	{
+		using var sessionCts = CancellationTokenSource.CreateLinkedTokenSource(appLifetimeCts.Token);
+
+		var displayTask = RunLiveDisplayAsync(motorTestClient, sessionCts.Token);
+		var inputTask = HandleKeyInputAsync(sessionCts, appLifetimeCts);
+
+		await Task.WhenAny(displayTask, inputTask);
+
+		try
+		{
+			await displayTask;
+		}
+		catch { }
+	}
+
+	private async Task HandleKeyInputAsync(CancellationTokenSource sessionCts, CancellationTokenSource appLifetimeCts)
+	{
+		while (!sessionCts.Token.IsCancellationRequested)
+		{
+			if (Console.KeyAvailable)
+			{
+				var key = Console.ReadKey(intercept: true).Key;
+
+				if (key == ConsoleKey.Q)
+				{
+					await sessionCts.CancelAsync();
+					await appLifetimeCts.CancelAsync();
+					return;
+				}
+
+				if (key == ConsoleKey.E)
+				{
+					await sessionCts.CancelAsync();
+					break;
+				}
+			}
+
+			try
+			{
+				await Task.Delay(80, sessionCts.Token).ConfigureAwait(false);
+			}
+			catch (OperationCanceledException)
+			{
+				break;
+			}
+		}
+	}
+
+	private static async Task RunMotorConfigurationAsync(IMotorTestClient motorTestClient, CancellationToken cancellationToken)
+	{
+		AnsiConsole.MarkupLine("[bold cyan]Motor Configuration[/]\n");
+		var motorsCount = motorTestClient.TestMotors.Count;
+
+		var motor = AnsiConsole.Ask<int>($"Enter motor number (1-{motorsCount})");
+		var testMotor = motorTestClient.TestMotors.First(m => m.Id == motor);
+
+		var mode = AnsiConsole.Prompt(
+			new SelectionPrompt<MotorTestMode>()
+				.Title("Select mode:")
+				.AddChoices(MotorTestMode.Start, MotorTestMode.Stop)
+				.UseConverter(testMode => testMode switch
+				{
+					MotorTestMode.Start => "Start test",
+					MotorTestMode.Stop => "Stop test",
+					_ => testMode.ToString()
+				}));
+
+		if (mode == MotorTestMode.Stop)
+		{
+			await testMotor.StopTest(cancellationToken);
+			AnsiConsole.MarkupLine("[yellow]Motor test stopped.[/]");
+			return;
+		}
+
+		var throttle = AnsiConsole.Ask<int>("Throttle level, % (0-100)");
+		var timeout = AnsiConsole.Ask<int>("Test duration, s");
+
+		if (!await AnsiConsole.ConfirmAsync("Start test?", defaultValue: true, cancellationToken))
+			return;
+
+		AnsiConsole.MarkupLine($"[green]Starting motor test # {motor} ... ({timeout}s)[/]");
+
+		await testMotor.StartTest(throttle, timeout, CancellationToken.None);
+
+		AnsiConsole.MarkupLine("[green]Test started.[/]");
+	}
+
+	private async Task RunLiveDisplayAsync(IMotorTestClient motorTestClient, CancellationToken sessionToken)
 	{
 		var initialLayout = BuildLayout(motorTestClient);
 
@@ -107,15 +147,15 @@ public class MotorTestCommand
 			.AutoClear(false)
 			.StartAsync(async ctx =>
 			{
-				while (!token.IsCancellationRequested)
+				while (!sessionToken.IsCancellationRequested)
 				{
 					ctx.UpdateTarget(BuildLayout(motorTestClient));
 
 					try
 					{
-						await Task.Delay(300, token);
+						await Task.Delay(300, sessionToken).ConfigureAwait(false);
 					}
-					catch (TaskCanceledException)
+					catch (OperationCanceledException)
 					{
 						break;
 					}
@@ -143,11 +183,14 @@ public class MotorTestCommand
 			Padding = new Padding(0, 1, 0, 0)
 		};
 
-		var layout = new Rows(
-			table,
-			footer
-		);
+		var layout = new Rows(table, footer);
 
 		return layout;
+	}
+
+	private enum MotorTestMode
+	{
+		Start = 0,
+		Stop
 	}
 }
