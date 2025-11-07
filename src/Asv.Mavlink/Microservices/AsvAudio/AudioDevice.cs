@@ -13,21 +13,20 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
+public class AudioDevice : IAudioDevice, IAsyncDisposable
 {
     private readonly ILogger _logger;
     private readonly Func<Action<AsvAudioStreamPacket>, CancellationToken, ValueTask> _sendPacketDelegate;
     private readonly IMavlinkContext _core;
     private long _lastHit;
     private uint _frameCounter;
-    private readonly object _sync = new();
+    private readonly Lock _sync = new();
     private PacketCounter? _counter;
     private int _lastFrameSeq;
     private int _lastPacketSync;
     private readonly IAudioEncoder _encoder;
     private readonly IAudioDecoder _decoder;
     private readonly ReactiveProperty<string> _name;
-    private readonly CancellationTokenSource _disposeCancel;
     private readonly Subject<Unit> _onLinePing;
     private readonly Subject<ReadOnlyMemory<byte>> _inputEncoderAudioStream;
     private readonly Subject<ReadOnlyMemory<byte>> _inputDecoderAudioStream;
@@ -47,7 +46,6 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
         ArgumentNullException.ThrowIfNull(core);
         ArgumentNullException.ThrowIfNull(factory);
         ArgumentNullException.ThrowIfNull(packet);
-        _disposeCancel = new CancellationTokenSource();
         _logger = core.LoggerFactory.CreateLogger<AudioDevice>();
         _inputEncoderAudioStream = new Subject<ReadOnlyMemory<byte>>();
         _inputDecoderAudioStream = new Subject<ReadOnlyMemory<byte>>();
@@ -57,7 +55,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
         _name = new ReactiveProperty<string>(MavlinkTypesHelper.GetString(packet.Payload.Name));
         _onLinePing = new Subject<Unit>();
         _encoder = factory.CreateEncoder(outputCodecInfo,_inputEncoderAudioStream);
-        _sub1 = _encoder.Output.Subscribe(InternalSendEncodedAudio);
+        _sub1 = _encoder.Output.SubscribeAwait(InternalSendEncodedAudio, AwaitOperation.Parallel);
         _decoder = factory.CreateDecoder(packet.Payload.Codec,_inputDecoderAudioStream);
         _sub2 = _decoder.Output.Subscribe(x=>onRecvAudioDelegate(this,x));
         RxCodec = packet.Payload.Codec;
@@ -68,7 +66,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
     public Observable<Unit> OnLinePing => _onLinePing;
     public ReadOnlyReactiveProperty<string> Name => _name;
     
-    private async void InternalSendEncodedAudio(ReadOnlyMemory<byte> encodedData)
+    private async ValueTask InternalSendEncodedAudio(ReadOnlyMemory<byte> encodedData, CancellationToken cancel)
     {
         if (_isDisposed) return;
         var frameIndex = (byte)(Interlocked.Increment(ref _frameCounter) % 255);
@@ -92,7 +90,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
                     p.Payload.PktSeq = index;
                     p.Payload.DataSize = AsvAudioHelper.MaxPacketStreamData;
                     encodedData.Slice(index * AsvAudioHelper.MaxPacketStreamData,AsvAudioHelper.MaxPacketStreamData).CopyTo(p.Payload.Data);
-                }, DisposeCancel).ConfigureAwait(false);
+                }, cancel).ConfigureAwait(false);
                 packetIndex++;
             }
             if (lastPacketSize > 0)
@@ -106,7 +104,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
                     p.Payload.PktSeq = packetIndex;
                     p.Payload.DataSize = (byte)lastPacketSize;
                     encodedData.Slice(packetIndex * AsvAudioHelper.MaxPacketStreamData,lastPacketSize).CopyTo(p.Payload.Data);
-                }, DisposeCancel).ConfigureAwait(false);
+                }, cancel).ConfigureAwait(false);
             }
         }
         catch (Exception e)
@@ -116,12 +114,10 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
         
     }
 
-    private CancellationToken DisposeCancel => _disposeCancel.Token;
-
     public void SendAudio(ReadOnlyMemory<byte> pcmRawAudioData)
     {
         if (_isDisposed) return;
-        lock (_sync)
+        using (_sync.EnterScope())
         {
             _inputEncoderAudioStream.OnNext(pcmRawAudioData);
         }
@@ -160,7 +156,7 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
             return;
         }
         _lastPacketSync = stream.PktSeq;
-        lock (_sync)
+        using (_sync.EnterScope())
         {
             if (stream.PktInFrame == 1)
             {
@@ -232,8 +228,6 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
     {
         _isDisposed = true;
         _frameBuffer.Clear();
-        _disposeCancel.Cancel(false);
-        _disposeCancel.Dispose();
         _name.Dispose();
         _onLinePing.Dispose();
         _inputEncoderAudioStream.Dispose();
@@ -248,8 +242,6 @@ public class AudioDevice : IAudioDevice, IDisposable,IAsyncDisposable
     {
         _isDisposed = true;
         _frameBuffer.Clear();
-        _disposeCancel.Cancel(false);
-        _disposeCancel.Dispose();
         await CastAndDispose(_name).ConfigureAwait(false);
         await CastAndDispose(_onLinePing).ConfigureAwait(false);
         await CastAndDispose(_inputEncoderAudioStream).ConfigureAwait(false);

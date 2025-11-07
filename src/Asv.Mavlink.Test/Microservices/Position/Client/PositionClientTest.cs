@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -459,8 +460,7 @@ public class PositionClientTest : ClientTestBase<PositionClient>
         cancel.Token.Register(() => tcs.TrySetCanceled());
         
         var called = 0;
-        var isInit = true;
-        var payloads = new List<GlobalPositionIntPayload>();
+        var payloads = new ConcurrentBag<GlobalPositionIntPayload>();
         var packet = new GlobalPositionIntPacket
         {
             SystemId = Identity.Target.SystemId,
@@ -478,19 +478,17 @@ public class PositionClientTest : ClientTestBase<PositionClient>
                 Hdg = 23,
             }
         };
-        using var sub1 = _client.GlobalPosition.Subscribe(p =>
+        using var sub1 = _client.GlobalPosition
+            .Synchronize()
+            .WhereNotNull()
+            .Subscribe(p =>
         {
-            if (isInit)
-            {
-                isInit = false;
-                return;
-            }
             called++;
-            payloads.Add(p!);
-            
+            payloads.Add(p);
+
             if (called >= packetsCount)
             {
-                tcs.TrySetResult(p!);
+                tcs.TrySetResult(p);
             }
         });
         

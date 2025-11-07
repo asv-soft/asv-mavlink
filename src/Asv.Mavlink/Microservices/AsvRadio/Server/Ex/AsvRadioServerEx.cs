@@ -25,8 +25,6 @@ public class AsvRadioServerEx: MavlinkMicroserviceServer, IAsvRadioServerEx
     private readonly ILogger _logger;
     private int _capRequestInProgress;
     private readonly ReactiveProperty<AsvRadioCustomMode> _customMode;
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
 
     public AsvRadioServerEx(
         AsvRadioCapabilities capabilities, 
@@ -99,11 +97,11 @@ public class AsvRadioServerEx: MavlinkMicroserviceServer, IAsvRadioServerEx
             return CommandResult.FromResult(result);
         };
 
-        _sub1 = Base.OnCapabilitiesRequest.Subscribe(OnCapabilitiesRequest);
-        _sub2 = Base.OnCodecCapabilitiesRequest.Subscribe(OnCodecCapabilitiesRequest);
+        _sub1 = Base.OnCapabilitiesRequest.SubscribeAwait(OnCapabilitiesRequest, AwaitOperation.Parallel);
+        _sub2 = Base.OnCodecCapabilitiesRequest.SubscribeAwait(OnCodecCapabilitiesRequest, AwaitOperation.Parallel);
     }
 
-    private async void OnCodecCapabilitiesRequest(AsvRadioCodecCapabilitiesRequestPayload? request)
+    private async ValueTask OnCodecCapabilitiesRequest(AsvRadioCodecCapabilitiesRequestPayload? request, CancellationToken cancel)
     {
         try
         {
@@ -119,7 +117,7 @@ public class AsvRadioServerEx: MavlinkMicroserviceServer, IAsvRadioServerEx
                     x.Codecs[x.Count] = item;
                     ++x.Count;
                 }
-            }).ConfigureAwait(false);
+            }, cancel).ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -127,7 +125,7 @@ public class AsvRadioServerEx: MavlinkMicroserviceServer, IAsvRadioServerEx
         }
     }
 
-    private async void OnCapabilitiesRequest(AsvRadioCapabilitiesRequestPayload? request)
+    private async ValueTask OnCapabilitiesRequest(AsvRadioCapabilitiesRequestPayload? request, CancellationToken cancel)
     {
         try
         {
@@ -147,7 +145,7 @@ public class AsvRadioServerEx: MavlinkMicroserviceServer, IAsvRadioServerEx
                 x.MinTxPower = _capabilities.MinTxPowerDbm;
                 x.MaxTxPower = _capabilities.MaxTxPowerDbm;
                 
-            }).ConfigureAwait(false);
+            }, cancel).ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -171,6 +169,9 @@ public class AsvRadioServerEx: MavlinkMicroserviceServer, IAsvRadioServerEx
     }
 
     #region Dispose
+    
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
 
     protected override void Dispose(bool disposing)
     {

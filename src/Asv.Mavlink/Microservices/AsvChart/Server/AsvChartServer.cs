@@ -25,9 +25,6 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
     private readonly ObservableDictionary<ushort,AsvChartInfo> _charts;
     private volatile ushort _chartHash = 0;
     private int _changeHashLock;
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
-    private readonly IDisposable _sub3;
 
     public AsvChartServer(MavlinkIdentity identity, AsvChartServerConfig config, IMavlinkContext core)
         :base(AsvChartHelper.MavlinkMicroserviceName, identity, core)
@@ -37,16 +34,18 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
         _charts = new ObservableDictionary<ushort,AsvChartInfo>();
 
         _sub1 = InternalFilter<AsvChartInfoRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
-            .Subscribe(OnRequestSignalInfo);
+            .SubscribeAwait(OnRequestSignalInfo, AwaitOperation.Parallel);
         _sub2 = InternalFilter<AsvChartDataRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
-            .Subscribe(OnRequestChartData);
+            .SubscribeAwait(OnRequestChartData, AwaitOperation.Parallel);
         
         _sub3 = _charts.ObserveChanged().Debounce(TimeSpan.FromMilliseconds(_config.SendCollectionUpdateMs))
-            .Subscribe(InternalUpdateCollectionHash);
+            .SubscribeAwait(InternalUpdateCollectionHash, AwaitOperation.Parallel);
  
     }
 
-    private async void InternalUpdateCollectionHash(CollectionChangedEvent<KeyValuePair<ushort, AsvChartInfo>> changeSet)
+    private async ValueTask InternalUpdateCollectionHash(
+        CollectionChangedEvent<KeyValuePair<ushort, AsvChartInfo>> changeSet,
+        CancellationToken cancel)
     {
         if (Interlocked.Exchange(ref _changeHashLock, 1) == 1) return;
         try
@@ -61,7 +60,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
             {
                 x.Payload.ChatListHash = _chartHash;
                 x.Payload.ChartCount = (ushort)_charts.Count;
-            }).ConfigureAwait(false);
+            }, cancel).ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -138,19 +137,19 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
 
     public ChartStreamOptionsDelegate? OnDataRequest { get; set; }
     
-    private async void OnRequestChartData(AsvChartDataRequestPacket request)
+    private async ValueTask OnRequestChartData(AsvChartDataRequestPacket request, CancellationToken cancel)
     {
         try
         {
             if (OnDataRequest == null)
             {
-                await InternalSend<AsvChartDataResponsePacket>(x => { x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckNotSupported; }).ConfigureAwait(false);
+                await InternalSend<AsvChartDataResponsePacket>(x => { x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckNotSupported; }, cancel).ConfigureAwait(false);
                 return;
             }
 
             if (_charts.TryGetValue(request.Payload.ChatId, out var info) == false)
             {
-                await InternalSend<AsvChartDataResponsePacket>(x => { x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckNotFound; }).ConfigureAwait(false);
+                await InternalSend<AsvChartDataResponsePacket>(x => { x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckNotFound; }, cancel).ConfigureAwait(false);
                 return;
             }
             
@@ -163,7 +162,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
                 x.Payload.ChatId = result.ChartId;
                 x.Payload.ChatInfoHash = info.InfoHash;
                 
-            }).ConfigureAwait(false);
+            }, cancel).ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -171,11 +170,11 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
             await InternalSend<AsvChartDataResponsePacket>(x =>
             {
                 x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckFail;
-            }).ConfigureAwait(false);    
+            }, cancel).ConfigureAwait(false);    
         }
     }
     
-    private async void OnRequestSignalInfo(AsvChartInfoRequestPacket request)
+    private async ValueTask OnRequestSignalInfo(AsvChartInfoRequestPacket request, CancellationToken cancel)
     {
         var requestId = request.Payload.RequestId;
         await InternalSend<AsvChartInfoResponsePacket>(x =>
@@ -184,14 +183,13 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
             x.Payload.ItemsCount = (ushort)Math.Max(0, _charts.Count - request.Payload.Skip);
             x.Payload.Result = AsvChartRequestAck.AsvChartRequestAckOk;
             x.Payload.ChatListHash = _chartHash;
-        }).ConfigureAwait(false);
+        }, cancel).ConfigureAwait(false);
         var charts = _charts.Select(x=>x.Value).Skip(request.Payload.Skip).Take(request.Payload.Count);
 
         var delay = TimeSpan.FromMilliseconds(_config.SendSignalDelayMs);
-        var ts = Core.TimeProvider.GetTimestamp();    
         foreach (var chart in charts)
         {
-            await InternalSend<AsvChartInfoPacket>(x => chart.Fill(x.Payload)).ConfigureAwait(false);
+            await InternalSend<AsvChartInfoPacket>(x => chart.Fill(x.Payload), cancel).ConfigureAwait(false);
             if (_config.SendSignalDelayMs > 0)
             {
                 var tcs = new TaskCompletionSource<bool>();
@@ -204,7 +202,12 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
             }
         }
     }
+    
     #region Dispose
+    
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
 
     protected override void Dispose(bool disposing)
     {
