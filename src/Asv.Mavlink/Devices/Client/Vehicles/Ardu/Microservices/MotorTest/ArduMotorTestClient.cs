@@ -17,8 +17,9 @@ public abstract class ArduMotorTestClient : MotorTestClient
 	private readonly CompositeDisposable _disposable = new();
 	private readonly ObservableList<ITestMotor> _testMotors = [];
 	private readonly SerialDisposable _testMotorsSubscription = new();
-	
-	private ArduFrame _frame = new((int)ArduFrameClass.Undefined, null);
+
+	private ArduFrame _frame;
+	private readonly ArduPilotMotorTestRunner _motorTestRunner;
 
 	protected abstract string FrameClassParam { get; }
 	protected abstract string FrameTypeParam { get; }
@@ -30,6 +31,10 @@ public abstract class ArduMotorTestClient : MotorTestClient
 	{
 		_commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
 		_paramsClientEx = paramsClientEx ?? throw new ArgumentNullException(nameof(paramsClientEx));
+		
+		_motorTestRunner = new ArduPilotMotorTestRunner(commandClient);
+
+		_frame = new ArduFrame((int)ArduFrameClass.Undefined, null);
 	}
 
 	public override IReadOnlyObservableList<ITestMotor> TestMotors => _testMotors;
@@ -38,7 +43,10 @@ public abstract class ArduMotorTestClient : MotorTestClient
 	{
 		await _paramsClientEx.ReadOnce(FrameClassParam, cancellationToken).ConfigureAwait(false);
 		await _paramsClientEx.ReadOnce(FrameTypeParam, cancellationToken).ConfigureAwait(false);
+	}
 
+	protected override Task Initialize(CancellationToken token = default)
+	{
 		_testMotorsSubscription.Disposable = _paramsClientEx
 			.Filter(FrameTypeParam)
 			.CombineLatest(_paramsClientEx.Filter(FrameClassParam),
@@ -54,6 +62,8 @@ public abstract class ArduMotorTestClient : MotorTestClient
 				_disposable.Clear();
 				_disposable.AddAll(motors);
 			});
+
+		return Task.CompletedTask;
 	}
 
 	private List<TestMotor> CreateTestMotors(ArduFrame frame)
@@ -71,7 +81,7 @@ public abstract class ArduMotorTestClient : MotorTestClient
 			var pwm = InternalFilter<ServoOutputRawPacket>()
 				.Select(packet => GetPwm(packet.Payload, motor.Number));
 
-			var testMotor = new TestMotor(motor.TestOrder, motor.Number, pwm, _commandClient);
+			var testMotor = new TestMotor(motor.TestOrder, motor.Number, pwm, _motorTestRunner);
 			motors.Add(testMotor);
 		}
 

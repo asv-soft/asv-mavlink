@@ -9,10 +9,12 @@ public abstract class MotorTestClient(MavlinkClientIdentity identity, IMavlinkCo
 {
 	public abstract IReadOnlyObservableList<ITestMotor> TestMotors { get; }
 	public abstract Task Refresh(CancellationToken cancellationToken = default);
-	
+	protected abstract Task Initialize(CancellationToken cancellationToken = default);
+
 	protected override async Task InternalInit(CancellationToken cancel)
 	{
 		await base.InternalInit(cancel).ConfigureAwait(false);
+		await Initialize(cancel).ConfigureAwait(false);
 		await Refresh(cancel).ConfigureAwait(false);
 	}
 }

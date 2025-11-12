@@ -6,35 +6,35 @@ using R3;
 
 namespace Asv.Mavlink;
 
-internal sealed class TestMotor : ITestMotor, IDisposable
+internal class ArduPilotMotorTestRunner : IMotorTestRunner, IDisposable
 {
 	private const double ArduCopterTimeoutScale = 10.0;
 
 	private readonly SerialDisposable _timerSubscription = new();
 	private readonly ReactiveProperty<bool> _isRun;
 	private readonly ICommandClient _commandClient;
-	public int Id { get; }
-	public int ServoChannel { get; }
-
-	public TestMotor(int id, int servoChannel, Observable<ushort> pwm, ICommandClient commandClient)
+	
+	public ArduPilotMotorTestRunner(ICommandClient commandClient)
 	{
-		_commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
-		Id = id;
-		ServoChannel = servoChannel;
-		Pwm = pwm.ToReadOnlyReactiveProperty();
-
+		_commandClient = commandClient;
+		
 		_isRun = new ReactiveProperty<bool>(false);
 		IsTestRun = _isRun.ToReadOnlyReactiveProperty();
 	}
-
+	
 	public ReadOnlyReactiveProperty<bool> IsTestRun { get; }
-	public ReadOnlyReactiveProperty<ushort> Pwm { get; }
 
-	public async Task<MavResult> StartTest(int throttleValue, int timeout, CancellationToken cancel = default)
+
+	public async Task<MavResult> StartTest(int motorId, int throttleValue, int timeout, CancellationToken cancel = default)
+	{
+		return await RunMotorTest(motorId, throttleValue, timeout, cancel).ConfigureAwait(false);
+	}
+
+	private async Task<MavResult> RunMotorTest(int motorId, int throttleValue, int timeout, CancellationToken cancel)
 	{
 		var ack = await _commandClient.CommandLong(
 				MavCmd.MavCmdDoMotorTest,
-				Id,
+				motorId,
 				(float)MotorTestThrottleType.MotorTestThrottlePercent,
 				throttleValue,
 				(float)(ArduCopterTimeoutScale * timeout),
@@ -53,28 +53,15 @@ internal sealed class TestMotor : ITestMotor, IDisposable
 		return ack.Result;
 	}
 
-	public async Task<MavResult> StopTest(CancellationToken cancel = default)
+	public async Task<MavResult> StopTest(int motorId, CancellationToken cancel = default)
 	{
-		var ack = await _commandClient.CommandLong(
-				MavCmd.MavCmdDoMotorTest,
-				Id,
-				(float)MotorTestThrottleType.MotorTestThrottlePercent,
-				0,
-				0,
-				0, 0, 0,
-				cancel
-			)
-			.ConfigureAwait(false);
+		return await RunMotorTest(motorId, 0, 0, cancel).ConfigureAwait(false);
 
-		_isRun.Value = false;
-		_timerSubscription.Dispose();
-
-		return ack.Result;
+	
 	}
 
 	public void Dispose()
 	{
-		Pwm.Dispose();
 		IsTestRun.Dispose();
 		_isRun.Dispose();
 		_timerSubscription.Dispose();
