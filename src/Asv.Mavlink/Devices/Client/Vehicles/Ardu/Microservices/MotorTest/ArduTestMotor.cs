@@ -9,8 +9,6 @@ namespace Asv.Mavlink;
 
 internal sealed class ArduTestMotor : ITestMotor, IDisposable
 {
-	private const double ArduCopterTimeoutScale = 10.0;
-
 	private readonly SynchronizedReactiveProperty<bool> _isRun = new(false);
 	private readonly ICommandClient _commandClient;
 	private readonly ArduMotorTestTimer _testTimer;
@@ -48,8 +46,10 @@ internal sealed class ArduTestMotor : ITestMotor, IDisposable
 					Id,
 					(float)MotorTestThrottleType.MotorTestThrottlePercent,
 					throttleValue,
-					(float)(ArduCopterTimeoutScale * timeout),
-					0, 0, 0,
+					timeout,
+					0, 
+					0, 
+					0,
 					cancel
 				)
 				.ConfigureAwait(false);
@@ -81,7 +81,7 @@ internal sealed class ArduTestMotor : ITestMotor, IDisposable
 					Id,
 					(float)MotorTestThrottleType.MotorTestThrottlePercent,
 					0,
-					(float)(ArduCopterTimeoutScale * 0),
+					0,
 					0, 0, 0,
 					cancel
 				)

@@ -43,12 +43,13 @@ public abstract class ArduMotorTestClient : MotorTestClient
 		await _paramsClientEx.ReadOnce(FrameTypeParam, cancellationToken).ConfigureAwait(false);
 	}
 
-	protected override Task Initialize(CancellationToken token = default)
+	protected override Task InternalInit(CancellationToken cancel)
 	{
 		_testMotorsSubscription.Disposable = _paramsClientEx
 			.Filter(FrameTypeParam)
 			.CombineLatest(_paramsClientEx.Filter(FrameClassParam),
 				(frameType, frameClass) => new ArduFrame(frameClass, frameType))
+			.Synchronize()
 			.Where(frame => frame != _frame)
 			.Subscribe(frame =>
 			{
@@ -56,12 +57,12 @@ public abstract class ArduMotorTestClient : MotorTestClient
 				var motors = CreateTestMotors(frame);
 				_testMotors.Clear();
 				_testMotors.AddRange(motors);
-
+	
 				_disposable.Clear();
 				_disposable.AddAll(motors);
 			});
-
-		return Task.CompletedTask;
+		
+		return base.InternalInit(cancel);
 	}
 
 	private List<ArduTestMotor> CreateTestMotors(ArduFrame frame)
@@ -77,7 +78,7 @@ public abstract class ArduMotorTestClient : MotorTestClient
 		foreach (var motor in motorsLayout.Motors)
 		{
 			var pwm = InternalFilter<ServoOutputRawPacket>()
-				.Select(packet => GetPwm(packet.Payload, motor.Number));
+				.Synchronize().Select(packet => GetPwm(packet.Payload, motor.Number));
 
 			var testMotor = new ArduTestMotor(motor.TestOrder, motor.Number, pwm, _commandClient, _arduMotorTestTimer);
 			motors.Add(testMotor);
@@ -115,6 +116,7 @@ public abstract class ArduMotorTestClient : MotorTestClient
 		if (disposing)
 		{
 			_disposable.Dispose();
+			_arduMotorTestTimer.Dispose();
 			_testMotorsSubscription.Dispose();
 		}
 
