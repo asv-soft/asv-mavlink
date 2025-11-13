@@ -7,7 +7,7 @@ namespace Asv.Mavlink.MotorTest;
 
 internal sealed class ArduMotorTestTimer : IDisposable
 {
-	private readonly SynchronizedReactiveProperty<bool> _isAnyRun = new(false);
+	private readonly ReactiveProperty<bool> _isAnyRun = new(false);
 	private readonly SemaphoreSlim _timerSemaphore = new(1, 1);
 
 	private IDisposable? _timer;

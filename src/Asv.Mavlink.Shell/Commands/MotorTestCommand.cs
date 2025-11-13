@@ -12,11 +12,11 @@ namespace Asv.Mavlink.Shell;
 public class MotorTestCommand
 {
 	[Command("motor-test")]
-	public async Task<int> RunMotorTestAsync(string connection, CancellationToken cancellationToken)
+	public async Task<int> RunMotorTestAsync(string connection, int refreshTimeMs = 300, CancellationToken cancellationToken = default)
 	{
 		ShellCommandsHelper.CreateDeviceExplorer(connection, out var deviceExplorer);
 
-		var device = await ShellCommandsHelper.DeviceAwaiter(deviceExplorer, 3000);
+		var device = await ShellCommandsHelper.DeviceAwaiter(deviceExplorer, (uint)refreshTimeMs);
 		if (device is null)
 		{
 			AnsiConsole.MarkupLine("[red]error:[/] cannot connect to the device.");
@@ -31,31 +31,32 @@ public class MotorTestCommand
 		}
 
 		using var appLifetimeCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-		await RunMainLoopAsync(motorTestClient, appLifetimeCts);
+		await RunMainLoopAsync(motorTestClient, refreshTimeMs, appLifetimeCts);
 		return 0;
 	}
 
-	private async Task RunMainLoopAsync(IMotorTestClient motorTestClient, CancellationTokenSource appLifetimeCts)
+	private async Task RunMainLoopAsync(IMotorTestClient motorTestClient, int refreshTimeMs, CancellationTokenSource appLifetimeCts)
 	{
 		while (!appLifetimeCts.IsCancellationRequested)
 		{
-			await RunInteractiveSessionAsync(motorTestClient, appLifetimeCts);
+			await RunInteractiveSessionAsync(motorTestClient, refreshTimeMs, appLifetimeCts);
 
 			if (appLifetimeCts.IsCancellationRequested)
 				break;
 
-			Console.Clear();
+			AnsiConsole.Clear();
 			await RunMotorConfigurationAsync(motorTestClient, appLifetimeCts.Token);
 		}
 
 		AnsiConsole.MarkupLine("[grey]Exit...[/]");
 	}
 
-	private async Task RunInteractiveSessionAsync(IMotorTestClient motorTestClient, CancellationTokenSource appLifetimeCts)
+	private async Task RunInteractiveSessionAsync(IMotorTestClient motorTestClient, int refreshTimeMs,
+		CancellationTokenSource appLifetimeCts)
 	{
 		using var sessionCts = CancellationTokenSource.CreateLinkedTokenSource(appLifetimeCts.Token);
 
-		var displayTask = RunLiveDisplayAsync(motorTestClient, sessionCts.Token);
+		var displayTask = RunLiveDisplayAsync(motorTestClient, refreshTimeMs, sessionCts.Token);
 		var inputTask = HandleKeyInputAsync(sessionCts, appLifetimeCts);
 
 		await Task.WhenAny(displayTask, inputTask);
@@ -64,7 +65,10 @@ public class MotorTestCommand
 		{
 			await displayTask;
 		}
-		catch { }
+		catch
+		{
+			// ignored
+		}
 	}
 
 	private async Task HandleKeyInputAsync(CancellationTokenSource sessionCts, CancellationTokenSource appLifetimeCts)
@@ -134,12 +138,12 @@ public class MotorTestCommand
 
 		AnsiConsole.MarkupLine($"[green]Starting motor test # {motor} ... ({timeout}s)[/]");
 
-		await testMotor.StartTest(throttle, timeout, CancellationToken.None);
+		await testMotor.StartTest(throttle, timeout, cancellationToken);
 
 		AnsiConsole.MarkupLine("[green]Test started.[/]");
 	}
 
-	private async Task RunLiveDisplayAsync(IMotorTestClient motorTestClient, CancellationToken sessionToken)
+	private async Task RunLiveDisplayAsync(IMotorTestClient motorTestClient, int refreshTimeMs, CancellationToken sessionToken)
 	{
 		var initialLayout = BuildLayout(motorTestClient);
 
@@ -153,7 +157,7 @@ public class MotorTestCommand
 
 					try
 					{
-						await Task.Delay(300, sessionToken).ConfigureAwait(false);
+						await Task.Delay(refreshTimeMs, sessionToken).ConfigureAwait(false);
 					}
 					catch (OperationCanceledException)
 					{
