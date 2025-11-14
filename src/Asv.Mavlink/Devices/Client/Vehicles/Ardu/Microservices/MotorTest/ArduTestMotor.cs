@@ -58,7 +58,7 @@ internal sealed class ArduTestMotor : ITestMotor, IDisposable
 				return ack.Result;
 
 			_isRun.Value = true;
-			await _testTimer.RestartTimer(TimeSpan.FromSeconds(timeout), cancel).ConfigureAwait(false);
+			_testTimer.RestartTimer(TimeSpan.FromSeconds(timeout), cancel);
 
 			return ack.Result;
 		}
@@ -74,7 +74,7 @@ internal sealed class ArduTestMotor : ITestMotor, IDisposable
 
 		try
 		{
-			await _testTimer.StopTimer(cancel).ConfigureAwait(false);
+			_testTimer.StopTimer();
 
 			var ack = await _commandClient.CommandLong(
 					MavCmd.MavCmdDoMotorTest,

@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 using R3;
 
 namespace Asv.Mavlink.MotorTest;
 
 internal sealed class ArduMotorTestTimer : IDisposable
 {
-	private readonly ReactiveProperty<bool> _isAnyRun = new(false);
-	private readonly SemaphoreSlim _timerSemaphore = new(1, 1);
-
-	private IDisposable? _timer;
+	private readonly SynchronizedReactiveProperty<bool> _isAnyRun = new(false);
+	private readonly SerialDisposable _timerSubscription = new();
 
 	public ArduMotorTestTimer()
 	{
@@ -19,46 +16,27 @@ internal sealed class ArduMotorTestTimer : IDisposable
 
 	public ReadOnlyReactiveProperty<bool> IsAnyTestRunning { get; }
 
-	public async Task RestartTimer(TimeSpan timeout, CancellationToken cancellationToken)
+	public void RestartTimer(TimeSpan timeout, CancellationToken cancellationToken)
 	{
-		await _timerSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-		try
-		{
-			if (!_isAnyRun.Value)
-				_isAnyRun.Value = true;
+		if (!_isAnyRun.Value)
+			_isAnyRun.Value = true;
 
-			_timer?.Dispose();
-			_timer = Observable
-				.Timer(timeout, cancellationToken)
-				.Subscribe(_ => _isAnyRun.Value = false);
-		}
-		finally
-		{
-			_timerSemaphore.Release();
-		}
+		_timerSubscription.Disposable = Observable
+			.Timer(timeout, cancellationToken)
+			.Subscribe(_ => { _isAnyRun.Value = false; }
+			);
 	}
 
-	public async Task StopTimer(CancellationToken ct = default)
+	public void StopTimer()
 	{
-		await _timerSemaphore.WaitAsync(ct).ConfigureAwait(false);
-		try
-		{
-			_timer?.Dispose();
-			_timer = null;
-			_isAnyRun.Value = false;
-		}
-		finally
-		{
-			_timerSemaphore.Release();
-		}
+		_timerSubscription.Disposable = null;
+		_isAnyRun.Value = false;
 	}
 
 	public void Dispose()
 	{
-		_timer?.Dispose();
-		_isAnyRun.Value = false;
+		_timerSubscription.Dispose();
 		IsAnyTestRunning.Dispose();
 		_isAnyRun.Dispose();
-		_timerSemaphore.Dispose();
 	}
 }
