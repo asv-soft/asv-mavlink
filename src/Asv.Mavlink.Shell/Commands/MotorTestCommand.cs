@@ -11,6 +11,12 @@ namespace Asv.Mavlink.Shell;
 
 public class MotorTestCommand
 {
+	/// <summary>
+	///     Test motors at any autopilots
+	/// </summary>
+	/// <param name="connection">-cs, The address of the connection to the mavlink device, e.g. tcp://127.0.0.1:5760</param>
+	/// <param name="refreshTimeMs">-t, The address of the connection to the mavlink device, e.g. tcp://127.0.0.1:5760</param>
+	/// <param name="cancellationToken">Cancellation token</param>
 	[Command("motor-test")]
 	public async Task<int> RunMotorTestAsync(string connection, int refreshTimeMs = 300, CancellationToken cancellationToken = default)
 	{
