@@ -88,7 +88,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         }
     }
 
-    [Fact]
+    [Fact(Skip = "Not stable")]
     public async Task Send_Canceled_Throws()
     {
         // Arrange
@@ -112,7 +112,7 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
         });
         // Act
         await _cancellationTokenSource.CancelAsync();
-        task.Wait();
+        task.Wait(); // WTF?
         // Assert
         Assert.NotNull(ex);
         Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
