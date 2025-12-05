@@ -26,6 +26,7 @@ jobs:
         with:
           dotnet-version: |
             9.x.x
+            10.x.x
 
       - name: Add dotnet global tools folder to PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
