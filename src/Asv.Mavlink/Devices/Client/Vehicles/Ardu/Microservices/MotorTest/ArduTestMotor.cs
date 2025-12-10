@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-using Asv.Mavlink.MotorTest;
 using R3;
 
 namespace Asv.Mavlink;
@@ -10,18 +9,21 @@ namespace Asv.Mavlink;
 internal sealed class ArduTestMotor : ITestMotor, IDisposable
 {
 	private readonly SynchronizedReactiveProperty<bool> _isRun = new(false);
+	private readonly int _testOrder;
 	private readonly ICommandClient _commandClient;
 	private readonly ArduMotorTestTimer _testTimer;
 	private readonly IDisposable _testRunSubscription;
 	private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-	public ArduTestMotor(int id, int servoChannel, Observable<ushort> pwm, ICommandClient commandClient, ArduMotorTestTimer testTimer)
+	public ArduTestMotor(int id, int testOrder, int servoChannel, Observable<ushort> pwm, ICommandClient commandClient,
+		ArduMotorTestTimer testTimer)
 	{
 		Id = id;
 		ServoChannel = servoChannel;
 		Pwm = pwm.ToReadOnlyReactiveProperty();
 
 		IsTestRun = _isRun.ToReadOnlyReactiveProperty();
+		_testOrder = testOrder;
 		_commandClient = commandClient;
 		_testTimer = testTimer;
 		_testRunSubscription = _testTimer.IsAnyTestRunning
@@ -43,12 +45,12 @@ internal sealed class ArduTestMotor : ITestMotor, IDisposable
 		{
 			var ack = await _commandClient.CommandLong(
 					MavCmd.MavCmdDoMotorTest,
-					Id,
+					_testOrder,
 					(float)MotorTestThrottleType.MotorTestThrottlePercent,
 					throttleValue,
 					timeout,
-					0, 
-					0, 
+					0,
+					0,
 					0,
 					cancel
 				)
@@ -78,7 +80,7 @@ internal sealed class ArduTestMotor : ITestMotor, IDisposable
 
 			var ack = await _commandClient.CommandLong(
 					MavCmd.MavCmdDoMotorTest,
-					Id,
+					_testOrder,
 					(float)MotorTestThrottleType.MotorTestThrottlePercent,
 					0,
 					0,

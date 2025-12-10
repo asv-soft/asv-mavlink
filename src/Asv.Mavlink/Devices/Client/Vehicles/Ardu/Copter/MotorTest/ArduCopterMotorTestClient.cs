@@ -1,6 +1,4 @@
-﻿using Asv.Mavlink.MotorTest;
-
-namespace Asv.Mavlink;
+﻿namespace Asv.Mavlink;
 
 public class ArduCopterMotorTestClient(IHeartbeatClient heartbeat, ICommandClient commandClient, IParamsClientEx paramsClientEx)
 	: ArduMotorTestClient(heartbeat, commandClient, paramsClientEx)

@@ -8,7 +8,7 @@ using DotNext.Collections.Generic;
 using ObservableCollections;
 using R3;
 
-namespace Asv.Mavlink.MotorTest;
+namespace Asv.Mavlink;
 
 public abstract class ArduMotorTestClient : MotorTestClient
 {
@@ -31,7 +31,7 @@ public abstract class ArduMotorTestClient : MotorTestClient
 	{
 		_commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
 		_paramsClientEx = paramsClientEx ?? throw new ArgumentNullException(nameof(paramsClientEx));
-		
+
 		_frame = new ArduFrame((int)ArduFrameClass.Undefined, null);
 	}
 
@@ -57,11 +57,11 @@ public abstract class ArduMotorTestClient : MotorTestClient
 				var motors = CreateTestMotors(frame);
 				_testMotors.Clear();
 				_testMotors.AddRange(motors);
-	
+
 				_disposable.Clear();
 				_disposable.AddAll(motors);
 			});
-		
+
 		return base.InternalInit(cancel);
 	}
 
@@ -78,9 +78,10 @@ public abstract class ArduMotorTestClient : MotorTestClient
 		foreach (var motor in motorsLayout.Motors)
 		{
 			var pwm = InternalFilter<ServoOutputRawPacket>()
-				.Synchronize().Select(packet => GetPwm(packet.Payload, motor.Number));
+				.Synchronize()
+				.Select(packet => GetPwm(packet.Payload, motor.Number));
 
-			var testMotor = new ArduTestMotor(motor.TestOrder, motor.Number, pwm, _commandClient, _arduMotorTestTimer);
+			var testMotor = new ArduTestMotor(motor.Number, motor.TestOrder, motor.Number, pwm, _commandClient, _arduMotorTestTimer);
 			motors.Add(testMotor);
 		}
 
