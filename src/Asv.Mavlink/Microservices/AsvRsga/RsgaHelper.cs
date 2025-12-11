@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -63,32 +64,45 @@ public static class RsgaHelper
     public static void GetArgsForStartRecord(ServerMissionItem payload, out string recordName)
     {
         if (payload.Command != (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaStartRecord)
-            throw new ArgumentException($"Command {payload.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStartRecord}");
-        var nameArray = new byte[AsvSdrHelper.RecordNameMaxLength];
-        BitConverter.GetBytes(payload.Param1).CopyTo(nameArray,0);
-        BitConverter.GetBytes(payload.Param2).CopyTo(nameArray,4);
-        BitConverter.GetBytes(payload.Param3).CopyTo(nameArray,8);
-        BitConverter.GetBytes(payload.Param4).CopyTo(nameArray,12);
-        BitConverter.GetBytes(payload.X).CopyTo(nameArray,16);
-        BitConverter.GetBytes(payload.Y).CopyTo(nameArray,20);
-        BitConverter.GetBytes(payload.Z).CopyTo(nameArray,24);
-        recordName = MavlinkTypesHelper.GetString(nameArray);
-        CheckRecordName(recordName);
+            throw new ArgumentException($"Invalid command: {payload.Command}");
+
+        const int len = AsvSdrHelper.RecordNameMaxLength;
+        Span<byte> buffer = stackalloc byte[len];
+
+        var span = buffer;
+        BinaryPrimitives.WriteSingleLittleEndian(span.Slice(0,  4), payload.Param1);
+        BinaryPrimitives.WriteSingleLittleEndian(span.Slice(4,  4), payload.Param2);
+        BinaryPrimitives.WriteSingleLittleEndian(span.Slice(8,  4), payload.Param3);
+        BinaryPrimitives.WriteSingleLittleEndian(span.Slice(12, 4), payload.Param4);
+        BinaryPrimitives.WriteSingleLittleEndian(span.Slice(16, 4), payload.X);
+        BinaryPrimitives.WriteSingleLittleEndian(span.Slice(20, 4), payload.Y);
+        BinaryPrimitives.WriteSingleLittleEndian(span.Slice(24, 4), payload.Z);
+
+
+        recordName = MavlinkTypesHelper.GetString(buffer);
+
+        if (!string.IsNullOrWhiteSpace(recordName))
+            CheckRecordName(recordName);
     }
 
     public static void SetArgsForStartRecord(CommandLongPayload item, string recordName)
     {
-        CheckRecordName(recordName);
-        var nameArray = new byte[RecordNameMaxLength];
-        MavlinkTypesHelper.SetString(nameArray, recordName);
+        const int recordNameMaxLength = AsvSdrHelper.RecordNameMaxLength;
+
+        Span<byte> nameBuffer = stackalloc byte[recordNameMaxLength];
+        if (!string.IsNullOrWhiteSpace(recordName))
+        {
+            CheckRecordName(recordName);
+            MavlinkTypesHelper.SetString(nameBuffer, recordName);
+        }
         item.Command = (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaStartRecord;
-        item.Param1 = BitConverter.ToSingle(nameArray, 0);
-        item.Param2 = BitConverter.ToSingle(nameArray, 4);
-        item.Param3 = BitConverter.ToSingle(nameArray, 8);
-        item.Param4 = BitConverter.ToSingle(nameArray, 12);
-        item.Param5 = BitConverter.ToSingle(nameArray, 16);
-        item.Param6 = BitConverter.ToSingle(nameArray, 20);
-        item.Param7 = BitConverter.ToSingle(nameArray, 24);
+        item.Param1 = BinaryPrimitives.ReadSingleLittleEndian(nameBuffer.Slice(0,  4));
+        item.Param2 = BinaryPrimitives.ReadSingleLittleEndian(nameBuffer.Slice(4,  4));
+        item.Param3 = BinaryPrimitives.ReadSingleLittleEndian(nameBuffer.Slice(8,  4));
+        item.Param4 = BinaryPrimitives.ReadSingleLittleEndian(nameBuffer.Slice(12, 4));
+        item.Param5 = BinaryPrimitives.ReadSingleLittleEndian(nameBuffer.Slice(16, 4));
+        item.Param6 = BinaryPrimitives.ReadSingleLittleEndian(nameBuffer.Slice(20, 4));
+        item.Param7 = BinaryPrimitives.ReadSingleLittleEndian(nameBuffer.Slice(24, 4));
     }
 
     public static void GetArgsForStartRecord(CommandLongPayload payload, out string recordName)
