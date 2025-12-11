@@ -2,7 +2,7 @@
 using System.Threading;
 using R3;
 
-namespace Asv.Mavlink.MotorTest;
+namespace Asv.Mavlink;
 
 internal sealed class ArduMotorTestTimer : IDisposable
 {
