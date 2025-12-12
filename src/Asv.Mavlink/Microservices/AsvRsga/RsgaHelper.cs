@@ -108,17 +108,25 @@ public static class RsgaHelper
     public static void GetArgsForStartRecord(CommandLongPayload payload, out string recordName)
     {
         if (payload.Command != (Common.MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaStartRecord)
-            throw new ArgumentException($"Command {payload.Command} is not {AsvSdr.MavCmd.MavCmdAsvSdrStartRecord}");
-        var nameArray = new byte[RecordNameMaxLength];
-        BitConverter.GetBytes(payload.Param1).CopyTo(nameArray,0);
-        BitConverter.GetBytes(payload.Param2).CopyTo(nameArray,4);
-        BitConverter.GetBytes(payload.Param3).CopyTo(nameArray,8);
-        BitConverter.GetBytes(payload.Param4).CopyTo(nameArray,12);
-        BitConverter.GetBytes(payload.Param5).CopyTo(nameArray,16);
-        BitConverter.GetBytes(payload.Param6).CopyTo(nameArray,20);
-        BitConverter.GetBytes(payload.Param7).CopyTo(nameArray,24);
-        recordName = MavlinkTypesHelper.GetString(nameArray);
-        CheckRecordName(recordName);
+            throw new ArgumentException(
+                $"Expected command {AsvRsga.MavCmd.MavCmdAsvRsgaStartRecord}, got {payload.Command}");
+
+        Span<byte> nameBuffer = stackalloc byte[RecordNameMaxLength];
+
+        BinaryPrimitives.WriteSingleLittleEndian(nameBuffer.Slice(0,  4), payload.Param1);
+        BinaryPrimitives.WriteSingleLittleEndian(nameBuffer.Slice(4,  4), payload.Param2);
+        BinaryPrimitives.WriteSingleLittleEndian(nameBuffer.Slice(8,  4), payload.Param3);
+        BinaryPrimitives.WriteSingleLittleEndian(nameBuffer.Slice(12, 4), payload.Param4);
+        BinaryPrimitives.WriteSingleLittleEndian(nameBuffer.Slice(16, 4), payload.Param5);
+        BinaryPrimitives.WriteSingleLittleEndian(nameBuffer.Slice(20, 4), payload.Param6);
+        BinaryPrimitives.WriteSingleLittleEndian(nameBuffer.Slice(24, 4), payload.Param7);
+
+        recordName = MavlinkTypesHelper.GetString(nameBuffer);
+
+        if (!string.IsNullOrWhiteSpace(recordName))
+        {
+            CheckRecordName(recordName);
+        }
     }
 
     #endregion
