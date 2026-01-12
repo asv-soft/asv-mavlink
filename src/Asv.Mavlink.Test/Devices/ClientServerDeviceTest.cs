@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Immutable;
 using Asv.Common;
 using Asv.IO;
 using JetBrains.Annotations;
@@ -10,7 +9,7 @@ namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(MavlinkClientDevice))]
 [TestSubject(typeof(IServerDevice))]
-public class ComplexDeviceTests(ITestOutputHelper log)
+public class ComplexDeviceTest(ITestOutputHelper log)
     : ComplexTestBase<MavlinkClientDevice, IServerDevice>(log)
 {
     private readonly MavlinkHeartbeatServerConfig _serverHb = new()

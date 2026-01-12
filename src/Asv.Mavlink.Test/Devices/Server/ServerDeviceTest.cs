@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(IServerDevice))]
-public class ServerDeviceTests(ITestOutputHelper log) : ServerTestBase<IServerDevice>(log)
+public class ServerDeviceTest(ITestOutputHelper log) : ServerTestBase<IServerDevice>(log)
 {
     protected override IServerDevice CreateServer(MavlinkIdentity identity, CoreServices core)
     {
