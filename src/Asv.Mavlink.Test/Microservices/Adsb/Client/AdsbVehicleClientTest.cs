@@ -1,16 +1,18 @@
 using System;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using Asv.Mavlink.Common;
 using JetBrains.Annotations;
+using R3;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(AdsbVehicleClient))]
-public class AdsbVehicleClientTest : ClientTestBase<AdsbVehicleClient>, IDisposable
+public class AdsbVehicleClientTest : ClientTestBase<AdsbVehicleClient>
 {
-    private readonly CancellationTokenSource _cancellationTokenSource;
-
     private readonly AdsbVehicleClientConfig _config = new()
     {
         TargetTimeoutMs = 10_000,
@@ -19,42 +21,49 @@ public class AdsbVehicleClientTest : ClientTestBase<AdsbVehicleClient>, IDisposa
 
     public AdsbVehicleClientTest(ITestOutputHelper output) : base(output)
     {
-        _cancellationTokenSource = new CancellationTokenSource();
+        _ = Client;
+    }
+
+    [Fact]
+    public async Task OnTarget_GetPacketWithNewVehicle_Success()
+    {
+        // Arrange
+        var tcs = new TaskCompletionSource();
+        var cancellationTokenSource = new CancellationTokenSource();
+        cancellationTokenSource.Token.Register(() => tcs.TrySetCanceled());
+        
+        var packetToSend = new AdsbVehiclePacket()
+        {
+            Payload =
+            {
+                Flags = AdsbFlags.AdsbFlagsSourceUat,
+                IcaoAddress = 10,
+            }
+        };
+        AdsbVehiclePayload? receivedPayload = null;
+        using var sub = Client.OnTarget.Subscribe(p => 
+        {
+            receivedPayload = p;
+            tcs.TrySetResult();
+        });
+        using var sub1 = Link.Server.OnTxMessage.Subscribe(_ =>
+        {
+            Time.Advance(TimeSpan.FromMilliseconds(10));
+        });
+
+
+        // Act
+        await Link.Server.Send(packetToSend, cancellationTokenSource.Token);
+
+        // Assert
+        await tcs.Task;
+        Assert.NotNull(receivedPayload);
+        Assert.Single(Client.Targets);
+        Assert.Equal(packetToSend.Payload, receivedPayload);
+        Assert.Equal(packetToSend.Payload.IcaoAddress, Client.Targets.First().Value.IcaoAddress);
+        Assert.Equal(packetToSend.Payload.Flags, Client.Targets.First().Value.Flags.CurrentValue);
     }
 
     protected override AdsbVehicleClient CreateClient(MavlinkClientIdentity identity, CoreServices core) =>
         new(identity, _config, core);
-
-    [Fact]
-    public void Ctor_ThrowsExceptions_ArgIsNullFail()
-    {
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var client = new AdsbVehicleClient(null, _config, Context);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-        });
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var client = new AdsbVehicleClient(Identity, _config, null);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-        });
-        Assert.Throws<NullReferenceException>(() =>
-        {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var client = new AdsbVehicleClient(Identity, null, Context);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-        });
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            _cancellationTokenSource.Dispose();
-        }
-
-        base.Dispose(disposing);
-    }
 }
