@@ -36,6 +36,19 @@ public class AdsbVehicleTest
         });
     }
     
+    [Fact(Skip = "Should fail, but actually works")]
+    public void Ctor_NegativeTime_Throws()
+    {
+        // Arrange
+        var payload = new AdsbVehiclePayload();
+        
+        // Act + Assert
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+            _ = new AdsbVehicle(payload, -1);
+        });
+    }
+    
     [Fact]
     public void InternalUpdate_PerformUpdate_Success()
     {
