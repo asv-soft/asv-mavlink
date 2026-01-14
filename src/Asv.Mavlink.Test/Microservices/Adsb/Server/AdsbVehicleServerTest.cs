@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
+using FluentAssertions;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -13,37 +14,47 @@ using Xunit.Abstractions;
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(AsvGbsServer))]
-public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposable
+public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>
 {
-    private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
+    private readonly TaskCompletionSource<IProtocolMessage> _tcs;
     private readonly CancellationTokenSource _cancellationTokenSource;
 
     public AdsbVehicleServerTest(ITestOutputHelper output) : base(output)
     {
-        _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
+        _tcs = new TaskCompletionSource<IProtocolMessage>();
         _cancellationTokenSource = new CancellationTokenSource();
+        _cancellationTokenSource.Token.Register(() => _tcs.TrySetCanceled());
     }
 
-    protected override AdsbVehicleServer CreateServer(MavlinkIdentity identity, CoreServices core) =>
-        new(identity, core);
-
-    [Fact]
-    public async Task Send_SinglePacket_Success()
+    [Theory]
+    [InlineData(uint.MaxValue)]
+    [InlineData(uint.MinValue)]
+    public async Task Send_SinglePacket_Success(uint icao)
     {
         // Arrange
-        var icao = (uint)123;
-        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(
-            p => _taskCompletionSource.TrySetResult(p)
+        var expectedPackets = 1;
+        using var sub = Link.Client.OnRxMessage.Subscribe(p =>
+            {
+                _tcs.TrySetResult(p);
+            }
         );
+        using var sub2 = Link.Server.OnTxMessage.Subscribe(p =>
+        {
+            ServerTime.Advance(TimeSpan.FromMilliseconds(100));
+        });
+        
         // Act
         await Server.Send(p => p.IcaoAddress = icao, _cancellationTokenSource.Token);
 
         // Assert
-        var res = await _taskCompletionSource.Task.ConfigureAwait(false) as AdsbVehiclePacket;
+        var res = await _tcs.Task;
         Assert.NotNull(res);
-        Assert.Equal(1, (int)Link.Client.Statistic.RxMessages);
+        Assert.IsType<AdsbVehiclePacket>(res);
+        Assert.Equal(icao, res.As<AdsbVehiclePacket>().Payload.IcaoAddress);
+        Assert.Equal(expectedPackets, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
-        Assert.Equal(icao, res?.Payload.IcaoAddress);
+        Assert.Equal(0u, Link.Server.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.TxMessages);
     }
 
     [Theory]
@@ -54,86 +65,73 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>, IDisposa
     {
         // Arrange
         var called = 0;
-        var results = new List<AdsbVehiclePayload>();
-        var serverResults = new List<AdsbVehiclePayload>();
-        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p =>
+        var receivedPackets = new List<AdsbVehiclePayload>();
+        var packetsToSend = new List<AdsbVehiclePayload>();
+        using var sub = Link.Client.OnRxMessage.Subscribe(p =>
         {
             called++;
             if (p is AdsbVehiclePacket packet)
             {
-                results.Add(packet.Payload);
+                receivedPackets.Add(packet.Payload);
+            }
+            else
+            {
+                throw new Exception("Not AdsbVehiclePacket. Wrong packet was received");
             }
 
             if (called >= packetsCount)
             {
-                _taskCompletionSource.TrySetResult(p);
+                _tcs.TrySetResult(p);
             }
+        });
+        using var sub2 = Link.Server.OnTxMessage.Subscribe(p =>
+        {
+            ServerTime.Advance(TimeSpan.FromMilliseconds(100));
         });
 
         // Act
         for (var i = 0; i < packetsCount; i++)
         {
-            await Server.Send(payload => serverResults.Add(payload), CancellationToken.None);
+            await Server.Send(payload =>
+            {
+                payload.IcaoAddress = (uint)i;
+                packetsToSend.Add(payload);
+            }, 
+                _cancellationTokenSource.Token
+            );
         }
 
         // Assert
-        await _taskCompletionSource.Task;
+        await _tcs.Task;
+        Assert.Equal(packetsCount, called);
+        Assert.Equal(packetsToSend.Count, receivedPackets.Count);
+        Assert.True(receivedPackets.IsDeepEqual(packetsToSend));
         Assert.Equal(packetsCount, (int)Link.Server.Statistic.TxMessages);
         Assert.Equal(packetsCount, (int)Link.Client.Statistic.RxMessages);
-        Assert.Equal(packetsCount, results.Count);
-        Assert.Equal(serverResults.Count, results.Count);
-        for (var i = 0; i < results.Count; i++)
-        {
-            Assert.True(results[i].IsDeepEqual(serverResults[i]));
-        }
-    }
-
-    [Fact(Skip = "Not stable")]
-    public async Task Send_Canceled_Throws()
-    {
-        // Arrange
-        AdsbVehiclePacket? packet = new AdsbVehiclePacket();
-        OperationCanceledException? ex = null;
-        
-        var task = Task.Factory.StartNew(async () =>
-        {
-            for (int i = 0; i < 100; i++)
-            {
-                try
-                {
-                    await Server.Send(p => p = packet.Payload, _cancellationTokenSource.Token);
-                }
-                catch (OperationCanceledException e)
-                {
-                    ex = e;
-                    throw;
-                }
-            }
-        });
-        // Act
-        await _cancellationTokenSource.CancelAsync();
-        task.Wait(); // WTF?
-        // Assert
-        Assert.NotNull(ex);
-        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
-        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Server.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.TxMessages);
     }
 
     [Fact]
-    public async Task Send_ArgumentCanceledToken_Throws()
+    public async Task Send_Canceled_Throws()
     {
         // Arrange
-        AdsbVehiclePacket? packet = new AdsbVehiclePacket();
+        var icao = 10u;
+        
         // Act
         await _cancellationTokenSource.CancelAsync();
+        var task = Server.Send(p => p.IcaoAddress = icao, _cancellationTokenSource.Token);
+        
         // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
-        {
-            await Server.Send(p => p = packet.Payload, _cancellationTokenSource.Token);
-        });
-        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
-        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
+        Assert.Equal(0u, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Server.Statistic.TxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.TxMessages);
+        Assert.Equal(0u, Link.Server.Statistic.RxMessages);
     }
+    
+    protected override AdsbVehicleServer CreateServer(MavlinkIdentity identity, CoreServices core) =>
+        new(identity, core);
 
     protected override void Dispose(bool disposing)
     {
