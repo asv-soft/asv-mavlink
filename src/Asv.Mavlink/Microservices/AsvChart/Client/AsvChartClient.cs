@@ -15,11 +15,13 @@ namespace Asv.Mavlink;
 
 public class AsvChartClientConfig
 {
-    public double MaxTimeToWaitForResponseForListMs { get; set; } = 5000;
+    public int MaxAttempts { get; set; } = 5;
+    public int MaxTimeToWaitForResponseForListMs { get; set; } = 5000;
 }
 
 public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
 {
+    private readonly int _maxAttempts;
     private readonly ILogger _logger;
     private volatile uint _seq;
     private readonly ObservableDictionary<ushort,AsvChartInfo> _charts;
@@ -39,6 +41,7 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
         _logger = core.LoggerFactory.CreateLogger<AsvChartClient>();
         _charts = new ObservableDictionary<ushort,AsvChartInfo>();
         _maxTimeToWaitForResponseForList = TimeSpan.FromMilliseconds(config.MaxTimeToWaitForResponseForListMs);
+        _maxAttempts = config.MaxAttempts;
         _onChartInfo = new Subject<AsvChartInfo>();
         _sub1 = InternalFilter<AsvChartInfoPacket>().Select(x => new AsvChartInfo(x.Payload))
             .Subscribe(_onChartInfo.AsObserver());
@@ -71,7 +74,13 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
             x.Payload.RequestId = requestId;
             x.Payload.Skip = 0;
             x.Payload.Count = ushort.MaxValue;
-        }, x=>x.Payload.RequestId == requestId, x=>x.Payload, cancel: cancel).ConfigureAwait(false);
+        }, 
+            x=>x.Payload.RequestId == requestId, 
+            x=>x.Payload, 
+            attemptCount: _maxAttempts, 
+            timeoutMs: (int) _maxTimeToWaitForResponseForList.TotalMilliseconds, // save, because we set timespan from int
+            cancel: cancel
+        ).ConfigureAwait(false);
         if (requestAck.Result == AsvChartRequestAck.AsvChartRequestAckInProgress)
             throw new MavlinkException("Request already in progress");
         if (requestAck.Result == AsvChartRequestAck.AsvChartRequestAckFail) 
