@@ -20,10 +20,15 @@ public class AsvChartAxisInfoTest
     )
     {
         // Act
-        var vehicle = new AsvChartAxisInfo(name, unitType, min, max, size);
+        var info = new AsvChartAxisInfo(name, unitType, min, max, size);
         
         // Assert
-        Assert.NotNull(vehicle);
+        Assert.NotNull(info);
+        Assert.Equal(name, info.Name);
+        Assert.Equal(unitType, info.Unit);
+        Assert.Equal(min, info.Min);
+        Assert.Equal(max, info.Max);
+        Assert.Equal(size, info.Size);
     }
     
     [Theory]
@@ -34,7 +39,7 @@ public class AsvChartAxisInfoTest
         // Act + Assert
         Assert.Throws<MavlinkException>(() =>
         {
-            var axis = new AsvChartAxisInfo(name, AsvChartUnitType.AsvChartUnitTypeDbm, 0f, 1f, 10);
+            _ = new AsvChartAxisInfo(name, AsvChartUnitType.AsvChartUnitTypeDbm, 0f, 1f, 10);
         });
     }
     
