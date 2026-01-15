@@ -19,19 +19,6 @@ public class MavlinkClientDeviceTest(ITestOutputHelper log)
         }
     };
     
-    protected override MavlinkClientDevice CreateClient(
-        MavlinkClientIdentity identity, 
-        CoreServices core
-    )
-    {
-        return new MavlinkClientDevice(
-            new MavlinkClientDeviceId("TEST", identity),
-            _config , 
-            [],  
-            core
-        );
-    }
-    
     [Fact]
     public void Ctor_WithNullArguments_Fail()
     {
@@ -66,5 +53,18 @@ public class MavlinkClientDeviceTest(ITestOutputHelper log)
             )
         );
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+    }
+    
+    protected override MavlinkClientDevice CreateClient(
+        MavlinkClientIdentity identity, 
+        CoreServices core
+    )
+    {
+        return new MavlinkClientDevice(
+            new MavlinkClientDeviceId("TEST", identity),
+            _config , 
+            [],  
+            core
+        );
     }
 }
