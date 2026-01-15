@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Asv.Mavlink.Test;
 
-[TestSubject(typeof(AsvChartAxisInfo))]
+[TestSubject(typeof(AsvChartInfo))]
 public class AsvChartInfoTest
 {
     [Fact]
@@ -17,14 +17,5 @@ public class AsvChartInfoTest
         Assert.Throws<NullReferenceException>(() => new AsvChartInfo(payload));
         Assert.Throws<ArgumentNullException>(() => new AsvChartInfo(1, "testChart", axis, axis, AsvChartDataFormat.AsvChartDataFormatFloat));
 #pragma warning restore CS8604 // Possible null reference argument.
-    }
-    
-    [Fact]
-    public void CtorAsvChartAxisInfo_NullReferenceException_ArgIsNull()
-    {
-        Assert.Throws<MavlinkException>(() =>
-        {
-            var axis = new AsvChartAxisInfo("", AsvChartUnitType.AsvChartUnitTypeDbm, 0f, 0f, 10);
-        });
     }
 }

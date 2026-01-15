@@ -35,7 +35,7 @@ public class AsvChartClientTest : ClientTestBase<AsvChartClient>
     public async Task ReadAllInfo_Timeout_Throws()
     {
         // Arrange
-        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Synchronize().Subscribe(_ =>
         {
             Time.Advance(TimeSpan.FromMilliseconds(_config.MaxTimeToWaitForResponseForListMs));
         });
@@ -45,7 +45,10 @@ public class AsvChartClientTest : ClientTestBase<AsvChartClient>
         
         //Assert
         await Assert.ThrowsAsync<TimeoutException>(async () => await task);
-        Assert.Equal(_config.MaxAttempts, (int)Link.Client.Statistic.TxMessages); // TODO: expand assertion
+        Assert.Equal(_config.MaxAttempts, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(Link.Client.Statistic.TxMessages, Link.Server.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Server.Statistic.TxMessages);
     }
     
     protected override AsvChartClient CreateClient(MavlinkClientIdentity identity, CoreServices core) =>
