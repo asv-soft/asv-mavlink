@@ -1,6 +1,6 @@
 using System;
 
-namespace Asv.Mavlink.Test._to_AsvCommon;
+namespace Asv.Mavlink.Test;
 
 public static class LocalAttributeHelper
 {

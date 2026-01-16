@@ -1,7 +1,6 @@
 using System;
 using Asv.Common;
 using Asv.IO;
-using Asv.Mavlink.Test._to_AsvCommon;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;
