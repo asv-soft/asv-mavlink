@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.AsvChart;
+using DeepEqual.Syntax;
+using FluentAssertions;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -13,20 +16,14 @@ namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(AsvChartClient))]
 [TestSubject(typeof(AsvChartServer))]
-public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServer>, IDisposable
+public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServer>
 {
-    private readonly TaskCompletionSource<AsvChartInfo> _taskCompletionSource;
+    private readonly TaskCompletionSource _tcs;
     private readonly CancellationTokenSource _cancellationTokenSource;
-
-    public AsvChartComplexTest(ITestOutputHelper log) : base(log)
-    {
-        _taskCompletionSource = new TaskCompletionSource<AsvChartInfo>();
-        _cancellationTokenSource = new CancellationTokenSource();
-    }
-
+    
     private readonly AsvChartServerConfig _serverConfig = new()
     {
-        SendSignalDelayMs = 30,
+        SendSignalDelayMs = 0,
         SendCollectionUpdateMs = 100,
     };
 
@@ -35,67 +32,129 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         MaxTimeToWaitForResponseForListMs = 1000,
     };
 
-    protected override AsvChartServer CreateServer(MavlinkIdentity identity, IMavlinkContext core) =>
-        new(identity, _serverConfig, core);
-
-    protected override AsvChartClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core) =>
-        new(identity, _clientConfig, core);
+    public AsvChartComplexTest(ITestOutputHelper log) : base(log)
+    {
+        _tcs = new TaskCompletionSource();
+        _cancellationTokenSource = new CancellationTokenSource();
+        _cancellationTokenSource.Token.Register(() => _tcs.TrySetCanceled());
+    }
 
     [Fact]
-    public async Task ReadAllInfo_WhenCalled_ShouldSynchronizeServerAndClientCharts()
+    public async Task ReadAllInfo_SynchronizeServerAndClientCharts_Success()
     {
         // Arrange
+        const int expectedInfoPackets = 2;
+        const int expectedPacketsFromServer = 4;
+        const int expectedPacketsFromClient = 1;
+        
+        var totalPacketsReceivedFromServer = 0;
+        var infoPacketsCount = 0;
         Server.Charts.Add(1, new AsvChartInfo(1, "TestChart",
-            new AsvChartAxisInfo("dBm", AsvChartUnitType.AsvChartUnitTypeCustom, float.MinValue, 0f, int.MaxValue),
-            new AsvChartAxisInfo("Hz", AsvChartUnitType.AsvChartUnitTypeCustom, 0f, float.MaxValue, int.MaxValue),
+            new AsvChartAxisInfo("dBm", AsvChartUnitType.AsvChartUnitTypeCustom, float.MinValue, 0f, 20),
+            new AsvChartAxisInfo("Hz", AsvChartUnitType.AsvChartUnitTypeCustom, 0f, float.MaxValue, 50),
             AsvChartDataFormat.AsvChartDataFormatFloat));
         Server.Charts.Add(2, new AsvChartInfo(2, "TestChart",
-            new AsvChartAxisInfo("X", AsvChartUnitType.AsvChartUnitTypeDbm, float.MinValue, float.MaxValue, int.MaxValue),
-            new AsvChartAxisInfo("Y", AsvChartUnitType.AsvChartUnitTypeDbm, float.MinValue, float.MaxValue, int.MaxValue),
+            new AsvChartAxisInfo("X", AsvChartUnitType.AsvChartUnitTypeDbm, float.MinValue, float.MaxValue, 24),
+            new AsvChartAxisInfo("Y", AsvChartUnitType.AsvChartUnitTypeDbm, float.MinValue, float.MaxValue, 77),
             AsvChartDataFormat.AsvChartDataFormatFloat));
-        using var sub = Client.OnChartInfo.Subscribe(
-            p => _taskCompletionSource.TrySetResult(p));
+        using var sub = Client.OnChartInfo.Synchronize().Subscribe(
+            _ => infoPacketsCount++);
+        using var sub2 = Link.Client.OnRxMessage.Synchronize().Subscribe(p =>
+        {
+            totalPacketsReceivedFromServer++;
+            Log.WriteLine("Packet on rx client {0}", p.Name);
+            
+            if (totalPacketsReceivedFromServer == expectedPacketsFromServer)
+            {
+                _tcs.TrySetResult();
+            }
+        });
 
         // Act
         var sync = await Client.ReadAllInfo(null, _cancellationTokenSource.Token);
-        Assert.True(sync);
 
         // Assert
-        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        await _tcs.Task;
+        Assert.True(sync);
         Assert.Equal(Server.Charts.Count, Client.Charts.Count);
+        Server.Charts.Should().BeEquivalentTo(Client.Charts);
+        Assert.Equal(expectedPacketsFromServer, totalPacketsReceivedFromServer);
+        Assert.Equal(expectedInfoPackets, infoPacketsCount);
+        Assert.Equal(expectedPacketsFromServer, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
+        Assert.Equal(expectedPacketsFromClient, (int) Link.Server.Statistic.RxMessages);
+        Assert.Equal(expectedPacketsFromClient, (int) Link.Client.Statistic.TxMessages);
     }
 
     [Fact]
     public async Task RequestStream_WhenSingleRequest_ShouldReturnStreamAndUpdateCharts()
     {
         // Arrange
+        const ushort id = 1;
+        const string signalName = "TestChart1";
+        const AsvChartDataFormat dataFormat = AsvChartDataFormat.AsvChartDataFormatRangeFloat16bit;
+        const AsvChartUnitType dataUnitType = AsvChartUnitType.AsvChartUnitTypeDbm;
+        const string AxisXName = "X";
+        const string AxisYName = "Y";
+        
         var tcs = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource.Token.Register(() => tcs.TrySetCanceled());
-
-        var info = new AsvChartInfo(1, "TestChart1",
-            new AsvChartAxisInfo("X", AsvChartUnitType.AsvChartUnitTypeDbm, 0f, 10f, 10),
-            new AsvChartAxisInfo("Y", AsvChartUnitType.AsvChartUnitTypeDbm, 0f, 10f, 10),
-            AsvChartDataFormat.AsvChartDataFormatRangeFloat16bit);
+        
+        int count = 0;
+        int expectedCount = 5;
+        
+        var info = new AsvChartInfo(
+            id, 
+            signalName,
+            new AsvChartAxisInfo(AxisXName, dataUnitType, 0f, 10f, 10),
+            new AsvChartAxisInfo(AxisYName, dataUnitType, 0f, 10f, 10),
+            dataFormat
+        );
         var option = new AsvChartOptions(1, AsvChartDataTrigger.AsvChartDataTriggerPeriodic, 30);
         Server.Charts.Add(1, info);
-
-        Random r = new Random();
-        var array = Enumerable.Range(0, info.AxisX.Size).Select(_ => r.NextSingle()).ToArray();
-        var data = new ReadOnlyMemory<float>(array);
-
-        Server.OnDataRequest = (options, infoChart, cancel) =>
+        var sync = await Client.ReadAllInfo(null, _cancellationTokenSource.Token);
+        if (!sync)
         {
-            _ = Task.Run(async () =>
+            throw new Exception("Can't sync charts");
+        }
+        
+        var chartsToSend = new List<AsvChartInfo>
+        {
+            info,
+            info,
+            info,
+            info,
+            info,
+        };
+        
+        var dataReceived = new List<AsvChartInfo>();
+
+        Server.OnDataRequest = async (options, infoChart, cancel) =>
+        {
+            await Task.Run(async () =>
             {
-                while (true)
+                for (int i = 0; i < expectedCount; i++)
                 {
-                    await Server.Send(DateTime.Now, data, info, _cancellationTokenSource.Token);
+                    var data = new ReadOnlyMemory<float>(new float[infoChart.OneFrameMeasureSize]);
+                    await Server.Send(ServerTime.GetUtcNow().DateTime, data, infoChart, _cancellationTokenSource.Token);
+                    ServerTime.Advance(TimeSpan.FromMilliseconds(_serverConfig.SendSignalDelayMs + 1));
                 }
             }, cancel);
-            return Task.FromResult(new AsvChartOptions(infoChart.Id, AsvChartDataTrigger.AsvChartDataTriggerPeriodic,
-                30));
+            
+            return options;
         };
-        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(_ =>
+
+        Client.OnDataReceived = (time, memory, chartInfo) =>
+        {
+            dataReceived.Add(chartInfo);
+            count++;
+            if (count == expectedCount)
+            {
+                _tcs.TrySetResult();
+            }
+        };
+        
+        using var sub1 = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(_ =>
         {
             if (_ is AsvChartDataResponsePacket)
             {
@@ -104,20 +163,13 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         });
 
         // Act
-        var sync = await Client.ReadAllInfo(null, _cancellationTokenSource.Token);
+        var finalOptions = await Client.RequestStream(option, _cancellationTokenSource.Token);
 
         // Assert
-        Assert.True(sync);
-        Assert.Equal(Server.Charts.Count, Client.Charts.Count);
-
-        // Act
-        var stream = await Client.RequestStream(option, _cancellationTokenSource.Token);
-
-        // Assert
-        var res = await tcs.Task as AsvChartDataResponsePacket;
-        Assert.NotNull(res);
-        Assert.NotNull(stream);
-        Assert.Equal(res?.Payload.ChatId, stream.ChartId);
+        await _tcs.Task;
+        Assert.NotNull(finalOptions); 
+        Assert.True(chartsToSend.IsDeepEqual(dataReceived));
+        //  Assert.Equal(res.Payload.ChatId, finalOptions.ChartId);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
@@ -212,6 +264,12 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         Assert.Equal(resSecond.Payload.ChatId, secondStream.ChartId);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
+    
+    protected override AsvChartServer CreateServer(MavlinkIdentity identity, IMavlinkContext core) =>
+        new(identity, _serverConfig, core);
+
+    protected override AsvChartClient CreateClient(MavlinkClientIdentity identity, IMavlinkContext core) =>
+        new(identity, _clientConfig, core);
 
     protected override void Dispose(bool disposing)
     {

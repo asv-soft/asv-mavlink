@@ -131,7 +131,6 @@ public class AsvChartClient: MavlinkMicroserviceClient, IAsvChartClient
             return;
         }
         
-        
         if (_charts.TryGetValue(data.Payload.ChatId, out var signalInfo) == false) return;
         
         if (signalInfo.InfoHash != data.Payload.ChatInfoHash)

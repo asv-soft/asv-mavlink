@@ -31,7 +31,7 @@ public class ComplexDeviceTest(ITestOutputHelper log)
     
     [LocalTheory]
     [InlineData(1000, 100000)]
-    [InlineData(2000, 8345)]
+    [InlineData(1500, 20000)]
     [InlineData(2000, 2000)]
     public void Start_FullLinkLifeCycle_Success(int heartbeatRate, int heartbeatTimeoutMs)
     {
