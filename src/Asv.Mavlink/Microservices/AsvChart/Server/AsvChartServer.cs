@@ -33,14 +33,18 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
         _config = config;
         _charts = new ObservableDictionary<ushort,AsvChartInfo>();
 
-        _sub1 = InternalFilter<AsvChartInfoRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
-            .SubscribeAwait(OnRequestSignalInfo, AwaitOperation.Parallel);
-        _sub2 = InternalFilter<AsvChartDataRequestPacket>(x => x.Payload.TargetSystem, x => x.Payload.TargetComponent)
-            .SubscribeAwait(OnRequestChartData, AwaitOperation.Parallel);
+        _sub1 = InternalFilter<AsvChartInfoRequestPacket>(
+                x => x.Payload.TargetSystem, 
+                x => x.Payload.TargetComponent
+        ).SubscribeAwait(OnRequestSignalInfo, AwaitOperation.Parallel);
+        _sub2 = InternalFilter<AsvChartDataRequestPacket>(
+                x => x.Payload.TargetSystem,
+                x => x.Payload.TargetComponent
+        ).SubscribeAwait(OnRequestChartData, AwaitOperation.Parallel);
         
-        _sub3 = _charts.ObserveChanged().Debounce(TimeSpan.FromMilliseconds(_config.SendCollectionUpdateMs))
-            .SubscribeAwait(InternalUpdateCollectionHash, AwaitOperation.Parallel);
- 
+        _sub3 = _charts.ObserveChanged().Debounce(
+                TimeSpan.FromMilliseconds(_config.SendCollectionUpdateMs)
+        ).SubscribeAwait(InternalUpdateCollectionHash, AwaitOperation.Parallel);
     }
 
     private async ValueTask InternalUpdateCollectionHash(
@@ -85,6 +89,7 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
         {
             throw new ArgumentException("Data length must be equal to one frame measure size", nameof(data));
         }
+        
         var fullPackets = info.OneFrameByteSize / AsvChartDataPayload.DataMaxItemsCount;
         var lastPacketSize = info.OneFrameByteSize % AsvChartDataPayload.DataMaxItemsCount;
         var size = AsvChartDataPayload.DataMaxItemsCount / info.OneMeasureByteSize;
@@ -108,10 +113,14 @@ public class AsvChartServer: MavlinkMicroserviceServer,IAsvChartServer
                 pkt.Payload.DataSize = (byte)(size * info.OneMeasureByteSize);
                 pkt.Payload.PktInFrame = (ushort)packetCount;
                 pkt.Payload.ChatInfoHash = info.InfoHash;
-            }, cancel).ConfigureAwait(false);
+            }, 
+                cancel
+            ).ConfigureAwait(false);
+            
             if (_config.SendSignalDelayMs > 0)
                 await Task.Delay(TimeSpan.FromMilliseconds(_config.SendSignalDelayMs), Context.TimeProvider, cancel).ConfigureAwait(false);
         }
+        
         if (lastPacketSize > 0)
         {
             var lastSize = lastPacketSize / info.OneMeasureByteSize;
