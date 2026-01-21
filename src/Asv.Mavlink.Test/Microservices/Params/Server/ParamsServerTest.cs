@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
-using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -13,24 +12,26 @@ using Xunit.Abstractions;
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(ParamsServer))]
-public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
+public class ParamsServerTest : ServerTestBase<ParamsServer>
 {
     private readonly TaskCompletionSource<MavlinkMessage> _taskCompletionSource;
     private readonly CancellationTokenSource _cancellationTokenSource;
-    protected override ParamsServer CreateServer(MavlinkIdentity identity, CoreServices core) => new(identity, core);
 
     public ParamsServerTest(ITestOutputHelper log) : base(log)
     {
         _taskCompletionSource = new TaskCompletionSource<MavlinkMessage>();
         _cancellationTokenSource = new CancellationTokenSource();
+        
+        _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
-
+    
     [Fact]
-    public async Task Send_SinglePacket_Success()
+    public async Task SendParamValue_SinglePacket_Success()
     {
         // Arrange
-        var paramValue = 123f;
-        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p => _taskCompletionSource.TrySetResult(p)
+        var paramValue = ParamsTestHelper.Encoding.ConvertToMavlinkUnion(ParamsTestHelper.ServerParamsMeta.First().DefaultValue);
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Synchronize().Subscribe(
+            p => _taskCompletionSource.TrySetResult(p)
         );
         
         // Act
@@ -39,30 +40,28 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
         // Assert
         var result = await _taskCompletionSource.Task as ParamValuePacket;
         Assert.NotNull(result);
+        Assert.NotEqual(0u, Link.Server.Statistic.TxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
         Assert.Equal(paramValue, result.Payload.ParamValue);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
     }
     
     [Theory]
     [InlineData(10)]
     [InlineData(200)]
     [InlineData(20000)]
-    public async Task SendCompatibilityResponse_SendManyPacket_Success(int packetCount)
+    public async Task SendParamValue_ManyPacket_Success(int packetCount)
     {
         // Arrange
         var called = 0;
-        var results = new List<ParamValuePayload>();
-        var serverResults = new List<ParamValuePayload>();
-        var cancel = new CancellationTokenSource();
-        cancel.Token.Register(() => _taskCompletionSource.TrySetCanceled());
-        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>().Subscribe(p =>
+        var clientReceivedPackets = new List<ParamValuePayload>();
+        var serverSentPackets = new List<ParamValuePayload>();
+        using var sub = Link.Client.OnRxMessage.FilterByType<MavlinkMessage>()
+            .Synchronize().Subscribe(p =>
         {
             called++;
             if (p is ParamValuePacket packet)
             {
-                results.Add(packet.Payload);
+                clientReceivedPackets.Add(packet.Payload);
             }
             if (called >= packetCount)
             {
@@ -73,20 +72,21 @@ public class ParamsServerTest : ServerTestBase<ParamsServer>, IDisposable
         // Act
         for (var i = 0; i < packetCount; i++)
         {
-            await Server.SendParamValue(p => serverResults.Add(p), cancel.Token);
+            await Server.SendParamValue(
+                p => serverSentPackets.Add(p), 
+                _cancellationTokenSource.Token);
         }
 
         // Assert
         await _taskCompletionSource.Task;
         Assert.Equal(packetCount, (int) Link.Server.Statistic.TxMessages);
         Assert.Equal(packetCount, (int) Link.Client.Statistic.RxMessages);
-        Assert.Equal(packetCount, results.Count);
-        Assert.Equal(serverResults.Count, results.Count);
-        for (var i = 0; i < results.Count; i++)
-        {
-            Assert.True(results[i].IsDeepEqual(serverResults[i]));
-        }
+        Assert.Equal(packetCount, clientReceivedPackets.Count);
+        Assert.Equivalent(serverSentPackets, clientReceivedPackets, strict: true);
     }
+    
+    protected override ParamsServer CreateServer(MavlinkIdentity identity, CoreServices core) => 
+        new(identity, core);
 
     protected override void Dispose(bool disposing)
     {
