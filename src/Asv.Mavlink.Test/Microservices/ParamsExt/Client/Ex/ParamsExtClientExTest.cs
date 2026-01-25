@@ -1,148 +1,116 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-
 using JetBrains.Annotations;
+using R3;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(ParamsExtClientEx))]
-public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>, IDisposable
+public class ParamsExtClientExTest : ClientTestBase<ParamsExtClientEx>
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
-    private readonly ParamsExtClientEx _clientEx;
-    
-    public ParamsExtClientExTest(ITestOutputHelper log) : base(log)
-    {
-        _clientEx = Client;
-        TaskCompletionSource<MavlinkMessage> taskCompletionSource = new();
-        _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20), TimeProvider.System);
-        _cancellationTokenSource.Token.Register(() => taskCompletionSource.TrySetCanceled());
-    }
-    
     private readonly ParamsExtClientExConfig _config = new()
     {
         ReadAttemptCount = 5,
         ReadTimeoutMs = 100,
         ChunkUpdateBufferMs = 100
     };
-
-    private IEnumerable<ParamExtDescription> ParamDescription { get; } = new List<ParamExtDescription>
+    
+    public ParamsExtClientExTest(ITestOutputHelper log) : base(log)
     {
-        new() { Name = "WP_RADIUS", ParamExtType = MavParamExtType.MavParamExtTypeUint8 },
-        new() { Name = "FS_GCS_ENABL", ParamExtType = MavParamExtType.MavParamExtTypeInt8 },
-        new() { Name = "RC_MAP_THROTTLE", ParamExtType = MavParamExtType.MavParamExtTypeUint16 },
-        new() { Name = "RC1_TRIM", ParamExtType = MavParamExtType.MavParamExtTypeInt16 },
-        new() { Name = "ARMING_CHECK", ParamExtType = MavParamExtType.MavParamExtTypeUint32 },
-        new() { Name = "SERVO1_MIN", ParamExtType = MavParamExtType.MavParamExtTypeInt32 },
-        new() { Name = "INS_FAST_SAMPLE", ParamExtType = MavParamExtType.MavParamExtTypeUint64 },
-        new() { Name = "SCHED_LOOP_RATE", ParamExtType = MavParamExtType.MavParamExtTypeInt64 },
-        new() { Name = "PITCH_MAX", ParamExtType = MavParamExtType.MavParamExtTypeReal32 },
-        new() { Name = "GND_ABS_PRESS", ParamExtType = MavParamExtType.MavParamExtTypeReal64 },
-        new() { Name = "SERIAL1_PROTOCOL", ParamExtType = MavParamExtType.MavParamExtTypeCustom },
-    };
+        _cancellationTokenSource = new CancellationTokenSource();
+    }
+    
+    [Fact]
+    public void Constructor_NullArguments_Throws()
+    {
+        Assert.Throws<ArgumentNullException>(
+            () => new ParamsExtClientEx(null!, _config, ParamsExtTestHelper.ClientParamsDescriptions));
+        Assert.Throws<ArgumentNullException>(
+            () => new ParamsExtClientEx(Client.Base, null!, ParamsExtTestHelper.ClientParamsDescriptions));
+        Assert.Throws<ArgumentNullException>(
+            () => new ParamsExtClientEx(Client.Base, _config, null!));
+    }
+    
+    [Fact]
+    public async Task ReadOnce_Timeout_Throws()
+    {
+        // Arrange
+        var paramName = ParamsExtTestHelper.ClientParamsDescriptions.First().Name;
+        
+        var called = 0;
+        using var s1 = Link.Client.OnTxMessage.Synchronize().Subscribe(_ =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs + 1));
+        });
+        
+        // Act
+        var task = Client.ReadOnce(paramName, _cancellationTokenSource.Token);
+
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_config.ReadAttemptCount, called);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+
+    [Fact]
+    public async Task ReadAll_Timeout_Throws()
+    {
+        // Arrange
+        var called = 0;
+        using var s1 = Link.Client.OnTxMessage.Synchronize().Subscribe(_ =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs * (_config.ReadAttemptCount + 1) + 1));
+        });
+        
+        // Act
+        var result = await Client.ReadAll(null, _cancellationTokenSource.Token);
+        
+        // Assert
+        Assert.False(result);
+        Assert.Equal(1, called);
+        Assert.Equal(0, (int) Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int) Link.Client.Statistic.RxMessages);
+    }
+    
+    [Fact]
+    public async Task WriteOnce_Timeout_Throws()
+    {
+        // Arrange
+        var paramName = ParamsExtTestHelper.ServerParamsMeta.First().Name;
+        var paramValue = ParamsExtTestHelper.ServerParamsMeta.First().DefaultValue;
+        
+        var called = 0;
+        using var s1 = Link.Client.OnTxMessage.Synchronize().Subscribe(_ =>
+        {
+            called++;
+            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs + 1));
+        });
+        
+        // Act
+        var task = Client.WriteOnce(paramName, paramValue, _cancellationTokenSource.Token);
+
+        // Assert
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_config.ReadAttemptCount, called);
+        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
+        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
+    }
 
     protected override ParamsExtClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
     {
         var client = new ParamsExtClient(identity, _config, core);
-        return new ParamsExtClientEx(client, _config, ParamDescription);
-    }
-
-
-    
-    
-    [Fact]
-    public void Constructor_Null_Throws()
-    {
-        
-        // Act
-        Assert.Throws<NullReferenceException>(() => new ParamsExtClientEx(null!, _config, ParamDescription));
-        Assert.Throws<ArgumentNullException>(() => new ParamsExtClientEx(Client.Base, null!, ParamDescription));
-        Assert.Throws<ArgumentNullException>(() => new ParamsExtClientEx(Client.Base, _config, null!));
-    }
-    
-    [Fact]
-    public async Task ReadOnce_ShouldThrowTimeout_Exception()
-    {
-        // Act
-        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.ReadOnce("BARO_PRIMARY", _cancellationTokenSource.Token);
-        });
-
-        var t2 = Task.Factory.StartNew(() =>
-        {
-            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs * _config.ReadAttemptCount + 1));
-        });
-        
-        //Assert
-        await Task.WhenAll(t1, t2);
-        Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
-    }
-
-    [Fact]
-    public async Task ReadAll_ShouldThrowTimeout_Exception()
-    {
-        // Act
-        var t1 = Client.ReadAll(null, _cancellationTokenSource.Token);
-
-        var t2 = Task.Factory.StartNew(() =>
-        {
-            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs * _config.ReadAttemptCount + 100));
-        });
-        
-        //Assert
-        await Task.WhenAll(t1, t2);
-        Assert.False(t1.Result);
-        Assert.Equal(1, (int) Link.Client.Statistic.TxMessages);
-    }
-    
-    [Fact]
-    public async Task WriteOnce_ShouldThrowTimeout_Exception()
-    {
-        // Arrange
-        var value = new MavParamExtValue(2000);
-        
-        // Act
-        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.WriteOnce("BARO_PRIMARY", value, _cancellationTokenSource.Token);
-        });
-
-        var t2 = Task.Factory.StartNew(() =>
-        {
-            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs * _config.ReadAttemptCount + 1));
-        });
-        
-        //Assert
-        await Task.WhenAll(t1, t2);
-        Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
-    }
-    
-    [Fact]
-    public async Task ReadOnce_PacketSend_ThrowWhenTimeout()
-    {
-        // Arrange
-        var name = "BARO_PRIMARY";
-        
-        // Act
-        var task = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.ReadOnce(name, _cancellationTokenSource.Token);
-        });
-        
-        var taskTime = Task.Factory.StartNew(() =>
-        {
-            Time.Advance(TimeSpan.FromMilliseconds(_config.ReadTimeoutMs * _config.ReadAttemptCount + 1));
-        });
-        
-        //Assert
-        await Task.WhenAll(task, taskTime);
-        Assert.Equal(_config.ReadAttemptCount, (int)Link.Client.Statistic.TxMessages);
+        return new ParamsExtClientEx(client, _config, ParamsExtTestHelper.ClientParamsDescriptions);
     }
 
     protected override void Dispose(bool disposing)

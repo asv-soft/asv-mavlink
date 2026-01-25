@@ -32,7 +32,10 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
         IParamsExtClient client, 
         ParamsExtClientExConfig config,
         IEnumerable<ParamExtDescription> existDescription) 
-        : base(ParamsExtHelper.MicroserviceExName,client.Identity, client.Core)
+        : base(
+            ParamsExtHelper.MicroserviceExName, 
+            (client ?? throw new ArgumentNullException(nameof(client))).Identity, 
+            client.Core)
     {
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(config);
