@@ -6,6 +6,7 @@ using Asv.IO;
 using Asv.Mavlink;
 using Asv.Mavlink.Common;
 using Asv.Mavlink.Minimal;
+using Asv.XUnit;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
