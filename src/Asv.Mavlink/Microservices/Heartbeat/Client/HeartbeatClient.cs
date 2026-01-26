@@ -26,18 +26,17 @@ namespace Asv.Mavlink
     
     public class HeartbeatClient : MavlinkMicroserviceClient, IHeartbeatClient
     {
-        private static readonly TimeSpan CheckConnectionDelay = TimeSpan.FromSeconds(1);
+        public static readonly TimeSpan CheckConnectionDelay = TimeSpan.FromSeconds(1);
+        
         private readonly CircularBuffer2<double> _valueBuffer = new(5);
         private readonly IncrementalRateCounter _rxRate;
         private readonly ReactiveProperty<double> _packetRate;
         private readonly ReactiveProperty<double> _linkQuality;
         private readonly ManualLinkIndicator _link;
-        private long _lastHeartbeat;
-        private long _totalRateCounter;
         private readonly TimeSpan _heartBeatTimeoutMs;
         private readonly List<byte> _lastPacketList = new();
         private readonly TimeProvider _timeProvider;
-        private readonly object _sync = new();
+        private readonly Lock _sync = new();
         private readonly ILogger<HeartbeatClient> _logger;
         private readonly ReadOnlyReactiveProperty<HeartbeatPayload?> _heartBeat;
         private readonly IDisposable _obs1;
@@ -45,7 +44,9 @@ namespace Asv.Mavlink
         private readonly IDisposable? _obs3;
         private readonly ITimer? _obs4;
         private readonly ITimer _obs5;
-
+        
+        private long _lastHeartbeat;
+        private long _totalRateCounter;
 
         public HeartbeatClient(MavlinkClientIdentity identity, HeartbeatClientConfig config, IMavlinkContext core)
             :base(HeartbeatHelper.MicroserviceName, identity, core)
@@ -61,7 +62,7 @@ namespace Asv.Mavlink
                 .Select(x => x.Sequence)
                 .Subscribe(x =>
                 {
-                    lock (_sync)
+                    using (_sync.EnterScope())
                     {
                         _lastPacketList.Add(x);    
                     }
@@ -130,7 +131,7 @@ namespace Asv.Mavlink
             var count = 0;
             byte first;
             byte last;
-            lock (_sync)
+            using (_sync.EnterScope())
             {
                 first = _lastPacketList.FirstOrDefault();
                 last = _lastPacketList.LastOrDefault();

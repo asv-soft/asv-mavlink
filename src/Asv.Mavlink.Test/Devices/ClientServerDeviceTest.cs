@@ -16,9 +16,7 @@ namespace Asv.Mavlink.Test;
 [TestSubject(typeof(IServerDevice))]
 public class ComplexDeviceTest(ITestOutputHelper log)
     : ComplexTestBase<IClientDevice, IServerDevice>(log)
-{
-    private static readonly TimeSpan CheckConnectionDelay = TimeSpan.FromSeconds(1); // It is a copy-paste from the HeartbeatClient
-    
+{ 
     private readonly MavlinkHeartbeatServerConfig _serverHb = new()
     {
         HeartbeatRateMs = 1000,
@@ -108,7 +106,7 @@ public class ComplexDeviceTest(ITestOutputHelper log)
         ServerTime.Advance(TimeSpan.FromMilliseconds(serverHb.HeartbeatRateMs));
         ClientTime.Advance(TimeSpan.FromMilliseconds(serverHb.HeartbeatRateMs));
         server.Dispose();
-        ClientTime.Advance(TimeSpan.FromMilliseconds((clientConfig.Heartbeat.HeartbeatTimeoutMs + (CheckConnectionDelay.TotalMilliseconds * clientConfig.Heartbeat.LinkQualityWarningSkipCount)) * 2));
+        ClientTime.Advance(TimeSpan.FromMilliseconds((clientConfig.Heartbeat.HeartbeatTimeoutMs + (HeartbeatClient.CheckConnectionDelay.TotalMilliseconds * clientConfig.Heartbeat.LinkQualityWarningSkipCount)) * 2));
         
         // Assert
         await tcs.Task;
