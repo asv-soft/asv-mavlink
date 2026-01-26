@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+      <PackageReference Include="Asv.XUnit" Version="$(AsvCommonVersion)" />
       <PackageReference Include="AutoFixture.Xunit2" Version="4.18.1" />
 	  <PackageReference Include="DeepEqual" Version="5.1.0" />
 	  <PackageReference Include="FluentAssertions" Version="8.5.0" />

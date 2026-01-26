@@ -4,6 +4,7 @@ using System.IO.Packaging;
 using System.Threading;
 using Asv.IO;
 using Asv.Mavlink.PackageFile.Parts;
+using Asv.XUnit;
 using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using Xunit;
