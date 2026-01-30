@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
-using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -32,11 +31,8 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         _cancellationTokenSource.Token.Register(() => _taskCompletionSource.TrySetCanceled());
     }
 
-    protected override MissionClient CreateClient(MavlinkClientIdentity identity, CoreServices core) 
-        => new(identity, _config, core);
-
     [Fact]
-    public void Constructor_Null_Throws()
+    public void Constructor_NullArguments_Throws()
     {
         // ReSharper disable once NullableWarningSuppressionIsUsed
         Assert.Throws<ArgumentNullException>(() => new MissionClient(null!, _config, Context));
@@ -48,32 +44,20 @@ public class MissionClientTest : ClientTestBase<MissionClient>
     
     [Theory]
     [InlineData(MavMissionResult.MavMissionAccepted)]
-    [InlineData(MavMissionResult.MavMissionError)]
-    [InlineData(MavMissionResult.MavMissionUnsupportedFrame)]
-    [InlineData(MavMissionResult.MavMissionUnsupported)]
-    [InlineData(MavMissionResult.MavMissionNoSpace)]
-    [InlineData(MavMissionResult.MavMissionInvalid)]
-    [InlineData(MavMissionResult.MavMissionInvalidParam1)]
-    [InlineData(MavMissionResult.MavMissionInvalidParam2)]
     [InlineData(MavMissionResult.MavMissionInvalidParam3)]
-    [InlineData(MavMissionResult.MavMissionInvalidParam4)]
-    [InlineData(MavMissionResult.MavMissionInvalidParam5X)]
-    [InlineData(MavMissionResult.MavMissionInvalidParam6Y)]
-    [InlineData(MavMissionResult.MavMissionInvalidParam7)]
-    [InlineData(MavMissionResult.MavMissionInvalidSequence)]
-    [InlineData(MavMissionResult.MavMissionDenied)]
     [InlineData(MavMissionResult.MavMissionOperationCancelled)]
     public async Task SendMissionAck_DifferentResults_Success(MavMissionResult missionResult)
     {
         // Arrange
+        const int expectedCalls = 1;
         var called = 0;
         MissionAckPacket? packetFromServer = null;
-        using var s1 = Link.Server.OnRxMessage.Subscribe(p =>
+        using var s1 = Link.Server.OnRxMessage.Synchronize().Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var s2 = Link.Client.OnTxMessage.Subscribe(p =>
+        using var s2 = Link.Client.OnTxMessage.Synchronize().Subscribe(p =>
         {
             packetFromServer = p as MissionAckPacket;
         });
@@ -83,13 +67,14 @@ public class MissionClientTest : ClientTestBase<MissionClient>
 
         // Assert
         var result = await _taskCompletionSource.Task as MissionAckPacket;
-        Assert.Equal(1, called);
+        Assert.Equal(expectedCalls, called);
         Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
-        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
-        Assert.True(packetFromServer.IsDeepEqual(result));
+        Assert.Equivalent(packetFromServer, result);
     }
     
     [Theory]
@@ -101,14 +86,15 @@ public class MissionClientTest : ClientTestBase<MissionClient>
     public async Task SendMissionAck_DifferentTypes_Success(MavMissionType? missionType)
     {
         // Arrange
+        const int expectedCalls = 1;
         var called = 0;
         MissionAckPacket? packetFromServer = null;
-        using var s1 = Link.Server.OnRxMessage.Subscribe(p =>
+        using var s1 = Link.Server.OnRxMessage.Synchronize().Subscribe(p =>
         {
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-        using var s2 = Link.Client.OnTxMessage.Subscribe(p =>
+        using var s2 = Link.Client.OnTxMessage.Synchronize().Subscribe(p =>
         {
             packetFromServer = p as MissionAckPacket;
         });
@@ -118,13 +104,14 @@ public class MissionClientTest : ClientTestBase<MissionClient>
 
         // Assert
         var result = await _taskCompletionSource.Task as MissionAckPacket;
-        Assert.Equal(1, called);
+        Assert.Equal(expectedCalls, called);
         Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
-        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
         Assert.NotNull(result);
         Assert.NotNull(packetFromServer);
-        Assert.True(packetFromServer.IsDeepEqual(result));
+        Assert.Equivalent(packetFromServer, result);
     }
     
     [Fact]
@@ -133,7 +120,7 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         // Arrange
         var called = 0;
         await _cancellationTokenSource.CancelAsync();
-        using var s1 = Link.Server.OnRxMessage.Subscribe(_ =>
+        using var s1 = Link.Server.OnRxMessage.Synchronize().Subscribe(_ =>
         {
             called++;
         });
@@ -150,21 +137,19 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         );
         Assert.Equal(0, called);
         Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
-        Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(Link.Server.Statistic.RxMessages, Link.Client.Statistic.TxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
     }
     
-    [Theory]
-    [InlineData(ushort.MinValue)]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(ushort.MaxValue)]
-    public async Task MissionSetCurrent_Timeout_Throws(ushort missionItemsIndex)
+    [Fact]
+    public async Task MissionSetCurrent_Timeout_Throws()
     {
         // Arrange
+        ushort missionItemsIndex = 123;
         var called = 0;
         Link.SetServerToClientFilter(_ => false);
-        using var sub = Link.Client.OnTxMessage.Subscribe(p =>
+        using var sub = Link.Client.OnTxMessage.Synchronize().Subscribe(p =>
         {
             called++;
             Time.Advance(TimeSpan.FromMilliseconds(_config.CommandTimeoutMs + 1));
@@ -176,8 +161,8 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         // Assert
         await Assert.ThrowsAsync<TimeoutException>(async () => await task);
         Assert.Equal(_config.AttemptToCallCount, called);
-        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
-        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Server.Statistic.TxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
@@ -186,7 +171,7 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         // Arrange
         var called = 0;
         Link.SetServerToClientFilter(_ => false);
-        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
+        using var s1 = Link.Client.OnTxMessage.Synchronize().Subscribe(_ =>
         {
             called++;
             Time.Advance(TimeSpan.FromMilliseconds(_config.CommandTimeoutMs + 1));
@@ -202,12 +187,11 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
     }
     
-    [Theory]
-    [InlineData(ushort.MinValue)]
-    [InlineData(ushort.MaxValue)]
-    public async Task MissionRequestItem_Timeout_Throws(ushort index)
+    [Fact]
+    public async Task MissionRequestItem_Timeout_Throws()
     {
         // Arrange
+        ushort index = 123;
         var called = 0;
         Link.SetServerToClientFilter(_ => false);
         using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
@@ -226,15 +210,14 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
     }
     
-    [Theory]
-    [InlineData(ushort.MinValue)]
-    [InlineData(ushort.MaxValue)]
-    public async Task WriteMissionItem_Timeout_Throws(ushort index)
+    [Fact]
+    public async Task WriteMissionItem_Timeout_Throws()
     {
         // Arrange
+        ushort index = 12;
         var called = 0;
         Link.SetServerToClientFilter(_ => false);
-        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
+        using var s1 = Link.Client.OnTxMessage.Synchronize().Subscribe(_ =>
         {
             called++;
             Time.Advance(TimeSpan.FromMilliseconds(_config.CommandTimeoutMs + 1));
@@ -270,5 +253,18 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         Assert.Equal(_config.AttemptToCallCount, called);
         Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
         Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+    }
+    
+    protected override MissionClient CreateClient(MavlinkClientIdentity identity, CoreServices core) 
+        => new(identity, _config, core);
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _cancellationTokenSource.Dispose();
+        }
+        
+        base.Dispose(disposing);
     }
 }

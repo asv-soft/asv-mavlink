@@ -30,26 +30,25 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
     private readonly MissionClientEx _client;
     private CommandClient? _command;
     
-
     public MissionClientExTest(ITestOutputHelper log) : base(log)
     {
         _client = Client;
     }
-
-    protected override MissionClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
-    {
-        _command = new CommandClient(Identity, _commandConfig, core);
-        return new MissionClientEx(new MissionClient(identity, _config, core), _command, _config);
-    }
     
     [Fact]
-    public void Constructor_Null_Throws()
+    public void Constructor_NullArguments_Throws()
     {
         if (_command == null)
         {
             throw new NullReferenceException("Command client is not initialized");
         }
         Assert.Throws<NullReferenceException>(() => new MissionClientEx(null!, _command, _config));
+        Assert.Throws<ArgumentNullException>(() => new MissionClientEx(
+                new MissionClient(Identity, _config, Context), 
+                null!,
+                _config
+            )
+        );
         Assert.Throws<ArgumentNullException>(() => new MissionClientEx(
             new MissionClient(Identity, _config, Context), 
             _command,
@@ -120,6 +119,7 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
     public void Remove_ExistingItemWithSeveralItemsInCollection_Success()
     {
         // Arrange
+        const int expectedItemsCount = 2;
         var item0 = _client.Create();
         var item1 = _client.Create();
         var item2 = _client.Create();
@@ -130,7 +130,7 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
         // Assert
         var items = _client.MissionItems.ToList();
         Assert.NotEmpty(items);
-        Assert.Equal(2, items.Count);
+        Assert.Equal(expectedItemsCount, items.Count);
         Assert.Contains(item0, items);
         Assert.DoesNotContain(item1, items);
         Assert.Contains(item2, items);
@@ -217,11 +217,11 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
         // Arrange
         var called = 0;
         var tcs = new TaskCompletionSource<ushort>();
-        var cancel = new CancellationTokenSource();
+        using var cancel = new CancellationTokenSource();
         cancel.Token.Register(() => tcs.TrySetCanceled());
 
         Link.SetServerToClientFilter(_ => false);
-        using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
+        using var s1 = Link.Client.OnTxMessage.Synchronize().Subscribe(_ =>
         {
             called++;
             Time.Advance(TimeSpan.FromMilliseconds(MaxCommandTimeoutMs + 1));
@@ -233,15 +233,15 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
         // Assert
         await Assert.ThrowsAsync<TimeoutException>(async () => await task);
         Assert.Equal(_config.AttemptToCallCount, called);
-        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
-        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Server.Statistic.TxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
     public async Task Download_Timeout_Throws()
     {
         // Arrange
-        var cancel = new CancellationTokenSource();
+        using var cancel = new CancellationTokenSource();
         var called = 0;
         var progress = 0d;
         
@@ -260,15 +260,15 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
         Assert.Equal(_config.AttemptToCallCount, called);
         Assert.Equal(0, progress);
         Assert.False(_client.IsSynced.CurrentValue);
-        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
-        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Server.Statistic.TxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
     public async Task ClearRemote_Timeout_Throws()
     {
         // Arrange
-        var cancel = new CancellationTokenSource();
+        using var cancel = new CancellationTokenSource();
         var called = 0;
         Link.SetServerToClientFilter(_ => false);
         using var s1 = Link.Client.OnTxMessage.Subscribe(_ =>
@@ -287,15 +287,15 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
         });
         Assert.Equal(_config.AttemptToCallCount, called);
         Assert.False(_client.IsSynced.CurrentValue);
-        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
-        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Server.Statistic.TxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.RxMessages);
     }
     
     [Fact]
     public async Task Upload_Timeout_Throws()
     {
         // Arrange
-        var cancel = new CancellationTokenSource();
+        using var cancel = new CancellationTokenSource();
         var progress = 0d;
         var called = 0;
         _client.Create();
@@ -314,7 +314,13 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
         await Assert.ThrowsAsync<TimeoutException>(async () => await task);
         Assert.Equal(_config.AttemptToCallCount, called);
         Assert.Equal(0, progress);
-        Assert.Equal(0, (int)Link.Server.Statistic.TxMessages);
-        Assert.Equal(0, (int)Link.Client.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Server.Statistic.TxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.RxMessages);
+    }
+    
+    protected override MissionClientEx CreateClient(MavlinkClientIdentity identity, CoreServices core)
+    {
+        _command = new CommandClient(Identity, _commandConfig, core);
+        return new MissionClientEx(new MissionClient(identity, _config, core), _command, _config);
     }
 }
