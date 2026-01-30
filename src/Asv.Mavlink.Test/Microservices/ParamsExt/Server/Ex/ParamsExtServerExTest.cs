@@ -13,15 +13,18 @@ public class ParamsExtServerExTest(ITestOutputHelper log)
         MaxQueueSize = 100,
         MaxSendRateHz = 100,
     };
-
     private readonly ParamsExtServerExConfig _config = new()
     {
         SendingParamItemDelayMs = 100,
         CfgPrefix = "MAV_",
     };
+    private readonly InMemoryConfiguration _configuration = new();
 
     protected override ParamsExtServerEx CreateServer(MavlinkIdentity identity, CoreServices core) 
-        => new(new ParamsExtServer(identity, core), new StatusTextServer(identity, _statusConfig, core) , ParamDesc,Configuration, _config);
-    private IMavParamExtTypeMetadata[] ParamDesc { get; set; } = [];
-    private InMemoryConfiguration Configuration { get; set; } = new();
+        => new(
+            new ParamsExtServer(identity, core), 
+            new StatusTextServer(identity, _statusConfig, core), 
+            ParamsExtTestHelper.ServerParamsMeta,
+            _configuration,
+            _config);
 }
