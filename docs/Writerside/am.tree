@@ -75,6 +75,14 @@
         <toc-element topic="Logging.md">
         </toc-element>
         <toc-element topic="Missions.md">
+            <toc-element toc-title="Client" topic="MissionsClient.md">
+                <toc-element topic="MissionItem.md"/>
+            </toc-element>
+            <toc-element toc-title="Server" topic="MissionsServer.md"/>
+            <toc-element toc-title="ClientEx" topic="MissionsClientEx.md"/>
+            <toc-element toc-title="ServerEx" topic="MissionsServerEx.md">
+                <toc-element topic="ServerMissionItem.md"/>
+            </toc-element>
         </toc-element>
         <toc-element topic="Mode.md">
             <toc-element toc-title="Client" topic="ModeClient.md"/>

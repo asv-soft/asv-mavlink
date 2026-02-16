@@ -12,7 +12,7 @@ namespace Asv.Mavlink;
 /// <summary>
 /// Represents an extended interface for interacting with mission clients.
 /// </summary>
-public interface IMissionClientEx:IMavlinkMicroserviceClient
+public interface IMissionClientEx: IMavlinkMicroserviceClient
 {
     /// <summary>
     /// Gets the base mission client.
@@ -25,11 +25,12 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// <summary>
     /// Starts the mission (send MAV_CMD_MISSION_START)
     /// </summary>
-    /// <param name="startIndex"></param>
-    /// <param name="stopIndex"></param>
-    /// <param name="cancel"></param>
-    /// <returns></returns>
+    /// <param name="startIndex">First mission item index.</param>
+    /// <param name="stopIndex">Last mission item index.</param>
+    /// <param name="cancel">Cancel token argument</param>
+    /// <returns>A Task representing the asynchronous operation.</returns>
     Task StartMission(ushort startIndex, ushort stopIndex, CancellationToken cancel = default);
+    
     /// <summary>
     /// Downloads mission items asynchronously.
     /// </summary>
@@ -71,9 +72,11 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     Task ClearRemote(CancellationToken cancel = default);
 
     /// <summary>
-    /// Clears the local data. </summary> <remarks>
-    /// This method is used to clear any local data that has been stored on the client. </remarks>
-    /// /
+    /// Clears the local data.
+    /// </summary>
+    /// <remarks>
+    /// This method is used to clear any local data that has been stored on the client.
+    /// </remarks>
     void ClearLocal();
 
     /// <summary>
@@ -84,7 +87,7 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// Each change is represented as an IChangeSet, containing the updated MissionItem and an index.
     /// </remarks>
     /// <returns>
-    /// An Observable<IChangeSet<MissionItem, ushort>> representing the stream of changes to the MissionItems collection.
+    /// An Observable&lt;IChangeSet&lt;MissionItem, ushort&gt;&gt; representing the stream of changes to the MissionItems collection.
     /// </returns>
     IReadOnlyObservableList<MissionItem> MissionItems { get; }
 
@@ -108,9 +111,12 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// </remarks>
     Task SetCurrent(ushort index, CancellationToken cancel = default);
 
-    /// Gets the current value of the property.
-    /// @return The current value of the property as an ReadOnlyReactiveProperty of type ushort.
-    /// /
+    /// <summary>
+    /// Gets the total distance of all missions.
+    /// </summary>
+    /// <value>
+    /// The current value of the property as an <see cref="ReadOnlyReactiveProperty{T}"/> of type ushort.
+    /// </value>
     ReadOnlyReactiveProperty<ushort> Current { get; }
 
     /// <summary>
@@ -125,7 +131,7 @@ public interface IMissionClientEx:IMavlinkMicroserviceClient
     /// <summary>
     /// Gets the total distance of all missions.
     /// </summary>
-    /// <returns>An <see cref="ReadOnlyReactiveProperty"/> object representing the total distance.</returns>
+    /// <returns>An <see cref="ReadOnlyReactiveProperty{T}"/> object representing the total distance.</returns>
     ReadOnlyReactiveProperty<double> AllMissionsDistance { get; }
 }
 
@@ -196,8 +202,17 @@ public static class MissionClientExHelper
     //      item.Param2.OnNext((float)frame);
     //      return item;
     //  }
-
-    /// and creating the documentation based on those comments yourself.
+    
+    /// <summary>
+    /// Adds a nav mission item to a vehicle's mission.
+    /// </summary>
+    /// <param name="vehicle">The mission client.</param>
+    /// <param name="point">The geographic point for the mission item.</param>
+    /// <param name="holdTime">Hold time value written to Param1.</param>
+    /// <param name="acceptRadius">Accept radius value written to Param2.</param>
+    /// <param name="passRadius">Pass radius value written to Param3.</param>
+    /// <param name="yawAngle">Yaw angle value written to Param4.</param>
+    /// <returns>A mission item representing the nav mission.</returns>
     public static MissionItem AddNavMissionItem(
         this IMissionClientEx vehicle, 
         GeoPoint point,
@@ -222,8 +237,13 @@ public static class MissionClientExHelper
     }
 
     /// <summary>
-    /// Adds a takeoff mission item to the mission. </summary> <param name="vehicle">The mission client.</param> <param name="point">The coordinates of the takeoff point.</param> <param name="pitch">The pitch angle (optional, default = 0).</param> <param name="yawAngle">The yaw angle (optional, default = NaN).</param> <returns>A mission item representing the takeoff mission.</returns>
-    /// /
+    /// Adds a takeoff mission item to the mission.
+    /// </summary>
+    /// <param name="vehicle">The mission client.</param>
+    /// <param name="point">The coordinates of the takeoff point.</param>
+    /// <param name="pitch">The pitch angle (optional, default = 0).</param>
+    /// <param name="yawAngle">The yaw angle (optional, default = NaN).</param>
+    /// <returns>A mission item representing the takeoff mission.</returns>
     public static MissionItem AddTakeOffMissionItem(
         this IMissionClientEx vehicle, 
         GeoPoint point, 

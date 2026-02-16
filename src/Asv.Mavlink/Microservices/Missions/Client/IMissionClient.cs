@@ -65,7 +65,6 @@ namespace Asv.Mavlink
         /// <summary>
         /// Initiate mission download from a system by requesting the list of mission items.
         /// </summary>
-        /// <param name="attemptCount">The number of attempts to request the mission count from the system.</param>
         /// <param name="cancel">A cancellation token that can be used to cancel the mission request.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The task result is the count of mission items requested from the system.
@@ -147,8 +146,8 @@ namespace Asv.Mavlink
         /// <param name="result">The result of the mission.</param>
         /// <param name="targetSystemId">The target system ID. Default value is 0.</param>
         /// <param name="targetComponentId">The target component ID. Default value is 0.</param>
-        /// <param name="cancel">Optional cancellation token to cancel the operation.</param>
         /// <param name="type">The mission type. Default value is null.</param>
+        /// <param name="cancel">Optional cancellation token to cancel the operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         ValueTask SendMissionAck
         (

@@ -14,10 +14,14 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
-public class MissionClientExConfig:MissionClientConfig
+public class MissionClientExConfig: MissionClientConfig
 {
     private int _deviceUploadTimeoutMs = 3000;
 
+    /// <summary>
+    /// Timeout for waiting next upload request from device.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public int DeviceUploadTimeoutMs
     {
         get => _deviceUploadTimeoutMs;
