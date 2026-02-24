@@ -63,7 +63,7 @@ Represents an extended interface for interacting with mission clients.
 
 | Method                                                                                  | Return Type           | Description                                                    |
 |-----------------------------------------------------------------------------------------|-----------------------|----------------------------------------------------------------|
-| `StartMission(ushort startIndex, ushort stopIndex, CancellationToken cancel = default)` | `Task`                | Starts the mission (send MAV_CMD_MISSION_START).               |
+| `StartMission(ushort startIndex, ushort stopIndex, CancellationToken cancel = default)` | `Task`                | Starts the mission (sends MAV_CMD_MISSION_START).              |
 | `Download(CancellationToken cancel, Action<double>? progress = null)`                   | `Task<MissionItem[]>` | Downloads mission to local cache and sends ACK.                |
 | `Upload(CancellationToken cancel = default, Action<double>? progress = null)`           | `Task`                | Uploads a file to the server.                                  |
 | `Create()`                                                                              | `MissionItem`         | Creates and adds new local MissionItem object.                 |

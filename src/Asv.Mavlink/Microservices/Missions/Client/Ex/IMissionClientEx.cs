@@ -87,7 +87,7 @@ public interface IMissionClientEx: IMavlinkMicroserviceClient
     /// Each change is represented as an IChangeSet, containing the updated MissionItem and an index.
     /// </remarks>
     /// <returns>
-    /// An Observable&lt;IChangeSet&lt;MissionItem, ushort&gt;&gt; representing the stream of changes to the MissionItems collection.
+    /// An <see cref="IReadOnlyObservableList{T}"/> where T is <see cref="MissionItem"/> representing the stream of changes to the collection.
     /// </returns>
     IReadOnlyObservableList<MissionItem> MissionItems { get; }
 
@@ -115,7 +115,7 @@ public interface IMissionClientEx: IMavlinkMicroserviceClient
     /// Gets the total distance of all missions.
     /// </summary>
     /// <value>
-    /// The current value of the property as an <see cref="ReadOnlyReactiveProperty{T}"/> of type ushort.
+    /// The current value of the property as an <see cref="ReadOnlyReactiveProperty{T}"/> where T is <see cref="ushort"/>.
     /// </value>
     ReadOnlyReactiveProperty<ushort> Current { get; }
 
@@ -123,15 +123,15 @@ public interface IMissionClientEx: IMavlinkMicroserviceClient
     /// Gets the value indicating if a particular condition has been reached.
     /// </summary>
     /// <value>
-    /// The <see cref="ReadOnlyReactiveProperty{T}"/> representing the condition being reached. The value will be
-    /// updated whenever the condition is reached.
+    /// The <see cref="ReadOnlyReactiveProperty{T}"/> where T is <see cref="ushort"/> representing the condition being reached.
+    /// The value will be updated whenever the condition is reached.
     /// </value>
     ReadOnlyReactiveProperty<ushort> Reached { get; }
 
     /// <summary>
     /// Gets the total distance of all missions.
     /// </summary>
-    /// <returns>An <see cref="ReadOnlyReactiveProperty{T}"/> object representing the total distance.</returns>
+    /// <returns>An <see cref="ReadOnlyReactiveProperty{T}"/> where T is <see cref="double"/> representing the total distance.</returns>
     ReadOnlyReactiveProperty<double> AllMissionsDistance { get; }
 }
 
