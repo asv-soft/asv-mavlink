@@ -1,6 +1,6 @@
 # Heartbeat server
 
-If you implement a server device or simulator, you can use [IHeartbeatServer](#iheartbeatserver-source) to send heartbeats.
+If you implement a server device or simulator, you can use [IHeartbeatServer](#iheartbeatserver) to send heartbeats.
 
 First of all, you have to register the heartbeat service when building server device:
 
@@ -33,7 +33,7 @@ heartbeatServer.SetCustomMode(bits =>
 });
 ```
 
-## IHeartbeatServer ([source](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Heartbeat/Server/IHeartbeatServer.cs#L11))
+## [IHeartbeatServer](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Heartbeat/Server/IHeartbeatServer.cs#L11)
 
 Defines the interface for a heartbeat server.
 

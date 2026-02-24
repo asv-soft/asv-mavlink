@@ -33,7 +33,7 @@ Console.WriteLine($"Current mode: {mode?.Name}");
 > Don't forget to dispose subscriptions when they are no longer needed.  
 {style="warning"}
 
-## IModeClient ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/Client/IModeClient.cs))
+## [IModeClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/Client/IModeClient.cs)
 
 | Property         | Type                                    | Description                                        |
 |------------------|-----------------------------------------|----------------------------------------------------|

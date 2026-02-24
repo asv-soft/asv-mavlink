@@ -30,7 +30,7 @@ await modeServer.SetMode(ArduCopterMode.Loiter, handler =>
 });
 ```
 
-## IModeServer ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/Server/IModeServer.cs))
+## [IModeServer](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/Server/IModeServer.cs)
 
 | Property         | Type                                         | Description                       |
 |------------------|----------------------------------------------|-----------------------------------|

@@ -1,6 +1,6 @@
 # Params client
 
-To work with parameters from a client, request the [IParamsClient](#iparamsclient-source) from the device instance.
+To work with parameters from a client, request the [IParamsClient](#iparamsclient) from the device instance.
 
 ```C#
 var paramsClient = device.GetMicroservice<IParamsClient>() 
@@ -45,7 +45,7 @@ using var subscription = paramsClient.OnParamValue.Subscribe(param =>
 > For easier parameter management with caching and synchronization, consider using [ParamsClientEx](ParamsClientEx.md).
 {style="tip"}
 
-## IParamsClient ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Client/IParamsClient.cs))
+## [IParamsClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Client/IParamsClient.cs)
 
 Represents a client for handling parameters.
 

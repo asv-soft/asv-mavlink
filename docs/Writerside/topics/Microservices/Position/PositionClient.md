@@ -1,6 +1,6 @@
 # Position client
 
-To work with the Position microservice from a client, request the [IPositionClient](#ipositionclient-source) from the device instance:
+To work with the Position microservice from a client, request the [IPositionClient](#ipositionclient) from the device instance:
 
 ```C#
 var position = device.GetMicroservice<IPositionClient>()
@@ -30,7 +30,7 @@ var subscription = position.Altitude.Subscribe(alt =>
 >Don't forget to dispose subscriptions when they are no longer needed.
 {style="warning"}
 
-## IPositionClient ([source](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Position/Client/IPositionClient.cs#L12))
+## [IPositionClient](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Position/Client/IPositionClient.cs#L12)
 
 Represents a client that accesses position-related data.
 

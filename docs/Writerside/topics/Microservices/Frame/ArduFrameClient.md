@@ -2,17 +2,17 @@
 
 This page describes the ArduPilot-specific implementations of the `IFrameClient` microservice.
 
-- [ArduCopterFrameClient](#arducopterframeclient-source)
-- [ArduQuadPlaneFrameClient](#arduquadplaneframeclient-source)
+- [ArduCopterFrameClient](#arducopterframeclient)
+- [ArduQuadPlaneFrameClient](#arduquadplaneframeclient)
 
 Both clients work with the [Params client](Params.md) to read and write the underlying ArduPilot parameters. 
 The concrete parameter names differ between Copter and QuadPlane.
 
-They share a common `IDroneFrame` implementation — [`ArduDroneFrame`](#ardudroneframe-source).
+They share a common `IDroneFrame` implementation — [`ArduDroneFrame`](#ardudroneframe).
 
 ## Implementations
 
-### ArduCopterFrameClient ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Copter/Microservices/Frame/ArduCopterFrameCompability.cs))
+### [ArduCopterFrameClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Copter/Microservices/Frame/ArduCopterFrameClient.cs)
 
 Reads/writes ArduPilot params:
 - `FRAME_CLASS`
@@ -20,7 +20,7 @@ Reads/writes ArduPilot params:
 
 Uses [map](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Copter/Microservices/Frame/ArduCopterFrameCompability.cs) as a compability reference.
 
-### ArduQuadPlaneFrameClient ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Plane/Quad/Microservices/Frame/ArduQuadPlaneFrameClient.cs))
+### [ArduQuadPlaneFrameClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Plane/Quad/Microservices/Frame/ArduQuadPlaneFrameClient.cs)
 
 Reads/writes ArduPilot params:
 - `Q_FRAME_CLASS`
@@ -28,7 +28,7 @@ Reads/writes ArduPilot params:
 
 Uses [map](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Plane/Quad/Microservices/Frame/ArduQuadPlaneFrameCompability.cs) as a compability reference.
 
-### ArduDroneFrame ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Microservices/Frame/ArduDroneFrame.cs))
+### [ArduDroneFrame](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Microservices/Frame/ArduDroneFrame.cs)
 
 Represents an ArduPilot frame. It exposes the `FrameClass` and an optional `FrameType`; 
 their values align with the corresponding device parameters.
@@ -40,8 +40,8 @@ The `Id` is a human‑readable identifier composed from the class and (optionall
 
 ## Exceptions
 
-### ArduFrameClassUnknownException ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Microservices/Frame/Exceptions/ArduFrameClassUnknownException.cs))
+### [ArduFrameClassUnknownException](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Microservices/Frame/Exceptions/ArduFrameClassUnknownException.cs)
 Raised when the current device frame class can’t be mapped to the known enum values.
 
-### ArduFrameTypeUnknownException ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Microservices/Frame/Exceptions/ArduFrameTypeUnknownException.cs))
+### [ArduFrameTypeUnknownException](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Microservices/Frame/Exceptions/ArduFrameTypeUnknownException.cs)
 Raised when the current device frame type can’t be mapped to the known enum values.
