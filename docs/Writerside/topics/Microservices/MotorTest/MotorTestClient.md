@@ -1,6 +1,6 @@
 # MotorTest client
 
-To test motors, request the [IMotorTestClient](#imotortestclient-source) microservice from a device instance.
+To test motors, request the [IMotorTestClient](#imotortestclient) microservice from a device instance.
 
 ```C#
 var motorTestClient = device.GetMicroservice<IMotorTestClient>()
@@ -47,7 +47,7 @@ Refresh the available motors if the vehicle configuration changes:
 await motorTestClient.Refresh();
 ```
 
-## IMotorTestClient ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/MotorTest/Client/IMotorTestClient.cs))
+## [IMotorTestClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/MotorTest/Client/IMotorTestClient.cs)
 
 | Property     | Type                                 | Description                             |
 |--------------|--------------------------------------|-----------------------------------------|
@@ -66,6 +66,6 @@ await motorTestClient.Refresh();
 ## Implementations
 
 Vehicles controlled by different autopilots (e.g., ArduPilot, PX4) provide their own implementations 
-of [`IMotorTestClient`](#imotortestclient-source) and [`ITestMotor`](TestMotor.md):
+of [`IMotorTestClient`](#imotortestclient) and [`ITestMotor`](TestMotor.md):
 
 - [Ardu devices](ArduMotorTestClient.md)

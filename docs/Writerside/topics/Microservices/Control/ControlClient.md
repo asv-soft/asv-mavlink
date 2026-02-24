@@ -1,6 +1,6 @@
 # Control client
 
-To control a device from a client, request the [IControlClient](#icontrolclient-source) from the device instance.
+To control a device from a client, request the [IControlClient](#icontrolclient) from the device instance.
 [Implementations](#implementations) of this interface typically delegate control operations to existing MAVLink microservices.
 
 The Control microservice is only available for supported vehicle types and will be registered automatically when a 
@@ -33,7 +33,7 @@ await control.DoLand();
 For example, `GoTo` returns once the target is set, not when the point is reached.
 {style="info"}
 
-## IControlClient ([source](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Control/Client/IControlClient.cs#L7C1-L7C7))
+## [IControlClient](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Control/Client/IControlClient.cs#L7C1-L7C7)
 
 Represents a client that can control a vehicle.
 
@@ -55,7 +55,7 @@ The `CancellationToken` parameter allows cancelling the operation before it comp
 
 ## Implementations
 
-Different vehicle types have their own implementations of [`IControlClient`](#icontrolclient-source):
+Different vehicle types have their own implementations of [`IControlClient`](#icontrolclient):
 
-- [ArduCopterControlClient](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Copter/ArduCopterControlClient.cs#L13) — commands mapped to [mode](Mode.md), [position](Position.md) and [heartbeat](Heartbeat.md) microservices.
-- [ArduPlaneControlClient](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Plane/Simple/ArduPlaneControlClient.cs#L14) and [ArduQuadPlaneControlClient](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Plane/Quad/ArduQuadPlaneControlClient.cs#L13) — similar but adapted for planes.
+- [ArduCopterControlClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Copter/Microservices/ArduCopterControlClient.cs#L13) — commands mapped to [mode](Mode.md), [position](Position.md) and [heartbeat](Heartbeat.md) microservices.
+- [ArduPlaneControlClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Plane/Simple/Microservices/ArduPlaneControlClient.cs#L14) and [ArduQuadPlaneControlClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Plane/Quad/Microservices/ArduQuadPlaneControlClient.cs#L13) — similar but adapted for planes.

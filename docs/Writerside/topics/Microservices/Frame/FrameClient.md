@@ -1,6 +1,6 @@
 # Frame client
 
-To work with the frame configuration from the client side, request the [IFrameClient](#iframeclient-source) microservice from a device instance.
+To work with the frame configuration from the client side, request the [IFrameClient](#iframeclient) microservice from a device instance.
 
 ```C#
 var frameClient = device.GetMicroservice<IFrameClient>()
@@ -61,7 +61,7 @@ await frameClient.SetFrame(selectedFrame);
 > Do not create custom `IDroneFrame` instances — they may not be supported by the device.
 {style="warning"}
 
-## IFrameClient ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Frame/Client/IFrameClient.cs))
+## [IFrameClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Frame/Client/IFrameClient.cs)
 
 | Property | Type                                                 | Description                                                   |
 |----------|------------------------------------------------------|---------------------------------------------------------------|
@@ -94,7 +94,7 @@ await frameClient.SetFrame(selectedFrame);
 
 ## Implementations
 
-Different vehicle types provide their own implementations of [`IFrameClient`](#iframeclient-source):
+Different vehicle types provide their own implementations of [`IFrameClient`](#iframeclient):
 
 - [Ardu devices](ArduFrameClient.md)
 
