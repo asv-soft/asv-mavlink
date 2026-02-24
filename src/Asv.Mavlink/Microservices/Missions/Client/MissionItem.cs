@@ -7,11 +7,13 @@ using R3;
 
 namespace Asv.Mavlink
 {
-    public sealed class MissionItem : IDisposable,IAsyncDisposable
+    public sealed class MissionItem : IDisposable, IAsyncDisposable
     {
         internal readonly MissionItemIntPayload Payload;
         private readonly Subject<Unit> _onChanged;
-
+        
+        /// <param name="item">Source payload.</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public MissionItem(MissionItemIntPayload item)
         {
             Payload = item ?? throw new ArgumentNullException(nameof(item));
@@ -67,19 +69,71 @@ namespace Asv.Mavlink
                 SyncPropertiesWith(Payload);
             });
         }
+        
+        /// <summary>
+        /// Mission item sequence number.
+        /// </summary>
         public ushort Index { get; private set; }
+        
+        /// <summary>
+        /// Latitude/longitude/altitude view of payload XYZ.
+        /// </summary>
         public ReactiveProperty<GeoPoint> Location { get; }
+        
+        /// <summary>
+        /// Autocontinue to next waypoint.
+        /// </summary>
         public ReactiveProperty<bool> AutoContinue { get; }
+        
+        /// <summary>
+        /// The scheduled action for the waypoint.
+        /// </summary>
         public ReactiveProperty<MavCmd> Command { get; }
+        
+        /// <summary>
+        /// Current item flag.
+        /// </summary>
         public ReactiveProperty<bool> Current { get; }
+        
+        /// <summary>
+        /// The coordinate system of the waypoint.
+        /// </summary>
         public ReactiveProperty<MavFrame> Frame { get; }
+        
+        /// <summary>
+        /// Mission type.
+        /// </summary>
         public ReactiveProperty<MavMissionType> MissionType { get; }
+        
+        /// <summary>
+        /// MAV_CMD param 1.
+        /// </summary>
         public ReactiveProperty<float> Param1 { get; }
+        
+        /// <summary>
+        /// MAV_CMD param 2.
+        /// </summary>
         public ReactiveProperty<float> Param2 { get; }
+        
+        /// <summary>
+        /// MAV_CMD param 3.
+        /// </summary>
         public ReactiveProperty<float> Param3 { get; }
+        
+        /// <summary>
+        /// MAV_CMD param 4.
+        /// </summary>
         public ReactiveProperty<float> Param4 { get; }
+        
+        /// <summary>
+        /// Emits when payload changed via `Edit`/properties.
+        /// </summary>
         public Observable<Unit> OnChanged => _onChanged;
 
+        /// <summary>
+        /// Updates payload and notifies on changes.
+        /// </summary>
+        /// <param name="editCallback">Callback that edits payload fields.</param>
         public void Edit(Action<MissionItemIntPayload> editCallback)
         {
             var oldState = (Payload.X, Payload.Y, Payload.Z, Payload.Autocontinue, Payload.Command, 
@@ -100,8 +154,11 @@ namespace Asv.Mavlink
             _onChanged.OnNext(Unit.Default);
         }
         
+        /// <summary>
+        /// Optional user data.
+        /// </summary>
         public object? Tag { get; set; }
-
+        
         public override string ToString()
         {
             return $"Mission Item: {Command} target: {Location})";
