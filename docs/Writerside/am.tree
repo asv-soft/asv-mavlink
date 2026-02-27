@@ -51,6 +51,10 @@
         <toc-element topic="AsvSdr.md">
         </toc-element>
         <toc-element topic="Commands.md">
+            <toc-element toc-title="Client" topic="CommandsClient.md"/>
+            <toc-element toc-title="Server" topic="CommandsServer.md"/>
+            <toc-element toc-title="ServerEx" topic="CommandsServerEx.md"/>
+            <toc-element topic="CommandResult.md"/>
         </toc-element>
         <toc-element topic="Control.md">
             <toc-element toc-title="Client" topic="ControlClient.md"/>

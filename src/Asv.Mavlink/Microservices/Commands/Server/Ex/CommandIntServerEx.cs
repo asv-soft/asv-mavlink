@@ -1,6 +1,5 @@
 using Asv.Mavlink.Common;
 
-
 namespace Asv.Mavlink;
 
 public class CommandIntServerEx(ICommandServer server)
