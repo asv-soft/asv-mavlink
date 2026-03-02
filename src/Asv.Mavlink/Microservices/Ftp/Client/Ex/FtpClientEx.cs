@@ -12,6 +12,7 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
+/// <inheritdoc cref="IFtpClientEx" />
 public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
 {
     private readonly ILogger _logger;

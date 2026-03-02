@@ -30,9 +30,6 @@ Clear remote mission:
 await mission.ClearAll(MavMissionType.MavMissionTypeMission, cancel);
 ```
 
-> Do not forget to dispose subscriptions.
-{style="warning"}
-
 ## [MissionClientConfig](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Missions/Client/MissionClient.cs)
 
 | Property             | Type  | Default | Description                                 |

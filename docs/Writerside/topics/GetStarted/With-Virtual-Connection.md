@@ -261,7 +261,6 @@ await Task.Delay(TimeSpan.FromMilliseconds(500)); // Wait till the server gets u
 
 client.Dispose();
 server.Dispose();
-heartbeat.Dispose();
 ```
 
 ## Complete code { #virtual-complete-code }
@@ -411,6 +410,5 @@ await Task.Delay(TimeSpan.FromMilliseconds(500)); // Wait till the server gets u
 // Dispose
 client.Dispose();
 server.Dispose();
-heartbeat.Dispose();
 //
 ```

@@ -119,20 +119,28 @@ public class VehicleClientDevice: MavlinkClientDevice
         }
         
         yield return new LoggingClient(Identity, Core);
+        
         var missions = new MissionClient(Identity, _deviceConfig.Missions,Core);
         yield return missions;
         yield return new MissionClientEx(missions,cmd, _deviceConfig.Missions);
-        yield return new FtpClient(Identity,_deviceConfig.Ftp,Core);
+        
+        var ftp = new FtpClient(Identity,_deviceConfig.Ftp,Core);
+        yield return ftp;
+        yield return new FtpClientEx(ftp);
+        
         var gnssBase = new GnssClient(Identity,Core);
         yield return gnssBase;
         yield return new GnssClientEx(gnssBase);
+        
         yield return new V2ExtensionClient(Identity,Core);
+        
         var pos = new PositionClient(Identity,Core);
         yield return pos;
        
         var rtt = new TelemetryClient(Identity,Core);
         yield return rtt;
         yield return new TelemetryClientEx(rtt);
+        
         yield return new DgpsClient(Identity,Core);
         yield return new DiagnosticClient(Identity, _deviceConfig.Diagnostic, Core);
         
@@ -141,6 +149,7 @@ public class VehicleClientDevice: MavlinkClientDevice
             _logger.ZLogWarning($"{Id} {nameof(HeartbeatClient)} microservice not found");
             yield break;
         }
+        
         yield return new PositionClientEx(pos,hb,cmd);
     }
 

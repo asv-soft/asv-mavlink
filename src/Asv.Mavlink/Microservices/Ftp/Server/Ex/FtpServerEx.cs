@@ -13,11 +13,20 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
+/// <summary>
+/// Configuration for the extended MAVLink FTP server.
+/// </summary>
 public class MavlinkFtpServerExConfig
 {
+    /// <summary>
+    /// Gets or sets the root directory for the FTP server.
+    /// All file operations will be relative to this directory.
+    /// Defaults to the <see cref="MavlinkFtpHelper.DirectorySeparator"/> directory separator.
+    /// </summary>
     public string RootDirectory { get; set; } = MavlinkFtpHelper.DirectorySeparator.ToString();
 }
 
+/// <inheritdoc cref="IFtpServerEx" />
 public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
 {
     private readonly ILogger _logger;
@@ -425,7 +434,7 @@ public class FtpServerEx : MavlinkMicroserviceServer, IFtpServerEx
             _logger.ZLogError($"File {fullPath} is already exist in file system");
             throw new FtpNackException(FtpOpcode.CreateFile, NackError.FileExists);
         }
-
+        
         var file = _fileSystem.File.Create(fullPath);
         var session = OpenSession(FtpSession.SessionMode.OpenReadWrite);
         session.Stream = file;
