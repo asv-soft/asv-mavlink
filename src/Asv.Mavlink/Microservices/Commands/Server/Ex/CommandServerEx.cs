@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
-
 using Microsoft.Extensions.Logging;
 using R3;
 using ZLogger;
