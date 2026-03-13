@@ -2,7 +2,7 @@
   "profiles": {
     "Asv.Mavlink.Shell": {
       "commandName": "Project",
-      "commandLineArgs": "motor-test --connection tcp://127.0.0.1:7341"
+      "commandLineArgs": "takeoff-test --connection tcp://127.0.0.1:5762"
     },
     "Second": {
       "commandName": "Project",

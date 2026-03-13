@@ -15,7 +15,7 @@ public static class ControlClientHelper
 
     public static async Task EnsureGuidedMode(this IControlClient client, CancellationToken cancel = default)
     {
-        if (await client.IsGuidedMode(cancel).ConfigureAwait(false))
+        if (await client.IsGuidedMode(cancel).ConfigureAwait(false) == false)
         {
             await client.SetGuidedMode(cancel).ConfigureAwait(false);
         }
