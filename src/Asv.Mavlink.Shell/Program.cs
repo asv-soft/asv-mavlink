@@ -34,7 +34,7 @@ class Program
         app.Add<PrintVehicleStateCommand>();
         app.Add<DownloadMissionItemsCommand>();
         app.Add<MotorTestCommand>();
-        app.Add<TakeOffCommand>();
+        app.Add<GetSetHomeCommand>();
         
         await app.RunAsync(args);
     }

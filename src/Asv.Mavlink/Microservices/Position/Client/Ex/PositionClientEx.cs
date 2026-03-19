@@ -153,6 +153,20 @@ public sealed class PositionClientEx : MavlinkMicroserviceClient, IPositionClien
 
     public ReadOnlyReactiveProperty<double> AltitudeAboveHome { get; }
 
+    public Task SetHomePosition(GeoPoint location, CancellationToken cancel = default)
+    {
+        return _commandClient.CommandLongAndCheckResult(
+            MavCmd.MavCmdDoSetHome,
+            0,
+            0,
+            0,
+            0,
+            (float)location.Latitude, 
+            (float)location.Longitude,
+            (float)location.Altitude,  
+            cancel);
+    }
+
     public ReadOnlyReactiveProperty<double> HomeDistance { get; }
 
     public ReadOnlyReactiveProperty<double> TargetDistance { get; }
