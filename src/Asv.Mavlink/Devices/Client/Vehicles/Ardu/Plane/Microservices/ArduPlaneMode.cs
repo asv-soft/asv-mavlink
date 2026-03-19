@@ -16,9 +16,9 @@ public class ArduPlaneMode:ICustomMode
  
     static ArduPlaneMode()
     {
-        var wellKnownModes = new HashSet<PlaneMode>(WellKnownQuadPlaneModes.Select(m=>m.CustomMode));
+        var wellKnownModes = new HashSet<PlaneMode>(WellKnownPlaneModes.Select(m=>m.CustomMode));
         var allModes = new List<ArduPlaneMode>();
-        allModes.AddRange(WellKnownQuadPlaneModes);
+        allModes.AddRange(WellKnownPlaneModes);
         foreach (var mode in Enum.GetValues<PlaneMode>())
         {
             if (wellKnownModes.Contains(mode)) continue;
@@ -27,6 +27,7 @@ public class ArduPlaneMode:ICustomMode
         }
         AllModes = [..allModes];
     }
+   
     private static IEnumerable<ArduPlaneMode> WellKnownPlaneModes 
     {
         get
@@ -43,25 +44,8 @@ public class ArduPlaneMode:ICustomMode
             yield return Auto;
             yield return Rtl;
             yield return Loiter;
-            yield return Guided;
-        }
-    }
-    private static IEnumerable<ArduPlaneMode> WellKnownQuadPlaneModes 
-    {
-        get
-        {
-            yield return Manual;
-            yield return Circle;
-            yield return Stabilize;
-            yield return Training;
-            yield return Acro;
-            yield return FlyByWireA;
-            yield return FlyByWireB;
-            yield return Cruise;
-            yield return Autotune;
-            yield return Auto;
-            yield return Rtl;
-            yield return Loiter;
+            yield return TakeOff;
+            yield return AvoidAdsb;
             yield return Guided;
             yield return Qstabilize;
             yield return Qhover;
@@ -123,6 +107,14 @@ public class ArduPlaneMode:ICustomMode
     /// Circles point where mode switched
     /// </summary>
     public static readonly ArduPlaneMode Loiter      = new("Loiter", RS.ArdupilotPlaneMode_Loiter_Description, false, MavModeFlag.MavModeFlagCustomModeEnabled, PlaneMode.PlaneModeLoiter);
+    /// <summary>
+    /// Take off from ground
+    /// </summary>
+    public static readonly ArduPlaneMode TakeOff      = new("Take off", RS.ArduPlaneMode_TakeOff_Descrption, false, MavModeFlag.MavModeFlagCustomModeEnabled, PlaneMode.PlaneModeTakeoff);
+    /// <summary>
+    /// Take off from ground
+    /// </summary>
+    public static readonly ArduPlaneMode AvoidAdsb      = new("Avoid ADSB", RS.ArduPlaneMode_AvoidAdsb_Description, false, MavModeFlag.MavModeFlagCustomModeEnabled, PlaneMode.PlaneModeAvoidAdsb);
     /// <summary>
     /// Circles user defined point from GCS
     /// </summary>

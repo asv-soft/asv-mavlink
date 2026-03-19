@@ -420,6 +420,24 @@ namespace Asv.Mavlink {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Avoid ADSB.
+        /// </summary>
+        public static string ArduPlaneMode_AvoidAdsb_Description {
+            get {
+                return ResourceManager.GetString("ArduPlaneMode_AvoidAdsb_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Take Off.
+        /// </summary>
+        public static string ArduPlaneMode_TakeOff_Descrption {
+            get {
+                return ResourceManager.GetString("ArduPlaneMode_TakeOff_Descrption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do nothing for autopilot.
         /// </summary>
         public static string CommandClientHelper_AutopilotRebootShutdown_DoNothingForAutopilot_Description {
@@ -442,8 +460,8 @@ namespace Asv.Mavlink {
         /// </summary>
         public static string CommandClientHelper_AutopilotRebootShutdown_RebootAutopilotAndKeepItInTheBootloaderUntilUpgraded_Description {
             get {
-                return ResourceManager.GetString("CommandClientHelper_AutopilotRebootShutdown_RebootAutopilotAndKeepItInTheBootload" +
-                        "erUntilUpgraded_Description", resourceCulture);
+                return ResourceManager.GetString(("CommandClientHelper_AutopilotRebootShutdown_RebootAutopilotAndKeepItInTheBootload" +
+                        "erUntilUpgraded_Description"), resourceCulture);
             }
         }
         
@@ -461,8 +479,8 @@ namespace Asv.Mavlink {
         /// </summary>
         public static string CommandClientHelper_CompanionRebootShutdown_DoNothingForOnboardComputer_Description {
             get {
-                return ResourceManager.GetString("CommandClientHelper_CompanionRebootShutdown_DoNothingForOnboardComputer_Descripti" +
-                        "on", resourceCulture);
+                return ResourceManager.GetString(("CommandClientHelper_CompanionRebootShutdown_DoNothingForOnboardComputer_Descripti" +
+                        "on"), resourceCulture);
             }
         }
         
@@ -480,8 +498,8 @@ namespace Asv.Mavlink {
         /// </summary>
         public static string CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputerAndKeepItInTheBootloaderUntilUpgraded_Description {
             get {
-                return ResourceManager.GetString("CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputerAndKeepItInTheBo" +
-                        "otloaderUntilUpgraded_Description", resourceCulture);
+                return ResourceManager.GetString(("CommandClientHelper_CompanionRebootShutdown_RebootOnboardComputerAndKeepItInTheBo" +
+                        "otloaderUntilUpgraded_Description"), resourceCulture);
             }
         }
         
