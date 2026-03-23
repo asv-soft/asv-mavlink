@@ -95,8 +95,8 @@ public static class MavlinkV2Protocol
         configure(builder);
         return new ProtocolMessageFactory<MavlinkMessage, int>(Info, builder.ToImmutable());
     }
-    
-    private static void RegisterDefaultDialects(this ImmutableDictionary<int, Func<MavlinkMessage>>.Builder builder)
+
+    public static void RegisterDefaultDialects(this ImmutableDictionary<int, Func<MavlinkMessage>>.Builder builder)
     {
         builder.RegisterMinimalDialect();
         builder.RegisterCommonDialect();
