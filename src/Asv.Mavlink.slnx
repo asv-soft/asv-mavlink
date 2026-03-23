@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Solution items/">
+    <File Path="../.github/workflows/docs.yml" />
+    <File Path="../.github/workflows/release-action.yml" />
+    <File Path="../.github/workflows/release_debug_version.yml" />
+    <File Path="../.gitignore" />
+    <File Path="../LICENSE" />
+    <File Path="../README.md" />
+    <File Path="../regenerate_asv.bat" />
+    <File Path="../regenerate_mavlink.bat" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="Asv.Mavlink.Shell/Asv.Mavlink.Shell.csproj" />
+  <Project Path="Asv.Mavlink.Test/Asv.Mavlink.Test.csproj" />
+  <Project Path="Asv.Mavlink/Asv.Mavlink.csproj" />
+</Solution>
