@@ -5,8 +5,8 @@ using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
-public class SdrClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, SdrClientDeviceConfig config) 
-    : MavlinkClientDeviceFactory<SdrClientDevice>(selfId,seq)
+public class SdrClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, SdrClientDeviceConfig config, IProtocolMessageFactory<MavlinkMessage, int> msgFactory) 
+    : MavlinkClientDeviceFactory<SdrClientDevice>(selfId,seq, msgFactory)
 {
     public override int Order => ClientDeviceFactory.DefaultOrder;
     public override string DeviceClass => SdrClientDevice.DeviceClass;

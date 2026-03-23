@@ -157,9 +157,10 @@ public class GenerateDiagnostics
 
     private IDiagnosticServer SetUpServer(GenerateDiagnosticsConfig config)
     {
+        var msgFactory = MavlinkV2Protocol.CreateMessageFactory();
         var protocol = Protocol.Create(builder =>
         {
-            builder.RegisterMavlinkV2Protocol();
+            builder.RegisterMavlinkV2Protocol(msgFactory);
         });
         _router = protocol.CreateRouter("DEFAULT");
         
@@ -169,7 +170,7 @@ public class GenerateDiagnostics
             _router.AddPort(port);
         }
 
-        var core = new CoreServices(_router);
+        var core = new CoreServices(_router, msgFactory);
         var server = new DiagnosticServer(new MavlinkIdentity(config.SystemId, config.ComponentId), config.ServerConfig, core);
         return server;
     }

@@ -1,4 +1,23 @@
+using System;
+using System.Collections.Immutable;
 using Asv.IO;
+using Asv.Mavlink.Ardupilotmega;
+using Asv.Mavlink.AsvAudio;
+using Asv.Mavlink.AsvChart;
+using Asv.Mavlink.AsvGbs;
+using Asv.Mavlink.AsvRadio;
+using Asv.Mavlink.AsvRfsa;
+using Asv.Mavlink.AsvRsga;
+using Asv.Mavlink.AsvSdr;
+using Asv.Mavlink.Avssuas;
+using Asv.Mavlink.Common;
+using Asv.Mavlink.Csairlink;
+using Asv.Mavlink.Cubepilot;
+using Asv.Mavlink.Icarous;
+using Asv.Mavlink.Minimal;
+using Asv.Mavlink.Storm32;
+using Asv.Mavlink.Ualberta;
+using Asv.Mavlink.Uavionix;
 
 namespace Asv.Mavlink;
 
@@ -54,9 +73,9 @@ public static class MavlinkV2Protocol
         return buffer[inx + 2];
     }
     
-    public static void RegisterMavlinkV2Protocol(this IProtocolBuilder builder)
+    public static void RegisterMavlinkV2Protocol(this IProtocolBuilder builder, IProtocolMessageFactory<MavlinkMessage, int> messageFactory)
     {
-        builder.Protocols.Register(Info, (core,stat) => new MavlinkV2Parser(MavlinkV2MessageFactory.Instance, core,stat));
+        builder.Protocols.Register(Info, (core,stat) => new MavlinkV2Parser(messageFactory, core,stat));
         
         builder.Formatters.Register(FtpPacketFormatter.Instance);
         builder.Formatters.Register(ParamSetFormatter.Instance);
@@ -67,6 +86,34 @@ public static class MavlinkV2Protocol
         builder.Formatters.Register(CommandIntPacketFormatter.Instance);
         builder.Formatters.Register(CommandAckPacketFormatter.Instance);
         builder.Formatters.Register(PayloadAsJsonFormatter.Instance);
-        
+    }
+
+    public static IProtocolMessageFactory<MavlinkMessage, int> CreateMessageFactory(Action<ImmutableDictionary<int,Func<MavlinkMessage>>.Builder>? configure = null)
+    {
+        configure ??= RegisterDefaultDialects;
+        var builder = ImmutableDictionary.CreateBuilder<int, Func<MavlinkMessage>>();
+        configure(builder);
+        return new ProtocolMessageFactory<MavlinkMessage, int>(Info, builder.ToImmutable());
+    }
+    
+    private static void RegisterDefaultDialects(this ImmutableDictionary<int, Func<MavlinkMessage>>.Builder builder)
+    {
+        builder.RegisterMinimalDialect();
+        builder.RegisterCommonDialect();
+        builder.RegisterArdupilotmegaDialect();
+        builder.RegisterIcarousDialect();
+        builder.RegisterUalbertaDialect();
+        builder.RegisterStorm32Dialect();
+        builder.RegisterAvssuasDialect();
+        builder.RegisterUavionixDialect();
+        builder.RegisterCubepilotDialect();
+        builder.RegisterCsairlinkDialect();
+        builder.RegisterAsvGbsDialect();
+        builder.RegisterAsvSdrDialect();
+        builder.RegisterAsvAudioDialect();
+        builder.RegisterAsvRadioDialect();
+        builder.RegisterAsvRfsaDialect();
+        builder.RegisterAsvChartDialect();
+        builder.RegisterAsvRsgaDialect();
     }
 }

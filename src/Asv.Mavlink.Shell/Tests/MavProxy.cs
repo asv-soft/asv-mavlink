@@ -61,8 +61,8 @@ public class MavProxy
                 _outFileStream = File.OpenWrite(output);
                 _out = new StreamWriter(_outFileStream);
             }
-
-            var protocol = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(); });
+            var msgFactory = MavlinkV2Protocol.CreateMessageFactory();
+            var protocol = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(msgFactory); });
             await using var router = protocol.CreateRouter("ROUTER");
 
             var count = 0;

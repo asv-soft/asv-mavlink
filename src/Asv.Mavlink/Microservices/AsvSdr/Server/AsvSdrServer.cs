@@ -181,7 +181,7 @@ namespace Asv.Mavlink
         {
             if (mode == AsvSdrCustomMode.AsvSdrCustomModeIdle)
                 throw new ArgumentException("Can't create message for IDLE mode", nameof(mode));
-            return MavlinkV2MessageFactory.Instance.Create((ushort)mode);
+            return Core.MessageFactory.Create((ushort)mode);
         }
 
         #region Calibration

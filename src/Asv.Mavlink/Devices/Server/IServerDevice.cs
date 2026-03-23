@@ -22,15 +22,7 @@ public sealed class ServerDevice : AsyncDisposableOnce, IServerDevice
 {
     #region Static
 
-    public static IServerDevice Create(MavlinkIdentity identity, IProtocolConnection connection, Action<IServerDeviceBuilder> builder)
-    {
-        ArgumentNullException.ThrowIfNull(identity);
-        ArgumentNullException.ThrowIfNull(connection);
-        ArgumentNullException.ThrowIfNull(builder);
-        var b = new ServerDeviceBuilder(identity,new CoreServices(connection));
-        builder(b);
-        return b.Build();
-    }
+   
     public static IServerDevice Create(MavlinkIdentity identity, IMavlinkContext context, Action<IServerDeviceBuilder> builder)
     {
         ArgumentNullException.ThrowIfNull(identity);

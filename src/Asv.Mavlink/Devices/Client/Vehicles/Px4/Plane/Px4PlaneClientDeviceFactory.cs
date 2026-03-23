@@ -5,8 +5,8 @@ using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
-public class Px4PlaneClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, VehicleClientDeviceConfig deviceConfig) 
-    : MavlinkClientDeviceFactory<Px4PlaneClientDevice>(selfId,seq)
+public class Px4PlaneClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, VehicleClientDeviceConfig deviceConfig, IProtocolMessageFactory<MavlinkMessage, int> msgFactory) 
+    : MavlinkClientDeviceFactory<Px4PlaneClientDevice>(selfId,seq, msgFactory)
 {
     public override int Order => ClientDeviceFactory.DefaultOrder;
     public override string DeviceClass => Vehicles.PlaneDeviceClass;

@@ -46,8 +46,8 @@ public class CreateVirtualFtpServerCommand
             AnsiConsole.MarkupLine($"[yellow]warn[/]: Creating root directory: {cfg.FtpServerExConfig.RootDirectory}");
             Directory.CreateDirectory(cfg.FtpServerExConfig.RootDirectory);
         }
-
-        await using var router = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(); })
+        var msgFactory = MavlinkV2Protocol.CreateMessageFactory();
+        await using var router = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(msgFactory); })
             .CreateRouter("ROUTER");
         
         AnsiConsole.MarkupLine("[green]note[/]: The actual connection strings may differ from those shown below"); 
@@ -57,8 +57,8 @@ public class CreateVirtualFtpServerCommand
             AnsiConsole.MarkupLine($"[blue]info[/]: Add connection port: [yellow]{port}[/]");
             router.AddPort(port);
         }
-
-        var core = new CoreServices(router);
+        
+        var core = new CoreServices(router, msgFactory);
         await using var device = ServerDevice.Create(
             new MavlinkIdentity(cfg.SystemId, cfg.ComponentId), core, config =>
             {

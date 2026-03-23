@@ -207,13 +207,13 @@ namespace Asv.Mavlink.Test
                 0, 0, 0, 207, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 90, 104, 85, 95, 130, 184, 0, 8, 204, 49, 170,
                 44, 83, 46, 0
             };
-          
-            
+
+            var factory = MavlinkV2Protocol.CreateMessageFactory();
             int err = 0;
             for (int i = 0; i < crcExtra.Length; i++)
             {
                 if (length[i] == 0) continue;
-                var packet = MavlinkV2MessageFactory.Instance.Create((ushort)i) as MavlinkV2Message<IPayload>;
+                var packet = factory.Create((ushort)i) as MavlinkV2Message<IPayload>;
                 if (packet == null)
                 {
                     _output.WriteLine($"NOT PRESENT {i}");
@@ -245,9 +245,10 @@ namespace Asv.Mavlink.Test
             var seed = Random.Shared.Next();
             var random = new Random(seed);
             int count = 0;
-            foreach (var id in MavlinkV2MessageFactory.Instance.GetSupportedIds())
+            var factory = MavlinkV2Protocol.CreateMessageFactory();
+            foreach (var id in factory.GetSupportedIds())
             {
-                var origin = MavlinkV2MessageFactory.Instance.Create(id) as MavlinkV2Message;
+                var origin = factory.Create(id) as MavlinkV2Message;
                 try
                 {
                     Assert.NotNull(origin);
@@ -263,7 +264,7 @@ namespace Asv.Mavlink.Test
                     var serializeSpan = new Span<byte>(buff);
                     origin.Serialize(ref serializeSpan);
                     var readBuffer = new ReadOnlySpan<byte>(buff,0, buff.Length - serializeSpan.Length);
-                    var readPacket = MavlinkV2MessageFactory.Instance.Create(id) as MavlinkV2Message;
+                    var readPacket = factory.Create(id) as MavlinkV2Message;
                     Assert.NotNull(readPacket);
                     Debug.Assert(readPacket != null, nameof(readPacket) + " != null");
                     readPacket.Deserialize(ref readBuffer);

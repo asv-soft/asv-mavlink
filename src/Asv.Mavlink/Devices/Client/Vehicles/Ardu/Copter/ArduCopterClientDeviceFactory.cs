@@ -4,8 +4,8 @@ using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
-public class ArduCopterClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, VehicleClientDeviceConfig config) 
-    : MavlinkClientDeviceFactory<ArduCopterClientDevice>(selfId,seq)
+public class ArduCopterClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, VehicleClientDeviceConfig config, IProtocolMessageFactory<MavlinkMessage, int> msgFactory) 
+    : MavlinkClientDeviceFactory<ArduCopterClientDevice>(selfId, seq, msgFactory)
 {
     public override int Order => ClientDeviceFactory.DefaultOrder;
     public override string DeviceClass => Vehicles.CopterDeviceClass;

@@ -19,16 +19,16 @@ public abstract class ServerTestBase<TServer> : IDisposable
         Seq = new PacketSequenceCalculator();
         Identity = new MavlinkIdentity(3, 4);
         var loggerFactory = new TestLoggerFactory(log, ServerTime, "SERVER");
-        
+        var messageFactory = MavlinkV2Protocol.CreateMessageFactory();
         var protocol = Protocol.Create(builder =>
         {
             builder.SetLog(loggerFactory);
             builder.SetTimeProvider(ServerTime);
-            builder.RegisterMavlinkV2Protocol();
+            builder.RegisterMavlinkV2Protocol(messageFactory);
             builder.Formatters.RegisterSimpleFormatter();
         });
         Link = protocol.CreateVirtualConnection();
-        Core = new CoreServices(Link.Server, Seq, loggerFactory, ServerTime, new DefaultMeterFactory());
+        Core = new CoreServices(Link.Server, messageFactory, Seq, loggerFactory, ServerTime, new DefaultMeterFactory());
     }
 
     

@@ -23,13 +23,13 @@ public class MavlinkV2WrapFeatureTest
         _log = log;
         _time = new ManualTimeProvider();
         _seq = new PacketSequenceCalculator();
+        var messageFactory = MavlinkV2Protocol.CreateMessageFactory();
         //var loggerFactory = new TestLoggerFactory(log, _time, "TEST");
         var protocol = Protocol.Create(builder =>
         {
             //builder.SetLog(loggerFactory);
             builder.SetTimeProvider(_time);
-            builder.RegisterMavlinkV2Protocol();
-            builder.Features.RegisterMavlinkV2WrapFeature();
+            builder.Features.RegisterMavlinkV2WrapFeature(messageFactory);
         });
         _link = protocol.CreateVirtualConnection();
     }
@@ -38,9 +38,10 @@ public class MavlinkV2WrapFeatureTest
     public async Task WrapMessageFeature_Wrap_Success()
     {
         var counter = 0;
-        foreach (var id in MavlinkV2MessageFactory.Instance.GetSupportedIds())
+        var factory = MavlinkV2Protocol.CreateMessageFactory();
+        foreach (var id in factory.GetSupportedIds())
         {
-            var origin = MavlinkV2MessageFactory.Instance.Create(id) as MavlinkV2Message;
+            var origin = factory.Create(id) as MavlinkV2Message;
             Assert.NotNull(origin);
             origin.GetPayload().Randomize();
             

@@ -43,12 +43,13 @@ public class TestGenerateDiagnosticsCommand
     
     private async Task RunAsync()
     {
+        var msgFactory = MavlinkV2Protocol.CreateMessageFactory();
         await using var router = Protocol.Create(builder =>
         {
-            builder.RegisterMavlinkV2Protocol();
+            builder.RegisterMavlinkV2Protocol(msgFactory);
         }).CreateRouter("ROTUER");
 
-        var core = new CoreServices(router);
+        var core = new CoreServices(router, msgFactory);
         
         _client = new DiagnosticClient(new MavlinkClientIdentity(3,4,_targetSystemId,_targetComponentId), new DiagnosticClientConfig(),core);
         

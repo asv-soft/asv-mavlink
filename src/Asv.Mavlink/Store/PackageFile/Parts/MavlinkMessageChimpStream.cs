@@ -10,7 +10,8 @@ public interface IMavlinkStreamIdSelector
     MavlinkMessage? FromString(string id);
 }
 
-public class MavlinkSimpleStreamIdConverter : IMavlinkStreamIdSelector
+public class MavlinkSimpleStreamIdConverter(IProtocolMessageFactory<MavlinkMessage, int> factory)
+    : IMavlinkStreamIdSelector
 {
     public string ToString(MavlinkMessage msg)
     {
@@ -19,7 +20,7 @@ public class MavlinkSimpleStreamIdConverter : IMavlinkStreamIdSelector
 
     public MavlinkMessage? FromString(string id)
     {
-        return MavlinkV2MessageFactory.Instance.Create(int.Parse(id));
+        return factory.Create(int.Parse(id));
     }
 }
 
@@ -28,13 +29,14 @@ public class MavlinkMessageChimpAsvPackagePart(
     string contentType,
     uint flushEvery,
     AsvPackageContext context,
+    IProtocolMessageFactory<MavlinkMessage, int> factory,
     IMavlinkStreamIdSelector? idSelector = null,
     CompressionOption compression = CompressionOption.Maximum,
     bool useZstdForBatch = true,
     AsvPackagePart? parent = null)
     : VisitableTimeSeriesAsvPackagePart(uriPart, contentType,flushEvery,context, compression, useZstdForBatch, parent) 
 {
-    private readonly IMavlinkStreamIdSelector _idSelector = idSelector ?? new MavlinkSimpleStreamIdConverter();
+    private readonly IMavlinkStreamIdSelector _idSelector = idSelector ?? new MavlinkSimpleStreamIdConverter(factory);
     
     public void Write(MavlinkMessageRecord msg)
     {

@@ -41,11 +41,12 @@ public class PacketViewerCommand
             .Border(TableBorder.None);
         _table.AddRow(_headerTable);
         _table.AddRow("");
+        var msgFactory = MavlinkV2Protocol.CreateMessageFactory();
         AnsiConsole.Status().Start("Create router...", ctx =>
         {
             ctx.Spinner(Spinner.Known.Aesthetic);
             ctx.SpinnerStyle(Style.Parse("green"));
-            _protocol = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(); });
+            _protocol = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(msgFactory); });
             _router = _protocol.CreateRouter("ROTUER");
             _router.AddPort(connection);
         });

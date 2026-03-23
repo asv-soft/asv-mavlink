@@ -102,7 +102,7 @@ public class MavlinkClientDevice:ClientDevice<MavlinkClientDeviceId>
     }
 }
 
-public abstract class MavlinkClientDeviceFactory<TDevice>(MavlinkIdentity selfId, IPacketSequenceCalculator seq)
+public abstract class MavlinkClientDeviceFactory<TDevice>(MavlinkIdentity selfId, IPacketSequenceCalculator seq, IProtocolMessageFactory<MavlinkMessage, int> messageFactory)
     : ClientDeviceFactory<HeartbeatPacket, TDevice, MavlinkClientDeviceId>
     where TDevice : MavlinkClientDevice
 {
@@ -116,7 +116,7 @@ public abstract class MavlinkClientDeviceFactory<TDevice>(MavlinkIdentity selfId
     protected override TDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId, IMicroserviceContext context,
         ImmutableArray<IClientDeviceExtender> extenders)
     {
-        return InternalCreateDevice(msg, clientDeviceId, extenders, new CoreServices(seq,context));
+        return InternalCreateDevice(msg, clientDeviceId, extenders, new CoreServices(seq, context, messageFactory));
     }
     
     protected abstract TDevice InternalCreateDevice(HeartbeatPacket msg, MavlinkClientDeviceId clientDeviceId,

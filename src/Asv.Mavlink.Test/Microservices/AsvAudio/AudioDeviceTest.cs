@@ -218,6 +218,9 @@ public class AudioDeviceTest
     private class IFakeMavlinkContext : IMavlinkContext
     {
         public IProtocolConnection Connection { get; } = Mock.Of<IProtocolConnection>();
+
+        public IProtocolMessageFactory<MavlinkMessage, int> MessageFactory { get; } =
+            Mock.Of<IProtocolMessageFactory<MavlinkMessage, int>>();
         public IPacketSequenceCalculator Sequence { get; } = Mock.Of<IPacketSequenceCalculator>();
         public ILoggerFactory LoggerFactory { get; } = new FakeLoggerFactory();
         public TimeProvider TimeProvider { get; } = TimeProvider.System;

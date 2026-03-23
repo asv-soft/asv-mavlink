@@ -31,9 +31,10 @@ namespace Asv.Mavlink.Shell
         {
             _connectionString = connection ?? _connectionString;
             Task.Factory.StartNew(KeyListen);
+            var msgFactory = MavlinkV2Protocol.CreateMessageFactory();
             var conn = Protocol.Create(builder =>
             {
-                builder.RegisterMavlinkV2Protocol();
+                builder.RegisterMavlinkV2Protocol(msgFactory);
             }).CreateRouter("ROUTER");
 
             conn.AddPort(_connectionString);

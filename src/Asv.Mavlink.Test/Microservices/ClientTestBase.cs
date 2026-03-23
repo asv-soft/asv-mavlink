@@ -19,16 +19,16 @@ public abstract class ClientTestBase<TClient> : IDisposable
         Seq = new PacketSequenceCalculator();
         Identity = new MavlinkClientIdentity(1, 2, 3, 4);
         var loggerFactory = new TestLoggerFactory(log, Time, "SERVER");
-        
+        var messageFactory = MavlinkV2Protocol.CreateMessageFactory();
         var protocol = Protocol.Create(builder =>
         {
             builder.SetLog(loggerFactory);
             builder.SetTimeProvider(Time);
-            builder.RegisterMavlinkV2Protocol();
+            builder.RegisterMavlinkV2Protocol(messageFactory);
             
         });
         Link = protocol.CreateVirtualConnection();
-        Context = new CoreServices(Link.Client, Seq, new TestLoggerFactory(log, Time, "CLIENT"), Time, new DefaultMeterFactory());
+        Context = new CoreServices(Link.Client,messageFactory, Seq, new TestLoggerFactory(log, Time, "CLIENT"), Time, new DefaultMeterFactory());
     }
     
     protected abstract TClient CreateClient(MavlinkClientIdentity identity, CoreServices core);

@@ -38,7 +38,7 @@ public class ClientModeTest(ITestOutputHelper log) : ClientTestBase<ModeClient>(
     public void ClientMode_Ctor_NullArguments()
     {
         var conn = Protocol.Create(x => { }).CreateVirtualConnection();
-        var core = new CoreServices(conn.Client);
+        var core = new CoreServices(conn.Client, MavlinkV2Protocol.CreateMessageFactory());
         var identity = new MavlinkClientIdentity(1, 2, 3, 4);
         
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.

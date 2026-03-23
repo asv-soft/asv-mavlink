@@ -5,8 +5,8 @@ using Asv.Mavlink.Minimal;
 
 namespace Asv.Mavlink;
 
-public class GbsClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, GbsClientDeviceConfig config) 
-    : MavlinkClientDeviceFactory<GbsClientDevice>(selfId,seq)
+public class GbsClientDeviceFactory(MavlinkIdentity selfId, IPacketSequenceCalculator seq, GbsClientDeviceConfig config, IProtocolMessageFactory<MavlinkMessage, int> msgFactory) 
+    : MavlinkClientDeviceFactory<GbsClientDevice>(selfId,seq, msgFactory)
 {
     public override int Order => ClientDeviceFactory.DefaultOrder;
     public override string DeviceClass => GbsClientDevice.DeviceClass;

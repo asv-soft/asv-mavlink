@@ -22,12 +22,13 @@ public static class ShellCommandsHelper
             builder.ClearProviders();
             builder.AddDebug();
         });
+        var msgFactory = MavlinkV2Protocol.CreateMessageFactory();
         try
         {
             var protocol = Protocol.Create(builder =>
             {
                 builder.SetLog(factory);
-                builder.RegisterMavlinkV2Protocol();
+                builder.RegisterMavlinkV2Protocol(msgFactory);
                 builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
                 builder.Formatters.RegisterSimpleFormatter();
             });
@@ -48,7 +49,7 @@ public static class ShellCommandsHelper
                 builder.Factories.RegisterDefaultDevices(
                     new MavlinkIdentity(identity.SystemId, identity.ComponentId),
                     seq,
-                    new InMemoryConfiguration());
+                    new InMemoryConfiguration(), msgFactory);
             });
         }
         catch (Exception e)

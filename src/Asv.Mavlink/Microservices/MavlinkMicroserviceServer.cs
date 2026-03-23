@@ -58,7 +58,7 @@ public abstract class MavlinkMicroserviceServer : MicroserviceServer<MavlinkMess
     {
         cancel.ThrowIfCancellationRequested();
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-        var pkt = (MavlinkV2Message<IPayload>)MavlinkV2MessageFactory.Instance.Create((ushort)messageId);
+        var pkt = (MavlinkV2Message<IPayload>)Core.MessageFactory.Create((ushort)messageId);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
         fillPacket(pkt ?? throw new InvalidOperationException($"Packet {messageId} not found"));
         FillMessageBeforeSent(pkt);

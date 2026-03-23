@@ -19,11 +19,12 @@ public abstract class ComplexTestBase<TClient,TServer>: IDisposable
         Log = log;
         RouterTime = new ManualTimeProvider();
         var loggerFactory = new TestLoggerFactory(log, RouterTime, "ROUTER");
+        var messageFactory = MavlinkV2Protocol.CreateMessageFactory();
         var protocol = Protocol.Create(builder =>
         {
             builder.SetLog(loggerFactory);
             builder.SetTimeProvider(RouterTime);
-            builder.RegisterMavlinkV2Protocol();
+            builder.RegisterMavlinkV2Protocol(messageFactory);
             builder.Formatters.RegisterSimpleFormatter();
         });
         
@@ -33,11 +34,11 @@ public abstract class ComplexTestBase<TClient,TServer>: IDisposable
         
         ClientTime = new ManualTimeProvider();
         ClientSeq = new PacketSequenceCalculator();
-        ClientCore = new CoreServices(Link.Client, ClientSeq, new TestLoggerFactory(log, ClientTime, "CLIENT"), ClientTime, new DefaultMeterFactory());
+        ClientCore = new CoreServices(Link.Client,messageFactory, ClientSeq, new TestLoggerFactory(log, ClientTime, "CLIENT"), ClientTime, new DefaultMeterFactory());
         
         ServerTime = new ManualTimeProvider();
         ServerSeq = new PacketSequenceCalculator();
-        ServerCore = new CoreServices(Link.Server, ServerSeq, new TestLoggerFactory(log, ServerTime, "SERVER"), ServerTime, new DefaultMeterFactory());
+        ServerCore = new CoreServices(Link.Server,messageFactory, ServerSeq, new TestLoggerFactory(log, ServerTime, "SERVER"), ServerTime, new DefaultMeterFactory());
     }
 
     public ManualTimeProvider RouterTime { get; }

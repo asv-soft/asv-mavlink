@@ -24,8 +24,8 @@ public class MavlinkMessageChimpAsvPackagePartTest(ITestOutputHelper log)
         var pkg = Package.Open(ms, FileMode.Create, FileAccess.ReadWrite);
         var logger = new TestLogger(log, TimeProvider.System, "MavlinkMessageChimpAsvPackagePartTest");
         var ctx = new AsvPackageContext(new Lock(), pkg, logger);
-        
-        var part = new MavlinkMessageChimpAsvPackagePart(uriPart, contentType, flushEvery, ctx);
+        var factory = MavlinkV2Protocol.CreateMessageFactory();
+        var part = new MavlinkMessageChimpAsvPackagePart(uriPart, contentType, flushEvery, ctx, factory);
         foreach (var t in data)
         {
             part.Write(t);
@@ -40,7 +40,7 @@ public class MavlinkMessageChimpAsvPackagePartTest(ITestOutputHelper log)
         
         pkg = Package.Open(ms, FileMode.Open, FileAccess.Read);
         ctx = new AsvPackageContext(new Lock(), pkg, logger);
-        part = new MavlinkMessageChimpAsvPackagePart(uriPart, contentType, flushEvery, ctx);
+        part = new MavlinkMessageChimpAsvPackagePart(uriPart, contentType, flushEvery, ctx, factory);
 
         var count = 0;
         part.Read(x =>
@@ -69,14 +69,16 @@ public class MavlinkMessageChimpAsvPackagePartTest(ITestOutputHelper log)
     [InlineData(1_000,300)]
     public void TestMessages(int count, uint flushEvery)
     {
-        foreach (var messageId in MavlinkV2MessageFactory.Instance.GetSupportedIds())
+        var factory = MavlinkV2Protocol.CreateMessageFactory();
+        
+        foreach (var messageId in factory.GetSupportedIds())
         {
             var data = new MavlinkMessageRecord[count];
             var start = DateTime.Now;
             string name = String.Empty;
             for (int i = 0; i < count; i++)
             {
-                var packet = MavlinkV2MessageFactory.Instance.Create(messageId);
+                var packet = factory.Create(messageId);
                 packet.GetPayload().Randomize();
                 name = packet.Name;
                 var rec = new MavlinkMessageRecord((uint)i,start.AddSeconds(i) , packet);

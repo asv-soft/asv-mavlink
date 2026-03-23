@@ -57,19 +57,20 @@ public class DevicesInfoCommand
         long? realIterations = iterations is null ? null : (long) iterations;
         var isRunning = true;
         Console.CancelKeyPress += (_, _) => isRunning = false;
-        
-        var protocol = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(); });
+        var msgFactory = MavlinkV2Protocol.CreateMessageFactory();
+        var protocol = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(msgFactory); });
         _router = protocol.CreateRouter("ROUTER");
         _router.AddPort(connectionString);
         _router.OnTxMessage.Subscribe(_ => { }, exception => { });
         _router.OnRxMessage.Subscribe(_ => { }, exception => { });
         var seq = new PacketSequenceCalculator();
+        
         _explorer = DeviceExplorer.Create(_router, builder =>
         {
             builder.SetLog(protocol.LoggerFactory);
             builder.SetMetrics(protocol.MeterFactory);
             builder.SetTimeProvider(protocol.TimeProvider);
-            builder.Factories.RegisterDefaultDevices(new MavlinkIdentity(254, 254), seq, new InMemoryConfiguration());
+            builder.Factories.RegisterDefaultDevices(new MavlinkIdentity(254, 254), seq, new InMemoryConfiguration(), msgFactory);
         });
         
         _list = _explorer.InitializedDevices.CreateView(x => new MavlinkDeviceModel(x, TimeProvider.System));

@@ -22,10 +22,11 @@ public class MavlinkIpBasedIdMapperFeatureTest(ITestOutputHelper log)
     public async Task MavlinkIpBasedIdMapperFeature_ReverseProxy_RxTest()
     {
         var loggerFactory = new TestLoggerFactory(log, TimeProvider.System, "TEST");
+        var messageFactory = MavlinkV2Protocol.CreateMessageFactory();
         var protocol = Protocol.Create(builder =>
         {
             builder.SetLog(loggerFactory);
-            builder.RegisterMavlinkV2Protocol();
+            builder.RegisterMavlinkV2Protocol(messageFactory);
             builder.Formatters.RegisterSimpleFormatter();
             builder.Features.RegisterBroadcastAllFeature();
             builder.Features.RegisterMavlinkIpBasedIdMapperFeature((ip, originId) =>

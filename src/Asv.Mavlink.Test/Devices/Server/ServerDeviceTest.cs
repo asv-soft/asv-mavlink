@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.Minimal;
@@ -25,15 +26,18 @@ public class ServerDeviceTest(ITestOutputHelper log) : ServerTestBase<IServerDev
     [Fact]
     public void Ctor_WithDefaultArgs_Success()
     {
+        var factory = MavlinkV2Protocol.CreateMessageFactory();
+        
         var protocol = Protocol.Create(builder =>
         {
-            builder.RegisterMavlinkV2Protocol();
+            builder.RegisterMavlinkV2Protocol(factory);
         });
         var link = protocol.CreateVirtualConnection();
         var seq = new PacketSequenceCalculator();
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
-        var core = new CoreServices(link.Server, seq, NullLoggerFactory.Instance, time, meter);
+        Debug.Assert(factory != null, nameof(factory) + " != null");
+        var core = new CoreServices(link.Server, factory, seq, NullLoggerFactory.Instance, time, meter);
         var device = ServerDevice.Create(new MavlinkIdentity(1,2) ,core, builder =>
         {
             builder.RegisterHeartbeat();
@@ -44,19 +48,20 @@ public class ServerDeviceTest(ITestOutputHelper log) : ServerTestBase<IServerDev
     [Fact]
     public void Ctor_WithNullIdentity_ThrowException()
     {
+        var factory = MavlinkV2Protocol.CreateMessageFactory();
         var protocol = Protocol.Create(builder =>
         {
-            builder.RegisterMavlinkV2Protocol();
+            builder.RegisterMavlinkV2Protocol(factory);
         });
         var link = protocol.CreateVirtualConnection();
         var seq = new PacketSequenceCalculator();
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
-        var core = new CoreServices(link.Server, seq, NullLoggerFactory.Instance, time, meter);
+        var core = new CoreServices(link.Server,factory, seq, NullLoggerFactory.Instance, time, meter);
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         Assert.Throws<ArgumentNullException>(() => ServerDevice.Create(new MavlinkIdentity(1,2), (IMavlinkContext)null, _=>{}));
-        Assert.Throws<ArgumentNullException>(() => ServerDevice.Create(new MavlinkIdentity(1,2), (IProtocolConnection)null, _=>{}));
+        Assert.Throws<ArgumentNullException>(() => ServerDevice.Create(new MavlinkIdentity(1,2), null, _=>{}));
         Assert.Throws<ArgumentNullException>(() => ServerDevice.Create(null, core, builder=>{}));
         Assert.Throws<ArgumentNullException>(() => ServerDevice.Create(new MavlinkIdentity(1,2), core, null));
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
@@ -67,15 +72,16 @@ public class ServerDeviceTest(ITestOutputHelper log) : ServerTestBase<IServerDev
     [Fact]
     public void Heartbeat_SendMessagesAfterStart_Success()
     {
+        var factory = MavlinkV2Protocol.CreateMessageFactory();
         var protocol = Protocol.Create(builder =>
         {
-            builder.RegisterMavlinkV2Protocol();
+            builder.RegisterMavlinkV2Protocol(factory);
         });
         var link = protocol.CreateVirtualConnection();
         var seq = new PacketSequenceCalculator();
         var time = new FakeTimeProvider();
         var meter = new DefaultMeterFactory();
-        var core = new CoreServices(link.Client, seq, NullLoggerFactory.Instance, time, meter);
+        var core = new CoreServices(link.Client, factory, seq, NullLoggerFactory.Instance, time, meter);
         var device = ServerDevice.Create(new MavlinkIdentity(3,4),core, builder =>
         {
             builder.RegisterHeartbeat(new MavlinkHeartbeatServerConfig{ HeartbeatRateMs = 1000});

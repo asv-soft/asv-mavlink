@@ -97,9 +97,10 @@ public class VirtualAdsbCommand
         var componentId = $"ComponentId: [blue]{_adsbCommandConfig.ComponentId}[/]";
         AnsiConsole.MarkupLine($"[blue]info[/]: Start virtual ADSB receiver with {systemId}, {componentId}");
 
+        var factory = MavlinkV2Protocol.CreateMessageFactory();
         var protocol = Protocol.Create(builder =>
         {
-            builder.RegisterMavlinkV2Protocol();
+            builder.RegisterMavlinkV2Protocol(factory);
         });
         await using var router = protocol.CreateRouter("ADSB");
         
@@ -113,6 +114,7 @@ public class VirtualAdsbCommand
 
         var core = new CoreServices(
             router, 
+            factory,
             new PacketSequenceCalculator(), 
             NullLoggerFactory.Instance,
             TimeProvider.System, 

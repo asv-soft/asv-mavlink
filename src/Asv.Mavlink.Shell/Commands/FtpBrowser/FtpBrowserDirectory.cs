@@ -48,13 +48,15 @@ public class FtpBrowserDirectory
 
         try
         {
-            await using var conn = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(); })
+            var factory = MavlinkV2Protocol.CreateMessageFactory();
+            await using var conn = Protocol.Create(builder => { builder.RegisterMavlinkV2Protocol(factory); })
                 .CreateRouter("ROUTER");
             await using var port = conn.AddPort(connection);
 
             var identity = new MavlinkClientIdentity(255, 255, 1, 1);
             var seq = new PacketSequenceCalculator();
-            var core = new CoreServices(conn, seq, null, TimeProvider.System, new DefaultMeterFactory());
+            
+            var core = new CoreServices(conn,factory, seq, null, TimeProvider.System, new DefaultMeterFactory());
 
             MavlinkFtpClientConfig config = new()
             {

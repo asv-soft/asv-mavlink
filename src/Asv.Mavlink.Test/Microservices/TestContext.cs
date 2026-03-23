@@ -8,12 +8,12 @@ namespace Asv.Mavlink.Test;
 
 public class TestContext
 {
-    public TestContext(ITestOutputHelper log, string logPrefix, IProtocolConnection connection)
+    public TestContext(ITestOutputHelper log, string logPrefix, IProtocolConnection connection, IProtocolMessageFactory<MavlinkMessage, int> messageFactory)
     {
         Log = log;
         Time = new FakeTimeProvider();
         Seq = new PacketSequenceCalculator();
-        Core = new CoreServices(connection, Seq, new TestLoggerFactory(log, Time, logPrefix), Time, new DefaultMeterFactory());
+        Core = new CoreServices(connection, messageFactory,  Seq, new TestLoggerFactory(log, Time, logPrefix), Time, new DefaultMeterFactory());
     }
     
     public IMavlinkContext Core { get;  }
