@@ -44,7 +44,6 @@
     <PackageReference Include="TimeProviderExtensions" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Asv.Mavlink.Test\Asv.Mavlink.Test.csproj" />
     <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />
   </ItemGroup>
   <ItemGroup>
