@@ -77,5 +77,6 @@ public class ArduCopterClientDevice : ArduVehicleClientDevice
         yield return mode;
         yield return new ArduCopterControlClient(heartbeatClient, mode, positionClientEx);
         yield return new ArduCopterFrameClient(heartbeatClient, paramsClientEx);
+        yield return new ArduCopterMotorTestClient(heartbeatClient, commandClient, paramsClientEx);
     }
 }

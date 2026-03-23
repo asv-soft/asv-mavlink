@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Common;
 using Asv.Mavlink.Common;
 
 using Microsoft.Extensions.Logging;
@@ -34,10 +35,10 @@ public class StatusTextServer : MavlinkMicroserviceServer, IStatusTextServer
         _logger.ZLogDebug($"Create status logger for [sys:{identity.SystemId}, com:{identity.ComponentId}] with send rate:{config.MaxSendRateHz} Hz, buffer size: {config.MaxQueueSize}");
 
         var time = TimeSpan.FromSeconds(1.0 / _config.MaxSendRateHz);
-        _timer = core.TimeProvider.CreateTimer(TrySend,null,time, time);
+        _timer = core.TimeProvider.CreateTimer(state => TrySend(state, DisposeCancel).SafeFireAndForget(),null,time, time);
     }
 
-    private async void TrySend(object? state)
+    private async Task TrySend(object? state, CancellationToken cancel)
     {
         if (Interlocked.CompareExchange(ref _isSending,1,0) == 1) return;
 
@@ -50,7 +51,7 @@ public class StatusTextServer : MavlinkMicroserviceServer, IStatusTextServer
                     p.Payload.Severity = res.Key;
                     MavlinkTypesHelper.SetString(p.Payload.Text, res.Value);
                         
-                },DisposeCancel).ConfigureAwait(false);
+                }, cancel).ConfigureAwait(false);
             }
         }
         catch (Exception e)

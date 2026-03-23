@@ -14,7 +14,6 @@ namespace Asv.Mavlink;
 public class AsvRsgaServerEx : MavlinkMicroserviceServer, IAsvRsgaServerEx
 {
     private readonly ILogger _logger;
-    private readonly IDisposable _sub1;
 
     public AsvRsgaServerEx(
         IAsvRsgaServer server, 
@@ -22,7 +21,7 @@ public class AsvRsgaServerEx : MavlinkMicroserviceServer, IAsvRsgaServerEx
     {
         _logger = server.Core.LoggerFactory.CreateLogger<AsvRsgaServerEx>();
         Base = server;
-        _sub1 = server.OnCompatibilityRequest.Subscribe(OnCompatibilityRequest);
+        _sub1 = server.OnCompatibilityRequest.SubscribeAwait(OnCompatibilityRequest, AwaitOperation.Parallel);
         commands[(MavCmd)AsvRsga.MavCmd.MavCmdAsvRsgaSetMode] = async (id,args, cancel) =>
         {
             if (SetMode == null) return CommandResult.FromResult(MavResult.MavResultUnsupported);
@@ -34,7 +33,7 @@ public class AsvRsgaServerEx : MavlinkMicroserviceServer, IAsvRsgaServerEx
     
     public IAsvRsgaServer Base { get; }
 
-    private async void OnCompatibilityRequest(AsvRsgaCompatibilityRequestPayload rx)
+    private async ValueTask OnCompatibilityRequest(AsvRsgaCompatibilityRequestPayload rx, CancellationToken cancel)
     {
         var modes = new HashSet<AsvRsgaCustomMode> { AsvRsgaCustomMode.AsvRsgaCustomModeIdle };
         try
@@ -51,7 +50,7 @@ public class AsvRsgaServerEx : MavlinkMicroserviceServer, IAsvRsgaServerEx
                 tx.RequestId = rx.RequestId;
                 tx.Result = AsvRsgaRequestAck.AsvRsgaRequestAckOk;
                 RsgaHelper.SetSupportedModes(tx, modes);
-            }).ConfigureAwait(false);
+            }, cancel).ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -60,7 +59,7 @@ public class AsvRsgaServerEx : MavlinkMicroserviceServer, IAsvRsgaServerEx
             {
                 tx.RequestId = rx.RequestId;
                 tx.Result = AsvRsgaRequestAck.AsvRsgaRequestAckFail;
-            }).ConfigureAwait(false);
+            }, cancel).ConfigureAwait(false);
         }
     }
 
@@ -74,6 +73,7 @@ public class AsvRsgaServerEx : MavlinkMicroserviceServer, IAsvRsgaServerEx
     } 
 
     #region Dispose
+    private readonly IDisposable _sub1;
 
     protected override void Dispose(bool disposing)
     {

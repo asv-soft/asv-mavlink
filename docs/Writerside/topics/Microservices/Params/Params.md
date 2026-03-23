@@ -7,18 +7,18 @@ Parameters are key-value pairs where the key is a parameter name (up to 16 chara
 
 The Params microservice can be used in two roles:
 
-- [Client](ParamsClient.md) implementing [IParamsClient](ParamsClient.md#iparamsclient-source)  
+- [Client](ParamsClient.md) implementing [IParamsClient](ParamsClient.md#iparamsclient)  
   — reads and writes parameters on a remote device (e.g., ground control station).
 
-- [Server](ParamsServer.md) implementing [IParamsServer](ParamsServer.md#iparamsserver-source)  
+- [Server](ParamsServer.md) implementing [IParamsServer](ParamsServer.md#iparamsserver)  
   — stores parameters and responds to parameter requests (e.g., drone or autopilot).
 
 There are also extended versions that provide higher-level abstractions:
 
-- [ParamsClientEx](ParamsClientEx.md) implementing [IParamsClientEx](ParamsClientEx.md#iparamsclientex-source)  
+- [ParamsClientEx](ParamsClientEx.md) implementing [IParamsClientEx](ParamsClientEx.md#iparamsclientex)  
   — provides caching, synchronization, and simplified parameter access.
 
-- [ParamsServerEx](ParamsServerEx.md) implementing [IParamsServerEx](ParamsServerEx.md#iparamsserverex-source)  
+- [ParamsServerEx](ParamsServerEx.md) implementing [IParamsServerEx](ParamsServerEx.md#iparamsserverex)  
   — provides metadata support, type-safe parameter handling, and reactive updates.
 
 ## Parameter

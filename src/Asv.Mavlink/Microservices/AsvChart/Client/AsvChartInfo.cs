@@ -75,16 +75,15 @@ public class AsvChartInfo
     public AsvChartInfo(AsvChartInfoPayload p)
         :this(p.ChartId,MavlinkTypesHelper.GetString(p.ChartName), new AsvChartAxisInfo(MavlinkTypesHelper.GetString(p.AxesXName),p.AxesXUnit,p.AxesXMin,p.AxesXMax,p.AxesXCount), 
             new AsvChartAxisInfo(MavlinkTypesHelper.GetString(p.AxesYName),p.AxesYUnit,p.AxesYMin,p.AxesYMax,p.AxesYCount), p.Format,p.ChartInfoHash)
-            
     {
        
     }
+    
     public string SignalName { get; }
 
     public AsvChartAxisInfo AxisY { get; }
 
     public AsvChartAxisInfo AxisX { get;  }
-
     
     public ushort Id { get; }
     public AsvChartDataFormat Format { get; }

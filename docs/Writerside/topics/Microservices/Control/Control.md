@@ -15,4 +15,4 @@ Instead, it provides a convenient abstraction for common vehicle control operati
 >- Hiding differences between vehicle types (for example, ArduCopter and ArduPlane);
 
 In the current implementation, Control microservice exists only as a [client](ControlClient.md) 
-implementing [IControlClient](ControlClient.md#icontrolclient-source).
+implementing [IControlClient](ControlClient.md#icontrolclient).

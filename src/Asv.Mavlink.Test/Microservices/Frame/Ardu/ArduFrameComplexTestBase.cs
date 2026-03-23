@@ -16,9 +16,13 @@ namespace Asv.Mavlink.Test;
 public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexTestBase<FrameClient, ParamsServerEx>(log)
 {
     private const int ParamsDefaultValue = 0;
-
+    private const int ParamsClientChunkUpdateBufferMs = 100;
+    
     private readonly HeartbeatClientConfig _heartbeatConfig = new();
-    private readonly ParamsClientExConfig _paramsClientConfig = new();
+    private readonly ParamsClientExConfig _paramsClientConfig = new()
+    {
+        ChunkUpdateBufferMs = ParamsClientChunkUpdateBufferMs
+    };
     private readonly ParamsServerExConfig _paramsServerConfig = new();
     private readonly MavParamCStyleEncoding _encoding = new();
 
@@ -79,27 +83,27 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
     {
         // Arrange
         _ = Server;
-        var correctAvailableMotorFrames = GetAvailableMotorFrames();
+        var correctAvailableDroneFrames = GetAvailableFrames();
 
         // Act
         await Client.Init();
 
         // Assert
-        Assert.True(correctAvailableMotorFrames.IsDeepEqual(Client.MotorFrames));
+        Assert.True(correctAvailableDroneFrames.IsDeepEqual(Client.Frames));
     }
 
-    [Fact(Skip = "Doesn't work here but works with real mav params")]
+    [Fact]
     public async Task SetFrame_ValidValue_Success()
     {
         // Arrange
         _ = Server;
         await Client.Init();
-        var availableFrameToSet = Client.MotorFrames.First();
+        var availableFrameToSet = Client.Frames.First();
         var tsc = new TaskCompletionSource<bool>();
         using var cts = new CancellationTokenSource();
-        cts.CancelAfter(TimeSpan.FromMilliseconds(100));
+        cts.CancelAfter(TimeSpan.FromMilliseconds(1000));
         cts.Token.Register(() => tsc.TrySetResult(false));
-        using var sub = Client.CurrentMotorFrame.WhereNotNull().Subscribe(v =>
+        using var sub = Client.CurrentFrame.WhereNotNull().Subscribe(v =>
         {
             if (v.Id == availableFrameToSet.Key)
             {
@@ -109,11 +113,12 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
         
         // Act
         await Client.SetFrame(availableFrameToSet.Value, cts.Token);
+        ClientTime.Advance(TimeSpan.FromMilliseconds(ParamsClientChunkUpdateBufferMs + 50));
         var res = await tsc.Task;
 
         // Assert
         Assert.True(res);
-        Assert.Equal(Client.CurrentMotorFrame.CurrentValue, availableFrameToSet.Value);
+        Assert.Equal(Client.CurrentFrame.CurrentValue, availableFrameToSet.Value);
     }
 
     [Fact]
@@ -122,7 +127,7 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
         // Arrange
         _ = Server;
         await Client.Init();
-        var frameToSet = new TestMotorFrame();
+        var frameToSet = new TestDroneFrame();
 
         // Act
         var task = Client.SetFrame(frameToSet);
@@ -139,21 +144,21 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
     {
         // Arrange
         _ = Server;
-        var frameToSet = new ArduMotorFrame(ArduFrameClass.DynamicScriptingMatrix, null);
+        var frameToSet = new ArduDroneFrame(ArduFrameClass.DynamicScriptingMatrix, null);
 
         // Act
         var task = Client.SetFrame(frameToSet);
 
         // Assert
-        await Assert.ThrowsAsync<MotorFrameIsNotAvailableException>(async () =>
+        await Assert.ThrowsAsync<DroneFrameIsNotAvailableException>(async () =>
         {
             await task;
         });
     }
     
-    private IReadOnlyDictionary<string, IMotorFrame> GetAvailableMotorFrames()
+    private IReadOnlyDictionary<string, IDroneFrame> GetAvailableFrames()
     {
-        var motorFrames = new Dictionary<string, IMotorFrame>();
+        var droneFrames = new Dictionary<string, IDroneFrame>();
         
         foreach (var (frameClass, types) in AvailableFramesMap)
         {
@@ -163,8 +168,8 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
                 {
                     [FrameClassParamName] = frameClass.ToString()
                 };
-                var motorFrame = new ArduMotorFrame(frameClass, null, meta);
-                motorFrames.Add(motorFrame.Id, motorFrame);
+                var droneFrame = new ArduDroneFrame(frameClass, null, meta);
+                droneFrames.Add(droneFrame.Id, droneFrame);
             }
             else
             {
@@ -175,12 +180,12 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
                         [FrameClassParamName] = frameClass.ToString(),
                         [FrameTypeParamName] = type.ToString()
                     };
-                    var motorFrame = new ArduMotorFrame(frameClass, type, meta);
-                    motorFrames.Add(motorFrame.Id, motorFrame);
+                    var droneFrame = new ArduDroneFrame(frameClass, type, meta);
+                    droneFrames.Add(droneFrame.Id, droneFrame);
                 }
             }
         }
 
-        return motorFrames;
+        return droneFrames;
     }
 }

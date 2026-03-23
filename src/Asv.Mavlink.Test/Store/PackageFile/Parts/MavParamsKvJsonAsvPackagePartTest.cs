@@ -5,6 +5,7 @@ using System.IO.Packaging;
 using System.Threading;
 using Asv.IO;
 using Asv.Mavlink.PackageFile.Parts;
+using Asv.XUnit;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;

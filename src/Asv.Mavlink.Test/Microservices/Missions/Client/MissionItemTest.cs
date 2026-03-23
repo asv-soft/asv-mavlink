@@ -1,6 +1,9 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
+using FluentAssertions;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -8,8 +11,18 @@ using Xunit;
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(MissionItem))]
-public class MissionItemTest
+public class MissionItemTest : IDisposable
 {
+    private readonly TaskCompletionSource _tcs;
+    private readonly CancellationTokenSource _cancellationTokenSource;
+    
+    public MissionItemTest()
+    {
+        _tcs = new TaskCompletionSource();
+        _cancellationTokenSource = new CancellationTokenSource();
+        _cancellationTokenSource.Token.Register(() => _tcs.TrySetCanceled());
+    }
+    
     [Fact]
     public void Constructor_NullPayload_Throws()
     {
@@ -39,8 +52,9 @@ public class MissionItemTest
     {
         // Arrange
         var called = 0;
-        var item = new MissionItem(new MissionItemIntPayload());
-        item.OnChanged.Subscribe(_ =>
+        var payload = new MissionItemIntPayload();
+        var item = new MissionItem(payload);
+        using var sub = item.OnChanged.Synchronize().Subscribe(_ =>
         {
             called++;
         });
@@ -50,26 +64,29 @@ public class MissionItemTest
         
         // Assert
         Assert.Equal(0, called);
+        Assert.Equivalent(payload, item.Payload);
     }
     
     [Fact]
-    public void Edit_ChangeFullPayload_Success()
+    public async Task Edit_ChangeFullPayload_Success()
     {
         // Arrange
+        const int newX = 4;
+        const int newY = 5;
+        const float newZ = 6f;
+        const byte newAutocontinue = 1;
+        const MavCmd newCommand = MavCmd.MavCmdUser2;
+        const byte newCurrent = 1;
+        const MavFrame newFrame = MavFrame.MavFrameReserved13;
+        const MavMissionType newMissionType = MavMissionType.MavMissionTypeFence;
+        const int newParam1 = 10;
+        const int newParam2 = 14;
+        const int newParam3 = 144;
+        const int newParam4 = 100;
+        const byte newSeq = 2;
+        const int expectedCalls = 1;
+        
         var called = 0;
-        var newX = 4;
-        var newY = 5;
-        var newZ = 6f;
-        var newAutocontinue = (byte) 1;
-        var newCommand = MavCmd.MavCmdUser2;
-        var newCurrent = (byte) 1;
-        var newFrame = MavFrame.MavFrameReserved13;
-        var newMissionType = MavMissionType.MavMissionTypeFence;
-        var newParam1 = 10;
-        var newParam2 = 14;
-        var newParam3 = 144;
-        var newParam4 = 100;
-        var newSeq = (byte) 2;
         
         var payload = new MissionItemIntPayload
         {
@@ -91,9 +108,10 @@ public class MissionItemTest
         var oldItem = new MissionItem(payload);
         var item = new MissionItem(payload);
 
-        item.OnChanged.Subscribe(_ =>
+        using var sub = item.OnChanged.Synchronize().Subscribe(_ =>
         {
             called++;
+            _tcs.TrySetResult();
         });
         
         // Act
@@ -115,36 +133,39 @@ public class MissionItemTest
         });
         
         // Assert
-        Assert.Equal(1, called);
-        Assert.False(item.IsDeepEqual(oldItem));
-        Assert.Equal(item.Location.CurrentValue.Latitude, MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newX));
-        Assert.Equal(item.Location.CurrentValue.Longitude, MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newY));
-        Assert.Equal(item.Location.CurrentValue.Altitude, newZ);
-        Assert.Equal(item.AutoContinue.CurrentValue, newAutocontinue != 0);
-        Assert.Equal(item.Command.CurrentValue, newCommand);
-        Assert.Equal(item.Current.CurrentValue, newCurrent != 0);
-        Assert.Equal(item.Frame.CurrentValue, newFrame);
-        Assert.Equal(item.MissionType.CurrentValue, newMissionType);
-        Assert.Equal(item.Param1.CurrentValue, newParam1);
-        Assert.Equal(item.Param2.CurrentValue, newParam2);
-        Assert.Equal(item.Param3.CurrentValue, newParam3);
-        Assert.Equal(item.Param4.CurrentValue, newParam4);
-        Assert.Equal(item.Index, newSeq);
+        await _tcs.Task;
+        Assert.Equal(expectedCalls, called);
+        item.Should().NotBeEquivalentTo(oldItem);
+        Assert.Equal(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newX), item.Location.CurrentValue.Latitude);
+        Assert.Equal(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newY), item.Location.CurrentValue.Longitude);
+        Assert.Equal(newZ, item.Location.CurrentValue.Altitude);
+        Assert.Equal(newAutocontinue != 0, item.AutoContinue.CurrentValue);
+        Assert.Equal(newCommand, item.Command.CurrentValue);
+        Assert.Equal(newCurrent != 0, item.Current.CurrentValue);
+        Assert.Equal(newFrame, item.Frame.CurrentValue);
+        Assert.Equal(newMissionType, item.MissionType.CurrentValue);
+        Assert.Equal(newParam1, item.Param1.CurrentValue);
+        Assert.Equal(newParam2, item.Param2.CurrentValue);
+        Assert.Equal(newParam3, item.Param3.CurrentValue);
+        Assert.Equal(newParam4, item.Param4.CurrentValue);
+        Assert.Equal(newSeq, item.Index);
     }
     
     [Fact]
-    public void Edit_ChangeHalfPayload_Success()
+    public async Task Edit_ChangeHalfPayload_Success()
     {
         // Arrange
+        const int newX = 4;
+        const int newY = 5;
+        const float newZ = 6f;
+        const byte newAutocontinue = byte.MinValue;
+        const int newParam2 = 14;
+        const int newParam3 = 144;
+        const int newParam4 = 100;
+        const byte newSeq = 2;
+        const int expectedCalls = 1;
+        
         var called = 0;
-        var newX = 4;
-        var newY = 5;
-        var newZ = 6f;
-        var newAutocontinue = byte.MinValue;
-        var newParam2 = 14;
-        var newParam3 = 144;
-        var newParam4 = 100;
-        var newSeq = (byte) 2;
         
         var payload = new MissionItemIntPayload
         {
@@ -166,9 +187,10 @@ public class MissionItemTest
         var oldItem = new MissionItem(payload);
         var item = new MissionItem(payload);
 
-        item.OnChanged.Subscribe(_ =>
+        using var sub = item.OnChanged.Synchronize().Subscribe(_ =>
         {
             called++;
+            _tcs.TrySetResult();
         });
         
         // Act
@@ -185,32 +207,28 @@ public class MissionItemTest
         });
         
         // Assert
-        Assert.Equal(1, called);
+        await _tcs.Task;
+        Assert.Equal(expectedCalls, called);
         Assert.False(item.IsDeepEqual(oldItem));
-        Assert.False(item.IsDeepEqual(oldItem));
-        Assert.Equal(item.Location.CurrentValue.Latitude, MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newX));
-        Assert.Equal(item.Location.CurrentValue.Longitude, MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newY));
-        Assert.Equal(item.Location.CurrentValue.Altitude, newZ);
-        Assert.Equal(item.AutoContinue.CurrentValue, newAutocontinue != 0);
-        Assert.Equal(item.Param2.CurrentValue, newParam2);
-        Assert.Equal(item.Param3.CurrentValue, newParam3);
-        Assert.Equal(item.Param4.CurrentValue, newParam4);
-        Assert.Equal(item.Index, newSeq);
+        Assert.Equal(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newX), item.Location.CurrentValue.Latitude);
+        Assert.Equal(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newY), item.Location.CurrentValue.Longitude);
+        Assert.Equal(newZ, item.Location.CurrentValue.Altitude);
+        Assert.Equal(newAutocontinue != 0, item.AutoContinue.CurrentValue);
+        Assert.Equal(newParam2, item.Param2.CurrentValue);
+        Assert.Equal(newParam3, item.Param3.CurrentValue);
+        Assert.Equal(newParam4, item.Param4.CurrentValue);
+        Assert.Equal(newSeq, item.Index);
     }
     
     [Theory]
     [InlineData(1, 2, 3, 4, 5, 6)]
-    [InlineData(1, 2, 3, 1, 5, 6)]
-    [InlineData(1, 2, 3, 1, 2, 6)]
-    [InlineData(1, 2, 3, 4, 2, 3)]
-    [InlineData(1, 2, 3, 4, 2, 6)]
-    [InlineData(1, 2, 3, 4, 5, 3)]
     [InlineData(int.MinValue, int.MinValue, float.MinValue, int.MaxValue, int.MaxValue, float.MaxValue)]
     [InlineData(int.MaxValue, int.MaxValue, float.MaxValue, int.MinValue, int.MinValue, float.MinValue)]
     [InlineData(1, 2, 3, 0, 0, 0)]
-    public void Edit_ChangeLocation_Success(int x, int y, float z, int newX, int newY, float newZ)
+    public async Task Edit_ChangeLocation_Success(int x, int y, float z, int newX, int newY, float newZ)
     {
         // Arrange
+        const int expectedCalls = 1;
         var called = 0;
         var payload = new MissionItemIntPayload
         {
@@ -231,9 +249,10 @@ public class MissionItemTest
         var oldItem = new MissionItem(payload);
         var item = new MissionItem(payload);
 
-        item.OnChanged.Subscribe(_ =>
+        using var sub = item.OnChanged.Synchronize().Subscribe(_ =>
         {
             called++;
+            _tcs.TrySetResult();
         });
         
         // Act
@@ -245,21 +264,21 @@ public class MissionItemTest
         });
         
         // Assert
-        Assert.Equal(1, called);
+        await _tcs.Task;
+        Assert.Equal(expectedCalls, called);
         Assert.False(item.IsDeepEqual(oldItem));
-        Assert.Equal(item.Location.CurrentValue.Latitude, MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newX));
-        Assert.Equal(item.Location.CurrentValue.Longitude, MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newY));
-        Assert.Equal(item.Location.CurrentValue.Altitude, newZ);
+        Assert.Equal(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newX), item.Location.CurrentValue.Latitude);
+        Assert.Equal(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newY), item.Location.CurrentValue.Longitude);
+        Assert.Equal(newZ, item.Location.CurrentValue.Altitude);
     }
     
     [Theory]
-    
-     [InlineData(1, 0)]
+    [InlineData(1, 0)]
     [InlineData(0, 1)]
-    
-    public void Edit_ChangeAutoContinue_Success(byte autoContinue, byte newAutoContinue)
+    public async Task Edit_ChangeAutoContinue_Success(byte autoContinue, byte newAutoContinue)
     {
         // Arrange
+        const int expectedCalls = 1;
         var called = 0;
         
         var payload = new MissionItemIntPayload
@@ -282,9 +301,10 @@ public class MissionItemTest
         var oldItem = new MissionItem(payload);
         var item = new MissionItem(payload);
 
-        item.OnChanged.Subscribe(_ =>
+        using var sub = item.OnChanged.Synchronize().Subscribe(_ =>
         {
             called++;
+            _tcs.TrySetResult();
         });
         
         // Act
@@ -294,19 +314,20 @@ public class MissionItemTest
         });
         
         // Assert
-        Assert.Equal(1, called);
+        await _tcs.Task;
+        Assert.Equal(expectedCalls, called);
         Assert.False(item.IsDeepEqual(oldItem));
-        Assert.Equal(item.AutoContinue.CurrentValue, newAutoContinue != 0);
+        Assert.Equal(newAutoContinue != 0, item.AutoContinue.CurrentValue);
     }
     
     [Theory]
-    [InlineData(MavCmd.MavCmdUser2)]
-    [InlineData(MavCmd.MavCmdArmAuthorizationRequest)]
+    [InlineData(MavCmd.MavCmdNavWaypoint)]
     [InlineData(MavCmd.MavCmdUser3)]
-    [InlineData(MavCmd.MavCmdNavTakeoff)]
-    public void Edit_ChangeCommand_Success(MavCmd newCommand)
+    [InlineData(MavCmd.MavCmdCanForward)]
+    public async Task Edit_ChangeCommand_Success(MavCmd newCommand)
     {
         // Arrange
+        const int expectedCalls = 1;
         var called = 0;
         
         var payload = new MissionItemIntPayload
@@ -329,9 +350,10 @@ public class MissionItemTest
         var oldItem = new MissionItem(payload);
         var item = new MissionItem(payload);
 
-        item.OnChanged.Subscribe(_ =>
+        using var sub = item.OnChanged.Synchronize().Subscribe(_ =>
         {
             called++;
+            _tcs.TrySetResult();
         });
         
         // Act
@@ -341,17 +363,19 @@ public class MissionItemTest
         });
         
         // Assert
-        Assert.Equal(1, called);
+        await _tcs.Task;
+        Assert.Equal(expectedCalls, called);
         Assert.False(item.IsDeepEqual(oldItem));
-        Assert.Equal(item.Command.CurrentValue, newCommand);
+        Assert.Equal(newCommand, item.Command.CurrentValue);
     }
     
     [Theory]
     [InlineData(1, 0)]
     [InlineData(0, 1)]
-    public void Edit_ChangeCurrent_Success(byte current, byte newCurrent)
+    public async Task Edit_ChangeCurrent_Success(byte current, byte newCurrent)
     {
         // Arrange
+        const int expectedCalls = 1;
         var called = 0;
         
         var payload = new MissionItemIntPayload
@@ -374,9 +398,10 @@ public class MissionItemTest
         var oldItem = new MissionItem(payload);
         var item = new MissionItem(payload);
 
-        item.OnChanged.Subscribe(_ =>
+        using var sub = item.OnChanged.Synchronize().Subscribe(_ =>
         {
             called++;
+            _tcs.TrySetResult();
         });
         
         // Act
@@ -386,19 +411,20 @@ public class MissionItemTest
         });
         
         // Assert
-        Assert.Equal(1, called);
+        await _tcs.Task;
+        Assert.Equal(expectedCalls, called);
         Assert.False(item.IsDeepEqual(oldItem));
-        Assert.Equal(item.Current.CurrentValue, newCurrent != 0);
+        Assert.Equal(newCurrent != 0, item.Current.CurrentValue);
     }
     
     [Theory]
-    [InlineData(MavFrame.MavFrameGlobalInt)]
+    [InlineData(MavFrame.MavFrameGlobal)]
     [InlineData(MavFrame.MavFrameReserved13)]
-    [InlineData(MavFrame.MavFrameLocalNed)]
-    [InlineData(MavFrame.MavFrameLocalOffsetNed)]
-    public void Edit_ChangeFrame_Success(MavFrame newFrame)
+    [InlineData(MavFrame.MavFrameLocalFlu)]
+    public async Task Edit_ChangeFrame_Success(MavFrame newFrame)
     {
         // Arrange
+        const int expectedCalls = 1;
         var called = 0;
         
         var payload = new MissionItemIntPayload
@@ -409,7 +435,7 @@ public class MissionItemTest
             Autocontinue = 1,
             Command = MavCmd.MavCmdUser1,
             Current = 1,
-            Frame = MavFrame.MavFrameGlobal,
+            Frame = MavFrame.MavFrameGlobalRelativeAltInt,
             MissionType = MavMissionType.MavMissionTypeAll,
             Param1 = 1.1f,
             Param2 = 2.3f,
@@ -420,10 +446,11 @@ public class MissionItemTest
         
         var oldItem = new MissionItem(payload);
         var item = new MissionItem(payload);
-
-        item.OnChanged.Subscribe(_ =>
+        
+        using var sub = item.OnChanged.Synchronize().Subscribe(_ =>
         {
             called++;
+            _tcs.TrySetResult();
         });
         
         // Act
@@ -433,18 +460,20 @@ public class MissionItemTest
         });
         
         // Assert
-        Assert.Equal(1, called);
+        await _tcs.Task;
+        Assert.Equal(expectedCalls, called);
         Assert.False(item.IsDeepEqual(oldItem));
-        Assert.Equal(item.Frame.CurrentValue, newFrame);
+        Assert.Equal(newFrame, item.Frame.CurrentValue);
     }
     
     [Theory]
     [InlineData(MavMissionType.MavMissionTypeMission)]
     [InlineData(MavMissionType.MavMissionTypeRally)]
     [InlineData(MavMissionType.MavMissionTypeFence)]
-    public void Edit_ChangeMissionType_Success(MavMissionType newMissionType)
+    public async Task Edit_ChangeMissionType_Success(MavMissionType newMissionType)
     {
         // Arrange
+        const int expectedCalls = 1;
         var called = 0;
         
         var payload = new MissionItemIntPayload
@@ -467,9 +496,10 @@ public class MissionItemTest
         var oldItem = new MissionItem(payload);
         var item = new MissionItem(payload);
 
-        item.OnChanged.Subscribe(_ =>
+        using var sub = item.OnChanged.Synchronize().Subscribe(_ =>
         {
             called++;
+            _tcs.TrySetResult();
         });
         
         // Act
@@ -479,7 +509,8 @@ public class MissionItemTest
         });
         
         // Assert
-        Assert.Equal(1, called);
+        await _tcs.Task;
+        Assert.Equal(expectedCalls, called);
         Assert.False(item.IsDeepEqual(oldItem));
         Assert.Equal(item.MissionType.CurrentValue, newMissionType);
     }
@@ -497,9 +528,10 @@ public class MissionItemTest
     [InlineData(2, float.NaN)]
     [InlineData(3, float.NaN)]
     [InlineData(4, float.NaN)]
-    public void Edit_ChangeParams_Success(int paramNumber, float newParam)
+    public async Task Edit_ChangeParams_Success(int paramNumber, float newParam)
     {
         // Arrange
+        const int expectedCalls = 1;
         var called = 0;
         
         var payload = new MissionItemIntPayload
@@ -522,9 +554,10 @@ public class MissionItemTest
         var oldItem = new MissionItem(payload);
         var item = new MissionItem(payload);
 
-        item.OnChanged.Subscribe(_ =>
+        using var sub = item.OnChanged.Synchronize().Subscribe(_ =>
         {
             called++;
+            _tcs.TrySetResult();
         });
         
         // Act
@@ -557,7 +590,8 @@ public class MissionItemTest
         }
         
         // Assert
-        Assert.Equal(1, called);
+        await _tcs.Task;
+        Assert.Equal(expectedCalls, called);
         Assert.False(item.IsDeepEqual(oldItem));
         switch (paramNumber)
         {
@@ -579,9 +613,10 @@ public class MissionItemTest
     [Theory]
     [InlineData(ushort.MinValue)]
     [InlineData(ushort.MaxValue)]
-    public void Edit_ChangeSeq_Success(ushort newSeq)
+    public async Task Edit_ChangeSeq_Success(ushort newSeq)
     {
         // Arrange
+        const int expectedCalls = 1;
         var called = 0;
         
         var payload = new MissionItemIntPayload
@@ -604,9 +639,10 @@ public class MissionItemTest
         var oldItem = new MissionItem(payload);
         var item = new MissionItem(payload);
 
-        item.OnChanged.Subscribe(_ =>
+        using var sub = item.OnChanged.Synchronize().Subscribe(_ =>
         {
             called++;
+            _tcs.TrySetResult();
         });
         
         // Act
@@ -616,8 +652,15 @@ public class MissionItemTest
         });
         
         // Assert
-        Assert.Equal(1, called);
+        await _tcs.Task;
+        Assert.Equal(expectedCalls, called);
         Assert.False(item.IsDeepEqual(oldItem));
         Assert.Equal(item.Index, newSeq);
+    }
+
+    public void Dispose()
+    {
+        _cancellationTokenSource.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

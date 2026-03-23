@@ -43,6 +43,7 @@ Available microservices:
 * [](Logging.md) { #logging }
 * [](Missions.md) { #missions }
 * [](Mode.md) { #mode }
+* [](MotorTest.md) { #motor-test }
 * [](Params.md) { #params }
 * [](ParamsExt.md) { #params-ext }
 * [Position (Offboard Control Interface)](Position.md) { #position }

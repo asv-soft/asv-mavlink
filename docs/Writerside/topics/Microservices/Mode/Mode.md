@@ -6,13 +6,13 @@ It is a wrapper around MAVLink primitives: the microservice **reads** the curren
 
 The mode microservice can be used in two roles:
 
-- A [client](ModeClient.md) implementing [IModeClient](ModeClient.md#imodeclient-source)  
+- A [client](ModeClient.md) implementing [IModeClient](ModeClient.md#imodeclient)  
   (for example, a ground control app) — sends mode change requests and observes the current mode via heartbeats.
 
-- A [server](ModeServer.md) implementing [IModeServer](ModeServer.md#imodeserver-source)  
+- A [server](ModeServer.md) implementing [IModeServer](ModeServer.md#imodeserver)  
   (for example, an autopilot or simulator) — accepts mode change requests, applies them and reflects the current mode in heartbeats.
 
-## ICustomMode ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/ICustomMode.cs))
+## [ICustomMode](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/ICustomMode.cs)
 
 Reference for the `ICustomMode` shape — an implementation describes a single autopilot-specific flight mode (examples: [ArduCopter](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Copter/ArduCopterMode.cs), [ArduPlane](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Plane/ArduPlaneMode.cs), [PX4](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Px4/Px4Mode.cs), [Unknown](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/UnknownMode.cs)).
 

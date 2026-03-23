@@ -79,7 +79,7 @@ public class ServerMissionItem
 /// <summary>
 /// Interface for a mission server that handles mission related communication.
 /// </summary>
-public interface IMissionServer:IMavlinkMicroserviceServer
+public interface IMissionServer: IMavlinkMicroserviceServer
 {
     /// <summary>
     /// Event that is raised whenever the mission count is updated.

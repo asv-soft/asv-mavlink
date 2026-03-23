@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Cfg;
+using Asv.Common;
 using Asv.Mavlink.Common;
 
 using Microsoft.Extensions.Logging;
@@ -33,10 +34,6 @@ public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtSer
     private readonly IStatusTextServer _statusTextServer;
     private readonly IConfiguration _cfg;
     private readonly ParamsExtServerExConfig _serverCfg;
-    
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
-    private readonly IDisposable _sub3;
 
     public ParamsExtServerEx(
         IParamsExtServer server, 
@@ -65,13 +62,12 @@ public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtSer
         
         _onParamChangedSubject = new Subject<ParamExtChangedEvent>();
 
-        _sub1 = server.OnParamExtSet.Subscribe(OnParamSet);
-        _sub2 = server.OnParamExtRequestList.Subscribe(OnParamRequestList);
-        _sub3 = server.OnParamExtRequestRead.Subscribe(OnParamRequestRead);
+        _sub1 = server.OnParamExtSet.SubscribeAwait(OnParamSet, AwaitOperation.Parallel);
+        _sub2 = server.OnParamExtRequestList.SubscribeAwait(OnParamRequestList, AwaitOperation.Parallel);
+        _sub3 = server.OnParamExtRequestRead.SubscribeAwait(OnParamRequestRead, AwaitOperation.Parallel);
     }
-
-
-    private async void OnParamRequestRead(ParamExtRequestReadPacket packet)
+    
+    private async ValueTask OnParamRequestRead(ParamExtRequestReadPacket packet, CancellationToken cancel)
     {
         (ushort, IMavParamExtTypeMetadata) param;
         if (packet.Payload.ParamIndex < 0)
@@ -99,28 +95,28 @@ public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtSer
         }
 
         var currentValue = param.Item2.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
-        await SendParam(param, currentValue, DisposeCancel).ConfigureAwait(false);
+        await SendParam(param, currentValue, cancel).ConfigureAwait(false);
     }
 
-    private async void OnParamRequestList(ParamExtRequestListPacket paramRequestListPacket)
+    private async ValueTask OnParamRequestList(ParamExtRequestListPacket paramRequestListPacket, CancellationToken cancel)
     {
         if (Interlocked.CompareExchange(ref _sendingInProgressFlag, 1, 0) == 1)
         {
             _logger.LogWarning("Skip duplicate request for params list");
-            _statusTextServer.Error($"Skip duplicate request");
+            _statusTextServer.Error("Skip duplicate request");
             return;
         }
-        _logger.LogDebug($"Send all params to client");
+        _logger.LogDebug("Send all params to client");
         try
         {
             for (var index = 0; index < _paramList.Count; index++)
             {
                 var param = _paramList[index];
                 var currentValue = param.ReadFromConfig(_cfg, _serverCfg.CfgPrefix);
-                await SendParam(((ushort)index, param), currentValue, DisposeCancel).ConfigureAwait(false);
+                await SendParam(((ushort)index, param), currentValue, cancel).ConfigureAwait(false);
                 if (_serverCfg.SendingParamItemDelayMs > 0)
                 {
-                    await Task.Delay(TimeSpan.FromMilliseconds(_serverCfg.SendingParamItemDelayMs), Core.TimeProvider, DisposeCancel).ConfigureAwait(false);    
+                    await Task.Delay(TimeSpan.FromMilliseconds(_serverCfg.SendingParamItemDelayMs), Core.TimeProvider, cancel).ConfigureAwait(false);    
                 }
                 
             }
@@ -131,10 +127,10 @@ public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtSer
         }
     }
 
-    private async void OnParamSet(ParamExtSetPacket packet)
+    private async ValueTask OnParamSet(ParamExtSetPacket packet, CancellationToken cancel)
     {
         var name = MavlinkTypesHelper.GetString(packet.Payload.ParamId);
-        if (_paramDict.TryGetValue(name, out var param) == false)
+        if (!_paramDict.TryGetValue(name, out var param))
         {
             _logger.ZLogError($"Error to set mavlink param: param '{name}' not found");
             _statusTextServer.Error($"Param '{name}' not found");
@@ -148,24 +144,24 @@ public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtSer
             _logger.ZLogError($"Error to set mavlink param: param '{name}' type didn't equal. Want {param.Item2.Type} but found {packet.Payload.ParamType}");
             _statusTextServer.Error($"param type '{name}' not equal");
             _onErrorSubject.OnNext(new ArgumentException($"Error to set mavlink param: param '{name}' type didn't equal. Want {param.Item2.Type} but found {packet.Payload.ParamType}", name));
-            await SendAck(param, currentValue, DisposeCancel).ConfigureAwait(false);
+            await SendAck(param, currentValue, cancel).ConfigureAwait(false);
             return;
         }
 
         var newValue = new MavParamExtValue(packet.Payload.ParamValue);
-        if (param.Item2.IsValid(newValue) == false)
+        if (!param.Item2.IsValid(newValue))
         {
             var errorMsg = param.Item2.GetValidationError(newValue);
             _logger.ZLogError($"Error to set mavlink param '{name}' [{param.Item2.Type}]: {errorMsg}");
             _statusTextServer.Error($"param '{name}':{errorMsg}");
             _onErrorSubject.OnNext(new ArgumentException($"Error to set mavlink param '{name}' [{param.Item2.Type}]: {errorMsg}", name));
-            await SendAck(param, currentValue, DisposeCancel).ConfigureAwait(false);
+            await SendAck(param, currentValue, cancel).ConfigureAwait(false);
             return;
         }
         _logger.ZLogError($"Set param {param.Item2.Name} from {currentValue} => {newValue}");
         param.Item2.WriteToConfig(_cfg, newValue, _serverCfg.CfgPrefix);
         _onParamChangedSubject.OnNext(new ParamExtChangedEvent(param, currentValue, newValue, true));
-        await SendAck(param, newValue, DisposeCancel).ConfigureAwait(false);
+        await SendAck(param, newValue, cancel).ConfigureAwait(false);
     }
 
     private async Task SendAck((ushort, IMavParamExtTypeMetadata) param, MavParamExtValue value,
@@ -200,7 +196,7 @@ public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtSer
     {
         get
         {
-            if (_paramDict.TryGetValue(name, out var param) == false)
+            if (!_paramDict.TryGetValue(name, out var param))
             {
                 throw new ArgumentException($"Param '{name}' not found", nameof(name));
             }
@@ -214,7 +210,7 @@ public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtSer
                 throw new ArgumentException($"Param '{name}' not found", nameof(name));
             }
 
-            if (param.Item2.IsValid(value) == false)
+            if (!param.Item2.IsValid(value))
             {
                 var errorMsg = param.Item2.GetValidationError(value);
                 throw new ArgumentException($"Error to set mavlink param '{name}' [{param.Item2.Type}]: {errorMsg}",
@@ -225,7 +221,8 @@ public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtSer
             param.Item2.WriteToConfig(_cfg, value, _serverCfg.CfgPrefix);
             _onParamChangedSubject.OnNext(new ParamExtChangedEvent(param, oldValue, value, false));
             // TODO: put to queue and send in background using delay (throttle)
-            SendParam(param, value, DisposeCancel).Wait();
+            SendParam(param, value, DisposeCancel)
+                .SafeFireAndForget(ex => _logger.LogError(ex, "Error to set mavlink param"));
         }
     }
 
@@ -236,6 +233,10 @@ public sealed class ParamsExtServerEx : MavlinkMicroserviceServer, IParamsExtSer
     }
 
     #region Dispose
+    
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
 
     protected sealed override void Dispose(bool disposing)
     {

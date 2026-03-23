@@ -1,6 +1,6 @@
 # Heartbeat client
 
-To work with heartbeat packets from a client, you can request the [IHeartbeatClient](#iheartbeatclient-source) from the device instance. 
+To work with heartbeat packets from a client, you can request the [IHeartbeatClient](#iheartbeatclient) from the device instance. 
 It is registered by default.
 
 ```c#
@@ -30,7 +30,7 @@ var subscription = heartbeat.LinkQuality.Subscribe(quality =>
 >Don't forget to dispose subscriptions when they are no longer needed.
 {style="warning"}
 
-## IHeartbeatClient ([source](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Heartbeat/Client/IHeartbeatClient.cs#L11C1-L11C67))
+## [IHeartbeatClient](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Heartbeat/Client/IHeartbeatClient.cs#L11C1-L11C67)
 
 Represents a client that sends and receives heartbeats.
 

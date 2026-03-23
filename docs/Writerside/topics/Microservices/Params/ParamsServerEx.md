@@ -1,6 +1,6 @@
 # Params ex-server
 
-If you implement a server (autopilot or simulator), you can use [IParamsServerEx](#iparamsserverex-source) for high-level parameter management with metadata, type-safe handling, and reactive updates.
+If you implement a server (autopilot or simulator), you can use [IParamsServerEx](#iparamsserverex) for high-level parameter management with metadata, type-safe handling, and reactive updates.
 
 First, register the params service during server device build:
 
@@ -112,7 +112,7 @@ paramsEx.OnU8Command(
     });
 ```
 
-## IParamsServerEx ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Server/Ex/IParamsServerEx.cs))
+## [IParamsServerEx](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Server/Ex/IParamsServerEx.cs)
 
 Represents a high-level parameter server with metadata support, type-safe handling, and reactive updates.
 

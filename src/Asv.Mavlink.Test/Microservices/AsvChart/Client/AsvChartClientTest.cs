@@ -2,31 +2,29 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using R3;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Asv.Mavlink.Test.Client;
+namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(AsvChartClient))]
-public class AsvChartClientTest : ClientTestBase<AsvChartClient>, IDisposable
+public class AsvChartClientTest : ClientTestBase<AsvChartClient>
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
+    private readonly AsvChartClientConfig _config = new()
+    {
+        MaxAttempts = 5,
+        MaxTimeToWaitForResponseForListMs = 1000
+    };
 
     public AsvChartClientTest(ITestOutputHelper log) : base(log)
     {
         _cancellationTokenSource = new CancellationTokenSource();
     }
-    
-    private readonly AsvChartClientConfig _config = new()
-    {
-        MaxTimeToWaitForResponseForListMs = 1000
-    };
-
-    protected override AsvChartClient CreateClient(MavlinkClientIdentity identity, CoreServices core) =>
-        new(identity, _config, core);
 
     [Fact]
-    public void Ctor_ThrowsExceptions_ArgIsNullFail()
+    public void Ctor_NullArguments_Throws()
     {
         Assert.Throws<ArgumentNullException>(() => new AsvChartClient(null!, _config, Context));
         Assert.Throws<NullReferenceException>(() => new AsvChartClient(Identity, null!, Context));
@@ -34,24 +32,27 @@ public class AsvChartClientTest : ClientTestBase<AsvChartClient>, IDisposable
     }
     
     [Fact]
-    public async Task ReadAllInfo_ShouldThrowTimeout_Exception()
+    public async Task ReadAllInfo_Timeout_Throws()
     {
-        // Act
-        var attempts = 5;
-        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
+        // Arrange
+        using var sub = Link.Client.OnTxMessage.Synchronize().Subscribe(_ =>
         {
-            await Client.ReadAllInfo(null, _cancellationTokenSource.Token);
-        });
-
-        var t2 = Task.Factory.StartNew(() =>
-        {
-            Time.Advance(TimeSpan.FromMilliseconds(_config.MaxTimeToWaitForResponseForListMs * attempts + 1));
+            Time.Advance(TimeSpan.FromMilliseconds(_config.MaxTimeToWaitForResponseForListMs));
         });
         
+        // Act
+        var task = Client.ReadAllInfo(null, _cancellationTokenSource.Token);
+        
         //Assert
-        await Task.WhenAll(t1, t2);
-        Assert.Equal(attempts, (int)Link.Client.Statistic.TxMessages);
+        await Assert.ThrowsAsync<TimeoutException>(async () => await task);
+        Assert.Equal(_config.MaxAttempts, (int)Link.Client.Statistic.TxMessages);
+        Assert.Equal(Link.Client.Statistic.TxMessages, Link.Server.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Client.Statistic.RxMessages);
+        Assert.Equal(0u, Link.Server.Statistic.TxMessages);
     }
+    
+    protected override AsvChartClient CreateClient(MavlinkClientIdentity identity, CoreServices core) =>
+        new(identity, _config, core);
 
     protected override void Dispose(bool disposing)
     {

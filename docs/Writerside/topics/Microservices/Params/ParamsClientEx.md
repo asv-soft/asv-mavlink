@@ -1,6 +1,6 @@
 # Params ex-client
 
-You can use the higher-level [IParamsClientEx](#iparamsclientex-source), which provides convenient caching, synchronization, and simplified parameter access.
+You can use the higher-level [IParamsClientEx](#iparamsclientex), which provides convenient caching, synchronization, and simplified parameter access.
 
 ```C#
 var paramsEx = device.GetMicroservice<IParamsClientEx>() 
@@ -63,7 +63,7 @@ using var syncStatus = paramsEx.IsSynced.Subscribe(isSynced =>
 >Don't forget to dispose subscriptions when they are no longer needed.
 {style="warning"}
 
-## IParamsClientEx ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Client/Ex/IParamsClientEx.cs))
+## [IParamsClientEx](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Client/Ex/IParamsClientEx.cs)
 
 Exposes members to interact with parameters.
 

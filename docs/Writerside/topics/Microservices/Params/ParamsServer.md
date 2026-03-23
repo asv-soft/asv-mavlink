@@ -1,6 +1,6 @@
 # Params server
 
-If you implement a server device or simulator, you can use [IParamsServer](#iparamsserver-source) to handle parameter requests.
+If you implement a server device or simulator, you can use [IParamsServer](#iparamsserver) to handle parameter requests.
 
 First, you need to register the params service when building server device:
 
@@ -63,7 +63,7 @@ await paramsServer.SendParamValue(param =>
 > For easier parameter management with metadata and type-safe handling, consider using [ParamsServerEx](ParamsServerEx.md).
 {style="tip"}
 
-## IParamsServer ([source](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Server/IParamsServer.cs))
+## [IParamsServer](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Server/IParamsServer.cs)
 
 Represents a server that handles low-level parameter operations.
 

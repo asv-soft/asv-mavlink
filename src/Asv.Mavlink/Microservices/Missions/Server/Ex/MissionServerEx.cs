@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Asv.Common;
 using Asv.Mavlink.Common;
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
@@ -28,13 +29,6 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
     private readonly ReactiveProperty<ushort> _reached = new(0);
     private readonly ReactiveProperty<MissionServerState> _state = new(MissionServerState.Idle);
     private CancellationTokenSource? _missionCancel;
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
-    private readonly IDisposable _sub3;
-    private readonly IDisposable _sub4;
-    private readonly IDisposable _sub5;
-    private readonly IDisposable _sub6;
-    private readonly IDisposable _sub7;
     private Thread? _missionThread;
     private readonly ConcurrentDictionary<ushort,MissionTaskDelegate> _registry = new();
     private ushort _nextMissionIndex;
@@ -258,9 +252,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         }
         EnsureIndexCorrected();
     }
-
-   
-
+    
     private void EnsureIndexCorrected()
     {
         for (var i = 0; i < _missionSource.Count; i++)
@@ -296,17 +288,22 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         {
             if (_missionSource.Count == 0)
             {
-                _statusLogger.Info($"Mission is empty");
+                _statusLogger.Info("Mission is empty");
                 return;
             }
 
             _statusLogger.Info($"Start mission {missionIndex} of {_missionSource.Count}");
             _state.Value = MissionServerState.Running;
             _nextMissionIndex = missionIndex;
+            
             _missionCancel?.Cancel(false);
             _missionCancel = new CancellationTokenSource();
-            _missionThread = new Thread(MissionTick);
-            _missionThread.Start(_missionCancel.Token);
+            _missionThread = new Thread(() => 
+                MissionTick(_missionCancel.Token).SafeFireAndForget(ex =>
+                {
+                    _statusLogger.Error($"Mission error: {ex.Message}");
+                }));
+            _missionThread.Start();
         }
         catch (Exception)
         {
@@ -319,7 +316,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
     {
         try
         {
-            _statusLogger.Info($"Stop mission");
+            _statusLogger.Info("Stop mission");
             _missionCancel?.Cancel(false);
             _missionCancel?.Dispose();
             _currentMissionItemCancel?.Cancel(false);
@@ -356,7 +353,8 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         _current.OnNext(index);
         return ValueTask.CompletedTask;
     }
-    private async void MissionTick(object? obj)
+    
+    private async Task MissionTick(object? obj)
     {
         try
         {
@@ -364,7 +362,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
             var items = GetItemsSnapshot();
             if (items.Length == 0)
             {
-                _statusLogger.Info($"Mission is empty");
+                _statusLogger.Info("Mission is empty");
                 _state.Value = MissionServerState.CompleteSuccess;
                 return;
             }
@@ -376,7 +374,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                 ++_nextMissionIndex; // ! important here
                 if (missionIndex >= items.Length)
                 {
-                    _statusLogger.Info($"Mission completed");
+                    _statusLogger.Info("Mission completed");
                     _state.Value = MissionServerState.CompleteSuccess;
                     return;
                 }
@@ -384,7 +382,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                 _current.OnNext(missionIndex);
                 if (cancel.IsCancellationRequested)
                 {
-                    _statusLogger.Info($"Mission canceled");
+                    _statusLogger.Info("Mission canceled");
                     _state.Value = MissionServerState.Canceled;
                     return;
                 }
@@ -414,8 +412,6 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                     _statusLogger.Info($"Skip unsupported command '{item.Command}'");
                 }
                 _reached.Value = missionIndex;
-                
-
             }
         }
         catch (Exception e)
@@ -431,9 +427,15 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
         
     }
 
-    
-
     #region Dispose
+    
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
+    private readonly IDisposable _sub5;
+    private readonly IDisposable _sub6;
+    private readonly IDisposable _sub7;
 
     protected override void Dispose(bool disposing)
     {

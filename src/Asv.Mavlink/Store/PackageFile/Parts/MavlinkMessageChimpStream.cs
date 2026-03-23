@@ -30,8 +30,9 @@ public class MavlinkMessageChimpAsvPackagePart(
     AsvPackageContext context,
     IMavlinkStreamIdSelector? idSelector = null,
     CompressionOption compression = CompressionOption.Maximum,
-    bool useZstdForBatch = true)
-    : VisitableTimeSeriesAsvPackagePart(uriPart, contentType,flushEvery,context, compression, useZstdForBatch) 
+    bool useZstdForBatch = true,
+    AsvPackagePart? parent = null)
+    : VisitableTimeSeriesAsvPackagePart(uriPart, contentType,flushEvery,context, compression, useZstdForBatch, parent) 
 {
     private readonly IMavlinkStreamIdSelector _idSelector = idSelector ?? new MavlinkSimpleStreamIdConverter();
     

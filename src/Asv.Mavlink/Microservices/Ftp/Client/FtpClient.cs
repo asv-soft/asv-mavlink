@@ -9,14 +9,34 @@ using ZLogger;
 
 namespace Asv.Mavlink;
 
+/// <summary>
+/// MAVLink FTP client config
+/// </summary>
 public class MavlinkFtpClientConfig
 {
+    /// <summary>
+    /// Timeout (in milliseconds) for a single FTP command.
+    /// </summary>
     public int TimeoutMs { get; set; } = 500;
+    
+    /// <summary>
+    /// How many times to retry a command on timeout failure.
+    /// </summary>
     public int CommandAttemptCount { get; set; } = 6;
+    
+    /// <summary>
+    /// Target MAVLink network ID (target_network) used for routing.
+    /// </summary>
     public byte TargetNetworkId { get; set; } = 0;
+    
+    /// <summary>
+    /// Burst-read inactivity timeout (in milliseconds). If no burst packets are received for longer than this,
+    /// the read is considered finished (guards against missing the burst-complete packet).
+    /// </summary>
     public int BurstTimeoutMs { get; set; } = 1000;
 }
 
+/// <inheritdoc cref="IFtpClient"/>
 public class FtpClient : MavlinkMicroserviceClient, IFtpClient
 {
     private readonly MavlinkFtpClientConfig _config;

@@ -10,8 +10,9 @@ public class MavParamsKvJsonAsvPackagePart(
     Uri uriPart,
     string contentType,
     CompressionOption compression,
-    AsvPackageContext context) 
-    : KvJsonAsvPackagePart(uriPart, contentType, compression, context)
+    AsvPackageContext context,
+    AsvPackagePart? parent = null) 
+    : KvJsonAsvPackagePart(uriPart, contentType, compression, context, parent)
 {
     public void Write(params IEnumerable<MavlinkParamRecord> mavParams)
     {

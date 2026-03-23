@@ -161,14 +161,14 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext).RegisterTo(disposeCancel);
+            .SubscribeAwait(OnNext, AwaitOperation.Drop).RegisterTo(disposeCancel);
         return;
 
-        async void OnNext(ParamChangedEvent x)
+        async ValueTask OnNext(ParamChangedEvent x, CancellationToken cancel)
         {
             try
             {
-                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+                await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -236,14 +236,14 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext).RegisterTo(disposeCancel);
+            .SubscribeAwait(OnNext, AwaitOperation.Drop).RegisterTo(disposeCancel);
         return;
 
-        async void OnNext(ParamChangedEvent x)
+        async ValueTask OnNext(ParamChangedEvent x, CancellationToken cancel)
         {
             try
             {
-                await setCallback((byte)x.NewValue!= 0, false, disposeCancel).ConfigureAwait(false);
+                await setCallback((byte)x.NewValue!= 0, false, cancel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -261,14 +261,14 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext).RegisterTo(disposeCancel);
+            .SubscribeAwait(OnNext, AwaitOperation.Drop).RegisterTo(disposeCancel);
         return;
 
-        async void OnNext(ParamChangedEvent x)
+        async ValueTask OnNext(ParamChangedEvent x, CancellationToken cancel)
         {
             try
             {
-                await setCallback((TEnum)Enum.ToObject(typeof(TEnum), (byte)this[param]), false, disposeCancel).ConfigureAwait(false);
+                await setCallback((TEnum)Enum.ToObject(typeof(TEnum), (byte)this[param]), false, cancel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -284,14 +284,14 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext).RegisterTo(disposeCancel);
+            .SubscribeAwait(OnNext, AwaitOperation.Drop).RegisterTo(disposeCancel);
         return;
 
-        async void OnNext(ParamChangedEvent x)
+        async ValueTask OnNext(ParamChangedEvent x, CancellationToken cancel)
         {
             try
             {
-                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+                await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -309,14 +309,14 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext).RegisterTo(disposeCancel);
+            .SubscribeAwait(OnNext, AwaitOperation.Drop).RegisterTo(disposeCancel);
         return;
 
-        async void OnNext(ParamChangedEvent x)
+        async ValueTask OnNext(ParamChangedEvent x, CancellationToken cancel)
         {
             try
             {
-                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+                await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -332,14 +332,14 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext).RegisterTo(disposeCancel);
+            .SubscribeAwait(OnNext, AwaitOperation.Drop).RegisterTo(disposeCancel);
         return;
 
-        async void OnNext(ParamChangedEvent x)
+        async ValueTask OnNext(ParamChangedEvent x, CancellationToken cancel)
         {
             try
             {
-                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+                await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -355,14 +355,14 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext).RegisterTo(disposeCancel);
+            .SubscribeAwait(OnNext, AwaitOperation.Drop).RegisterTo(disposeCancel);
         return;
 
-        async void OnNext(ParamChangedEvent x)
+        async ValueTask OnNext(ParamChangedEvent x, CancellationToken cancel)
         {
             try
             {
-                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+                await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -378,14 +378,14 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext).RegisterTo(disposeCancel);
+            .SubscribeAwait(OnNext, AwaitOperation.Drop).RegisterTo(disposeCancel);
         return;
 
-        async void OnNext(ParamChangedEvent x)
+        async ValueTask OnNext(ParamChangedEvent x, CancellationToken cancel)
         {
             try
             {
-                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+                await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -402,14 +402,14 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
 
         OnUpdated
             .Where(x => x.Metadata.Name.Equals(param.Name))
-            .Subscribe(OnNext).RegisterTo(disposeCancel);
+            .SubscribeAwait(OnNext, AwaitOperation.Drop).RegisterTo(disposeCancel);
         return;
 
-        async void OnNext(ParamChangedEvent x)
+        async ValueTask OnNext(ParamChangedEvent x, CancellationToken cancel)
         {
             try
             {
-                await setCallback(x.NewValue, false, disposeCancel).ConfigureAwait(false);
+                await setCallback(x.NewValue, false, cancel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -419,8 +419,6 @@ public interface IParamsServerEx: IMavlinkMicroserviceServer
     }
 
     #endregion
-   
-    
 }
 
 public delegate Task ParamValueCallback<in T>(T value, bool firstChange, CancellationToken cancel);

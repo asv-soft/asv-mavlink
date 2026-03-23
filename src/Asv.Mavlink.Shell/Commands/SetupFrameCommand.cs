@@ -42,23 +42,23 @@ public class SetupFrameCommand
                 AnsiConsole.Clear();
                 var tcs = new TaskCompletionSource();
                 cancellationToken.Register(() => tcs.TrySetCanceled());
-                var currentFrameText = frameClient.CurrentMotorFrame?.CurrentValue is null 
+                var currentFrameText = frameClient.CurrentFrame?.CurrentValue is null 
                     ? "???"
-                    : MotorFrameToReadable(frameClient.CurrentMotorFrame.CurrentValue);
+                    : DroneFrameToReadable(frameClient.CurrentFrame.CurrentValue);
                 
                 AnsiConsole.MarkupLine($"[blue]Current frame:[/] {currentFrameText}");
             
                 var selectedFrame = await AnsiConsole.PromptAsync(
-                    new SelectionPrompt<IMotorFrame>()
+                    new SelectionPrompt<IDroneFrame>()
                         .Title("Select a new [blue]frame[/]:")
-                        .AddChoices(frameClient.MotorFrames.Values)
-                        .UseConverter(MotorFrameToReadable),
+                        .AddChoices(frameClient.Frames.Values)
+                        .UseConverter(DroneFrameToReadable),
                     cancellationToken);
             
                 await frameClient.SetFrame(selectedFrame, cancellationToken);
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine("[blue]info:[/] Updating frame...");
-                using var sub = frameClient.CurrentMotorFrame?.WhereNotNull().Subscribe(v =>
+                using var sub = frameClient.CurrentFrame?.WhereNotNull().Subscribe(v =>
                 {
                     if (v.Id == selectedFrame.Id)
                     {
@@ -68,7 +68,7 @@ public class SetupFrameCommand
 
                 await tcs.Task;
                 AnsiConsole.Clear();
-                var selectedFrameText = MotorFrameToReadable(frameClient.CurrentMotorFrame?.CurrentValue);
+                var selectedFrameText = DroneFrameToReadable(frameClient.CurrentFrame?.CurrentValue);
                 AnsiConsole.MarkupLine($"[blue]Selected frame:[/] {selectedFrameText}");
 
                 AnsiConsole.MarkupLine("Press Ctrl-C to exit or any key to continue...");
@@ -89,19 +89,19 @@ public class SetupFrameCommand
         }
     }
 
-    private string MotorFrameToReadable(IMotorFrame? motorFrame)
+    private string DroneFrameToReadable(IDroneFrame? droneFrame)
     {
-        if (motorFrame is null)
+        if (droneFrame is null)
         {
             return "[yellow]???[/]";
         }
         
-        if (motorFrame.Meta is null)
+        if (droneFrame.Meta is null)
         {
-            return $"[yellow]{motorFrame.Id}[/]";
+            return $"[yellow]{droneFrame.Id}[/]";
         }
 
-        var meta = string.Join("[blue];[/] ", motorFrame.Meta.Select(kv => $"{kv.Key}: {kv.Value}"));
-        return $"[yellow]{motorFrame.Id}[/]: ([blue]meta[/]: {meta})";
+        var meta = string.Join("[blue];[/] ", droneFrame.Meta.Select(kv => $"{kv.Key}: {kv.Value}"));
+        return $"[yellow]{droneFrame.Id}[/]: ([blue]meta[/]: {meta})";
     }
 }

@@ -119,6 +119,7 @@ public interface IPositionClientEx : IMavlinkMicroserviceClient
     /// <returns>A task representing the asynchronous operation that returns the home position.</returns>
     Task GetHomePosition(CancellationToken cancel = default);
 
+    Task SetHomePosition(GeoPoint location, CancellationToken cancel = default);
     /// <summary>
     /// Represents the distance from a home location.
     /// </summary>

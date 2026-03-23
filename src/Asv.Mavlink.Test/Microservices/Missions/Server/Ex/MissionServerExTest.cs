@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
+using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
 using Xunit.Abstractions;
@@ -28,12 +29,9 @@ public class MissionServerExTest : ServerTestBase<MissionServerEx>
     {
         _server = Server;
     }
-
-    protected override MissionServerEx CreateServer(MavlinkIdentity identity, CoreServices core) 
-        => new(new MissionServer(identity, core), new StatusTextServer(identity, _config, core), new CommandLongServerEx(new CommandServer(identity,core)));
     
     [Fact]
-    public void Constructor_Null_Throws()
+    public void Constructor_NullArgument_Throws()
     {
         Assert.Throws<NullReferenceException>(
             () => new MissionServerEx(null!, new StatusTextServer(Identity, _config, Core), new CommandLongServerEx(new CommandServer(Identity,Core)))
@@ -86,7 +84,7 @@ public class MissionServerExTest : ServerTestBase<MissionServerEx>
     }
     
     [Fact]
-    public void AddItems_AddNull_Throws()
+    public void AddItems_AddItemsNull_Throws()
     {
         Assert.Throws<ArgumentNullException>(() => _server.AddItems(null!));
     }
@@ -224,10 +222,7 @@ public class MissionServerExTest : ServerTestBase<MissionServerEx>
         Assert.NotEmpty(itemsFromServer);
         Assert.NotEmpty(result);
         Assert.Equal(itemsCount, result.Length);
-        for (var i = 0; i < itemsCount; i++)
-        {
-            Assert.True(itemsFromServer[i].IsDeepEqual(result[i]));
-        }
+        result.Should().BeEquivalentTo(itemsFromServer);
     }
     
     [Fact]
@@ -243,7 +238,7 @@ public class MissionServerExTest : ServerTestBase<MissionServerEx>
     }
 
     [Fact]
-    public void GetItemsSnapshot_NullItems_Throws()
+    public void GetItemsSnapshot_EmptyItemsArray_Success()
     {
         // Arrange
         var realItems = Array.Empty<ServerMissionItem>();
@@ -257,4 +252,7 @@ public class MissionServerExTest : ServerTestBase<MissionServerEx>
         Assert.Empty(itemsFromServer);
         Assert.Empty(result);
     }
+    
+    protected override MissionServerEx CreateServer(MavlinkIdentity identity, CoreServices core) 
+        => new(new MissionServer(identity, core), new StatusTextServer(identity, _config, core), new CommandLongServerEx(new CommandServer(identity,core)));
 }

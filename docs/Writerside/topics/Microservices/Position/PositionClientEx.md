@@ -1,6 +1,6 @@
 # Position ex-client
 
-You can also use the higher-level [IPositionClientEx](#ipositionclientex-source),
+You can also use the higher-level [IPositionClientEx](#ipositionclientex),
 which provides convenient reactive properties and helper methods for common operations such as
 takeoff, landing, setting targets, and ROI management.
 
@@ -25,7 +25,7 @@ await positionEx.TakeOff(altInMeters: 10);
 >If you want to control the device, check out the [Control microservice](Control.md) — it might be a better fit for your needs.
 >It also acts as a higher-level abstraction over the Position and other microservices.
 
-## IPositionClientEx ([source](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Position/Client/Ex/IPositionClientEx.cs#L14))
+## [IPositionClientEx](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Position/Client/Ex/IPositionClientEx.cs#L14)
 
 Represents a higher-level wrapper over `IPositionClient` providing convenient reactive properties and additional helper methods.
 

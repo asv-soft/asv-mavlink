@@ -31,9 +31,18 @@ public sealed class ParamsClientEx : MavlinkMicroserviceClient, IParamsClientEx
     private readonly ImmutableDictionary<string, ParamDescription> _existDescription;
     private ReaderWriterLockSlim _paramsLock = new();
 
-    public ParamsClientEx(IParamsClient client, ParamsClientExConfig config, IMavParamEncoding converter,
-        IEnumerable<ParamDescription> existDescription):base(ParamsHelper.MicroserviceName,client.Identity,client.Core)
+    public ParamsClientEx(
+        IParamsClient client, 
+        ParamsClientExConfig config, 
+        IMavParamEncoding converter,
+        IEnumerable<ParamDescription> existDescription)
+        : base(
+            ParamsHelper.MicroserviceName,
+            (client ?? throw new ArgumentNullException(nameof(client))).Identity,
+            client.Core)
     {
+        ArgumentNullException.ThrowIfNull(existDescription);
+        
         _config = config ?? throw new ArgumentNullException(nameof(config));
         _logger = client.Core.LoggerFactory.CreateLogger<ParamsClientEx>();
         _converter = converter ?? throw new ArgumentNullException(nameof(converter));

@@ -25,10 +25,6 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
     private double _signalSendingFlag;
     private int _calibrationTableUploadFlag;
     private readonly ILogger _logger;
-    private readonly IDisposable _sub1;
-    private readonly IDisposable _sub2;
-    private readonly IDisposable _sub3;
-    private readonly IDisposable _sub4;
 
     public AsvSdrServerEx(
         IAsvSdrServer server, 
@@ -137,23 +133,25 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
             return CommandResult.FromResult(result);
         };
 
-        _sub2 = Base.OnCalibrationTableReadRequest.Subscribe(OnCalibrationReadTable);
-        _sub3 =Base.OnCalibrationTableRowReadRequest.Subscribe(OnCalibrationReadTableRow);
-        _sub4 =Base.OnCalibrationTableUploadStart.Subscribe(OnCalibrationTableUploadStart);
+        _sub2 = Base.OnCalibrationTableReadRequest.SubscribeAwait(OnCalibrationReadTable, AwaitOperation.Parallel);
+        _sub3 = Base.OnCalibrationTableRowReadRequest.SubscribeAwait(OnCalibrationReadTableRow, AwaitOperation.Parallel);
+        _sub4 = Base.OnCalibrationTableUploadStart.SubscribeAwait(OnCalibrationTableUploadStart, AwaitOperation.Parallel);
     }
     public IAsvSdrServer Base { get; }
     public ReactiveProperty<AsvSdrCustomMode> CustomMode { get; }
 
-    private async void OnCalibrationTableUploadStart(AsvSdrCalibTableUploadStartPacket args)
+    private async ValueTask OnCalibrationTableUploadStart(
+        AsvSdrCalibTableUploadStartPacket args, 
+        CancellationToken cancel)
     {
         if (WriteCalibrationTable == null)
         {
-            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported, DisposeCancel).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported, cancel).ConfigureAwait(false);
             return;
         }
         if (Interlocked.CompareExchange(ref _calibrationTableUploadFlag, 1, 0) != 0)
         {
-            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckInProgress, DisposeCancel).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckInProgress, cancel).ConfigureAwait(false);
             _logger.ZLogWarning($"Calibration table upload already in progress");
             return;
         }
@@ -163,35 +161,35 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
             var rows = new CalibrationTableRow[args.Payload.RowCount];
             for (ushort i = 0; i < args.Payload.RowCount; i++)
             {
-                var row = await Base.CallCalibrationTableUploadReadCallback(args.SystemId,args.ComponentId,args.Payload.RequestId,args.Payload.TableIndex,i,DisposeCancel).ConfigureAwait(false);
+                var row = await Base.CallCalibrationTableUploadReadCallback(args.SystemId,args.ComponentId,args.Payload.RequestId,args.Payload.TableIndex,i, cancel).ConfigureAwait(false);
                 rows[i] = row;
             }
             WriteCalibrationTable(args.Payload.TableIndex, new CalibrationTableMetadata(args), rows);
             _status.Info($"Upload calibration [{args.Payload.TableIndex}] completed");
-            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckOk, DisposeCancel).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckOk, cancel).ConfigureAwait(false);
         }
         catch (Exception e)
         {
             _status.Info($"Upload calibration [{args.Payload.TableIndex}] error");
             _logger.ZLogError(e,$"Upload calibration [{args.Payload.TableIndex}] error:{e.Message}");
-            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, DisposeCancel).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.Payload.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, cancel).ConfigureAwait(false);
         }
         finally
         {
             Interlocked.Exchange(ref _calibrationTableUploadFlag, 0);
         }
-        
     }
-    private async void OnCalibrationReadTableRow(AsvSdrCalibTableRowReadPayload args)
+    
+    private async ValueTask OnCalibrationReadTableRow(AsvSdrCalibTableRowReadPayload args, CancellationToken cancel)
     {
         if (TryReadCalibrationTableRow == null)
         {
-            await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported, DisposeCancel).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported, cancel).ConfigureAwait(false);
             return;
         }
         try
         {
-            if (TryReadCalibrationTableRow(args.TableIndex, args.RowIndex, out var info) == true)
+            if (TryReadCalibrationTableRow(args.TableIndex, args.RowIndex, out var info))
             {
                 await Base.SendCalibrationTableRowReadResponse(res =>
                 {
@@ -200,24 +198,24 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
                     res.TargetComponent = 0;
                     res.TargetSystem = 0;
                     info?.Fill(res);
-                }, DisposeCancel).ConfigureAwait(false);
+                }, cancel).ConfigureAwait(false);
             }
             else
             {
-                await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, DisposeCancel).ConfigureAwait(false);
+                await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, cancel).ConfigureAwait(false);
             }
         }
         catch (Exception)
         {
-            await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, DisposeCancel).ConfigureAwait(false);
+            await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, cancel).ConfigureAwait(false);
         }
     }
 
-    private void OnCalibrationReadTable(AsvSdrCalibTableReadPayload args)
+    private async ValueTask OnCalibrationReadTable(AsvSdrCalibTableReadPayload args, CancellationToken cancel)
     {
         if (TryReadCalibrationTableInfo == null)
         {
-            Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported);
+            await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckNotSupported, cancel).ConfigureAwait(false);
             return;
         }
         try
@@ -225,22 +223,22 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
             if (TryReadCalibrationTableInfo(args.TableIndex, out var name, out var size, out var metadata))
             {
                 Debug.Assert(name != null);
-                Base.SendCalibrationTableReadResponse(res =>
+                await Base.SendCalibrationTableReadResponse(res =>
                 {
                     res.TableIndex = args.TableIndex;
                     if (size != null) res.RowCount = size.Value;
                     MavlinkTypesHelper.SetString(res.TableName, name);
                     metadata?.Fill(res);
-                });
+                }, cancel).ConfigureAwait(false);
             }
             else
             {
-                Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail);
+                await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, cancel).ConfigureAwait(false);
             }
         }
         catch (Exception)
         {
-            Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail);
+            await Base.SendCalibrationAcc(args.RequestId, AsvSdrRequestAck.AsvSdrRequestAckFail, cancel).ConfigureAwait(false);
         }
     }
 
@@ -273,7 +271,6 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
                         await Base.SendSignal(x =>
                         {
                             var size = sizeof(byte);
-
                             
                             // ReSharper disable once UselessBinaryOperation
                             var maxSendPerPacket = x.Payload.Data.Length / size;
@@ -457,6 +454,11 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
     }
 
     #region Dispose
+    
+    private readonly IDisposable _sub1;
+    private readonly IDisposable _sub2;
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
 
     protected override void Dispose(bool disposing)
     {
@@ -477,7 +479,6 @@ public class AsvSdrServerEx : MavlinkMicroserviceServer, IAsvSdrServerEx
             _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopMission] = null;
             _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStartCalibration] = null;
             _commands[(MavCmd)AsvSdr.MavCmd.MavCmdAsvSdrStopCalibration] = null;
-
         }
 
         base.Dispose(disposing);

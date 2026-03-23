@@ -2,7 +2,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
 
-
 namespace Asv.Mavlink;
 
 /// <summary>
@@ -16,7 +15,7 @@ public static class CommandServerHelper
     /// <param name="server">The command server.</param>
     /// <param name="req">The command request packet.</param>
     /// <param name="result">The mav result.</param>
-    /// <param name="cancel">The cancellation token.</param>
+    /// <param name="cancel">Optional cancel token argument.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     public static ValueTask SendCommandAckAccepted(
         this ICommandServer server, 
@@ -39,10 +38,8 @@ public static class CommandServerHelper
     /// <param name="server">The command server.</param>
     /// <param name="req">The command long packet.</param>
     /// <param name="result">The result of the command.</param>
-    /// <param name="cancel">The cancellation token (optional).</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation.
-    /// </returns>
+    /// <param name="cancel">Optional cancel token argument.</param>
+    /// <returns> A task that represents the asynchronous operation.</returns>
     public static ValueTask SendCommandAckAccepted(
         this ICommandServer server, 
         CommandLongPacket req, 

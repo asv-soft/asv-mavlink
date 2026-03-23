@@ -10,8 +10,9 @@ public class MavParamsChangeKvJsonAsvPackagePart(
     Uri uriPart,
     string contentType,
     CompressionOption compression,
-    AsvPackageContext context) 
-    : KvChangesJsonAsvPackagePart(uriPart, contentType, compression, context)
+    AsvPackageContext context,
+    AsvPackagePart? parent = null) 
+    : KvChangesJsonAsvPackagePart(uriPart, contentType, compression, context, parent)
 {
     public void Append(MavlinkParamChangeRecord change)
     {

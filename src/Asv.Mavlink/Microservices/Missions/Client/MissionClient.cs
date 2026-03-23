@@ -15,6 +15,10 @@ namespace Asv.Mavlink
         private int _commandTimeoutMs = 1000;
         private int _attemptToCallCount = 3;
 
+        /// <summary>
+        /// Timeout for request/response mission calls.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public int CommandTimeoutMs
         {
             get => _commandTimeoutMs;
@@ -22,6 +26,11 @@ namespace Asv.Mavlink
                 ? value 
                 : throw new ArgumentOutOfRangeException(nameof(CommandTimeoutMs));
         }
+        
+        /// <summary>
+        /// Retry count for request/response calls.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public int AttemptToCallCount 
         { 
             get => _attemptToCallCount;
