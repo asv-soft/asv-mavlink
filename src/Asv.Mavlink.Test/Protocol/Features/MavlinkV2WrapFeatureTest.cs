@@ -17,19 +17,21 @@ public class MavlinkV2WrapFeatureTest
     private readonly ManualTimeProvider _time;
     private readonly PacketSequenceCalculator _seq;
     private readonly IVirtualConnection _link;
+    private readonly IProtocolMessageFactory<MavlinkMessage, int> _messageFactory;
 
     public MavlinkV2WrapFeatureTest(ITestOutputHelper log)
     {
         _log = log;
         _time = new ManualTimeProvider();
         _seq = new PacketSequenceCalculator();
-        var messageFactory = MavlinkV2Protocol.CreateMessageFactory();
+        _messageFactory = MavlinkV2Protocol.CreateMessageFactory();
         //var loggerFactory = new TestLoggerFactory(log, _time, "TEST");
         var protocol = Protocol.Create(builder =>
         {
             //builder.SetLog(loggerFactory);
             builder.SetTimeProvider(_time);
-            builder.Features.RegisterMavlinkV2WrapFeature(messageFactory);
+            builder.RegisterMavlinkV2Protocol(_messageFactory);
+            builder.Features.RegisterMavlinkV2WrapFeature(_messageFactory);
         });
         _link = protocol.CreateVirtualConnection();
     }
@@ -38,7 +40,7 @@ public class MavlinkV2WrapFeatureTest
     public async Task WrapMessageFeature_Wrap_Success()
     {
         var counter = 0;
-        var factory = MavlinkV2Protocol.CreateMessageFactory();
+        var factory = _messageFactory;
         foreach (var id in factory.GetSupportedIds())
         {
             var origin = factory.Create(id) as MavlinkV2Message;
@@ -46,6 +48,10 @@ public class MavlinkV2WrapFeatureTest
             origin.GetPayload().Randomize();
             
             var tcs = new TaskCompletionSource<MavlinkV2Message>();
+            _link.Server.OnTxMessage.Subscribe(x =>
+            {
+
+            });
             using var sub = _link.Server.RxFilterByType<MavlinkV2Message>()
                 .Subscribe(x => tcs.SetResult(x));
             
@@ -61,7 +67,6 @@ public class MavlinkV2WrapFeatureTest
             {
                 Assert.Equal(origin.Id, recv.Id);
             }
-
             counter++;
         }
         
