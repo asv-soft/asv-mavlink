@@ -10,8 +10,6 @@
   <ItemGroup>
       <PackageReference Include="Asv.XUnit" Version="$(AsvCommonVersion)" />
       <PackageReference Include="AutoFixture.Xunit2" Version="4.18.1" />
-	  <PackageReference Include="DeepEqual" Version="5.1.0" />
-	  <PackageReference Include="FluentAssertions" Version="8.5.0" />
 	  <PackageReference Include="JetBrains.Annotations" Version="2025.2.0" />
 	  <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.10.0" />
 	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />

@@ -1,6 +1,7 @@
 using System;
 using System.IO.Packaging;
 using Asv.IO;
+using Asv.Store;
 
 namespace Asv.Mavlink.PackageFile.Parts;
 

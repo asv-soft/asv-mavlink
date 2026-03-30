@@ -28,6 +28,7 @@
     <PackageReference Include="Asv.Cfg" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.Common" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.IO" Version="$(AsvCommonVersion)" />
+    <PackageReference Include="Asv.Store" Version="$(AsvCommonVersion)" />
     <PackageReference Include="ZLogger" Version="$(ZLoggerVersion)" />
     <PackageReference Include="TestableIO.System.IO.Abstractions" Version="$(SystemIOAbstractionsVersion)" />
     <PackageReference Include="System.IO.Abstractions" Version="$(SystemIOAbstractionsVersion)" />

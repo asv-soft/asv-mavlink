@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.IO.Abstractions;
 using Asv.IO;
+using Asv.Store;
 using Microsoft.Extensions.Logging;
 
 namespace Asv.Mavlink;

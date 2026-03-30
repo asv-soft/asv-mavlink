@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Asv.IO;
 using Asv.Mavlink.AsvSdr;
+using Asv.Store;
 using DeepEqual.Syntax;
 using Microsoft.Win32.SafeHandles;
 using Moq;

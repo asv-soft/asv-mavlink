@@ -7,6 +7,7 @@ using Asv.IO;
 using Asv.Mavlink.AsvAudio;
 using Asv.Mavlink.AsvSdr;
 using Asv.Mavlink.Common;
+using Asv.Store;
 
 
 namespace Asv.Mavlink;

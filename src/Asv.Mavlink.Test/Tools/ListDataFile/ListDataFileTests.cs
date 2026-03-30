@@ -6,6 +6,7 @@ using Asv.Common;
 using Asv.IO;
 using Asv.Mavlink.AsvSdr;
 using Asv.Mavlink.Common;
+using Asv.Store;
 using DeepEqual.Syntax;
 using Xunit;
 

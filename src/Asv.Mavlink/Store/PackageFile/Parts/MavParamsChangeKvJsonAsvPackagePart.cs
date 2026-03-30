@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.Packaging;
 using System.Linq;
 using Asv.IO;
+using Asv.Store;
 
 namespace Asv.Mavlink.PackageFile.Parts;
 
