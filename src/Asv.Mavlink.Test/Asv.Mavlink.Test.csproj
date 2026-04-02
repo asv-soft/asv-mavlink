@@ -31,10 +31,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Asv.Mavlink\Asv.Mavlink.csproj" />
   </ItemGroup>
-
- 
-
-  
-
-
 </Project>
