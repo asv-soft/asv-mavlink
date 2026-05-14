@@ -10,7 +10,6 @@ using FluentAssertions;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
@@ -75,6 +74,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
 
         // Assert
         await _tcs.Task;
+        await Task.Yield();
         Assert.True(sync);
         Assert.Equal(Server.Charts.Count, Client.Charts.Count);
         Server.Charts.Should().BeEquivalentTo(Client.Charts);
@@ -149,6 +149,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
 
         // Assert
         await _tcs.Task;
+        await Task.Yield();
         Assert.NotNull(finalOptions); 
         finalOptions.Should().BeEquivalentTo(options);
         dataReceived.Should().BeEquivalentTo(dataToSend);

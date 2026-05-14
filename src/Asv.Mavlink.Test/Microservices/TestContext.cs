@@ -2,8 +2,8 @@ using Asv.Common;
 using Asv.IO;
 using Asv.XUnit;
 using Microsoft.Extensions.Time.Testing;
-using Xunit.Abstractions;
 
+using Xunit;
 namespace Asv.Mavlink.Test;
 
 public class TestContext

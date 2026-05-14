@@ -2,7 +2,6 @@ using System;
 using Asv.Mavlink.AsvRadio;
 using JetBrains.Annotations;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test.Client.Ex;
 

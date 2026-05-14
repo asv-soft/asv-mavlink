@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Asv.Common;
 using FluentAssertions;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 

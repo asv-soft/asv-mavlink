@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Asv.Mavlink.AsvRsga;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 

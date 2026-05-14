@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Asv.Mavlink.AsvSdr;
 using JetBrains.Annotations;
 using Xunit;
-using Xunit.Abstractions;
 using Xunit.Sdk;
 
 namespace Asv.Mavlink.Test;

@@ -8,7 +8,6 @@ using FluentAssertions;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 

@@ -10,7 +10,6 @@ using Asv.Mavlink.Minimal;
 using DeepEqual.Syntax;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 using GeoPoint = Asv.Common.GeoPoint;
 
 namespace Asv.Mavlink.Test.Position;

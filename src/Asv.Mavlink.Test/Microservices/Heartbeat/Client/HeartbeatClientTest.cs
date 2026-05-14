@@ -7,7 +7,6 @@ using Asv.Mavlink.Minimal;
 using FluentAssertions;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using Xunit;
-using Xunit.Abstractions;
 using Xunit.Sdk;
+using Xunit.v3;
 
 namespace Asv.Mavlink.Test;
 

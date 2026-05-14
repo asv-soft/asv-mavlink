@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Asv.Mavlink.Diagnostic.Server;
 using JetBrains.Annotations;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 

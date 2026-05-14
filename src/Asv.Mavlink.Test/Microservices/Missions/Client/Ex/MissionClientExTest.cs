@@ -7,7 +7,6 @@ using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 using ArgumentNullException = System.ArgumentNullException;
 
 namespace Asv.Mavlink.Test.Ex;

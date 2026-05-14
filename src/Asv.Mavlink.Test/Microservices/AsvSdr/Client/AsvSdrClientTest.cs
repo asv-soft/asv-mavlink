@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Moq;
 using Xunit;
-using Xunit.Abstractions;
 using Xunit.Sdk;
+using Xunit.v3;
 
 namespace Asv.Mavlink.Test;
 

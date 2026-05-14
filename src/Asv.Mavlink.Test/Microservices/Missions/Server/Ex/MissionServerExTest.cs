@@ -7,7 +7,6 @@ using DeepEqual.Syntax;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
-using Xunit.Abstractions;
 using NullReferenceException = System.NullReferenceException;
 
 namespace Asv.Mavlink.Test.Server.Ex;
