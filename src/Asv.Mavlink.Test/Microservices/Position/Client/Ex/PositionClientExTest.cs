@@ -54,7 +54,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     [Fact]
     public async Task Init_ProperInput_Success()
     {
-        await _client.Init();
+        await _client.Init(Xunit.TestContext.Current.CancellationToken);
     }
 
     [Theory]

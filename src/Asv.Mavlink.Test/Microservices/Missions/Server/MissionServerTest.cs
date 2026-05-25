@@ -190,7 +190,7 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         });
         
         // Act
-        await _server.SendMissionCurrent(current);
+        await _server.SendMissionCurrent(current, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         var result = await _taskCompletionSource.Task as MissionCurrentPacket;
@@ -221,7 +221,7 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         });
         
         // Act
-        await _server.SendMissionItemInt(serverItem);
+        await _server.SendMissionItemInt(serverItem, cancel: Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         var result = await _taskCompletionSource.Task as MissionItemIntPacket;
@@ -246,7 +246,7 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         // Act + Assert
         // ReSharper disable once NullableWarningSuppressionIsUsed
         await Assert.ThrowsAsync<NullReferenceException>(
-            async () => await _server.SendMissionItemInt(null!)
+            async () => await _server.SendMissionItemInt(null!, cancel: Xunit.TestContext.Current.CancellationToken)
         );
         
         Assert.Equal(0, called);
@@ -342,7 +342,7 @@ public class MissionServerTest : ServerTestBase<MissionServer>
         });
         
         // Act
-        await _server.SendMissionItemInt(serverItem);
+        await _server.SendMissionItemInt(serverItem, cancel: Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         var result = await _taskCompletionSource.Task as MissionItemIntPacket;

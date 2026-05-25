@@ -99,7 +99,9 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         });
         
         // Act
-        await _client.SendMissionAck(MavMissionResult.MavMissionAccepted, type: missionType);
+        await _client.SendMissionAck(MavMissionResult.MavMissionAccepted,
+            cancel: Xunit.TestContext.Current.CancellationToken,
+            type: missionType);
 
         // Assert
         var result = await _taskCompletionSource.Task as MissionAckPacket;

@@ -63,7 +63,8 @@ public class ClientModeTest(ITestOutputHelper log) : ClientTestBase<ModeClient>(
                 tcs.TrySetResult(x.Payload);
                 Time.Advance(TimeSpan.FromMilliseconds(_command.CommandTimeoutMs * _command.CommandAttempt + 100));
             });
-            await Assert.ThrowsAsync<TimeoutException>(() => client.SetMode(mode));
+            await Assert.ThrowsAsync<TimeoutException>(() =>
+                client.SetMode(mode, Xunit.TestContext.Current.CancellationToken));
             
             var result = await tcs.Task;
             mode.GetCommandLongArgs(out var baseMode, out var customMode, out var subMode); 
@@ -82,7 +83,8 @@ public class ClientModeTest(ITestOutputHelper log) : ClientTestBase<ModeClient>(
         
         foreach (var mode in client.AvailableModes.Where(x=>x.InternalMode == true))
         {
-            await Assert.ThrowsAsync<NotSupportedException>(() => client.SetMode(mode));
+            await Assert.ThrowsAsync<NotSupportedException>(() =>
+                client.SetMode(mode, Xunit.TestContext.Current.CancellationToken));
         }
     }
 

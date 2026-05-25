@@ -964,7 +964,7 @@ public class PositionExComplexTest : ComplexTestBase<PositionClientEx, CommandLo
                 );    
             }
             
-        });
+        }, Xunit.TestContext.Current.CancellationToken);
         
         // Assert
         await Assert.ThrowsAsync<TimeoutException>(async () =>

@@ -182,7 +182,7 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
         });
 
         // Act
-        await Client.WriteOnce(name, outOfBoundsValue);
+        await Client.WriteOnce(name, outOfBoundsValue, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         var payload = await tcs.Task;

@@ -21,7 +21,8 @@ public class DiagnosticServerTest(ITestOutputHelper log) : ServerTestBase<Diagno
     [Fact]
     public async Task Server_TrySendNameLengthMoreThanMaxLength_Fail()
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () => await Server.Send("1234567891011", (float)1.0));
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Server.Send("1234567891011", (float)1.0, Xunit.TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -29,14 +30,14 @@ public class DiagnosticServerTest(ITestOutputHelper log) : ServerTestBase<Diagno
     {
         //Arrange
         Server.IsEnabled = false;
-        var result = Server.Send("diagnostic", (float)1.0).IsCompleted;
+        var result = Server.Send("diagnostic", (float)1.0, Xunit.TestContext.Current.CancellationToken).IsCompleted;
         const float element = (float)1.0;
         float[] floatArr = [element, element, element, element];
         
         //Act
-        var resultFloat = Server.Send("diagnostic", 1).IsCompleted;
-        var resultFloatArray = Server.Send("name", 1, floatArr).IsCompleted;
-        var resultByte = Server.Send(1, 1, 1, [1, 1, 1, 1]).IsCompleted;
+        var resultFloat = Server.Send("diagnostic", 1, Xunit.TestContext.Current.CancellationToken).IsCompleted;
+        var resultFloatArray = Server.Send("name", 1, floatArr, Xunit.TestContext.Current.CancellationToken).IsCompleted;
+        var resultByte = Server.Send(1, 1, 1, [1, 1, 1, 1], Xunit.TestContext.Current.CancellationToken).IsCompleted;
         
         //Assert
         Assert.True(result);

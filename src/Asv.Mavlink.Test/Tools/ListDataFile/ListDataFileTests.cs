@@ -500,7 +500,7 @@ public class ListDataFileTests
             {
                 file.Write(payload);
             }
-        });
+        }, Xunit.TestContext.Current.CancellationToken);
         await Task.Run(() =>
         {
             file.EditMetadata(_ =>
@@ -511,7 +511,7 @@ public class ListDataFileTests
                     TagType = AsvSdrRecordTagType.AsvSdrRecordTagTypeInt64
                 });
             });
-        });
+        }, Xunit.TestContext.Current.CancellationToken);
     }
 
     [Fact]

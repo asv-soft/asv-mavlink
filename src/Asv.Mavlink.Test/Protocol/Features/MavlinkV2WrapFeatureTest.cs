@@ -55,7 +55,7 @@ public class MavlinkV2WrapFeatureTest
                 .Subscribe(x => tcs.SetResult(x));
             
 #pragma warning disable CS8604 // Possible null reference argument.
-            await _link.Client.Send(origin);
+            await _link.Client.Send(origin, Xunit.TestContext.Current.CancellationToken);
 #pragma warning restore CS8604 // Possible null reference argument.
             var recv = await tcs.Task;
             if (origin.WrapToV2Extension)

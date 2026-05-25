@@ -21,7 +21,9 @@ public class MavlinkIpBasedIdMapperFeatureTest(ITestOutputHelper log)
     [Fact]
     public async Task MavlinkIpBasedIdMapperFeature_ReverseProxy_RxTest()
     {
-        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(
+            Xunit.TestContext.Current.CancellationToken);
+        timeout.CancelAfter(TimeSpan.FromSeconds(10));
 
         var loggerFactory = new TestLoggerFactory(log, TimeProvider.System, "TEST");
         var messageFactory = MavlinkV2Protocol.CreateMessageFactory();
@@ -64,12 +66,12 @@ public class MavlinkIpBasedIdMapperFeatureTest(ITestOutputHelper log)
         {
             SystemId = 1,
             ComponentId = 1,
-        });
+        }, timeout.Token);
         await drone2Port.Send(new HeartbeatPacket
         {
             SystemId = 1,
             ComponentId = 1,
-        });
+        }, timeout.Token);
         
         await tcs.Task.WaitAsync(timeout.Token);
         
@@ -98,7 +100,7 @@ public class MavlinkIpBasedIdMapperFeatureTest(ITestOutputHelper log)
                 TargetSystem = droneIdConvertedFullId.SystemId,
                 TargetComponent = droneIdConvertedFullId.ComponentId,
             }
-        });
+        }, timeout.Token);
 
 
         await tcs2.Task.WaitAsync(timeout.Token);

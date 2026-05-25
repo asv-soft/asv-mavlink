@@ -65,7 +65,7 @@ public class ModeComplexTest(ITestOutputHelper log) : ComplexTestBase<IModeClien
     {
         var mode = Client.AvailableModes.First();
         Server.CurrentMode.Subscribe(m => { Assert.Equal(m.Mode, mode); });
-        await Client.SetMode(mode);
+        await Client.SetMode(mode, Xunit.TestContext.Current.CancellationToken);
         Assert.Equal(mode, Server.CurrentMode.CurrentValue.Mode);
     }
 
@@ -84,7 +84,7 @@ public class ModeComplexTest(ITestOutputHelper log) : ComplexTestBase<IModeClien
     public async Task Client_TrySetModeThatDoesNotCompatible_Fail()
     {
         var mode = Server.CurrentMode.CurrentValue.Mode; // if we not ask for mode - the test runs infinitely
-        await Client.SetMode(Px4Mode.Acro);
+        await Client.SetMode(Px4Mode.Acro, Xunit.TestContext.Current.CancellationToken);
         Server.CurrentMode.Subscribe(m => { Assert.Equal(m.Mode, ArduCopterMode.Unknown); });
         await Client.DisposeAsync();
         await Server.DisposeAsync();

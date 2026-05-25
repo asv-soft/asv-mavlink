@@ -159,7 +159,7 @@ public class AsvChartServerTest : ServerTestBase<AsvChartServer>
         // Act
         for (var i = 0; i < packetsCount; i++)
         {
-            await Server.Send(ServerTime.GetUtcNow().DateTime, data, info);
+            await Server.Send(ServerTime.GetUtcNow().DateTime, data, info, Xunit.TestContext.Current.CancellationToken);
         }
 
         // Assert

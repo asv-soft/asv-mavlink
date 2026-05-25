@@ -110,7 +110,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         });
 
         // Act
-        var resultTask = Client.ResetSessions();
+        var resultTask = Client.ResetSessions(Xunit.TestContext.Current.CancellationToken);
 
         await _tcs.Task;
 
@@ -148,7 +148,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         });
 
         // Act
-        var resultTask = Client.RemoveDirectory(path);
+        var resultTask = Client.RemoveDirectory(path, Xunit.TestContext.Current.CancellationToken);
 
         await _tcs.Task;
 
@@ -186,7 +186,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         });
 
         // Act
-        var resultTask = Client.RemoveFile(path);
+        var resultTask = Client.RemoveFile(path, Xunit.TestContext.Current.CancellationToken);
 
         await _tcs.Task;
 
@@ -229,7 +229,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         });
 
         // Act
-        var resultTask = Client.TruncateFile(request);
+        var resultTask = Client.TruncateFile(request, Xunit.TestContext.Current.CancellationToken);
 
         await _tcs.Task;
 
@@ -271,7 +271,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         });
 
         // Act
-        var crc32Task = Client.CalcFileCrc32(path);
+        var crc32Task = Client.CalcFileCrc32(path, Xunit.TestContext.Current.CancellationToken);
 
         await _tcs.Task;
 
@@ -309,7 +309,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         });
 
         // Act
-        var resultTask = Client.CreateDirectory(path);
+        var resultTask = Client.CreateDirectory(path, Xunit.TestContext.Current.CancellationToken);
 
         await _tcs.Task;
 
@@ -425,7 +425,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         });
 
         // Act
-        var resultTask = Client.ListDirectory(path, offset);
+        var resultTask = Client.ListDirectory(path, offset, Xunit.TestContext.Current.CancellationToken);
         await _tcs.Task;
 
         var result = await resultTask;
@@ -471,7 +471,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         });
 
         // Act
-        var handleTask = Client.OpenFileRead(path);
+        var handleTask = Client.OpenFileRead(path, Xunit.TestContext.Current.CancellationToken);
 
         // Wait for the client to receive and process the response
         await _tcs.Task;
@@ -517,7 +517,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         });
 
         // Act
-        var handleTask = Client.OpenFileWrite(path);
+        var handleTask = Client.OpenFileWrite(path, Xunit.TestContext.Current.CancellationToken);
 
         // Wait for the client to receive and process the response
         await _tcs.Task;
@@ -558,7 +558,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         });
 
         // Act
-        var terminateTask = Client.TerminateSession(sessionId);
+        var terminateTask = Client.TerminateSession(sessionId, Xunit.TestContext.Current.CancellationToken);
 
         // Wait for the client to receive and process the response
         await _tcs.Task;
@@ -598,7 +598,7 @@ public class FtpClientTest : ClientTestBase<FtpClient>
         });
 
         // Act
-        var resultTask = Client.CreateFile(path);
+        var resultTask = Client.CreateFile(path, Xunit.TestContext.Current.CancellationToken);
 
         // Wait for the client to receive and process the response
         await _tcs.Task;

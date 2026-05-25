@@ -207,7 +207,7 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
     [Fact]
     public void Init_ProperInput_Success()
     {
-        _client.Init();
+        _client.Init(Xunit.TestContext.Current.CancellationToken);
     }
 
     [Fact]

@@ -41,7 +41,7 @@ public class AsvSdrClientExTest(ITestOutputHelper log) : ClientTestBase<AsvSdrCl
     [Fact]
     public async Task Client_Init_Success()
     {
-        await Client.Init();
+        await Client.Init(Xunit.TestContext.Current.CancellationToken);
         Assert.True(true);
     }
 
