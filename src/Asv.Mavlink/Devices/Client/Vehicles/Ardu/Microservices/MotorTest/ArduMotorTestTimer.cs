@@ -6,11 +6,13 @@ namespace Asv.Mavlink;
 
 internal sealed class ArduMotorTestTimer : IDisposable
 {
+	private readonly TimeProvider _timeProvider;
 	private readonly SynchronizedReactiveProperty<bool> _isAnyRun = new(false);
 	private readonly SerialDisposable _timerSubscription = new();
 
-	public ArduMotorTestTimer()
+	public ArduMotorTestTimer(TimeProvider? timeProvider = null)
 	{
+		_timeProvider = timeProvider ?? TimeProvider.System;
 		IsAnyTestRunning = _isAnyRun.ToReadOnlyReactiveProperty();
 	}
 
@@ -22,7 +24,7 @@ internal sealed class ArduMotorTestTimer : IDisposable
 			_isAnyRun.Value = true;
 
 		_timerSubscription.Disposable = Observable
-			.Timer(timeout, cancellationToken)
+			.Timer(timeout, _timeProvider, cancellationToken)
 			.Subscribe(_ => { _isAnyRun.Value = false; }
 			);
 	}

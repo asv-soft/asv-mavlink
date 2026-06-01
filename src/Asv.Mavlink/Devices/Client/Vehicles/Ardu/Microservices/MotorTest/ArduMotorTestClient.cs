@@ -17,7 +17,7 @@ public abstract class ArduMotorTestClient : MotorTestClient
 	private readonly CompositeDisposable _disposable = new();
 	private readonly ObservableList<ITestMotor> _testMotors = [];
 	private readonly SerialDisposable _testMotorsSubscription = new();
-	private readonly ArduMotorTestTimer _arduMotorTestTimer = new();
+	private readonly ArduMotorTestTimer _arduMotorTestTimer;
 
 	private ArduFrame _frame;
 
@@ -31,6 +31,7 @@ public abstract class ArduMotorTestClient : MotorTestClient
 	{
 		_commandClient = commandClient ?? throw new ArgumentNullException(nameof(commandClient));
 		_paramsClientEx = paramsClientEx ?? throw new ArgumentNullException(nameof(paramsClientEx));
+		_arduMotorTestTimer = new ArduMotorTestTimer(heartbeat.Core.TimeProvider);
 
 		_frame = new ArduFrame((int)ArduFrameClass.Undefined, null);
 	}
