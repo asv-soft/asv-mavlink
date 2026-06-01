@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
-using FluentAssertions;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -48,8 +47,8 @@ public class AdsbVehicleServerTest : ServerTestBase<AdsbVehicleServer>
         // Assert
         var res = await _tcs.Task;
         Assert.NotNull(res);
-        Assert.IsType<AdsbVehiclePacket>(res);
-        Assert.Equal(icao, res.As<AdsbVehiclePacket>().Payload.IcaoAddress);
+        var packet = Assert.IsType<AdsbVehiclePacket>(res);
+        Assert.Equal(icao, packet.Payload.IcaoAddress);
         Assert.Equal(expectedPackets, (int)Link.Client.Statistic.RxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
         Assert.Equal(0u, Link.Server.Statistic.RxMessages);

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
-using FluentAssertions;
 using Xunit;
 
 namespace Asv.Mavlink.Test;
@@ -274,7 +273,7 @@ public class FtpExComplexTest(ITestOutputHelper log)
         await Client.Refresh(refreshPath, true, _cts.Token);
 
         // Assert
-        Client.Entries.Keys.Should().Equal(expectedFiles);
+        Assert.Equal(expectedFiles, Client.Entries.Keys);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
@@ -466,8 +465,8 @@ public class FtpExComplexTest(ITestOutputHelper log)
         await Client.RemoveDirectory(pathNameToRemove, recursive: false, _cts.Token);
 
         // Assert
-        _fileSystem.Directory.Exists(dir).Should().BeFalse();
-        Link.Server.Statistic.TxMessages.Should().Be(Link.Client.Statistic.RxMessages);
+        Assert.False(_fileSystem.Directory.Exists(dir));
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
     }
 
     [Theory]
@@ -489,9 +488,9 @@ public class FtpExComplexTest(ITestOutputHelper log)
         await Client.RemoveDirectory(pathNameToRemove, recursive: true, _cts.Token);
 
         // Assert
-        _fileSystem.Directory.Exists(root).Should().BeFalse();
-        _fileSystem.File.Exists(_fileSystem.Path.Combine(root, "file1.txt")).Should().BeFalse();
-        Link.Server.Statistic.TxMessages.Should().Be(Link.Client.Statistic.RxMessages);
+        Assert.False(_fileSystem.Directory.Exists(root));
+        Assert.False(_fileSystem.File.Exists(_fileSystem.Path.Combine(root, "file1.txt")));
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
     }
     
     [Fact]
@@ -513,9 +512,9 @@ public class FtpExComplexTest(ITestOutputHelper log)
 
         // Assert
         await Assert.ThrowsAsync<FtpNackException>(async () => await task);
-        _fileSystem.Directory.Exists(root).Should().BeTrue();
-        _fileSystem.File.Exists(_fileSystem.Path.Combine(root, "file1.txt")).Should().BeTrue();
-        Link.Server.Statistic.TxMessages.Should().Be(Link.Client.Statistic.RxMessages);
+        Assert.True(_fileSystem.Directory.Exists(root));
+        Assert.True(_fileSystem.File.Exists(_fileSystem.Path.Combine(root, "file1.txt")));
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
     }
 
     [Fact]
@@ -534,7 +533,7 @@ public class FtpExComplexTest(ITestOutputHelper log)
 
         // Assert
         await Assert.ThrowsAsync<OperationCanceledException>(() => task);
-        Link.Server.Statistic.TxMessages.Should().Be(Link.Client.Statistic.RxMessages);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
     }
 
     protected override void Dispose(bool disposing)

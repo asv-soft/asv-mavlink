@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Asv.IO;
 using Asv.Mavlink.AsvChart;
 using DeepEqual.Syntax;
-using FluentAssertions;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -77,7 +76,7 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         await Task.Yield();
         Assert.True(sync);
         Assert.Equal(Server.Charts.Count, Client.Charts.Count);
-        Server.Charts.Should().BeEquivalentTo(Client.Charts);
+        Assert.Equivalent(Client.Charts, Server.Charts);
         Assert.Equal(expectedPacketsFromServer, totalPacketsReceivedFromServer);
         Assert.Equal(expectedInfoPackets, infoPacketsCount);
         Assert.Equal(expectedPacketsFromServer, (int)Link.Server.Statistic.TxMessages);
@@ -151,8 +150,8 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         await _tcs.Task;
         await Task.Yield();
         Assert.NotNull(finalOptions); 
-        finalOptions.Should().BeEquivalentTo(options);
-        dataReceived.Should().BeEquivalentTo(dataToSend);
+        Assert.Equivalent(options, finalOptions);
+        Assert.Equivalent(dataToSend, dataReceived);
         Assert.Equal(expectedCount, count);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
@@ -262,10 +261,10 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         await tcs2.Task;
         Assert.NotNull(finalOptions1); 
         Assert.NotNull(finalOptions2);
-        finalOptions1.Should().BeEquivalentTo(options1);
-        finalOptions2.Should().BeEquivalentTo(options2);
-        dataReceived1.Should().BeEquivalentTo(dataToSend1);
-        dataReceived2.Should().BeEquivalentTo(dataToSend2);
+        Assert.Equivalent(options1, finalOptions1);
+        Assert.Equivalent(options2, finalOptions2);
+        Assert.Equivalent(dataToSend1, dataReceived1);
+        Assert.Equivalent(dataToSend2, dataReceived2);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
     

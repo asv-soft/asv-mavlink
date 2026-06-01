@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
-using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
 using NullReferenceException = System.NullReferenceException;
@@ -221,7 +220,7 @@ public class MissionServerExTest : ServerTestBase<MissionServerEx>
         Assert.NotEmpty(itemsFromServer);
         Assert.NotEmpty(result);
         Assert.Equal(itemsCount, result.Length);
-        result.Should().BeEquivalentTo(itemsFromServer);
+        Assert.Equivalent(itemsFromServer, result);
     }
     
     [Fact]

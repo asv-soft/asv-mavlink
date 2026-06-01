@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Minimal;
-using FluentAssertions;
 using R3;
 using Xunit;
 
@@ -132,7 +131,7 @@ public class HeartbeatClientTest : ClientTestBase<HeartbeatClient>
         
         // Assert
         Assert.NotEqual(0, Client.PacketRateHz.CurrentValue);
-        packetRateValues.Should().BeInAscendingOrder();
+        Assert.True(packetRateValues.SequenceEqual(packetRateValues.OrderBy(static x => x)));
     }
     
     [Theory]
@@ -173,7 +172,7 @@ public class HeartbeatClientTest : ClientTestBase<HeartbeatClient>
         Assert.Equal(packetsToSendCount, sentPayloads.Count);
         Assert.Equal(packetsToSendCount, (int) Link.Server.Statistic.TxMessages);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
-        receivedPayloads.Should().BeEquivalentTo(sentPayloads);
+        Assert.Equivalent(sentPayloads, receivedPayloads);
     }
     
     protected override HeartbeatClient CreateClient(MavlinkClientIdentity identity, CoreServices core)

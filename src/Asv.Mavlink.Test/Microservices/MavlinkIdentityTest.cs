@@ -1,6 +1,5 @@
 using System;
 using Asv.Mavlink;
-using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
 
@@ -21,8 +20,8 @@ public class MavlinkIdentityTest
         var identity = new MavlinkIdentity(systemId, componentId);
     
         // Assert
-        identity.SystemId.Should().Be(systemId);
-        identity.ComponentId.Should().Be(componentId);
+        Assert.Equal(systemId, identity.SystemId);
+        Assert.Equal(componentId, identity.ComponentId);
     }
 
     [Fact]
@@ -37,9 +36,9 @@ public class MavlinkIdentityTest
         var identity = new MavlinkIdentity(fullId);
     
         // Assert
-        identity.SystemId.Should().Be(systemId);
-        identity.ComponentId.Should().Be(componentId);
-        identity.FullId.Should().Be(fullId);
+        Assert.Equal(systemId, identity.SystemId);
+        Assert.Equal(componentId, identity.ComponentId);
+        Assert.Equal(fullId, identity.FullId);
     }
 
     [Fact]
@@ -50,9 +49,9 @@ public class MavlinkIdentityTest
         var identity2 = new MavlinkIdentity(123, 45);
     
         // Act & Assert
-        identity1.Should().Be(identity2);
-        identity1.Equals(identity2).Should().BeTrue();
-        identity1.GetHashCode().Should().Be(identity2.GetHashCode());
+        Assert.Equal(identity2, identity1);
+        Assert.True(identity1.Equals(identity2));
+        Assert.Equal(identity2.GetHashCode(), identity1.GetHashCode());
     }
 
     [Fact]
@@ -63,8 +62,8 @@ public class MavlinkIdentityTest
         var identity2 = new MavlinkIdentity(100, 50);
     
         // Act & Assert
-        identity1.Should().NotBe(identity2);
-        identity1.Equals(identity2).Should().BeFalse();
+        Assert.NotEqual(identity2, identity1);
+        Assert.False(identity1.Equals(identity2));
     }
 
     [Fact]
@@ -76,10 +75,10 @@ public class MavlinkIdentityTest
         var identity3 = new MavlinkIdentity(100, 50);
     
         // Act & Assert
-        (identity1 == identity2).Should().BeTrue();
-        (identity1 != identity3).Should().BeTrue();
-        (identity1 != identity2).Should().BeFalse();
-        (identity1 == identity3).Should().BeFalse();
+        Assert.True(identity1 == identity2);
+        Assert.True(identity1 != identity3);
+        Assert.False(identity1 != identity2);
+        Assert.False(identity1 == identity3);
     }
 
     [Fact]
@@ -92,7 +91,7 @@ public class MavlinkIdentityTest
         var result = identity.ToString();
     
         // Assert
-        result.Should().Be("[123.45]");
+        Assert.Equal("[123.45]", result);
     }
 
     [Fact]
@@ -105,9 +104,9 @@ public class MavlinkIdentityTest
         var result = MavlinkIdentity.Parse("[123.45]");
     
         // Assert
-        result.Should().Be(expected);
-        result.SystemId.Should().Be(123);
-        result.ComponentId.Should().Be(45);
+        Assert.Equal(expected, result);
+        Assert.Equal(123, result.SystemId);
+        Assert.Equal(45, result.ComponentId);
     }
 
     [Fact]
@@ -120,7 +119,7 @@ public class MavlinkIdentityTest
         var result = MavlinkIdentity.Parse("123.45");
     
         // Assert
-        result.Should().Be(expected);
+        Assert.Equal(expected, result);
     }
 
     [Fact]
@@ -133,7 +132,7 @@ public class MavlinkIdentityTest
         var result = MavlinkIdentity.Parse("  [123.45]  ");
     
         // Assert
-        result.Should().Be(expected);
+        Assert.Equal(expected, result);
     }
 
     [Fact]
@@ -141,13 +140,13 @@ public class MavlinkIdentityTest
     {
         // Act & Assert
         var parseNull = () => MavlinkIdentity.Parse(null);
-        parseNull.Should().Throw<ArgumentNullException>();
+        Assert.Throws<ArgumentNullException>(parseNull);
     
         var parseEmpty = () => MavlinkIdentity.Parse("");
-        parseEmpty.Should().Throw<ArgumentNullException>();
+        Assert.Throws<ArgumentNullException>(parseEmpty);
     
         var parseWhitespace = () => MavlinkIdentity.Parse("   ");
-        parseWhitespace.Should().Throw<ArgumentNullException>();
+        Assert.Throws<ArgumentNullException>(parseWhitespace);
     }
 
     [Fact]
@@ -155,12 +154,12 @@ public class MavlinkIdentityTest
     {
         // Act & Assert
         var parseInvalid = () => MavlinkIdentity.Parse("invalid");
-        parseInvalid.Should().Throw<ArgumentException>();
+        Assert.Throws<ArgumentException>(parseInvalid);
     
         var parseInvalidSystemId = () => MavlinkIdentity.Parse("abc.123");
-        parseInvalidSystemId.Should().Throw<ArgumentException>();
+        Assert.Throws<ArgumentException>(parseInvalidSystemId);
     
         var parseInvalidComponentId = () => MavlinkIdentity.Parse("123.abc");
-        parseInvalidComponentId.Should().Throw<ArgumentException>();
+        Assert.Throws<ArgumentException>(parseInvalidComponentId);
     }
 }
