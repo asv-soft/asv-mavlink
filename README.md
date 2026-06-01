@@ -22,6 +22,36 @@ dotnet add package Asv.Mavlink --version <Version>
 
 Documentation can be found [here](https://docs.asv.me/libraries/asv-mavlink)
 
+## Implemented Microservices
+
+| Microservice | Client | Server |
+|--------------|--------|--------|
+| Adsb | Yes | Yes |
+| AsvAudio | No | No |
+| AsvChart | Yes | Yes |
+| AsvGbs | Yes | Yes |
+| AsvRadio | Yes | Yes |
+| AsvRsga | Yes | Yes |
+| AsvSdr | Yes | Yes |
+| Commands | Yes | Yes |
+| Control | Yes | No |
+| Dgps | Yes | Yes |
+| Diagnostic | Yes | Yes |
+| Frame | Yes | No |
+| Ftp | Yes | Yes |
+| Gnss | Yes | Yes |
+| Heartbeat | Yes | Yes |
+| Logging | Yes | Yes |
+| Missions | Yes | Yes |
+| Mode | Yes | Yes |
+| MotorTest | Yes | No |
+| Params | Yes | Yes |
+| ParamsExt | Yes | Yes |
+| Position | Yes | Yes |
+| StatusText | Yes | Yes |
+| Telemetry | Yes | Yes |
+| V2Extention | Yes | Yes |
+
 ## Example: Emulate ADSB reciever
 
 This command starts a virtual ADS-B receiver that sends [ADSB\_VEHICLE](https://mavlink.io/en/messages/common.html#ADSB\_VEHICLE) packets at a specified rate for every vehicle defined in the configuration file.
