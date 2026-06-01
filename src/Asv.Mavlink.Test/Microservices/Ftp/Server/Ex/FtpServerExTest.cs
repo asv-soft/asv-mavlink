@@ -65,11 +65,12 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         const string fileName = "test.txt";
 
         // Act
-        await Server.CreateFile(fileName, _cts.Token);
+        var session = await Server.CreateFile(fileName, _cts.Token);
+        await Server.TerminateSession(session, _cts.Token);
         var handle = await Server.OpenFileWrite(fileName, _cts.Token);
 
         // Assert
-        Assert.Equal(1, handle.Session);
+        Assert.Equal(0, handle.Session);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 

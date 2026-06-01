@@ -182,11 +182,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
                 txCount++;
             });
 
-        const string path = "file.txt";
-        var fullPath = _fileSystem.MakeFullPath(path, _serverExConfig.RootDirectory);
-        _fileSystem.AddEmptyFile(fullPath);
-        await Client.OpenFileWrite(path, _cts.Token);
-        await Client.OpenFileRead(path, _cts.Token);
+        const string writePath = "write-file.txt";
+        const string readPath = "read-file.txt";
+        var writeFullPath = _fileSystem.MakeFullPath(writePath, _serverExConfig.RootDirectory);
+        var readFullPath = _fileSystem.MakeFullPath(readPath, _serverExConfig.RootDirectory);
+        _fileSystem.AddEmptyFile(writeFullPath);
+        _fileSystem.AddEmptyFile(readFullPath);
+        await Client.OpenFileWrite(writePath, _cts.Token);
+        await Client.OpenFileRead(readPath, _cts.Token);
 
         // Act
         var response = await Client.ResetSessions(_cts.Token);
@@ -592,6 +595,7 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
 
         // Act
         var handle1 = await Client.OpenFileWrite(path, _cts.Token);
+        await Client.TerminateSession(handle1.Session, _cts.Token);
         var handle2 = await Client.OpenFileWrite(path, _cts.Token);
 
         // Assert
@@ -727,11 +731,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         Assert.Equal(FtpOpcode.Ack, response.ReadOpcode());
         Assert.Equal(FtpOpcode.WriteFile, response.ReadOriginOpCode());
 
-        var expectedData = data.Take(new Range(writeSkip, writeTake));
+        await Client.TerminateSession(handle.Session, _cts.Token);
+
+        var expectedData = data.Take(writeTake);
         var buffer = new byte[writeTake];
-        var lenght = await _fileSystem.FileInfo.New(fullPath).OpenRead()
-            .ReadAsync(buffer, Xunit.TestContext.Current.CancellationToken);
-        var receivedData = buffer.Take(new Range(writeSkip, writeTake));
+        await using var stream = _fileSystem.FileInfo.New(fullPath).OpenRead();
+        stream.Position = writeSkip;
+        var lenght = await stream.ReadAsync(buffer, Xunit.TestContext.Current.CancellationToken);
+        var receivedData = buffer.Take(writeTake);
 
         lenght.Should().Be(writeTake);
         receivedData.Should().BeEquivalentTo(expectedData);
