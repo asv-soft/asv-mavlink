@@ -1,11 +1,38 @@
 <Project>
   <PropertyGroup>
     <ProductVersion>4.3.0-dev.1</ProductVersion>
-    <TargetFrameworksValue>net10.0</TargetFrameworksValue>
-    <DotNetVersion>10.0.0</DotNetVersion>
+    <TargetFramework>net10.0</TargetFramework>
+    <DotNetVersion>10.0.8</DotNetVersion>
+
     <AsvCommonVersion>3.6.0-dev.18</AsvCommonVersion>
-    <ZLoggerVersion>2.5.10</ZLoggerVersion>
-    <ConsoleAppFrameworkVersion>5.5.0</ConsoleAppFrameworkVersion>
-    <SystemIOAbstractionsVersion>22.0.16</SystemIOAbstractionsVersion>
+    
+    <FileVersion>$(ProductVersion)</FileVersion>
+    <Version>$(ProductVersion)</Version>
+    <PackageVersion>$(ProductVersion)</PackageVersion>
+    <Authors>https://github.com/asv-soft</Authors>
+    <Company>https://github.com/asv-soft</Company>
+    <Copyright>https://github.com/asv-soft</Copyright>
+    <PackageProjectUrl>https://github.com/asv-soft/asv-mavlink</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/asv-soft/asv-mavlink</RepositoryUrl>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <CodeAnalysisRuleSet Condition="Exists('$(MSBuildThisFileDirectory)CodeStyle.ruleset')">$(MSBuildThisFileDirectory)CodeStyle.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors Condition="'$(MSBuildProjectName)' == 'Asv.Mavlink'">
+      CS0169,
+      CS0618,
+      CS1502,
+      CS1503,
+      CS8524,
+      CS8600,
+      CS8601,
+      CS8602,
+      CS8603,
+      CS8604,
+      CS8625,
+      CS8629,
+      CS8762,
+      CA1851
+    </WarningsAsErrors>
   </PropertyGroup>
 </Project>

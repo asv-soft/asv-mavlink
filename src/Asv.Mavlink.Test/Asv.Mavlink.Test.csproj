@@ -1,29 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>$(TargetFrameworksValue)</TargetFrameworks>
       <IsPackable>false</IsPackable>
-      <FileVersion>$(ProductVersion)</FileVersion>
-      <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
       <PackageReference Include="Asv.XUnit" Version="$(AsvCommonVersion)" />
       <PackageReference Include="AutoFixture" Version="4.18.1" />
       <PackageReference Include="DeepEqual" Version="5.1.0" />
-      <PackageReference Include="FluentAssertions" Version="8.6.0" />
-	  <PackageReference Include="JetBrains.Annotations" Version="2025.2.0" />
-	  <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.10.0" />
-	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+      <PackageReference Include="FluentAssertions" Version="8.10.0" />
+	  <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
+	  <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.6.0" />
+	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
 	  <PackageReference Include="Moq" Version="4.20.72" />
-	  <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="22.0.15" />
+	  <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="22.1.1" />
 	  <PackageReference Include="TimeProviderExtensions" Version="1.0.0" />
       <PackageReference Include="xunit.v3" Version="3.2.2" />
       <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
-      <PackageReference Include="coverlet.collector" Version="6.0.4">
+      <PackageReference Include="coverlet.collector" Version="10.0.1">
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
