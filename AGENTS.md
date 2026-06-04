@@ -57,6 +57,34 @@ Package and dependency versions are centralized in `src/Directory.Build.props`:
 
 Release workflows compare Git tags with `ProductVersion`; keep tags and `src/Directory.Build.props` synchronized.
 
+### Dev Feed Dependency Updates
+
+When asked to update `Asv.Common` or shared ASV dependencies for the dev feed:
+
+1. Check the working tree first and keep the change scoped to version metadata unless the task explicitly asks for more.
+2. Update `AsvCommonVersion` in `src/Directory.Build.props` to the requested version. This property is used for the shared ASV package family, including `Asv.Cfg`, `Asv.Common`, `Asv.IO`, `Asv.Store`, and `Asv.XUnit`.
+3. Increment the numeric `ProductVersion` dev suffix by one, for example `4.3.0-dev.3` -> `4.3.0-dev.4`.
+4. Confirm the dev release workflow tag pattern in `.github/workflows/release_debug_version.yml`; the tag must be `v<ProductVersion>`, for example `v4.3.0-dev.4`, because the workflow compares the tag without `v` to `ProductVersion`.
+5. Run focused validation when credentials are available:
+
+```powershell
+dotnet restore src/Asv.Mavlink.slnx
+dotnet build src/Asv.Mavlink.slnx -c Release --no-restore
+dotnet test src
+```
+
+If local restore fails with `401 Unauthorized` from GitHub Packages for private ASV packages such as `Asv.Store` or `Asv.XUnit`, report that validation is blocked by local NuGet credentials. The GitHub release workflow uses repository secrets for package restore and publish.
+
+6. Commit, tag, and push:
+
+```powershell
+git add src/Directory.Build.props
+git commit -m "Bump Asv.Common to <version>"
+git tag -a v<ProductVersion> -m "v<ProductVersion>"
+git push origin main
+git push origin v<ProductVersion>
+```
+
 ## Projects
 
 ```
