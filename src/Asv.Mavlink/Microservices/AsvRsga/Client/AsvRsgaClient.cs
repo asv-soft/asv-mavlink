@@ -38,6 +38,10 @@ public class AsvRsgaClient: MavlinkMicroserviceClient, IAsvRsgaClient
     {
         return (ushort)(Interlocked.Increment(ref _requestCounter)%ushort.MaxValue);
     }
+    
+    public Observable<AsvRsgaRttGnssPayload> GnssRawStream => InternalFilter<AsvRsgaRttGnssPacket>().Select(x=>x.Payload);
+
+    public Observable<AsvRsgaRttChartPayload> ChartRawStream => InternalFilter<AsvRsgaRttChartPacket>().Select(x=>x.Payload);
 
     #region Dispose
 

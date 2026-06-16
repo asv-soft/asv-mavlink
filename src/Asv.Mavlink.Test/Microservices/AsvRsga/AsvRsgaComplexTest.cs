@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.AsvRsga;
+using Asv.Mavlink.Common;
 using R3;
 using Xunit;
 
@@ -91,6 +92,80 @@ public class AsvRsgaComplexTest : ComplexTestBase<AsvRsgaClientEx, AsvRsgaServer
         Assert.True(res.Result == AsvRsgaRequestAck.AsvRsgaRequestAckOk);
         Assert.Equal(1, res.RequestId);
         Assert.NotEmpty(Client.AvailableModes);
+    }
+
+    [Fact]
+    public async Task StartRecord_WhenServerAcceptsCommand_ShouldReturnAccepted()
+    {
+        // Arrange
+        const string expectedRecordName = "Test_Record";
+        var called = 0;
+        Server.StartRecord = (name, cancel) =>
+        {
+            Assert.False(cancel.IsCancellationRequested);
+            Assert.Equal(expectedRecordName, name);
+            called++;
+            return Task.FromResult(MavResult.MavResultAccepted);
+        };
+
+        // Act
+        var result = await Client.StartRecord(expectedRecordName, _cancellationTokenSource.Token);
+
+        // Assert
+        Assert.Equal(MavResult.MavResultAccepted, result);
+        Assert.Equal(1, called);
+    }
+
+    [Fact]
+    public async Task StopRecord_WhenServerAcceptsCommand_ShouldReturnAccepted()
+    {
+        // Arrange
+        var called = 0;
+        Server.StopRecord = cancel =>
+        {
+            Assert.False(cancel.IsCancellationRequested);
+            called++;
+            return Task.FromResult(MavResult.MavResultAccepted);
+        };
+
+        // Act
+        var result = await Client.StopRecord(_cancellationTokenSource.Token);
+
+        // Assert
+        Assert.Equal(MavResult.MavResultAccepted, result);
+        Assert.Equal(1, called);
+    }
+
+    [Fact]
+    public async Task SendChart_WhenCalled_ShouldPublishDecodedFrameOnClient()
+    {
+        // Arrange
+        var timestamp = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc);
+        var tcs = new TaskCompletionSource<RsgaChartFrame>();
+        using var sub = Client.ChartFrames.Subscribe(tcs.SetResult);
+
+        // Act
+        await Server.SendChart(
+            new[] { 10.0, 20.0, 30.0, 40.0, 50.0 },
+            new RsgaChartSendOptions
+            {
+                ChartType = AsvRsgaRttChartType.AsvRsgaRttChartTypeDmePulseShapeYChannel,
+                Encoding = RsgaChartEncoding.Float,
+                Resampling = RsgaChartResampling.Linear,
+                MaxSamples = 3,
+                DataIndex = 12,
+                Timestamp = timestamp,
+            },
+            _cancellationTokenSource.Token
+        );
+
+        // Assert
+        var frame = await tcs.Task;
+        Assert.Equal(AsvRsgaRttChartType.AsvRsgaRttChartTypeDmePulseShapeYChannel, frame.ChartType);
+        Assert.Equal(AsvRsgaRttChartDataFormat.AsvRsgaRttChartDataFormatFloat, frame.Format);
+        Assert.Equal(12u, frame.DataIndex);
+        Assert.Equal(new[] { 10.0, 30.0, 50.0 }, frame.Values);
+        Assert.Single(Client.ChartSources);
     }
 
     protected override void Dispose(bool disposing)

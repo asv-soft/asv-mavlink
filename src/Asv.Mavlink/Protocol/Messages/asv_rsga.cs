@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
+// This code was generate by tool Asv.Mavlink.Shell version 4.3.0-dev.6+0aa8adae61ab34e953aa8e65a3739edc4c6dcf74 26-06-16.
 
 using System;
 using System.Text;
@@ -931,6 +931,11 @@ namespace Asv.Mavlink.AsvRsga
         /// ASV_RSGA_RTT_CHART_TYPE_DME_PULSE_SHAPE_Y_CHANNEL
         /// </summary>
         AsvRsgaRttChartTypeDmePulseShapeYChannel = 2,
+        /// <summary>
+        /// Spectrum chart.
+        /// ASV_RSGA_RTT_CHART_TYPE_SPECTRUM
+        /// </summary>
+        AsvRsgaRttChartTypeSpectrum = 3,
     }
     public static class AsvRsgaRttChartTypeHelper
     {
@@ -939,12 +944,14 @@ namespace Asv.Mavlink.AsvRsga
             yield return converter(0);
             yield return converter(1);
             yield return converter(2);
+            yield return converter(3);
         }
         public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
         {
             yield return new EnumValue<T>(converter(0),"ASV_RSGA_RTT_CHART_TYPE_CUSTOM");
             yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_CHART_TYPE_DME_PULSE_SHAPE_X_CHANNEL");
             yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_CHART_TYPE_DME_PULSE_SHAPE_Y_CHANNEL");
+            yield return new EnumValue<T>(converter(3),"ASV_RSGA_RTT_CHART_TYPE_SPECTRUM");
         }
     }
     /// <summary>

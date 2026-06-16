@@ -375,6 +375,9 @@
             <entry name="ASV_RSGA_RTT_CHART_TYPE_DME_PULSE_SHAPE_Y_CHANNEL" value="2">
                 <description>DME pulse shape for Y channel.</description>
             </entry>
+            <entry name="ASV_RSGA_RTT_CHART_TYPE_SPECTRUM" value="3">
+                <description>Spectrum chart.</description>
+            </entry>
         </enum>
         
 

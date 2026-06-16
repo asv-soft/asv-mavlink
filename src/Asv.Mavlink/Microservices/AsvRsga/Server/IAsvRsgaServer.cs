@@ -14,4 +14,6 @@ public interface IAsvRsgaServer:IMavlinkMicroserviceServer
     ValueTask SendCompatibilityResponse(Action<AsvRsgaCompatibilityResponsePayload> fillCallback,
         CancellationToken cancel = default);
     
+    
+    
 }

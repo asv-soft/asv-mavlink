@@ -18,6 +18,9 @@ public interface IAsvRsgaClientEx:IMavlinkMicroserviceClient
     
     Task<MavResult> StartRecord(string name, CancellationToken cancel = default);
     Task<MavResult> StopRecord(CancellationToken cancel = default);
+    IReadOnlyObservableList<GnssSource> GnssSources { get; }
+    Observable<RsgaChartFrame> ChartFrames { get; }
+    IReadOnlyObservableList<RsgaChartSource> ChartSources { get; }
     
 }
 

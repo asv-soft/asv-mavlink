@@ -1,7 +1,32 @@
-"src\Asv.Mavlink.Shell\bin\Debug\net9.0\Asv.Mavlink.Shell.exe" gen -e cs -template src/Asv.Mavlink.Shell/Resources/csharp.liquid -t asv_gbs.xml -i src/Asv.Mavlink/Protocol/Dialects -o src/Asv.Mavlink/Protocol/Messages
-"src\Asv.Mavlink.Shell\bin\Debug\net9.0\Asv.Mavlink.Shell.exe" gen -e cs -template src/Asv.Mavlink.Shell/Resources/csharp.liquid -t asv_sdr.xml -i src/Asv.Mavlink/Protocol/Dialects -o src/Asv.Mavlink/Protocol/Messages
-"src\Asv.Mavlink.Shell\bin\Debug\net9.0\Asv.Mavlink.Shell.exe" gen -e cs -template src/Asv.Mavlink.Shell/Resources/csharp.liquid -t asv_audio.xml -i src/Asv.Mavlink/Protocol/Dialects -o src/Asv.Mavlink/Protocol/Messages
-"src\Asv.Mavlink.Shell\bin\Debug\net9.0\Asv.Mavlink.Shell.exe" gen -e cs -template src/Asv.Mavlink.Shell/Resources/csharp.liquid -t asv_radio.xml -i src/Asv.Mavlink/Protocol/Dialects -o src/Asv.Mavlink/Protocol/Messages
-"src\Asv.Mavlink.Shell\bin\Debug\net9.0\Asv.Mavlink.Shell.exe" gen -e cs -template src/Asv.Mavlink.Shell/Resources/csharp.liquid -t asv_chart.xml -i src/Asv.Mavlink/Protocol/Dialects -o src/Asv.Mavlink/Protocol/Messages
-"src\Asv.Mavlink.Shell\bin\Debug\net9.0\Asv.Mavlink.Shell.exe" gen -e cs -template src/Asv.Mavlink.Shell/Resources/csharp.liquid -t asv_rsga.xml -i src/Asv.Mavlink/Protocol/Dialects -o src/Asv.Mavlink/Protocol/Messages
+@echo off
+setlocal
+pushd "%~dp0"
 
+set "SHELL_PROJECT=src\Asv.Mavlink.Shell\Asv.Mavlink.Shell.csproj"
+set "TEMPLATE=src\Asv.Mavlink.Shell\Resources\csharp.liquid"
+set "DIALECTS=src\Asv.Mavlink\Protocol\Dialects"
+set "MESSAGES=src\Asv.Mavlink\Protocol\Messages"
+
+dotnet build "%SHELL_PROJECT%" -c Debug --no-restore || goto :fail
+
+call :generate asv_gbs.xml || goto :fail
+call :generate asv_sdr.xml || goto :fail
+call :generate asv_audio.xml || goto :fail
+call :generate asv_radio.xml || goto :fail
+call :generate asv_chart.xml || goto :fail
+call :generate asv_rsga.xml || goto :fail
+
+goto :success
+
+:generate
+dotnet run --project "%SHELL_PROJECT%" -c Debug --no-build --no-restore -- gen -e cs -tmpl "%TEMPLATE%" -t %1 -i "%DIALECTS%" -o "%MESSAGES%"
+exit /b %ERRORLEVEL%
+
+:success
+popd
+exit /b 0
+
+:fail
+set "RESULT=%ERRORLEVEL%"
+popd
+exit /b %RESULT%
