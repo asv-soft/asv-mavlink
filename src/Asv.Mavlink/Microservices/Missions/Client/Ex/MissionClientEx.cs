@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.Common;
-
+using Asv.Modeling;
 using Microsoft.Extensions.Logging;
 using ObservableCollections;
 using R3;
@@ -56,9 +56,11 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         _disposeCancel = new CancellationTokenSource();
         _deviceUploadTimeout = TimeSpan.FromMilliseconds(config1.DeviceUploadTimeoutMs);
         _missionSource = new ObservableList<MissionItem>();
+        _sub1 = _missionSource.DisposeRemovedItems();
         _isMissionSynced = new ReactiveProperty<bool>(false);
         _allMissionDistance = new ReactiveProperty<double>(double.NaN);
         _obs1 = _isMissionSynced.Subscribe(_ => UpdateMissionsDistance());
+        
     }
     
     public IMissionClient Base => _client;
@@ -85,7 +87,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         progress?.Invoke(0);
         var count = await _client.MissionRequestCount(cancel).ConfigureAwait(false);
         var result = new MissionItem[count];
-        _missionSource.Clear();
+        _missionSource.RemoveAll();
         var current = 0;
         for (int i = 0; i < count; i++)
         {
@@ -113,7 +115,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
     public async Task ClearRemote( CancellationToken cancel)
     {
         _logger.ZLogInformation($"Begin clear mission");
-        _missionSource.Clear();
+        _missionSource.RemoveAll();
         await _client.ClearAll(MavMissionType.MavMissionTypeMission, cancel).ConfigureAwait(false);
         _isMissionSynced.Value = true;
     }
@@ -209,7 +211,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
     public void ClearLocal()
     {
         _isMissionSynced.Value = false;
-        _missionSource.Clear();
+        _missionSource.RemoveAll();
         EnsureIndex();
     }
 
@@ -242,6 +244,7 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
     #region Dispose
     
     private readonly IDisposable _obs1;
+    private readonly IDisposable _sub1;
     
     protected override void Dispose(bool disposing)
     {
@@ -251,10 +254,9 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
             _allMissionDistance.Dispose();
             _disposeCancel.Dispose();
             _obs1.Dispose();
-            foreach (var item in _missionSource)
-            {
-                item.Dispose();
-            }
+            
+            _missionSource.RemoveAll();
+            _sub1.Dispose();
         }
         base.Dispose(disposing);
         
@@ -265,13 +267,9 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
         await CastAndDispose(_allMissionDistance).ConfigureAwait(false);
         await CastAndDispose(_disposeCancel).ConfigureAwait(false);
         await CastAndDispose(_obs1).ConfigureAwait(false);
-
-        var cached = _missionSource.ToImmutableArray();
-        _missionSource.Clear();
-        foreach (var item in cached)
-        {
-            await item.DisposeAsync().ConfigureAwait(false);
-        }
+        
+        _missionSource.RemoveAll();
+        await CastAndDispose(_obs1).ConfigureAwait(false);
 
         await base.DisposeAsyncCore().ConfigureAwait(false);
         return;
