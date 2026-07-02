@@ -352,3 +352,6 @@ MigrationBackup/
 /src/.idea/
 /docs/.idea/
 /docs/Writerside/.idea/
+
+# Graphify generated output
+graphify-out/
