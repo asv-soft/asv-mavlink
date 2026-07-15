@@ -18,7 +18,7 @@ namespace Asv.Mavlink.Test.Features;
 public class MavlinkIpBasedIdMapperFeatureTest(ITestOutputHelper log)
 {
 
-    [Fact]
+    [LocalFact]
     public async Task MavlinkIpBasedIdMapperFeature_ReverseProxy_RxTest()
     {
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(
