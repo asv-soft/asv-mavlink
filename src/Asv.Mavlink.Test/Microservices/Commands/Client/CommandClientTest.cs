@@ -253,7 +253,7 @@ public class CommandClientTest : ClientTestBase<CommandClient>
         }
     }
 
-    [Fact(Skip="aaa")]
+    [Fact]
     public async Task SendCommandInt_Canceled_Throws()
     {
         // Arrange
@@ -263,29 +263,28 @@ public class CommandClientTest : ClientTestBase<CommandClient>
             called++;
             _taskCompletionSource.TrySetResult(p);
         });
-
-        // Act
         await _cancellationTokenSource.CancelAsync();
-        var task = _client.SendCommandInt(
-            MavCmd.MavCmdUser1,
-            MavFrame.MavFrameMission,
-            true,
-            true,
-            1,
-            1,
-            3,
-            4,
-            5,
-            6,
-            7,
-            _cancellationTokenSource.Token
-        );
+
+        // Act + Assert
+        var ex = await Assert.ThrowsAsync<OperationCanceledException>(async () => 
+        {
+            await _client.SendCommandInt(
+                MavCmd.MavCmdUser1,
+                MavFrame.MavFrameMission,
+                true,
+                true,
+                1,
+                1,
+                3,
+                4,
+                5,
+                6,
+                7,
+                _cancellationTokenSource.Token
+            );
+        });
         
         // Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () => 
-        {
-            await task;
-        });
         Assert.Equal(0, called);
         Assert.Equal(called, (int)Link.Server.Statistic.RxMessages);
         Assert.Equal((int)Link.Server.Statistic.RxMessages, (int)Link.Client.Statistic.TxMessages);
