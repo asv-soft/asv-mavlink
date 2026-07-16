@@ -49,3 +49,6 @@ Console.WriteLine($"Current mode: {mode?.Name}");
 |-----------|---------------------|------------------------------|
 | `mode`    | `ICustomMode`       | Mode to set.                 |
 | `cancel`  | `CancellationToken` | Optional cancellation token. |
+
+> `SetMode` throws `NotSupportedException` when `mode.InternalMode` is `true`. Internal modes can be detected from heartbeats but cannot be requested directly.
+{style="warning"}

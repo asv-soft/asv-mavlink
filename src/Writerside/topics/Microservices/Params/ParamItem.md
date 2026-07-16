@@ -15,15 +15,15 @@ Provides metadata, current and remote values, synchronization status, and method
 
 | Method                                           | Return Type | Description                                                                    |
 |--------------------------------------------------|-------------|--------------------------------------------------------------------------------|
-| `Task Read(CancellationToken cancel)`            | `Task`      | Reads the parameter value from the remote device and updates the local cache.  |
-| `Task Write(CancellationToken cancel)`           | `Task`      | Writes the local parameter value to the remote device.                         |
+| `Read(CancellationToken cancel)`                 | `Task`      | Reads the parameter value from the remote device and updates the local cache.  |
+| `Write(CancellationToken cancel)`                | `Task`      | Writes the local parameter value to the remote device.                         |
 
 ## `ParamItem.Read`
 | Parameter | Type                | Description                        |
 |-----------|---------------------|------------------------------------|
-| `cancel`  | `CancellationToken` | (Optional) The cancellation token. |
+| `cancel`  | `CancellationToken` | Cancellation token.                |
 
 ## `ParamItem.Write`
 | Parameter | Type                | Description                        |
 |-----------|---------------------|------------------------------------|
-| `cancel`  | `CancellationToken` | (Optional) The cancellation token. |
+| `cancel`  | `CancellationToken` | Cancellation token.                |

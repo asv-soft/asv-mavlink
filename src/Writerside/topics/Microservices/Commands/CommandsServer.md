@@ -1,6 +1,7 @@
 # Commands server
 
 Use [`ICommandServer`](#icommandserver) to implement low-level command protocol handling on the server side.
+The server publishes `COMMAND_LONG` and `COMMAND_INT` packets addressed to its system/component and can send `COMMAND_ACK` responses to the requester.
 
 ## Use case
 
@@ -86,7 +87,7 @@ Represents the identity of a device.
 
 | Property      | Type             | Description                                           |
 |---------------|------------------|-------------------------------------------------------|
-| `Broadcast`   | `DeviceIdentity` | Represents the broadcast device identity.             |
+| `Broadcast`   | `DeviceIdentity` | Static field representing system `0`, component `0`.  |
 | `SystemId`    | `byte`           | Gets or sets the system ID.                           |
 | `ComponentId` | `byte`           | Gets or sets the unique identifier for the component. |
 
@@ -94,10 +95,12 @@ Represents the identity of a device.
 
 Helper class containing extension methods for ICommandServer interface.
 
-| Method                                                                                                                            | Return Type | Description                                                                   |
-|-----------------------------------------------------------------------------------------------------------------------------------|-------------|-------------------------------------------------------------------------------|
-| `SendCommandAckAccepted(this ICommandServer server, CommandIntPacket req, MavResult result, CancellationToken cancel = default)`  | `ValueTask` | Sends command acknowledge accepted to the command server.                     |
-| `SendCommandAckAccepted(this ICommandServer server, CommandLongPacket req, MavResult result, CancellationToken cancel = default)` | `ValueTask` | Sends a command acknowledgment indicating that the command has been accepted. |
+Despite their name, both `SendCommandAckAccepted` overloads use the `MavResult` supplied by the caller; they are not limited to `MavResultAccepted`.
+
+| Method                                                                                                                            | Return Type | Description                                                                      |
+|-----------------------------------------------------------------------------------------------------------------------------------|-------------|----------------------------------------------------------------------------------|
+| `SendCommandAckAccepted(this ICommandServer server, CommandIntPacket req, MavResult result, CancellationToken cancel = default)`  | `ValueTask` | Sends an acknowledgement for a `COMMAND_INT` request using the supplied result.  |
+| `SendCommandAckAccepted(this ICommandServer server, CommandLongPacket req, MavResult result, CancellationToken cancel = default)` | `ValueTask` | Sends an acknowledgement for a `COMMAND_LONG` request using the supplied result. |
 
 #### `ICommandServer.SendCommandAckAccepted` (`CommandIntPacket` overload)
 | Parameter | Type                | Description                                      |
@@ -122,7 +125,7 @@ including base command server and extended CommandLong/CommandInt handlers.
 
 | Property               | Type     | Description                               |
 |------------------------|----------|-------------------------------------------|
-| `MicroserviceTypeName` | `string` | Represents the broadcast device identity. |
+| `MicroserviceTypeName` | `string` | Microservice type identifier (`COMMAND`). |
 
 | Method                                                     | Return Type                           | Description                                                                             |
 |------------------------------------------------------------|---------------------------------------|-----------------------------------------------------------------------------------------|

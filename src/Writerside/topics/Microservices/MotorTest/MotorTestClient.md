@@ -13,7 +13,7 @@ Retrieve the list of testable motors from the connected device and read their te
 
 ```C#
 // Access telemetry for each test motor
-foreach (var motor in motorTestClient.MotorFrames)
+foreach (var motor in motorTestClient.TestMotors)
 {
     Console.WriteLine($"ID: {motor.Id}, Servo channel: {motor.ServoChannel}, PWM: {motor.Pwm}, Test running: {motor.IsTestRun}");
 }
@@ -23,22 +23,19 @@ To run a test, first select a motor:
 
 ```C#
 
-var testMotor = motorTestClient.MotorFrames.First();
+var testMotor = motorTestClient.TestMotors.First();
 
 // Start a 10-second test of the selected motor at 50% power
-var ack = await testMotor.StartTest(50, 10);
+var result = await testMotor.StartTest(50, 10);
 
-if (ack.Result != MavResult.MavResultAccepted)
+if (result == MavResult.MavResultAccepted)
 {
     Console.WriteLine($"Test for motor #{testMotor.Id} has started");
-};
+}
 
 // Stop a test
 await testMotor.StopTest();
 ```
-
-> Remember to dispose of subscriptions when they are no longer needed.
-> {style="warning"}
 
 Refresh the available motors if the vehicle configuration changes:
 
@@ -49,9 +46,9 @@ await motorTestClient.Refresh();
 
 ## [IMotorTestClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/MotorTest/Client/IMotorTestClient.cs)
 
-| Property     | Type                                 | Description                             |
-|--------------|--------------------------------------|-----------------------------------------|
-| `TestMotors` | `ReadOnlyObservableList<ITestMotor>` | Testable motors with telemetry support. |
+| Property     | Type                                  | Description                             |
+|--------------|---------------------------------------|-----------------------------------------|
+| `TestMotors` | `IReadOnlyObservableList<ITestMotor>` | Testable motors with telemetry support. |
 
 | Method                                                   | Return Type | Description                                                    |
 |----------------------------------------------------------|-------------|----------------------------------------------------------------|
@@ -65,7 +62,6 @@ await motorTestClient.Refresh();
 
 ## Implementations
 
-Vehicles controlled by different autopilots (e.g., ArduPilot, PX4) provide their own implementations 
-of [`IMotorTestClient`](#imotortestclient) and [`ITestMotor`](TestMotor.md):
+The current implementation of [`IMotorTestClient`](#imotortestclient) and [`ITestMotor`](TestMotor.md) supports ArduCopter devices:
 
-- [Ardu devices](ArduMotorTestClient.md)
+- [ArduCopter devices](ArduMotorTestClient.md)

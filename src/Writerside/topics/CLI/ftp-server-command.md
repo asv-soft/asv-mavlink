@@ -6,7 +6,7 @@ This command creates ftp server and opens connection to it.
 Asv.Mavlink.Shell.exe run-ftp-server
 ```
 
-![image](asv-drones-mavlink-ftp-server.png)
+![image](asv-drones-mavlink-ftp-server.png){style="block"}
 
 The program generates a default configuration file by default, but you can provide a custom configuration. Simply pass the path to your configuration file as a command-line parameter.
 

@@ -35,19 +35,19 @@ var newValue = await paramsEx.WriteOnce("BARO_PRIMARY", new MavParamValue((byte)
 Console.WriteLine($"New value: {newValue}");
 ```
 
-Subscribe to parameter changes:
+Subscribe to received parameter values:
 
 ```C#
-// Subscribe to all parameter changes
+// Subscribe to all received parameter values
 using var subscription = paramsEx.OnValueChanged.Subscribe(change =>
 {
-    Console.WriteLine($"Parameter {change.Item1} changed to {change.Item2}");
+    Console.WriteLine($"Received {change.Item1}: {change.Item2}");
 });
 
 // Or filter for a specific parameter
 using var specificParam = paramsEx.Filter("BARO_PRIMARY").Subscribe(value =>
 {
-    Console.WriteLine($"BARO_PRIMARY changed to {value}");
+    Console.WriteLine($"Received BARO_PRIMARY: {value}");
 });
 ```
 
@@ -63,6 +63,16 @@ using var syncStatus = paramsEx.IsSynced.Subscribe(isSynced =>
 >Don't forget to dispose subscriptions when they are no longer needed.
 {style="warning"}
 
+## [ParamsClientExConfig](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Client/Ex/ParamsClientEx.cs#L16)
+
+Extends `ParameterClientConfig` with cache update batching.
+
+| Property              | Type  | Default | Description                                                                           |
+|-----------------------|-------|---------|---------------------------------------------------------------------------------------|
+| `ReadAttemptCount`    | `int` | `6`     | Total number of request attempts, including the first attempt.                        |
+| `ReadTimeouMs`        | `int` | `1000`  | Timeout for each request attempt, in milliseconds.                                    |
+| `ChunkUpdateBufferMs` | `int` | `100`   | Cache update batching interval in milliseconds. Non-positive values disable batching. |
+
 ## [IParamsClientEx](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Client/Ex/IParamsClientEx.cs)
 
 Exposes members to interact with parameters.
@@ -70,10 +80,10 @@ Exposes members to interact with parameters.
 | Property         | Type                                               | Description                                                                     |
 |------------------|----------------------------------------------------|---------------------------------------------------------------------------------|
 | `Base`           | `IParamsClient`                                    | Base parameter client interface from which this extension interface is derived. |
-| `OnValueChanged` | `Observable<(string, MavParamValue)>`              | Observable that emits when any parameter value changes.                         |
+| `OnValueChanged` | `Observable<(string, MavParamValue)>`              | Emits each processed incoming parameter value, even if the value is unchanged.  |
 | `IsSynced`       | `ReadOnlyReactiveProperty<bool>`                   | Indicates if parameters are synchronized with remote device.                    |
 | `Items`          | `IReadOnlyObservableDictionary<string, ParamItem>` | Collection of cached [parameters](ParamItem.md) from the remote device.         |
-| `RemoteCount`    | `ReadOnlyReactiveProperty<int>`                    | Number of parameters on the remote device.                                      |
+| `RemoteCount`    | `ReadOnlyReactiveProperty<int>`                    | Number of parameters reported by the remote device; initially `-1`.             |
 | `LocalCount`     | `ReadOnlyReactiveProperty<int>`                    | Number of parameters in the local cache.                                        |
 
 | Method                                                                                                            | Return Type                 | Description                                                   |

@@ -5,7 +5,7 @@ This command generates fake diagnostic with customizable frequency.
 Asv.Mavlink.Shell.exe generate-diagnostics
 ```
 
-![image](asv-drones-mavlink-generate-diag-command.png)
+![image](asv-drones-mavlink-generate-diag-command.png){style="block"}
 
 The program generates a default configuration file by default, but you can provide a custom configuration.
 Simply pass the path to your configuration file as a command-line parameter.
@@ -39,15 +39,15 @@ This command creates Diagnostic client and prints all diagnostics that the clien
 Asv.Mavlink.Shell.exe test-diagnostics -cs tcp://127.0.0.1:7342?srv=true -tsid 1 -tcid 241 -r 3000
 ```
 
-![image](asv-drones-mavlink-test-diag-command.png)
+![image](asv-drones-mavlink-test-diag-command.png){style="block"}
 
 All the possible parameters for the command:
 ```bash
 Command creates diagnostic client that retrieves diagnostic data.
 
 Options:
-  -cs|--connection-string <string>      The address of the connection to the mavlink diagnostic server (Required)
-  -tsid|--target-system-id <byte>       Server's system id (Required)
-  -tcid|--target-component-id <byte>    Server's component id (Required)
+  -cs|--connection-string <string>      The address of the connection to the MAVLink diagnostic server (Default: tcp://127.0.0.1:7341)
+  -tsid|--target-system-id <byte>       Server's system ID (Default: 255)
+  -tcid|--target-component-id <byte>    Server's component ID (Default: 255)
   -r|--refresh-rate <uint>              (in ms) States how fast should the console be refreshed (Default: 1000)
 ```

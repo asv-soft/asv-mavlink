@@ -31,9 +31,19 @@ heartbeatServer.SetCustomMode(bits =>
 {
     // set some bits...
 });
+
+serverDevice.Start();
 ```
 
-## [IHeartbeatServer](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Heartbeat/Server/IHeartbeatServer.cs#L11)
+Call `Start` after configuring the callbacks to begin periodic heartbeat transmission.
+
+## [MavlinkHeartbeatServerConfig](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Heartbeat/Server/HeartbeatServer.cs#L8)
+
+| Property          | Type  | Default | Description                                                |
+|-------------------|-------|---------|------------------------------------------------------------|
+| `HeartbeatRateMs` | `int` | `1000`  | Interval between heartbeat transmissions, in milliseconds. |
+
+## [IHeartbeatServer](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Heartbeat/Server/IHeartbeatServer.cs#L11)
 
 Defines the interface for a heartbeat server.
 

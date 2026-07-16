@@ -19,7 +19,7 @@ var ftpClient = drone.GetMicroservice<IFtpClient>()
 var result = await ftpClient.CreateDirectory("/FolderExample", cancel);
 ```
 
-> You may use `ReadOpCode` to check the operation result.
+> You may use `ReadOpcode` to check the operation result.
 > If you get `FtpOpcode.Ack`, the operation was successful.
 
 3. Call ListDirectory to get data about the root directory:
@@ -47,7 +47,7 @@ Console.WriteLine("Directory: " + string.Join(string.Empty, buffer));
 | Property              | Type   | Default | Description                                                  |
 |-----------------------|--------|---------|--------------------------------------------------------------|
 | `TimeoutMs`           | `int`  | `500`   | Timeout (in milliseconds) for a single FTP command.          |
-| `CommandAttemptCount` | `int`  | `6`     | How many times to retry a command on timeout failure.        |
+| `CommandAttemptCount` | `int`  | `6`     | Total number of attempts for a command on timeout failure.   |
 | `TargetNetworkId`     | `byte` | `0`     | Target MAVLink network ID (target_network) used for routing. |
 | `BurstTimeoutMs`      | `int`  | `1000`  | Burst-read inactivity timeout (in milliseconds).             |
 

@@ -11,7 +11,7 @@ The Params microservice can be used in two roles:
   — reads and writes parameters on a remote device (e.g., ground control station).
 
 - [Server](ParamsServer.md) implementing [IParamsServer](ParamsServer.md#iparamsserver)  
-  — stores parameters and responds to parameter requests (e.g., drone or autopilot).
+  — exposes incoming parameter requests and sends parameter values (e.g., drone or autopilot).
 
 There are also extended versions that provide higher-level abstractions:
 

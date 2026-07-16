@@ -12,10 +12,10 @@ Read more about supported devices in the [client implementations](FrameClient.md
 
 Represents a drone frame configuration.
 
-| Property | Type                                    | Description                                          |
-|----------|-----------------------------------------|------------------------------------------------------|
-| `Id`     | `string`                                | Unique identifier of the frame.                      |
-| `Meta`   | `IReadOnlyDictionary<string, string>`   | Metadata with device-specific parameter information. |
+| Property | Type                                   | Description                                                   |
+|----------|----------------------------------------|---------------------------------------------------------------|
+| `Id`     | `string`                               | Unique identifier of the frame.                               |
+| `Meta`   | `IReadOnlyDictionary<string, string>?` | Optional metadata with device-specific parameter information. |
 
 ## Exceptions
 

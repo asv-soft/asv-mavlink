@@ -24,7 +24,8 @@ var paramsServer = serverDevice.GetParams();
 // Subscribe to parameter read requests
 using var readSubscription = paramsServer.OnParamRequestRead.Subscribe(request =>
 {
-    Console.WriteLine($"Parameter read requested: {request.Payload.ParamId}");
+    var name = MavlinkTypesHelper.GetString(request.Payload.ParamId);
+    Console.WriteLine($"Parameter read requested: {name}");
     // Handle the request...
 });
 
@@ -38,7 +39,8 @@ using var listSubscription = paramsServer.OnParamRequestList.Subscribe(request =
 // Subscribe to parameter set requests
 using var setSubscription = paramsServer.OnParamSet.Subscribe(packet =>
 {
-    Console.WriteLine($"Parameter set: {packet.Payload.ParamId} = {packet.Payload.ParamValue}");
+    var name = MavlinkTypesHelper.GetString(packet.Payload.ParamId);
+    Console.WriteLine($"Parameter set: {name} = {packet.Payload.ParamValue}");
     // Update parameter and send response...
 });
 ```
@@ -52,7 +54,7 @@ You can send parameter values to clients:
 ```C#
 await paramsServer.SendParamValue(param =>
 {
-    param.ParamId = "BARO_PRIMARY";
+    MavlinkTypesHelper.SetString(param.ParamId, "BARO_PRIMARY");
     param.ParamValue = 1.0f;
     param.ParamType = MavParamType.MavParamTypeUint8;
     param.ParamCount = 100;

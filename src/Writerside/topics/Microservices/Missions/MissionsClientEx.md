@@ -45,27 +45,30 @@ await missionEx.SetCurrent(0, cancel);
 | Property                | Type  | Default | Description                                          |
 |-------------------------|-------|---------|------------------------------------------------------|
 | `CommandTimeoutMs`      | `int` | `1000`  | Timeout for request/response mission calls.          |
-| `AttemptToCallCount`    | `int` | `3`     | Retry count for request/response calls.              |
+| `AttemptToCallCount`    | `int` | `3`     | Total number of attempts for request/response calls. |
 | `DeviceUploadTimeoutMs` | `int` | `3000`  | Timeout for waiting next upload request from device. |
 
 ## [IMissionClientEx](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Missions/Client/Ex/IMissionClientEx.cs)
 
 Represents an extended interface for interacting with mission clients.
 
-| Property              | Type                                   | Description                                                        |
-|-----------------------|----------------------------------------|--------------------------------------------------------------------|
-| `Base`                | `IMissionClient`                       | Underlying low-level mission client.                               |
-| `MissionItems`        | `IReadOnlyObservableList<MissionItem>` | This property represents an observable collection of MissionItems. |
-| `IsSynced`            | `ReadOnlyReactiveProperty<bool>`       | `true` when local and remote missions are in sync.                 |
-| `Current`             | `ReadOnlyReactiveProperty<ushort>`     | Current mission item index from remote side.                       |
-| `Reached`             | `ReadOnlyReactiveProperty<ushort>`     | Last reached mission item index from remote side.                  |
-| `AllMissionsDistance` | `ReadOnlyReactiveProperty<double>`     | Total distance in km of all missions.                              |
+| Property              | Type                                   | Description                                                            |
+|-----------------------|----------------------------------------|------------------------------------------------------------------------|
+| `Base`                | `IMissionClient`                       | Underlying low-level mission client.                                   |
+| `MissionItems`        | `IReadOnlyObservableList<MissionItem>` | This property represents an observable collection of MissionItems.     |
+| `IsSynced`            | `ReadOnlyReactiveProperty<bool>`       | `true` when local and remote missions are in sync.                     |
+| `Current`             | `ReadOnlyReactiveProperty<ushort>`     | Current mission item index from remote side.                           |
+| `Reached`             | `ReadOnlyReactiveProperty<ushort>`     | Last reached mission item index from remote side.                      |
+| `AllMissionsDistance` | `ReadOnlyReactiveProperty<double>`     | Distance in km between consecutive waypoint and spline waypoint items. |
+
+> `AllMissionsDistance` includes only `MavCmdNavWaypoint` and `MavCmdNavSplineWaypoint` items. It is recalculated when `IsSynced` changes and may be stale while the local mission is being edited.
+{style="note"}
 
 | Method                                                                                  | Return Type           | Description                                                    |
 |-----------------------------------------------------------------------------------------|-----------------------|----------------------------------------------------------------|
 | `StartMission(ushort startIndex, ushort stopIndex, CancellationToken cancel = default)` | `Task`                | Starts the mission (sends MAV_CMD_MISSION_START).              |
 | `Download(CancellationToken cancel, Action<double>? progress = null)`                   | `Task<MissionItem[]>` | Downloads mission to local cache and sends ACK.                |
-| `Upload(CancellationToken cancel = default, Action<double>? progress = null)`           | `Task`                | Uploads a file to the server.                                  |
+| `Upload(CancellationToken cancel = default, Action<double>? progress = null)`           | `Task`                | Uploads the local mission list to the remote device.           |
 | `Create()`                                                                              | `MissionItem`         | Creates and adds new local MissionItem object.                 |
 | `Remove(ushort index)`                                                                  | `void`                | Removes an element at the specified index from the collection. |
 | `ClearRemote(CancellationToken cancel = default)`                                       | `Task`                | Clears mission on remote side.                                 |

@@ -49,10 +49,12 @@ await command.SendCommandLong(
 
 ### [CommandProtocolConfig](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Commands/Client/CommandClient.cs)
 
-| Property           | Type  | Default | Description                                 |
-|--------------------|-------|---------|---------------------------------------------|
-| `CommandTimeoutMs` | `int` | `5000`  | Timeout for request/response mission calls. |
-| `CommandAttempt`   | `int` | `5`     | Retry count for request/response calls.     |
+| Property           | Type  | Default | Description                                                 |
+|--------------------|-------|---------|-------------------------------------------------------------|
+| `CommandTimeoutMs` | `int` | `5000`  | Timeout in milliseconds for command request/response calls. |
+| `CommandAttempt`   | `int` | `5`     | Attempt count for command request/response calls.           |
+
+Both properties accept non-negative values. Assigning a negative value throws `ArgumentOutOfRangeException`.
 
 ### [ICommandClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Commands/Client/ICommandClient.cs)
 
@@ -66,10 +68,13 @@ Represents a command client that is capable of sending commands to an external s
 |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------|-------------------------------------------------------------------------------------------------------------|
 | `CommandLong(Action<CommandLongPayload> edit, CancellationToken cancel = default)`                                                                                                                   | `Task<CommandAckPayload>` | Sends a command with long parameter to the vehicle.                                                         |
 | `CommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel = default)`                                  | `Task<CommandAckPayload>` | Executes a long-duration command with specified parameters.                                                 |
-| `CommandLongAndWaitPacket<TAnswerPacket>(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel = default)`      | `Task<TAnswerPacket>`     | Executes a long command and waits for the response packet.                                                  |
+| `CommandLongAndWaitPacket<TAnswerPacket>(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel = default)`      | `Task<TAnswerPacket>`     | Sends a long command and waits for the first received packet of type `TAnswerPacket`.                       |
 | `SendCommandLong(MavCmd command, float param1, float param2, float param3, float param4, float param5, float param6, float param7, CancellationToken cancel = default)`                              | `Task`                    | Sends a long command to the specified MavCmd with the provided parameters.                                  |
 | `SendCommandInt(MavCmd command, MavFrame frame, bool current, bool autocontinue, float param1, float param2, float param3, float param4, int x, int y, float z, CancellationToken cancel = default)` | `ValueTask`               | Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value. |
 | `CommandInt(MavCmd command, MavFrame frame, bool current, bool autoContinue, float param1, float param2, float param3, float param4, int x, int y, float z, CancellationToken cancel = default)`     | `Task<CommandAckPayload>` | Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value. |
+
+`CommandLong` and `CommandInt` wait for a matching `COMMAND_ACK` and use `CommandProtocolConfig` for attempts and timeout. 
+`SendCommandLong` and `SendCommandInt` only wait for the packet to be sent.
 
 #### `ICommandClient.CommandLong` (delegate overload)
 | Parameter | Type                         | Description                                    |
@@ -91,6 +96,10 @@ Represents a command client that is capable of sending commands to an external s
 | `cancel`  | `CancellationToken` | A `CancellationToken` to cancel the command execution. |
 
 #### `ICommandClient.CommandLongAndWaitPacket<TAnswerPacket>`
+
+`TAnswerPacket` must derive from `MavlinkMessage` and have a parameterless constructor. 
+This method waits for a packet of that type; it does not wait for or validate `COMMAND_ACK`.
+
 | Parameter | Type                | Description                                             |
 |-----------|---------------------|---------------------------------------------------------|
 | `command` | `MavCmd`            | The command to be executed.                             |
@@ -149,6 +158,10 @@ Represents a command client that is capable of sending commands to an external s
 | `cancel`       | `CancellationToken` | The cancellation token to cancel the command (optional).                                    |
 
 ### [CommandClientHelper](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Commands/Client/CommandClientHelper.cs)
+
+Provides extension methods for common command operations. 
+The `CommandLongAndCheckResult` overloads throw `CommandException` only for `MavResultTemporarilyRejected`, `MavResultDenied`, `MavResultUnsupported`, and `MavResultFailed`. 
+Other acknowledgement results return normally.
 
 | Method                                                                                                                                                                  | Return Type                     | Description                                                                                                                             |
 |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
@@ -246,10 +259,28 @@ Represents a command client that is capable of sending commands to an external s
 |-----------|---------------------------|------------------------------------------------|
 | `src`     | `CompanionRebootShutdown` | The companion computer reboot/shutdown action. |
 
+### `AutopilotRebootShutdown`
+
+| Value                                                         | Numeric value | Description                                                   |
+|---------------------------------------------------------------|---------------|---------------------------------------------------------------|
+| `DoNothingForAutopilot`                                       | `0`           | Do not change the autopilot state.                            |
+| `RebootAutopilot`                                             | `1`           | Reboot the autopilot.                                         |
+| `ShutdownAutopilot`                                           | `2`           | Shut down the autopilot.                                      |
+| `RebootAutopilotAndKeepItInTheBootloaderUntilUpgraded`        | `3`           | Reboot and remain in the bootloader until an upgrade occurs.  |
+
+### `CompanionRebootShutdown`
+
+| Value                                                               | Numeric value | Description                                                           |
+|---------------------------------------------------------------------|---------------|-----------------------------------------------------------------------|
+| `DoNothingForOnboardComputer`                                       | `0`           | Do not change the companion computer state.                           |
+| `RebootOnboardComputer`                                             | `1`           | Reboot the companion computer.                                        |
+| `ShutdownOnboardComputer`                                           | `2`           | Shut down the companion computer.                                     |
+| `RebootOnboardComputerAndKeepItInTheBootloaderUntilUpgraded`        | `3`           | Reboot and remain in the bootloader until an upgrade occurs.          |
+
 ### [CommandException](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Commands/CommandException.cs)
 
-Represents an exception that is thrown when a MAVLink command execution results in a non-success acknowledgment. 
-Contains the `CommandAckPayload` detailing the result of the command.
+Represents an exception created for `MavResultTemporarilyRejected`, `MavResultDenied`, `MavResultUnsupported`, or `MavResultFailed` acknowledgements. 
+ It contains the `CommandAckPayload` returned by the remote device. Constructing it for another result throws `ArgumentOutOfRangeException`.
 
 | Constructor                                  | Description                                                                                                               |
 |----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|
@@ -258,12 +289,3 @@ Contains the `CommandAckPayload` detailing the result of the command.
 | Property | Type                | Description                                                     |
 |----------|---------------------|-----------------------------------------------------------------|
 | `Result` | `CommandAckPayload` | Gets the command acknowledgment payload returned by the device. |
-
-| Method                                 | Return Type | Description                                                       |
-|----------------------------------------|-------------|-------------------------------------------------------------------|
-| `GetMessage(CommandAckPayload result)` | `string`    | Builds a human-readable error message from a `CommandAckPayload`. |
-
-#### `CommandException.GetMessage`
-| Parameter | Type                | Description                           |
-|-----------|---------------------|---------------------------------------|
-| `result`  | `CommandAckPayload` | The acknowledgment payload to format. |

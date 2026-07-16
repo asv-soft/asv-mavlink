@@ -55,7 +55,7 @@ using var onClear = missionServer.OnMissionClearAll.SubscribeAwait(async (req, c
 |------------------------|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
 | `OnMissionCount`       | `Observable<MissionCountPacket>`       | Event that is raised whenever the mission count is updated..                                                                      |
 | `OnMissionRequestList` | `Observable<MissionRequestListPacket>` | Gets an observable sequence of MissionRequestListPacket that represents the event raised when a mission request list is received. |
-| `OnMissionRequestInt`  | `Observable<MissionRequestIntPacket>`  | Gets an observable sequence of <see cref="MissionRequestIntPacket"/> for mission requests of type int.                            |
+| `OnMissionRequestInt`  | `Observable<MissionRequestIntPacket>`  | Gets an observable sequence of integer mission item requests.                                                                     |
 | `OnMissionClearAll`    | `Observable<MissionClearAllPacket>`    | Gets an observable sequence of MissionClearAllPacket events.                                                                      |
 | `OnMissionSetCurrent`  | `Observable<MissionSetCurrentPacket>`  | Represents an event that is raised when a mission is set as the current mission.                                                  |
 | `OnMissionAck`         | `Observable<MissionAckPayload>`        | Gets the observable sequence that emits MissionAckPayload when a mission acknowledgement is received.                             |
@@ -66,8 +66,8 @@ using var onClear = missionServer.OnMissionClearAll.SubscribeAwait(async (req, c
 | `SendMissionCount(ushort count, byte targetSystemId = 0, byte targetComponentId = 0)`                                                            | `ValueTask`               | Sends the mission count to the specified target system and component IDs.                |
 | `SendReached(ushort seq, CancellationToken cancel = default)`                                                                                    | `ValueTask`               | Sends the reached value of a sequence.                                                   |
 | `SendMissionCurrent(ushort current, CancellationToken cancel = default)`                                                                         | `ValueTask`               | Sends the current mission index to the system.                                           |
-| `SendMissionItemInt(ServerMissionItem item, byte targetSystemId = 0, byte targetComponentId = 0, CancellationToken cancel = default)`            | `ValueTask`               | Sends a mission item to the server.                                                      |
-| `RequestMissionItem(ushort index, MavMissionType type, byte targetSystemId = 0, byte targetComponentId = 0, CancellationToken cancel = default)` | `Task<ServerMissionItem>` | Requests a mission item from the server.                                                 |
+| `SendMissionItemInt(ServerMissionItem item, byte targetSystemId = 0, byte targetComponentId = 0, CancellationToken cancel = default)`            | `ValueTask`               | Sends a mission item to the target client or device.                                     |
+| `RequestMissionItem(ushort index, MavMissionType type, byte targetSystemId = 0, byte targetComponentId = 0, CancellationToken cancel = default)` | `Task<ServerMissionItem>` | Requests a mission item from a target client during mission upload.                      |
 
 ### `IMissionServer.SendMissionAck`
 | Parameter           | Type               | Description                                  |

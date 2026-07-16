@@ -19,7 +19,7 @@ Usage: mavlink [options...] [-h|--help] [--version]
 Listen MAVLink packages and print statistic
 
 Options:
-  -cs|--connection <string>    Connection string. Default "tcp://127.0.0.1:5760" (Default: null)
+  -cs|--connection <string>    Connection string. Default "tcp://127.0.0.1:5762" (Default: null)
 ```
 
-![image](asv-drones-mavlink-mavlink-command.png)
+![image](asv-drones-mavlink-mavlink-command.png){style="block"}

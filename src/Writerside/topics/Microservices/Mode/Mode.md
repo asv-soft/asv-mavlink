@@ -14,12 +14,12 @@ The mode microservice can be used in two roles:
 
 ## [ICustomMode](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/ICustomMode.cs)
 
-Reference for the `ICustomMode` shape — an implementation describes a single autopilot-specific flight mode (examples: [ArduCopter](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Copter/ArduCopterMode.cs), [ArduPlane](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Plane/ArduPlaneMode.cs), [PX4](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Px4/Px4Mode.cs), [Unknown](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/UnknownMode.cs)).
+Reference for the `ICustomMode` shape — an implementation describes a single autopilot-specific flight mode (examples: [ArduCopter](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Copter/Microservices/Mode/ArduCopterMode.cs), [ArduPlane](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Plane/Microservices/ArduPlaneMode.cs), [PX4](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Px4/Px4Mode.cs), [Unknown](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/UnknownMode.cs)).
 
 | Property       | Type     | Description                                                                                                                                                     |
 |----------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Name`         | `string` | Gets the name of the property.                                                                                                                                  |
-| `Description`  | `string` | Gets the description of the property.                                                                                                                           |
+| `Name`         | `string` | Gets the name of the mode.                                                                                                                                      |
+| `Description`  | `string` | Gets the description of the mode.                                                                                                                               |
 | `InternalMode` | `bool`   | This flag indicates whether the vehicle can be set into this mode by the user command. You shouldn't show this mode in the user interface if this flag is true. |
 
 | Method                                                                               | Return Type | Description                                                    |

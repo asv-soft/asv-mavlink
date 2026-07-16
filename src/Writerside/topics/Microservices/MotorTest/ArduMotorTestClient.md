@@ -7,7 +7,7 @@ This page describes the ArduPilot-specific implementations of `IMotorTestClient`
 
 ## Implementations
 
-### [ArduCopterMotorTestClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Copter/Microservices/MotorTest/ArduCopterMotorTestClient.cs)
+### [ArduCopterMotorTestClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Devices/Client/Vehicles/Ardu/Copter/MotorTest/ArduCopterMotorTestClient.cs)
 
 Monitors frame configuration changes by reading the `FRAME_CLASS` and `FRAME_TYPE` parameters, maps servo output 
 channels to motor instance numbers via `ArduPilotMotorsLayout`, and is responsible for disposing the ArduTestMotor resources.

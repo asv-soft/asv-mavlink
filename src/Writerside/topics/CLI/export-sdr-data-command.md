@@ -8,7 +8,7 @@ This command extracts SDR (Software Defined Radio) data from a binary file and e
 - Exports the data to a CSV file for further analysis or storage.
 - Provides a simple and automated way to convert SDR logs into human-readable tabular data.
 ```bash
-Asv.Mavlink.Shell.exe export-sdr
+Asv.Mavlink.Shell.exe export-sdr --input-file recording.bin --output-file out.csv
 ```
 
 You may also use some parameters in the command.

@@ -26,31 +26,31 @@ Documentation can be found [here](https://docs.asv.me/libraries/asv-mavlink)
 
 | Microservice | Client | Server |
 |--------------|--------|--------|
-| Adsb | Yes | Yes |
-| AsvAudio | No | No |
-| AsvChart | Yes | Yes |
-| AsvGbs | Yes | Yes |
-| AsvRadio | Yes | Yes |
-| AsvRsga | Yes | Yes |
-| AsvSdr | Yes | Yes |
-| Commands | Yes | Yes |
-| Control | Yes | No |
-| Dgps | Yes | Yes |
-| Diagnostic | Yes | Yes |
-| Frame | Yes | No |
-| Ftp | Yes | Yes |
-| Gnss | Yes | Yes |
-| Heartbeat | Yes | Yes |
-| Logging | Yes | Yes |
-| Missions | Yes | Yes |
-| Mode | Yes | Yes |
-| MotorTest | Yes | No |
-| Params | Yes | Yes |
-| ParamsExt | Yes | Yes |
-| Position | Yes | Yes |
-| StatusText | Yes | Yes |
-| Telemetry | Yes | Yes |
-| V2Extention | Yes | Yes |
+| Adsb         | Yes    | Yes    |
+| AsvAudio     | No     | No     |
+| AsvChart     | Yes    | Yes    |
+| AsvGbs       | Yes    | Yes    |
+| AsvRadio     | Yes    | Yes    |
+| AsvRsga      | Yes    | Yes    |
+| AsvSdr       | Yes    | Yes    |
+| Commands     | Yes    | Yes    |
+| Control      | Yes    | No     |
+| Dgps         | Yes    | No     |
+| Diagnostic   | Yes    | Yes    |
+| Frame        | Yes    | No     |
+| Ftp          | Yes    | Yes    |
+| Gnss         | Yes    | No     |
+| Heartbeat    | Yes    | Yes    |
+| Logging      | Yes    | Yes    |
+| Missions     | Yes    | Yes    |
+| Mode         | Yes    | Yes    |
+| MotorTest    | Yes    | No     |
+| Params       | Yes    | Yes    |
+| ParamsExt    | Yes    | Yes    |
+| Position     | Yes    | Yes    |
+| StatusText   | Yes    | Yes    |
+| Telemetry    | Yes    | Yes    |
+| V2Extention  | Yes    | Yes    |
 
 ## Example: Emulate ADSB reciever
 
@@ -75,7 +75,7 @@ Here's an example of ADSB utility being used with [Mission Planner](https://ardu
 Generate C# code for packet serialization\deserialization
 
 ```bash
-Asv.Mavlink.Shell.exe gen -t=[mavlink-xml-file] -i=[mavlink-xml-folder] -o=[output-folder] -e=cs [path-to-liquid-template]/csharp.tpl
+Asv.Mavlink.Shell.exe gen -t=[mavlink-xml-file] -i=[mavlink-xml-folder] -o=[output-folder] -e=cs -tmpl [path-to-liquid-template]/csharp.liquid
 ```
 ```cs
    /// <summary>
@@ -184,7 +184,7 @@ This command extracts SDR (Software Defined Radio) data from a binary file and e
 - Exports the data to a CSV file for further analysis or storage.
 - Provides a simple and automated way to convert SDR logs into human-readable tabular data.
 ```bash
-Asv.Mavlink.Shell.exe export-sdr
+Asv.Mavlink.Shell.exe export-sdr --input-file recording.bin --output-file out.csv
 ```
 
 You may also use some parameters in the command.
@@ -220,7 +220,7 @@ Usage: mavlink [options...] [-h|--help] [--version]
 Listen MAVLink packages and print statistic
 
 Options:
-  -cs|--connection <string>    Connection string. Default "tcp://127.0.0.1:5760" (Default: null)
+  -cs|--connection <string>    Connection string. Default "tcp://127.0.0.1:5762" (Default: null)
 ```
 
 ![image](https://github.com/asv-soft/asv-drones-docs/blob/main/.gitbook/assets/asv-drones-mavlink-mavlink-command.png?raw=true)
@@ -251,24 +251,17 @@ Used for connecting vehicle and several ground station
 
 Options:
   -l|--links <string[]>            Add connection to hub. Can be used multiple times. Example: udp://192.168.0.140:45560 or serial://COM5?br=57600 (Required)
-  -o|--output-file <string>        Write filtered message to file (Default: null)
-  -silent|--silent                 Disable print filtered message to screen (Optional)
-  -sys|--sys-ids <int[]>           Filter for logging: system id field (Example: -sys 1 -sys 255) (Default: null)
-  -id|--msg-ids <int[]>            Filter for logging: message id field (Example: -id 1 -mid 255) (Default: null)
-  -name|--name-pattern <string>    Filter for logging: regex message name filter (Example: -name MAV_CMD_D) (Default: null)
-  -txt|--text-pattern <string>     Filter for logging: regex json text filter (Example: -txt MAV_CMD_D) (Default: null)
-  -from|--directions <int[]>       Filter for packet direction: select only input packets from the specified direction (Default: null)
+  -o|--output <string?>            Write filtered messages to file (Default: null)
+  -s|--silent                      Disable printing filtered messages to the screen (Optional)
+  -s-ids|--sys-ids <int[]?>        Filter for logging: system ID field (Example: -s-ids 1 -s-ids 255) (Default: null)
+  -m-ids|--msg-ids <int[]?>        Filter for logging: message ID field (Example: -m-ids 1 -m-ids 255) (Default: null)
+  -n-p|--name-pattern <string?>    Filter for logging: regex message name filter (Example: -n-p MAV_CMD_D) (Default: null)
+  -t-p|--text-pattern <string?>    Filter for logging: regex JSON text filter (Example: -t-p MAV_CMD_D) (Default: null)
 ```
 
 ## CLI: Benchmark-serialization
 
-This command benchmarks the serialization and deserialization performance of MAVLink packets. It uses BenchmarkDotNet to measure the efficiency of the serialization process, focusing on how MAVLink packets are serialized and deserialized using spans.### Features:
-
-- Connects to multiple MAVLink streams, allowing you to route messages between different systems (e.g., vehicle and multiple ground stations).
-- Supports filtering by system ID, message ID, message name (using regex), and message content (JSON text).
-- Can log filtered MAVLink messages to a file.
-- Allows disabling console output for silent operation.
-- Automatically propagates MAVLink messages between the connected links.
+This command benchmarks span-based serialization and deserialization of a generated MAVLink packet with BenchmarkDotNet. It reports execution time and managed memory allocations and does not connect to a vehicle.
 
 ```bash
 Asv.Mavlink.Shell.exe benchmark-serialization
@@ -295,17 +288,16 @@ Command that shows info about devices in the mavlink network
 Options:
 -cs|--connection-string <string>    The address of the connection to the mavlink device (Required)
 -i|--iterations <uint?>             States how many iterations should the program work through (Default: null)
--dt|--devices-timeout <uint>        (in seconds) States the lifetime of a mavlink device that shows no Heartbeat (Default: 10)
 -r|--refresh-rate <uint>            (in ms) States how fast should the console be refreshed (Default: 3000)
 ```
 
 Full possible command with all the parameters
 ```bash
-Asv.Mavlink.Shell.exe devices-info -cs "tcp://127.0.0.1:7341" -i 400 -dt 20 -r 1000
+Asv.Mavlink.Shell.exe devices-info -cs "tcp://127.0.0.1:7341" -i 400 -r 1000
 ```
 ## CLI: Packet Viewer
 ```bash
-Asv.Mavlink.Shell.exe packetviewer --connection tcp://127.0.0.1:5762
+Asv.Mavlink.Shell.exe packet-viewer --connection tcp://127.0.0.1:5762
 ```
 This command starts the console implementation of packet viewer.
 
@@ -369,9 +361,9 @@ All the possible parameters for the command:
 Command creates diagnostic client that retrieves diagnostic data.
 
 Options:
-  -cs|--connection-string <string>      The address of the connection to the mavlink diagnostic server (Required)
-  -tsid|--target-system-id <byte>       Server's system id (Required)
-  -tcid|--target-component-id <byte>    Server's component id (Required)
+  -cs|--connection-string <string>      The address of the connection to the MAVLink diagnostic server (Default: tcp://127.0.0.1:7341)
+  -tsid|--target-system-id <byte>       Server's system ID (Default: 255)
+  -tcid|--target-component-id <byte>    Server's component ID (Default: 255)
   -r|--refresh-rate <uint>              (in ms) States how fast should the console be refreshed (Default: 1000)
 
 ```

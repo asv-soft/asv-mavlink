@@ -25,4 +25,4 @@ Options:
   --burst-timeout-ms <int>           The burst timeout in ms (Default: 1000)
 ````
 
-![image](asv-drones-mavlink-ftp-tree-command.png)
+![image](asv-drones-mavlink-ftp-tree-command.png){style="block"}
