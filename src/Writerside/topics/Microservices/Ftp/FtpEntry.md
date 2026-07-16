@@ -22,7 +22,7 @@ Specifies the type of entry returned by the MAVLink FTP directory listing.
 
 ## [FtpFile](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Client/Ex/Entry/FtpFile.cs#L4)
 
-Inherits from [IFtpEntry](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Client/Ex/Entry/IFtpEntry#L22). 
+Inherits from [IFtpEntry](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Client/Ex/Entry/IFtpEntry.cs#L22).
 Class represents a file of a filesystem.
 
 | Property | Type   | Description                  |
@@ -42,7 +42,7 @@ Class represents a file of a filesystem.
 
 ## [FtpDirectory](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Client/Ex/Entry/FtpDirectory.cs#L4)
 
-Inherits from [IFtpEntry](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Client/Ex/Entry/IFtpEntry#L22).
+Inherits from [IFtpEntry](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Client/Ex/Entry/IFtpEntry.cs#L22).
 Class represents a directory of a filesystem.
 
 | Constructor                                    | Description                                                        |

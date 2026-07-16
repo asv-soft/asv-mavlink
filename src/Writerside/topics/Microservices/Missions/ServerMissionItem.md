@@ -2,7 +2,7 @@
 
 [Source code](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Missions/Server/IMIssionServer.cs)
 
-`ServerMissionItem` is a server-side mission item wrapper around `MissionItemIntPayload`.
+`ServerMissionItem` is a server-side mission item DTO. Its values are copied to or from `MissionItemIntPayload` during protocol operations.
 
 | Property       | Type             | Description                                                                                                                    |
 |----------------|------------------|--------------------------------------------------------------------------------------------------------------------------------|

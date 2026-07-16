@@ -1,7 +1,7 @@
 # MotorTest
 
-A microservice that manages motor test execution, including telemetry collection and real-time test state tracking 
-for a MAVLink device.
+A microservice that manages motor test execution, including PWM telemetry collection and local test state tracking
+for a MAVLink device. The test state is based on accepted commands and a client-side timeout; it does not confirm the physical state of a motor.
 
 The motor test microservice currently supports only a [client](MotorTestClient.md)
 implementing [IMotorTestClient](MotorTestClient.md#imotortestclient).

@@ -5,6 +5,8 @@ on:
     tags:
       - 'docs-v[0-9]+.[0-9]+.[0-9]+-v[0-9]+'
       - 'docs-v[0-9]+.[0-9]+.[0-9]+-dev.[0-9]+-v[0-9]+'
+      - 'docs-v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+-v[0-9]+'
+      - 'docs-v[0-9]+.[0-9]+.[0-9]+-rc+-v[0-9]+'
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
 permissions:
@@ -13,7 +15,7 @@ permissions:
   pages: write
 
 env:
-  INSTANCE: 'src/Writerside/am'
+  INSTANCE: 'Writerside/am'
   DOCKER_VERSION: '243.21565'
   PDF: 'PDF.xml'
   CONFIG_JSON_PRODUCT: 'AM'
@@ -57,6 +59,7 @@ jobs:
         uses: JetBrains/writerside-github-action@v4
         with:
           instance: ${{ env.INSTANCE }}
+          location: src/Writerside
           docker-version: ${{ env.DOCKER_VERSION }}
           artifact: ${{ env.ARTIFACT }}
           
@@ -64,8 +67,10 @@ jobs:
         uses: JetBrains/writerside-github-action@v4
         with:
           instance: ${{ env.INSTANCE }}
+          location: src/Writerside
           docker-version: ${{ env.DOCKER_VERSION }}
           pdf: ${{ env.PDF }}
+          artifact: pdfSource${{ env.INSTANCE_ID_UPPER }}.pdf
           
       - name: Save artifact with build results
         uses: actions/upload-artifact@v4
@@ -76,6 +81,7 @@ jobs:
             artifacts/${{ env.ARTIFACT }}
             artifacts/report.json
             artifacts/${{ env.ALGOLIA_ARTIFACT }}
+          if-no-files-found: error
           retention-days: 1
   
   test:

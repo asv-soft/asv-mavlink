@@ -17,7 +17,7 @@ The heartbeat microservice can be used in two roles:
 >See the [HeartbeatPayload](#heartbeatpayload) section below for the exact structure of the payload.
 {style="info"}
 
-## [HeartbeatPayload](https://github.com/asv-soft/asv-mavlink/blob/2ae4bb9c1dbca2c916379c9bfac36e1f8fe94789/src/Asv.Mavlink/Protocol/Messages/minimal.cs#L1755)
+## [HeartbeatPayload](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Protocol/Messages/minimal.cs#L1759)
 
 Here is a quick reference for our `HeartbeatPayload` type, an implementation of [MAVLink heartbeat message](https://mavlink.io/en/messages/common.html#messages).
 
@@ -29,3 +29,13 @@ Here is a quick reference for our `HeartbeatPayload` type, an implementation of 
 | `CustomMode`     | `uint`         | A bitfield for use for autopilot-specific flags. |
 | `SystemStatus`   | `MavState`     | System status flag.                              |
 | `MavlinkVersion` | `byte`         | MAVLink version.                                 |
+
+### Custom mode helpers
+
+The following extension methods are available for working with the `CustomMode` bitfield:
+
+| Method                                                                  | Return Type | Description                                                   |
+|-------------------------------------------------------------------------|-------------|---------------------------------------------------------------|
+| `EditCustomMode(Action<UintBitArray> edit)`                             | `void`      | Edits the complete `CustomMode` bitfield.                     |
+| `SetCustomMode(int bitIndex, int bitLength, uint value)`                | `void`      | Sets a range of bits in `CustomMode`.                         |
+| `GetCustomMode(int bitIndex, int bitLength)`                            | `uint`      | Gets a range of bits from `CustomMode`.                       |

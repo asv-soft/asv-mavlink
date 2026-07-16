@@ -1,15 +1,11 @@
 # Benchmark-serialization
 
-This command benchmarks the serialization and deserialization performance of MAVLink packets. It uses BenchmarkDotNet to measure the efficiency of the serialization process, focusing on how MAVLink packets are serialized and deserialized using spans:
+This command benchmarks the serialization and deserialization performance of a generated MAVLink packet. It uses BenchmarkDotNet to measure span-based serialization, deserialization, execution time, and managed memory allocations.
 
-- Connects to multiple MAVLink streams, allowing you to route messages between different systems (e.g., vehicle and multiple ground stations).
-- Supports filtering by system ID, message ID, message name (using regex), and message content (JSON text).
-- Can log filtered MAVLink messages to a file.
-- Allows disabling console output for silent operation.
-- Automatically propagates MAVLink messages between the connected links.
+The command does not connect to a vehicle or route MAVLink traffic.
 
 ```bash
 Asv.Mavlink.Shell.exe benchmark-serialization
 ```
 
-![image](asv-drones-mavlink-benchmark-serialization-command.png)
+![image](asv-drones-mavlink-benchmark-serialization-command.png){style="block"}

@@ -5,7 +5,7 @@ This command shows info about the mavlink device and all other mavlink devices t
 Asv.Mavlink.Shell.exe devices-info -cs "tcp://127.0.0.1:7341"
 ```
 
-![image](asv-drones-mavlink-devices-info-command.png)
+![image](asv-drones-mavlink-devices-info-command.png){style="block"}
 
 
 You may also use some parameters in the command to customise the output

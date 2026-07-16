@@ -13,7 +13,7 @@ var serverDevice = ServerDevice.Create(
         // register other services...
         
         // IStatusTextServer has to be registered as well
-        config.RegisterStatus();
+        builder.RegisterStatus();
         
         // Register base params service first
         builder.RegisterParams();
@@ -111,6 +111,27 @@ paramsEx.OnU8Command(
         // Execute command action...
     });
 ```
+
+## [ParamsServerExConfig](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Server/Ex/ParamsServerEx.cs#L34)
+
+Configures list response pacing and configuration key naming.
+
+| Property                  | Type      | Default      | Description                                                                        |
+|---------------------------|-----------|--------------|------------------------------------------------------------------------------------|
+| `SendingParamItemDelayMs` | `int`     | `10`         | Delay between list response items in milliseconds. Non-positive values disable it. |
+| `CfgPrefix`               | `string?` | `"MAV_CFG_"` | Prefix used for parameter configuration keys.                                      |
+
+## [ParamChangedEvent](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Server/Ex/ParamsServerEx.cs#L15)
+
+Describes a local or remote parameter update.
+
+| Property         | Type                    | Description                                      |
+|------------------|-------------------------|--------------------------------------------------|
+| `IsRemoteChange` | `bool`                  | Indicates whether the update came from a client. |
+| `Metadata`       | `IMavParamTypeMetadata` | Metadata for the updated parameter.              |
+| `ParamIndex`     | `ushort`                | Index of the updated parameter.                  |
+| `OldValue`       | `MavParamValue`         | Parameter value before the update.               |
+| `NewValue`       | `MavParamValue`         | Parameter value after the update.                |
 
 ## [IParamsServerEx](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Server/Ex/IParamsServerEx.cs)
 

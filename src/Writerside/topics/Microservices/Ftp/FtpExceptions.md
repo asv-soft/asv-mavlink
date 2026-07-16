@@ -5,15 +5,15 @@ These exceptions provide microservice-specific details.
 
 ## [FtpException](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Exception/FtpException.cs#L5)
 
-Base class for all FTP-related exceptions.
+General exception type for FTP-related failures.
 
 ## [FtpNackException](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Exception/FtpNackException.cs#L5)
 
-Base class for all FTP [NAK](https://mavlink.io/en/services/ftp.html#error_codes) exceptions.
+Exception thrown when an FTP operation receives a [NAK](https://mavlink.io/en/services/ftp.html#error_codes) response. It is also the base class for specialized NAK exceptions.
 
 | Property      | Type        | Description                                                                           |
 |---------------|-------------|---------------------------------------------------------------------------------------|
-| `Session`     | `FtpOpcode` | Gets the FTP opcode (action) that caused the NAK response.                            |
+| `Action`      | `FtpOpcode` | Gets the FTP opcode (action) that caused the NAK response.                            |
 | `NackError`   | `NackError` | Gets the NAK error code reported by the FTP server.                                   |
 | `FsErrorCode` | `byte?`     | Gets the file-system-specific error code when NackError is FailErrno otherwise, null. |
 

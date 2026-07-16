@@ -23,14 +23,23 @@ Or the current altitude:
 var subscription = position.Altitude.Subscribe(alt =>
 {
     if (alt == null) return;
-    Console.WriteLine($"Altitude: {alt.Value} m");
+    Console.WriteLine($"Relative altitude: {alt.AltitudeRelative} m");
 });
 ```
 
 >Don't forget to dispose subscriptions when they are no longer needed.
 {style="warning"}
 
-## [IPositionClient](https://github.com/asv-soft/asv-mavlink/tree/main/src/Asv.Mavlink/Microservices/Position/Client/IPositionClient.cs#L12)
+## [MavlinkCommonHelper](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Position/Client/MavlinkCommonHelper.cs#L8)
+
+Provides convenience overloads that accept nullable position-target components and delegate to `IPositionClient`:
+
+| Method                           | Return Type | Description                                             |
+|----------------------------------|-------------|---------------------------------------------------------|
+| `SetTargetGlobalInt(...)`        | `ValueTask` | Composes and sends a global position-target message.    |
+| `SetPositionTargetLocalNed(...)` | `ValueTask` | Composes and sends a local NED position-target message. |
+
+## [IPositionClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Position/Client/IPositionClient.cs#L12)
 
 Represents a client that accesses position-related data.
 
@@ -85,4 +94,4 @@ Represents a client that accesses position-related data.
 | `afz`             | `float`                  | Z acceleration/force in NED frame.            |
 | `yaw`             | `float`                  | Yaw setpoint.                                 |
 | `yawRate`         | `float`                  | Yaw rate setpoint.                            |
-| `cancel`          | `CancellationToken`      | Optional cancellation token.                  |
+| `cancel`          | `CancellationToken`      | Cancellation token.                           |

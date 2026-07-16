@@ -56,7 +56,7 @@ Represents metadata for a MAVLink parameter.
 | `value`   | `MavParamValue`  | The value to write.                          |
 | `prefix`  | `string?`        | (Optional) Prefix for the configuration key. |
 
-## [MavParam](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Tools/IMavParamTypeMetadata.cs)
+## [MavParam](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Tools/IMavParamTypeMetadata.cs)
 
 A factory class for creating instances of `IMavParamTypeMetadata` objects.
 

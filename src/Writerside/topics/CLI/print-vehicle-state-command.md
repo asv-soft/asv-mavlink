@@ -11,7 +11,7 @@ This command starts the console implementation of UAV controls and Telemetry
 
 
 
-![image](asv-drones-print-vehicle-state.png)
+![image](asv-drones-print-vehicle-state.png){style="block"}
 
 The Print Vehicle State command provides control over the UAV and displays telemetry data, including:
 - Link - current state of the link between the UAV and the router;
@@ -25,3 +25,13 @@ The Print Vehicle State command provides control over the UAV and displays telem
 - Type - representation of the device type according to MAV_TYPE;
 
 The "Log" table displays a list of recent commands executed in the CLI.
+
+```bash
+Usage: print-vehicle-state [options...] [-h|--help] [--version]
+
+Vehicle state real-time monitoring and control
+
+Options:
+  -c, --connection <string>    Connection string (Required)
+  -r, --refresh-rate <uint>    Console refresh interval in ms (Default: 3000)
+```

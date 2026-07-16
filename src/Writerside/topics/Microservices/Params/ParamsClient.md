@@ -26,17 +26,18 @@ var result = await paramsClient.Write(
 Console.WriteLine($"New value: {result.ParamValue}");
 ```
 
-To read all parameters from a device:
+To receive all parameters from a device:
 
 ```C#
-// Request all parameters from device
-await paramsClient.SendRequestList();
-
 // Subscribe to incoming parameter values
 using var subscription = paramsClient.OnParamValue.Subscribe(param =>
 {
-    Console.WriteLine($"{param.ParamId}: {param.ParamValue}");
+    var name = MavlinkTypesHelper.GetString(param.ParamId);
+    Console.WriteLine($"{name}: {param.ParamValue}");
 });
+
+// Request all parameters from device
+await paramsClient.SendRequestList();
 ```
 
 > Don't forget to dispose subscriptions when they are no longer needed.
@@ -44,6 +45,15 @@ using var subscription = paramsClient.OnParamValue.Subscribe(param =>
 
 > For easier parameter management with caching and synchronization, consider using [ParamsClientEx](ParamsClientEx.md).
 {style="tip"}
+
+## [ParameterClientConfig](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Client/ParamsClient.cs#L12)
+
+Configures request retries and timeouts for `IParamsClient`.
+
+| Property           | Type  | Default | Description                                                    |
+|--------------------|-------|---------|----------------------------------------------------------------|
+| `ReadAttemptCount` | `int` | `6`     | Total number of request attempts, including the first attempt. |
+| `ReadTimeouMs`     | `int` | `1000`  | Timeout for each request attempt, in milliseconds.             |
 
 ## [IParamsClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Params/Client/IParamsClient.cs)
 

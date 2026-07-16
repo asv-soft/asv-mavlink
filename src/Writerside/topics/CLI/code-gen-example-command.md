@@ -7,7 +7,7 @@ This command generates example of files for the mavlink code generator.
 Asv.Mavlink.Shell.exe code-gen-example
 ```
 
-![image](asv-drones-mavlink-code-gen-example.png)
+![image](asv-drones-mavlink-code-gen-example.png){style="block"}
 
 
 You may also use some parameters in the command to customise the output

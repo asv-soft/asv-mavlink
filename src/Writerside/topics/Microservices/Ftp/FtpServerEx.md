@@ -2,16 +2,16 @@
 
 Extended MAVLink FTP server microservice.
 Provides high-level methods for file and directory operations over MAVLink FTP.
-It is a base implementation of the MAVLink FTP server with [sessions](FtpSession.md).
+It is a concrete filesystem-backed implementation of the MAVLink FTP server with [sessions](FtpSession.md).
 
 ## Use case
 
-This class is just an implementation of delegates from the base [FtpServer](FtpServer.md).
+This class registers its file and directory operations as handlers on the base [FtpServer](FtpServer.md).
 You can call methods manually, but it is not the default way of using FtpServerEx.
 
 ## Api { collapsible="true" }
 
-### [MavlinkFtpServerExConfig](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Server/FtpServerEx.cs#L19)
+### [MavlinkFtpServerExConfig](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Server/Ex/FtpServerEx.cs#L19)
 
 Configuration for the extended MAVLink FTP server.
 
@@ -19,7 +19,7 @@ Configuration for the extended MAVLink FTP server.
 |-----------------|----------|---------|-------------------------------------------------------------------------------------------------------------|
 | `RootDirectory` | `string` | `/`     | Gets or sets the root directory for the FTP server. All file operations will be relative to this directory. |
 
-### [IFtpServerEx](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Server/IFtpServerEx.cs#L11)
+### [IFtpServerEx](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Server/Ex/IFtpServerEx.cs#L11)
 
 Extended MAVLink FTP server microservice.
 

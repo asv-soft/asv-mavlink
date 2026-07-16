@@ -15,7 +15,7 @@ Run motor tests with telemetry and test progress reporting.
 
 Options:
   -cs|--connection <string>    The address of the connection to the MAVLink device, e.g., tcp://127.0.0.1:5760 (Required)
-  -t|--refresh-time <int>      The telemetry refresh rate in ms (Default: 300)
+  -t|--refresh-time-ms <int>   The telemetry refresh rate in ms (Default: 300)
 
 ```
 

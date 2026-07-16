@@ -16,7 +16,7 @@
 ## Install Required NuGet Packages
 
 1. Open the NuGet Package Manager and search for the [Asv.Mavlink](https://www.nuget.org/packages/Asv.Mavlink/) packet.
-2. Install the latest version (this guide is relevant to version 4.0.0 and higher)
+2. Install the latest version.
    ![image](step2-mavlink-package.png){ style="block" }
 
 The [DeepEqual](https://github.com/jamesfoster/DeepEqual) package is also used in this guide for testing purposes.
@@ -50,10 +50,11 @@ Refer to [](With-Ardu-SITL.md) for more information.*
 
 1. Create a virtual connection.
 ```c#
+var messageFactory = MavlinkV2Protocol.CreateMessageFactory();
 var protocol = Protocol.Create(builder =>
 {
     builder.SetTimeProvider(TimeProvider.System);
-    builder.RegisterMavlinkV2Protocol();
+    builder.RegisterMavlinkV2Protocol(messageFactory);
     builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
     builder.Formatters.RegisterSimpleFormatter();
 });
@@ -80,8 +81,9 @@ var clientSeq = new PacketSequenceCalculator();
    This class provides everything that your device or MAVLink microservice will use.
 ```c#
 var clientCore = new CoreServices(
-    link.Client, 
-    clientSeq, 
+    link.Client,
+    messageFactory,
+    clientSeq,
     logFactory: null, 
     timeProvider: TimeProvider.System, 
     new DefaultMeterFactory()
@@ -123,6 +125,7 @@ var client = new MavlinkClientDevice(
 var serverSeq = new PacketSequenceCalculator();
 var serverCore = new CoreServices(
     link.Server,
+    messageFactory,
     serverSeq, 
     logFactory: null, 
     timeProvider: TimeProvider.System, 
@@ -279,10 +282,11 @@ using var cancelInitialize = new CancellationTokenSource(TimeSpan.FromSeconds(20
 cancelInitialize.Token.Register(() => tcsInitialize.TrySetCanceled());
 
 // Virtual mavlink connection
+var messageFactory = MavlinkV2Protocol.CreateMessageFactory();
 var protocol = Protocol.Create(builder =>
 {
     builder.SetTimeProvider(TimeProvider.System);
-    builder.RegisterMavlinkV2Protocol();
+    builder.RegisterMavlinkV2Protocol(messageFactory);
     builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
     builder.Formatters.RegisterSimpleFormatter();
 });
@@ -295,8 +299,9 @@ var identity = new MavlinkClientIdentity(1,2,3,4);
 
 var clientSeq = new PacketSequenceCalculator();
 var clientCore = new CoreServices(
-    link.Client, 
-    clientSeq, 
+    link.Client,
+    messageFactory,
+    clientSeq,
     logFactory: null, 
     timeProvider: TimeProvider.System, 
     new DefaultMeterFactory()
@@ -325,6 +330,7 @@ var client = new MavlinkClientDevice(
 var serverSeq = new PacketSequenceCalculator();
 var serverCore = new CoreServices(
     link.Server,
+    messageFactory,
     serverSeq, 
     logFactory: null, 
     timeProvider: TimeProvider.System, 

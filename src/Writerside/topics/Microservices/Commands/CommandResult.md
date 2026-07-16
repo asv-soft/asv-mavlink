@@ -1,6 +1,6 @@
 # CommandResult
 
-Represents a command execution result that is sent in `COMMAND_ACK`.
+Represents a command execution result sent in `COMMAND_ACK`.
 
 ## Use case
 

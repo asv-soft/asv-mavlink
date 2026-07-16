@@ -14,7 +14,7 @@ Asv.Mavlink.Shell.exe ftp-browser -cs tcp://127.0.0.1:5760
     - Remove, rename, or create directories.
     - Perform file operations such as downloading, removing, truncating, renaming, and calculating CRC32.
 
-![image](asv-drones-mavlink-ftp-browser-command.png)
+![image](asv-drones-mavlink-ftp-browser-command.png){style="block"}
 
 You may also use some parameters in the command.
 ```bash

@@ -35,7 +35,7 @@ rm logs
 ```
 5. Run .bat file.
 6. Now SITL is online.
-![image](bat-sitl-windows.jpg)
+![image](bat-sitl-windows.jpg){style="block"}
 
 ## How to connect to SITL with Asv.Mavlink library
 
@@ -48,7 +48,7 @@ Repeat up to this [step](With-Virtual-Connection.md#setup-task-completion-source
 1. Create a task completion source.
    You'll need it to wait for a response from the server.
 ```c#
-var tcs = new TaskCompletionSource<HeartbeatPayload>();
+var tcs = new TaskCompletionSource();
 ```
 
 2. Create a cancellation token source with a timeout.
@@ -67,9 +67,10 @@ cancel.Token.Register(() => tcs.TrySetCanceled());
 
 1. Create protocol factory
 ```c#
+var messageFactory = MavlinkV2Protocol.CreateMessageFactory();
 var protocol = Protocol.Create(builder =>
 {
-    builder.RegisterMavlinkV2Protocol();
+    builder.RegisterMavlinkV2Protocol(messageFactory);
     builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
     builder.Formatters.RegisterSimpleFormatter();
 });
@@ -100,7 +101,7 @@ var seq = new PacketSequenceCalculator();
 
 2. Create id of the system that will search for the drone
 ```c#
-var seq = new PacketSequenceCalculator();
+var identity = new MavlinkIdentity(255, 255);
 ```
 
 3. Create device explorer
@@ -115,7 +116,8 @@ await using var deviceExplorer = DeviceExplorer.Create(router, builder =>
     builder.Factories.RegisterDefaultDevices(
         new MavlinkIdentity(identity.SystemId, identity.ComponentId),
         seq,
-        new InMemoryConfiguration());
+        new InMemoryConfiguration(),
+        messageFactory);
 });
 ```
 
@@ -181,14 +183,14 @@ await tcs.Task;
 
 1. Get heartbeat microservice
 ```c#
-await using var heartbeat = drone?.GetMicroservice<IHeartbeatClient>(); 
+var heartbeat = drone.GetMicroservice<IHeartbeatClient>();
 ```
 
 2. Check if the heartbeat client was successfully found
 ```c#
 if (heartbeat is null)
 {
-    throw new Exception("No control client found");
+    throw new Exception("Heartbeat client not found");
 }
 ```
 
@@ -276,9 +278,10 @@ await using var s = cts.Token.Register(() => tcs.TrySetCanceled());
 //
 
 // Router creation
+var messageFactory = MavlinkV2Protocol.CreateMessageFactory();
 var protocol = Protocol.Create(builder =>
 {
-    builder.RegisterMavlinkV2Protocol();
+    builder.RegisterMavlinkV2Protocol(messageFactory);
     builder.Features.RegisterBroadcastFeature<MavlinkMessage>();
     builder.Formatters.RegisterSimpleFormatter();
 });
@@ -304,7 +307,8 @@ await using var deviceExplorer = DeviceExplorer.Create(router, builder =>
     builder.Factories.RegisterDefaultDevices(
         new MavlinkIdentity(identity.SystemId, identity.ComponentId),
         seq,
-        new InMemoryConfiguration());
+        new InMemoryConfiguration(),
+        messageFactory);
 });
 //
 
@@ -345,11 +349,11 @@ await tcs.Task;
 //
 
 // Heartbeat client search
-await using var heartbeat = drone?.GetMicroservice<IHeartbeatClient>(); 
+var heartbeat = drone.GetMicroservice<IHeartbeatClient>();
 
 if (heartbeat is null)
 {
-    throw new Exception("No control client found");
+    throw new Exception("Heartbeat client not found");
 }
 //
 

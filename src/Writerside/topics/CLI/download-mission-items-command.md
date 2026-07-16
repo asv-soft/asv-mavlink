@@ -7,7 +7,7 @@ It provides options to cancel the operation and handles exceptions that may occu
 Asv.Mavlink.Shell.exe show-mission -cs tcp://127.0.0.1:7341
 ```
 
-![image](asv-drones-mavlink-download-mission-items.png)
+![image](asv-drones-mavlink-download-mission-items.png){style="block"}
 
 You may also use some parameters in the command.
 

@@ -9,7 +9,7 @@ Executing this command launches an emulator for an ADS-B receiver, generating an
 Asv.Mavlink.Shell adsb -cfg adsb.json
 ```
 
-![image](asv-drones-mavlink-adsb-command.png)
+![image](asv-drones-mavlink-adsb-command.png){style="block"}
 
 ## Configuration file
 
@@ -102,8 +102,8 @@ Base properties are needed to fill [ADSB\_VEHICLE](https://mavlink.io/en/message
 
 #### Here's an example of ADSB utility being used with [Asv.Drones](https://github.com/asv-soft/asv-drones).
 
-![image](adsb-vehicles-in-asv-drones.png)
+![image](adsb-vehicles-in-asv-drones.png){style="block"}
 
 #### Here's an example of ADSB utility being used with [Mission Planner](https://ardupilot.org/planner/)
 
-![image](adsb-vehicles-in-mission-planner.png)
+![image](adsb-vehicles-in-mission-planner.png){style="block"}

@@ -13,7 +13,7 @@ First, load the list of available frame configurations from the connected device
 
 ```C#
 // Load available frames from the device
-await frameClient.LoadAvailableFrames();
+await frameClient.RefreshAvailableFrames();
 
 // Access the available frames through the Frames property
 foreach (var frame in frameClient.Frames.Values)
@@ -26,9 +26,9 @@ Get the current frame configuration:
 
 ```C#
 // Load available frames first
-await frameClient.LoadAvailableFrames();
+await frameClient.RefreshAvailableFrames();
 
-await frameClient.LoadCurrentFrame();
+await frameClient.RefreshCurrentFrame();
 
 var subscription = frameClient.CurrentFrame.Subscribe(currentFrame =>
 {
@@ -48,7 +48,7 @@ Update the frame configuration:
 
 ```C#
 // Load available frames first
-await frameClient.LoadAvailableFrames();
+await frameClient.RefreshAvailableFrames();
 
 // Select a frame from the Frames collection
 var selectedFrame = frameClient.Frames.Values.First();
@@ -63,17 +63,18 @@ await frameClient.SetFrame(selectedFrame);
 
 ## [IFrameClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Frame/Client/IFrameClient.cs)
 
-| Property | Type                                                 | Description                                                   |
-|----------|------------------------------------------------------|---------------------------------------------------------------|
-| `Frames` | `IReadOnlyObservableDictionary<string, IDroneFrame>` | Available drone frames. Populated by `LoadAvailableFrames()`. |
+| Property       | Type                                                 | Description                                                                              |
+|----------------|------------------------------------------------------|------------------------------------------------------------------------------------------|
+| `Frames`       | `IReadOnlyObservableDictionary<string, IDroneFrame>` | Supported drone frames. Populated by `RefreshAvailableFrames()`.                         |
+| `CurrentFrame` | `ReadOnlyReactiveProperty<IDroneFrame?>`             | Currently selected frame, or `null` when it cannot be matched or has not been refreshed. |
 
-| Method                                                                      | Return Type | Description                                                                                                                           |
-|-----------------------------------------------------------------------------|-------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `LoadAvailableFrames(CancellationToken cancel = default)`                   | `ValueTask` | Loads available frame types from the device and updates the `Frames` collection.                                                      |
-| `SetFrame(IDroneFrame droneFrameToSet, CancellationToken cancel = default)` | `Task`      | Updates the frame type for the current device.                                                                                        |
-| `LoadCurrentFrame(CancellationToken cancel = default)`                      | `Task`      | Loads the current frame configuration from the device and starts reactively updating `CurrentFrame` when the frame parameters change. |
+| Method                                                                      | Return Type | Description                                                                                                               |
+|-----------------------------------------------------------------------------|-------------|---------------------------------------------------------------------------------------------------------------------------|
+| `RefreshAvailableFrames(CancellationToken cancel = default)`                | `ValueTask` | Rebuilds the `Frames` collection from the device.                                                                         |
+| `SetFrame(IDroneFrame droneFrameToSet, CancellationToken cancel = default)` | `Task`      | Updates the frame type for the current device.                                                                            |
+| `RefreshCurrentFrame(CancellationToken cancel = default)`                   | `Task`      | Refreshes the current frame configuration and starts reactively updating `CurrentFrame` when the frame parameters change. |
 
-### `IFrameClient.LoadAvailableFrames`
+### `IFrameClient.RefreshAvailableFrames`
 
 | Parameter | Type                | Description                                |
 |-----------|---------------------|--------------------------------------------|
@@ -86,7 +87,7 @@ await frameClient.SetFrame(selectedFrame);
 | `droneFrameToSet` | `IDroneFrame`       | Frame type to use.                         |
 | `cancel`          | `CancellationToken` | An optional token to cancel the operation. |
 
-### `IFrameClient.LoadCurrentFrame`
+### `IFrameClient.RefreshCurrentFrame`
 
 | Parameter | Type                | Description                                |
 |-----------|---------------------|--------------------------------------------|

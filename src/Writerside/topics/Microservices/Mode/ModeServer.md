@@ -12,13 +12,15 @@ var serverDevice = ServerDevice.Create(
         
         // you need to pass your own work mode 
         builder.RegisterMode(
-            ArduCopterMode.Guided, 
-            [], 
-            _ => new SomeWorkMode());
+            ArduCopterMode.Guided,
+            ArduCopterMode.AllModes,
+            mode => new SomeWorkMode(mode));
     });
 ```
 
-After building, you can get the service and handle mode changes. The server will typically apply the requested mode and then reflect it in outgoing `HEARTBEAT` messages.
+`RegisterMode` depends on the status-text, command-long, and heartbeat services.
+
+After building, you can get the service and request mode changes:
 
 ```C#
 var modeServer = serverDevice.GetMode();
@@ -29,6 +31,12 @@ await modeServer.SetMode(ArduCopterMode.Loiter, handler =>
     // optional: configure handler / initial state
 });
 ```
+
+> The current `ModeServer.SetMode` implementation has two known limitations:
+>
+> - after a different mode handler is initialized successfully, it is not assigned to `CurrentMode`, so the previous mode remains in outgoing heartbeats;
+> - requesting the already active mode leaves `IsBusy` set to `true`, causing later mode requests to be ignored.
+{style="warning"}
 
 ## [IModeServer](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/Server/IModeServer.cs)
 
@@ -48,3 +56,20 @@ await modeServer.SetMode(ArduCopterMode.Loiter, handler =>
 | `mode`    | `ICustomMode`               | Target mode to apply.                                  |
 | `update`  | `Action<IWorkModeHandler>?` | Optional callback invoked with the `IWorkModeHandler`. |
 | `cancel`  | `CancellationToken`         | Optional cancellation token.                           |
+
+> If another mode change is already in progress, `SetMode` returns without applying the requested mode.
+{style="note"}
+
+## [IWorkModeHandler](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Mode/Server/IWorkModeHandler.cs)
+
+Represents the runtime handler associated with a custom mode.
+
+| Property | Type          | Description                         |
+|----------|---------------|-------------------------------------|
+| `Mode`   | `ICustomMode` | Mode represented by this handler.   |
+
+| Method                                      | Return Type | Description                                  |
+|---------------------------------------------|-------------|----------------------------------------------|
+| `Init(CancellationToken cancel)`            | `Task`      | Initializes the handler when entering mode.  |
+| `Destroy(CancellationToken cancel)`         | `Task`      | Destroys the handler when leaving mode.      |
+| `Dispose()`                                 | `void`      | Releases resources owned by the handler.     |

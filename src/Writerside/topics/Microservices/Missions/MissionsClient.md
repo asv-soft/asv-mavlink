@@ -35,7 +35,7 @@ await mission.ClearAll(MavMissionType.MavMissionTypeMission, cancel);
 | Property             | Type  | Default | Description                                 |
 |----------------------|-------|---------|---------------------------------------------|
 | `CommandTimeoutMs`   | `int` | `1000`  | Timeout for request/response mission calls. |
-| `AttemptToCallCount` | `int` | `3`     | Retry count for request/response calls.     |
+| `AttemptToCallCount` | `int` | `3`     | Total number of attempts for request/response calls. |
 
 ## [IMissionClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Missions/Client/IMissionClient.cs)
 
@@ -51,9 +51,9 @@ Represents a client for interacting with missions.
 | Method                                                                                                                                                                                                                                         | Return Type                   | Description                                                                                   |
 |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------|-----------------------------------------------------------------------------------------------|
 | `MissionSetCurrent(ushort missionItemsIndex, CancellationToken cancel = default)`                                                                                                                                                              | `Task`                        | Drone receives message and attempts to update the current mission sequence number.            |
-| `MissionRequestItem(ushort index, CancellationToken cancel = default)`                                                                                                                                                                         | `Task<MissionItemIntPayload>` | Requests a mission item of the specified index.                                               |
+| `MissionRequestItem(ushort index, CancellationToken cancel = default)`                                                                                                                                                                         | `Task<MissionItemIntPayload>` | Requests a standard mission item of the specified index.                                      |
 | `MissionRequestCount(CancellationToken cancel = default)`                                                                                                                                                                                      | `Task<int>`                   | Initiate mission download from a system by requesting the list of mission items.              |
-| `MissionSetCount(ushort count, CancellationToken cancel = default)`                                                                                                                                                                            | `ValueTask`                   | Sets the count for the mission and returns a task that represents the asynchronous operation. |
+| `MissionSetCount(ushort count, CancellationToken cancel = default)`                                                                                                                                                                            | `ValueTask`                   | Sends the count for a standard flight-plan mission.                                           |
 | `WriteMissionItem(ushort seq, MavFrame frame, MavCmd cmd, bool current, bool autoContinue, float param1, float param2, float param3, float param4, float x, float y, float z, MavMissionType missionType, CancellationToken cancel = default)` | `ValueTask`                   | Writes a mission item to the vehicle's mission list.                                          |
 | `WriteMissionItem(MissionItem missionItem, CancellationToken cancel = default)`                                                                                                                                                                | `ValueTask`                   | Writes a mission item to a target.                                                            |
 | `WriteMissionIntItem(Action<MissionItemIntPayload> fillCallback, CancellationToken cancel = default)`                                                                                                                                          | `ValueTask`                   | Writes a mission item with an integer payload.                                                |
@@ -67,6 +67,9 @@ Represents a client for interacting with missions.
 | `cancel`            | `CancellationToken` | Optional cancel token argument.                        |
 
 ### `IMissionClient.MissionRequestItem`
+
+This method always requests `MavMissionType.MavMissionTypeMission`.
+
 | Parameter | Type                | Description                               |
 |-----------|---------------------|-------------------------------------------|
 | `index`   | `ushort`            | The index of the mission item to request. |
@@ -78,6 +81,9 @@ Represents a client for interacting with missions.
 | `cancel`  | `CancellationToken` | Optional cancel token argument. |
 
 ### `IMissionClient.MissionSetCount`
+
+This method always sends `MavMissionType.MavMissionTypeMission`.
+
 | Parameter | Type                | Description                       |
 |-----------|---------------------|-----------------------------------|
 | `count`   | `ushort`            | The count to set for the mission. |
