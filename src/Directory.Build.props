@@ -1,10 +1,10 @@
 <Project>
   <PropertyGroup>
-    <ProductVersion>4.3.0-rc.1</ProductVersion>
+    <ProductVersion>4.3.0-dev.13</ProductVersion>
     <TargetFramework>net10.0</TargetFramework>
     <DotNetVersion>10.0.8</DotNetVersion>
 
-    <AsvCommonVersion>3.6.0-rc.1</AsvCommonVersion>
+    <AsvCommonVersion>3.6.0-dev.31</AsvCommonVersion>
     
     <FileVersion>$(ProductVersion)</FileVersion>
     <Version>$(ProductVersion)</Version>
