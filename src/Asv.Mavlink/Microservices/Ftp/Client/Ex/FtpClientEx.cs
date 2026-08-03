@@ -209,21 +209,14 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         CancellationToken cancel = default
     )
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
         cancel.ThrowIfCancellationRequested();
-        var existingEntries = _entryCache
-            .Where(entry => entry.Value.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase))
-            .Select(entry => entry.Value.Path)
-            .ToList();
-
-        foreach (var entryPath in existingEntries)
-        {
-            _entryCache.Remove(entryPath);
-        }
 
         var currentEntry = MavlinkFtpHelper.CreateFtpDirectoryFromPath(path);
-        _entryCache.Add(currentEntry.Path, currentEntry);
-        var offset = 0U;
+
+        var listedEntries = new List<IFtpEntry>();
         var parsedItems = new List<IFtpEntry>();
+        var offset = 0U;
         var array = ArrayPool<char>.Shared.Rent(
             MavlinkFtpHelper.FtpEncoding.GetMaxCharCount(MavlinkFtpHelper.MaxDataSize)
         );
@@ -234,21 +227,15 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
                 cancel.ThrowIfCancellationRequested();
                 try
                 {
-                    byte charSize;
-                    if (MavlinkFtpHelper.IsRootPath(path))
-                    {
-                        // special case for the root path: we don't need to trim '/' on the root path
-                        charSize = await Base.ListDirectory(path, offset, array, cancel).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        if (path.StartsWith(Path.DirectorySeparatorChar))
-                            path = path.TrimStart(Path.DirectorySeparatorChar);
-                        charSize = await Base.ListDirectory(path, offset, array, cancel).ConfigureAwait(false);
-                    }
-
+                    var charSize = await Base.ListDirectory(
+                            currentEntry.Path,
+                            offset,
+                            array,
+                            cancel
+                        )
+                        .ConfigureAwait(false);
                     var seq = new ReadOnlySequence<char>(array, 0, charSize);
-                    offset += ParseEntries(currentEntry.Path, seq, parsedItems);
+                    offset += ParseEntries(currentEntry.Path, seq, listedEntries, parsedItems);
                 }
                 catch (FtpNackEndOfFileException)
                 {
@@ -261,6 +248,23 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
             ArrayPool<char>.Shared.Return(array);
         }
 
+        var existingEntries = _entryCache
+            .Where(entry => entry.Value.Path.StartsWith(currentEntry.Path, StringComparison.OrdinalIgnoreCase))
+            .Select(entry => entry.Value.Path)
+            .ToList();
+
+        foreach (var entryPath in existingEntries)
+        {
+            _entryCache.Remove(entryPath);
+        }
+
+        MaterializeParents(currentEntry);
+        _entryCache.Add(currentEntry.Path, currentEntry);
+        foreach (var entry in listedEntries)
+        {
+            _entryCache.Add(entry.Path, entry);
+        }
+
         if (recursive)
         {
             foreach (var item in parsedItems)
@@ -270,9 +274,21 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         }
     }
 
-    private uint ParseEntries(
+    private void MaterializeParents(IFtpEntry entry)
+    {
+        var parentPath = entry.ParentPath;
+        while (!string.IsNullOrEmpty(parentPath) && !_entryCache.ContainsKey(parentPath))
+        {
+            var parent = MavlinkFtpHelper.CreateFtpDirectoryFromPath(parentPath);
+            _entryCache.Add(parent.Path, parent);
+            parentPath = parent.ParentPath;
+        }
+    }
+
+    private static uint ParseEntries(
         string parentPath,
         ReadOnlySequence<char> data,
+        List<IFtpEntry> listedEntries,
         List<IFtpEntry> parsedDirectoryItems
     )
     {
@@ -284,7 +300,7 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
             Debug.Assert(entry != null);
             if (MavlinkFtpHelper.IgnorePaths.Contains(entry.Name))
                 continue;
-            _entryCache.Add(entry.Path, entry);
+            listedEntries.Add(entry);
             if (entry.Type == FtpEntryType.Directory)
             {
                 parsedDirectoryItems.Add(entry);
@@ -467,20 +483,22 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
         bool recursive = false,
         CancellationToken cancel = default)
     {
-        ArgumentNullException.ThrowIfNull(path);
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
         MavlinkFtpHelper.CheckFolderPath(path);
         cancel.ThrowIfCancellationRequested();
 
+        var canonicalPath = MavlinkFtpHelper.CreateFtpDirectoryFromPath(path).Path;
+
         if (recursive)
         {
-            await RemoveDirectoryRecursive(path).ConfigureAwait(false);
+            await RemoveDirectoryRecursive(canonicalPath).ConfigureAwait(false);
         }
         else
         {
-            await Base.RemoveDirectory(path, cancel).ConfigureAwait(false);
-            _entryCache.Remove(path);
+            await Base.RemoveDirectory(canonicalPath, cancel).ConfigureAwait(false);
         }
 
+        EvictRemovedSubtree(canonicalPath);
         _logger.LogInformation("Directory removed: {Path}", path);
         return;
 
@@ -514,6 +532,29 @@ public class FtpClientEx : MavlinkMicroserviceClient, IFtpClientEx
 
             await Base.RemoveDirectory(dirPath, cancel).ConfigureAwait(false);
             _entryCache.Remove(dirPath);
+        }
+    }
+
+    private void EvictRemovedSubtree(string canonicalPath)
+    {
+        if (MavlinkFtpHelper.IsRootPath(canonicalPath))
+        {
+            _entryCache.Clear();
+            return;
+        }
+
+        var serverPrefix = canonicalPath.TrimStart(MavlinkFtpHelper.DirectorySeparator);
+        var affected = _entryCache
+            .Where(kv =>
+                kv.Key.TrimStart(MavlinkFtpHelper.DirectorySeparator)
+                    .StartsWith(serverPrefix, StringComparison.Ordinal)
+            )
+            .Select(kv => kv.Key)
+            .ToList();
+
+        foreach (var key in affected)
+        {
+            _entryCache.Remove(key);
         }
     }
 
