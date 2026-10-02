@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.3.0+c8d9ac2207f66008087f2356af2d09d0cdc50c5a 26-10-02.
+// This code was generate by tool Asv.Mavlink.Shell version 4.3.1+c664518f08367393afac98995836aba74eff379a 26-10-02.
 
 using System;
 using System.Text;
@@ -7276,7 +7276,7 @@ namespace Asv.Mavlink.AsvRsga
         public const int MessageId = 13469; 
         public const string MessageIdAsString = "13469";
         
-        public const byte CrcExtra = 125;
+        public const byte CrcExtra = 50;
         
         public override int Id => MessageId;
                             
@@ -7302,7 +7302,7 @@ namespace Asv.Mavlink.AsvRsga
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 135; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 99; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 135; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -7328,9 +7328,6 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float reply_delay_mode_c
             +4 // float reply_jitter_mode_a
             +4 // float reply_jitter_mode_c
-            +2 // int16_t measure_time
-            +Squawk.Length // char[4] squawk
-            +1 // uint8_t spi
             +4 // float erp_instant_dbm
             +4 // float erp_dbm
             +4 // float mtl_instant_dbm
@@ -7339,6 +7336,9 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float mtl_mode_c_dbm
             +4 // float mtl_mode_s_dbm
             +4 // float mtl_all_call_dbm
+            +2 // int16_t measure_time
+            +Squawk.Length // char[4] squawk
+            +1 // uint8_t spi
             +1 // uint8_t power_measurement_kind
             +1 // uint8_t erp_limit_applied
             +1 // uint8_t test_group
@@ -7373,8 +7373,16 @@ namespace Asv.Mavlink.AsvRsga
             ReplyDelayModeC = BinSerialize.ReadFloat(ref buffer);
             ReplyJitterModeA = BinSerialize.ReadFloat(ref buffer);
             ReplyJitterModeC = BinSerialize.ReadFloat(ref buffer);
+            ErpInstantDbm = BinSerialize.ReadFloat(ref buffer);
+            ErpDbm = BinSerialize.ReadFloat(ref buffer);
+            MtlInstantDbm = BinSerialize.ReadFloat(ref buffer);
+            MtlDbm = BinSerialize.ReadFloat(ref buffer);
+            MtlModeADbm = BinSerialize.ReadFloat(ref buffer);
+            MtlModeCDbm = BinSerialize.ReadFloat(ref buffer);
+            MtlModeSDbm = BinSerialize.ReadFloat(ref buffer);
+            MtlAllCallDbm = BinSerialize.ReadFloat(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/135 - payloadSize - /*ExtendedFieldsLength*/36)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/135 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             unsafe
             {
@@ -7387,41 +7395,9 @@ namespace Asv.Mavlink.AsvRsga
             buffer = buffer[arraySize..];
            
             Spi = (byte)BinSerialize.ReadByte(ref buffer);
-            // extended field 'ErpInstantDbm' can be empty
-            if (buffer.IsEmpty) return;
-            ErpInstantDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'ErpDbm' can be empty
-            if (buffer.IsEmpty) return;
-            ErpDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlInstantDbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlInstantDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlDbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlModeADbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlModeADbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlModeCDbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlModeCDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlModeSDbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlModeSDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlAllCallDbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlAllCallDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'PowerMeasurementKind' can be empty
-            if (buffer.IsEmpty) return;
             PowerMeasurementKind = (byte)BinSerialize.ReadByte(ref buffer);
-            // extended field 'ErpLimitApplied' can be empty
-            if (buffer.IsEmpty) return;
             ErpLimitApplied = (byte)BinSerialize.ReadByte(ref buffer);
-            // extended field 'TestGroup' can be empty
-            if (buffer.IsEmpty) return;
             TestGroup = (byte)BinSerialize.ReadByte(ref buffer);
-            // extended field 'TestStatus' can be empty
-            if (buffer.IsEmpty) return;
             TestStatus = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
@@ -7449,6 +7425,14 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,ReplyDelayModeC);
             BinSerialize.WriteFloat(ref buffer,ReplyJitterModeA);
             BinSerialize.WriteFloat(ref buffer,ReplyJitterModeC);
+            BinSerialize.WriteFloat(ref buffer,ErpInstantDbm);
+            BinSerialize.WriteFloat(ref buffer,ErpDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlInstantDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeADbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeCDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeSDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlAllCallDbm);
             BinSerialize.WriteShort(ref buffer,MeasureTime);
             unsafe
             {
@@ -7461,14 +7445,6 @@ namespace Asv.Mavlink.AsvRsga
             buffer = buffer.Slice(Squawk.Length);
             
             BinSerialize.WriteByte(ref buffer,(byte)Spi);
-            BinSerialize.WriteFloat(ref buffer,ErpInstantDbm);
-            BinSerialize.WriteFloat(ref buffer,ErpDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlInstantDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlModeADbm);
-            BinSerialize.WriteFloat(ref buffer,MtlModeCDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlModeSDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlAllCallDbm);
             BinSerialize.WriteByte(ref buffer,(byte)PowerMeasurementKind);
             BinSerialize.WriteByte(ref buffer,(byte)ErpLimitApplied);
             BinSerialize.WriteByte(ref buffer,(byte)TestGroup);
@@ -7501,10 +7477,6 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,ReplyDelayModeCField, ref _replyDelayModeC);    
             FloatType.Accept(visitor,ReplyJitterModeAField, ref _replyJitterModeA);    
             FloatType.Accept(visitor,ReplyJitterModeCField, ref _replyJitterModeC);    
-            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
-            ArrayType.Accept(visitor,SquawkField,  
-                (index, v, f, t) => CharType.Accept(v, f, t, ref Squawk[index]));
-            UInt8Type.Accept(visitor,SpiField, ref _spi);    
             FloatType.Accept(visitor,ErpInstantDbmField, ref _erpInstantDbm);    
             FloatType.Accept(visitor,ErpDbmField, ref _erpDbm);    
             FloatType.Accept(visitor,MtlInstantDbmField, ref _mtlInstantDbm);    
@@ -7513,6 +7485,10 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,MtlModeCDbmField, ref _mtlModeCDbm);    
             FloatType.Accept(visitor,MtlModeSDbmField, ref _mtlModeSDbm);    
             FloatType.Accept(visitor,MtlAllCallDbmField, ref _mtlAllCallDbm);    
+            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            ArrayType.Accept(visitor,SquawkField,  
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Squawk[index]));
+            UInt8Type.Accept(visitor,SpiField, ref _spi);    
             UInt8Type.Accept(visitor,PowerMeasurementKindField, ref _powerMeasurementKind);    
             UInt8Type.Accept(visitor,ErpLimitAppliedField, ref _erpLimitApplied);    
             UInt8Type.Accept(visitor,TestGroupField, ref _testGroup);    
@@ -7794,6 +7770,110 @@ namespace Asv.Mavlink.AsvRsga
         private float _replyJitterModeC;
         public float ReplyJitterModeC { get => _replyJitterModeC; set => _replyJitterModeC = value; }
         /// <summary>
+        /// Instant effective radiated power
+        /// OriginName: erp_instant_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field ErpInstantDbmField = new Field.Builder()
+            .Name(nameof(ErpInstantDbm))
+            .Title("erp_instant_dbm")
+            .Description("Instant effective radiated power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _erpInstantDbm;
+        public float ErpInstantDbm { get => _erpInstantDbm; set => _erpInstantDbm = value; }
+        /// <summary>
+        /// Effective radiated power
+        /// OriginName: erp_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field ErpDbmField = new Field.Builder()
+            .Name(nameof(ErpDbm))
+            .Title("erp_dbm")
+            .Description("Effective radiated power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _erpDbm;
+        public float ErpDbm { get => _erpDbm; set => _erpDbm = value; }
+        /// <summary>
+        /// Instant minimum trigger level
+        /// OriginName: mtl_instant_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlInstantDbmField = new Field.Builder()
+            .Name(nameof(MtlInstantDbm))
+            .Title("mtl_instant_dbm")
+            .Description("Instant minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlInstantDbm;
+        public float MtlInstantDbm { get => _mtlInstantDbm; set => _mtlInstantDbm = value; }
+        /// <summary>
+        /// Minimum trigger level
+        /// OriginName: mtl_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlDbmField = new Field.Builder()
+            .Name(nameof(MtlDbm))
+            .Title("mtl_dbm")
+            .Description("Minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlDbm;
+        public float MtlDbm { get => _mtlDbm; set => _mtlDbm = value; }
+        /// <summary>
+        /// Mode A minimum trigger level
+        /// OriginName: mtl_mode_a_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlModeADbmField = new Field.Builder()
+            .Name(nameof(MtlModeADbm))
+            .Title("mtl_mode_a_dbm")
+            .Description("Mode A minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeADbm;
+        public float MtlModeADbm { get => _mtlModeADbm; set => _mtlModeADbm = value; }
+        /// <summary>
+        /// Mode C minimum trigger level
+        /// OriginName: mtl_mode_c_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlModeCDbmField = new Field.Builder()
+            .Name(nameof(MtlModeCDbm))
+            .Title("mtl_mode_c_dbm")
+            .Description("Mode C minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeCDbm;
+        public float MtlModeCDbm { get => _mtlModeCDbm; set => _mtlModeCDbm = value; }
+        /// <summary>
+        /// Mode S minimum trigger level
+        /// OriginName: mtl_mode_s_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlModeSDbmField = new Field.Builder()
+            .Name(nameof(MtlModeSDbm))
+            .Title("mtl_mode_s_dbm")
+            .Description("Mode S minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeSDbm;
+        public float MtlModeSDbm { get => _mtlModeSDbm; set => _mtlModeSDbm = value; }
+        /// <summary>
+        /// All-call minimum trigger level
+        /// OriginName: mtl_all_call_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlAllCallDbmField = new Field.Builder()
+            .Name(nameof(MtlAllCallDbm))
+            .Title("mtl_all_call_dbm")
+            .Description("All-call minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlAllCallDbm;
+        public float MtlAllCallDbm { get => _mtlAllCallDbm; set => _mtlAllCallDbm = value; }
+        /// <summary>
         /// Measure time
         /// OriginName: measure_time, Units: ms, IsExtended: false
         /// </summary>
@@ -7835,112 +7915,8 @@ namespace Asv.Mavlink.AsvRsga
         private byte _spi;
         public byte Spi { get => _spi; set => _spi = value; }
         /// <summary>
-        /// Instant effective radiated power
-        /// OriginName: erp_instant_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field ErpInstantDbmField = new Field.Builder()
-            .Name(nameof(ErpInstantDbm))
-            .Title("erp_instant_dbm")
-            .Description("Instant effective radiated power")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _erpInstantDbm;
-        public float ErpInstantDbm { get => _erpInstantDbm; set => _erpInstantDbm = value; }
-        /// <summary>
-        /// Effective radiated power
-        /// OriginName: erp_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field ErpDbmField = new Field.Builder()
-            .Name(nameof(ErpDbm))
-            .Title("erp_dbm")
-            .Description("Effective radiated power")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _erpDbm;
-        public float ErpDbm { get => _erpDbm; set => _erpDbm = value; }
-        /// <summary>
-        /// Instant minimum trigger level
-        /// OriginName: mtl_instant_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlInstantDbmField = new Field.Builder()
-            .Name(nameof(MtlInstantDbm))
-            .Title("mtl_instant_dbm")
-            .Description("Instant minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlInstantDbm;
-        public float MtlInstantDbm { get => _mtlInstantDbm; set => _mtlInstantDbm = value; }
-        /// <summary>
-        /// Minimum trigger level
-        /// OriginName: mtl_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlDbmField = new Field.Builder()
-            .Name(nameof(MtlDbm))
-            .Title("mtl_dbm")
-            .Description("Minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlDbm;
-        public float MtlDbm { get => _mtlDbm; set => _mtlDbm = value; }
-        /// <summary>
-        /// Mode A minimum trigger level
-        /// OriginName: mtl_mode_a_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlModeADbmField = new Field.Builder()
-            .Name(nameof(MtlModeADbm))
-            .Title("mtl_mode_a_dbm")
-            .Description("Mode A minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlModeADbm;
-        public float MtlModeADbm { get => _mtlModeADbm; set => _mtlModeADbm = value; }
-        /// <summary>
-        /// Mode C minimum trigger level
-        /// OriginName: mtl_mode_c_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlModeCDbmField = new Field.Builder()
-            .Name(nameof(MtlModeCDbm))
-            .Title("mtl_mode_c_dbm")
-            .Description("Mode C minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlModeCDbm;
-        public float MtlModeCDbm { get => _mtlModeCDbm; set => _mtlModeCDbm = value; }
-        /// <summary>
-        /// Mode S minimum trigger level
-        /// OriginName: mtl_mode_s_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlModeSDbmField = new Field.Builder()
-            .Name(nameof(MtlModeSDbm))
-            .Title("mtl_mode_s_dbm")
-            .Description("Mode S minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlModeSDbm;
-        public float MtlModeSDbm { get => _mtlModeSDbm; set => _mtlModeSDbm = value; }
-        /// <summary>
-        /// All-call minimum trigger level
-        /// OriginName: mtl_all_call_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlAllCallDbmField = new Field.Builder()
-            .Name(nameof(MtlAllCallDbm))
-            .Title("mtl_all_call_dbm")
-            .Description("All-call minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlAllCallDbm;
-        public float MtlAllCallDbm { get => _mtlAllCallDbm; set => _mtlAllCallDbm = value; }
-        /// <summary>
         /// Power measurement kind
-        /// OriginName: power_measurement_kind, Units: , IsExtended: true
+        /// OriginName: power_measurement_kind, Units: , IsExtended: false
         /// </summary>
         public static readonly Field PowerMeasurementKindField = new Field.Builder()
             .Name(nameof(PowerMeasurementKind))
@@ -7953,7 +7929,7 @@ namespace Asv.Mavlink.AsvRsga
         public byte PowerMeasurementKind { get => _powerMeasurementKind; set => _powerMeasurementKind = value; }
         /// <summary>
         /// ERP limit application mode
-        /// OriginName: erp_limit_applied, Units: , IsExtended: true
+        /// OriginName: erp_limit_applied, Units: , IsExtended: false
         /// </summary>
         public static readonly Field ErpLimitAppliedField = new Field.Builder()
             .Name(nameof(ErpLimitApplied))
@@ -7966,7 +7942,7 @@ namespace Asv.Mavlink.AsvRsga
         public byte ErpLimitApplied { get => _erpLimitApplied; set => _erpLimitApplied = value; }
         /// <summary>
         /// IFR6000 test group; 255 when no group is selected
-        /// OriginName: test_group, Units: , IsExtended: true
+        /// OriginName: test_group, Units: , IsExtended: false
         /// </summary>
         public static readonly Field TestGroupField = new Field.Builder()
             .Name(nameof(TestGroup))
@@ -7979,7 +7955,7 @@ namespace Asv.Mavlink.AsvRsga
         public byte TestGroup { get => _testGroup; set => _testGroup = value; }
         /// <summary>
         /// IFR6000 test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)
-        /// OriginName: test_status, Units: , IsExtended: true
+        /// OriginName: test_status, Units: , IsExtended: false
         /// </summary>
         public static readonly Field TestStatusField = new Field.Builder()
             .Name(nameof(TestStatus))
@@ -8000,7 +7976,7 @@ namespace Asv.Mavlink.AsvRsga
         public const int MessageId = 13470; 
         public const string MessageIdAsString = "13470";
         
-        public const byte CrcExtra = 156;
+        public const byte CrcExtra = 63;
         
         public override int Id => MessageId;
                             
@@ -8026,7 +8002,7 @@ namespace Asv.Mavlink.AsvRsga
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 237; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 171; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 237; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -8047,6 +8023,21 @@ namespace Asv.Mavlink.AsvRsga
             +4 // uint32_t df21_icao_address
             +4 // float df16_altitude
             +4 // uint32_t df16_icao_address
+            +4 // float erp_instant_dbm
+            +4 // float erp_dbm
+            +4 // float mtl_instant_dbm
+            +4 // float mtl_dbm
+            +4 // float mtl_mode_a_dbm
+            +4 // float mtl_mode_c_dbm
+            +4 // float mtl_mode_s_dbm
+            +4 // float mtl_all_call_dbm
+            +4 // float reply_delay_mode_s
+            +4 // float reply_jitter_mode_s
+            +4 // float uf0_mode_c_altitude_feet
+            +4 // float uf4_mode_c_altitude_feet
+            +4 // float uf16_mode_c_altitude_feet
+            +4 // float uf20_mode_c_altitude_feet
+            +4 // uint32_t target_icao_address
             +1 // uint8_t capability
             +1 // uint8_t df4_flight_status
             +1 // uint8_t df4_downlink_request
@@ -8080,27 +8071,12 @@ namespace Asv.Mavlink.AsvRsga
             +Bds40.Length // uint8_t[7] bds40
             +Bds50.Length // uint8_t[7] bds50
             +Bds60.Length // uint8_t[7] bds60
-            +4 // float erp_instant_dbm
-            +4 // float erp_dbm
-            +4 // float mtl_instant_dbm
-            +4 // float mtl_dbm
-            +4 // float mtl_mode_a_dbm
-            +4 // float mtl_mode_c_dbm
-            +4 // float mtl_mode_s_dbm
-            +4 // float mtl_all_call_dbm
             +1 // uint8_t power_measurement_kind
             +1 // uint8_t erp_limit_applied
             +1 // uint8_t df17_detected
             +1 // uint8_t test_group
             +1 // uint8_t test_status
-            +4 // float reply_delay_mode_s
-            +4 // float reply_jitter_mode_s
-            +4 // float uf0_mode_c_altitude_feet
-            +4 // float uf4_mode_c_altitude_feet
-            +4 // float uf16_mode_c_altitude_feet
-            +4 // float uf20_mode_c_altitude_feet
             +1 // uint8_t altitude_reference_version
-            +4 // uint32_t target_icao_address
             );
         }
 
@@ -8126,6 +8102,21 @@ namespace Asv.Mavlink.AsvRsga
             Df21IcaoAddress = BinSerialize.ReadUInt(ref buffer);
             Df16Altitude = BinSerialize.ReadFloat(ref buffer);
             Df16IcaoAddress = BinSerialize.ReadUInt(ref buffer);
+            ErpInstantDbm = BinSerialize.ReadFloat(ref buffer);
+            ErpDbm = BinSerialize.ReadFloat(ref buffer);
+            MtlInstantDbm = BinSerialize.ReadFloat(ref buffer);
+            MtlDbm = BinSerialize.ReadFloat(ref buffer);
+            MtlModeADbm = BinSerialize.ReadFloat(ref buffer);
+            MtlModeCDbm = BinSerialize.ReadFloat(ref buffer);
+            MtlModeSDbm = BinSerialize.ReadFloat(ref buffer);
+            MtlAllCallDbm = BinSerialize.ReadFloat(ref buffer);
+            ReplyDelayModeS = BinSerialize.ReadFloat(ref buffer);
+            ReplyJitterModeS = BinSerialize.ReadFloat(ref buffer);
+            Uf0ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
+            Uf4ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
+            Uf16ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
+            Uf20ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
+            TargetIcaoAddress = BinSerialize.ReadUInt(ref buffer);
             Capability = (byte)BinSerialize.ReadByte(ref buffer);
             Df4FlightStatus = (byte)BinSerialize.ReadByte(ref buffer);
             Df4DownlinkRequest = (byte)BinSerialize.ReadByte(ref buffer);
@@ -8151,7 +8142,7 @@ namespace Asv.Mavlink.AsvRsga
             Df20Df4FlightStatus = (byte)BinSerialize.ReadByte(ref buffer);
             Df20DownlinkRequest = (byte)BinSerialize.ReadByte(ref buffer);
             Df20UtilityMessage = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/7 - Math.Max(0,((/*PayloadByteSize*/237 - payloadSize - /*ExtendedFieldsLength*/66)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/7 - Math.Max(0,((/*PayloadByteSize*/237 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             for(var i=0;i<arraySize;i++)
             {
@@ -8220,69 +8211,12 @@ namespace Asv.Mavlink.AsvRsga
             {
                 Bds60[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            // extended field 'ErpInstantDbm' can be empty
-            if (buffer.IsEmpty) return;
-            ErpInstantDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'ErpDbm' can be empty
-            if (buffer.IsEmpty) return;
-            ErpDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlInstantDbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlInstantDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlDbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlModeADbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlModeADbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlModeCDbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlModeCDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlModeSDbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlModeSDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'MtlAllCallDbm' can be empty
-            if (buffer.IsEmpty) return;
-            MtlAllCallDbm = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'PowerMeasurementKind' can be empty
-            if (buffer.IsEmpty) return;
             PowerMeasurementKind = (byte)BinSerialize.ReadByte(ref buffer);
-            // extended field 'ErpLimitApplied' can be empty
-            if (buffer.IsEmpty) return;
             ErpLimitApplied = (byte)BinSerialize.ReadByte(ref buffer);
-            // extended field 'Df17Detected' can be empty
-            if (buffer.IsEmpty) return;
             Df17Detected = (byte)BinSerialize.ReadByte(ref buffer);
-            // extended field 'TestGroup' can be empty
-            if (buffer.IsEmpty) return;
             TestGroup = (byte)BinSerialize.ReadByte(ref buffer);
-            // extended field 'TestStatus' can be empty
-            if (buffer.IsEmpty) return;
             TestStatus = (byte)BinSerialize.ReadByte(ref buffer);
-            // extended field 'ReplyDelayModeS' can be empty
-            if (buffer.IsEmpty) return;
-            ReplyDelayModeS = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'ReplyJitterModeS' can be empty
-            if (buffer.IsEmpty) return;
-            ReplyJitterModeS = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'Uf0ModeCAltitudeFeet' can be empty
-            if (buffer.IsEmpty) return;
-            Uf0ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'Uf4ModeCAltitudeFeet' can be empty
-            if (buffer.IsEmpty) return;
-            Uf4ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'Uf16ModeCAltitudeFeet' can be empty
-            if (buffer.IsEmpty) return;
-            Uf16ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'Uf20ModeCAltitudeFeet' can be empty
-            if (buffer.IsEmpty) return;
-            Uf20ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
-            // extended field 'AltitudeReferenceVersion' can be empty
-            if (buffer.IsEmpty) return;
             AltitudeReferenceVersion = (byte)BinSerialize.ReadByte(ref buffer);
-            // extended field 'TargetIcaoAddress' can be empty
-            if (buffer.IsEmpty) return;
-            TargetIcaoAddress = BinSerialize.ReadUInt(ref buffer);
 
         }
 
@@ -8304,6 +8238,21 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteUInt(ref buffer,Df21IcaoAddress);
             BinSerialize.WriteFloat(ref buffer,Df16Altitude);
             BinSerialize.WriteUInt(ref buffer,Df16IcaoAddress);
+            BinSerialize.WriteFloat(ref buffer,ErpInstantDbm);
+            BinSerialize.WriteFloat(ref buffer,ErpDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlInstantDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeADbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeCDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeSDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlAllCallDbm);
+            BinSerialize.WriteFloat(ref buffer,ReplyDelayModeS);
+            BinSerialize.WriteFloat(ref buffer,ReplyJitterModeS);
+            BinSerialize.WriteFloat(ref buffer,Uf0ModeCAltitudeFeet);
+            BinSerialize.WriteFloat(ref buffer,Uf4ModeCAltitudeFeet);
+            BinSerialize.WriteFloat(ref buffer,Uf16ModeCAltitudeFeet);
+            BinSerialize.WriteFloat(ref buffer,Uf20ModeCAltitudeFeet);
+            BinSerialize.WriteUInt(ref buffer,TargetIcaoAddress);
             BinSerialize.WriteByte(ref buffer,(byte)Capability);
             BinSerialize.WriteByte(ref buffer,(byte)Df4FlightStatus);
             BinSerialize.WriteByte(ref buffer,(byte)Df4DownlinkRequest);
@@ -8385,27 +8334,12 @@ namespace Asv.Mavlink.AsvRsga
             {
                 BinSerialize.WriteByte(ref buffer,(byte)Bds60[i]);
             }
-            BinSerialize.WriteFloat(ref buffer,ErpInstantDbm);
-            BinSerialize.WriteFloat(ref buffer,ErpDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlInstantDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlModeADbm);
-            BinSerialize.WriteFloat(ref buffer,MtlModeCDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlModeSDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlAllCallDbm);
             BinSerialize.WriteByte(ref buffer,(byte)PowerMeasurementKind);
             BinSerialize.WriteByte(ref buffer,(byte)ErpLimitApplied);
             BinSerialize.WriteByte(ref buffer,(byte)Df17Detected);
             BinSerialize.WriteByte(ref buffer,(byte)TestGroup);
             BinSerialize.WriteByte(ref buffer,(byte)TestStatus);
-            BinSerialize.WriteFloat(ref buffer,ReplyDelayModeS);
-            BinSerialize.WriteFloat(ref buffer,ReplyJitterModeS);
-            BinSerialize.WriteFloat(ref buffer,Uf0ModeCAltitudeFeet);
-            BinSerialize.WriteFloat(ref buffer,Uf4ModeCAltitudeFeet);
-            BinSerialize.WriteFloat(ref buffer,Uf16ModeCAltitudeFeet);
-            BinSerialize.WriteFloat(ref buffer,Uf20ModeCAltitudeFeet);
             BinSerialize.WriteByte(ref buffer,(byte)AltitudeReferenceVersion);
-            BinSerialize.WriteUInt(ref buffer,TargetIcaoAddress);
             /* PayloadByteSize = 237 */;
         }
 
@@ -8429,6 +8363,21 @@ namespace Asv.Mavlink.AsvRsga
             UInt32Type.Accept(visitor,Df21IcaoAddressField, ref _df21IcaoAddress);    
             FloatType.Accept(visitor,Df16AltitudeField, ref _df16Altitude);    
             UInt32Type.Accept(visitor,Df16IcaoAddressField, ref _df16IcaoAddress);    
+            FloatType.Accept(visitor,ErpInstantDbmField, ref _erpInstantDbm);    
+            FloatType.Accept(visitor,ErpDbmField, ref _erpDbm);    
+            FloatType.Accept(visitor,MtlInstantDbmField, ref _mtlInstantDbm);    
+            FloatType.Accept(visitor,MtlDbmField, ref _mtlDbm);    
+            FloatType.Accept(visitor,MtlModeADbmField, ref _mtlModeADbm);    
+            FloatType.Accept(visitor,MtlModeCDbmField, ref _mtlModeCDbm);    
+            FloatType.Accept(visitor,MtlModeSDbmField, ref _mtlModeSDbm);    
+            FloatType.Accept(visitor,MtlAllCallDbmField, ref _mtlAllCallDbm);    
+            FloatType.Accept(visitor,ReplyDelayModeSField, ref _replyDelayModeS);    
+            FloatType.Accept(visitor,ReplyJitterModeSField, ref _replyJitterModeS);    
+            FloatType.Accept(visitor,Uf0ModeCAltitudeFeetField, ref _uf0ModeCAltitudeFeet);    
+            FloatType.Accept(visitor,Uf4ModeCAltitudeFeetField, ref _uf4ModeCAltitudeFeet);    
+            FloatType.Accept(visitor,Uf16ModeCAltitudeFeetField, ref _uf16ModeCAltitudeFeet);    
+            FloatType.Accept(visitor,Uf20ModeCAltitudeFeetField, ref _uf20ModeCAltitudeFeet);    
+            UInt32Type.Accept(visitor,TargetIcaoAddressField, ref _targetIcaoAddress);    
             UInt8Type.Accept(visitor,CapabilityField, ref _capability);    
             UInt8Type.Accept(visitor,Df4FlightStatusField, ref _df4FlightStatus);    
             UInt8Type.Accept(visitor,Df4DownlinkRequestField, ref _df4DownlinkRequest);    
@@ -8474,27 +8423,12 @@ namespace Asv.Mavlink.AsvRsga
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds50[index]));    
             ArrayType.Accept(visitor,Bds60Field, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds60[index]));    
-            FloatType.Accept(visitor,ErpInstantDbmField, ref _erpInstantDbm);    
-            FloatType.Accept(visitor,ErpDbmField, ref _erpDbm);    
-            FloatType.Accept(visitor,MtlInstantDbmField, ref _mtlInstantDbm);    
-            FloatType.Accept(visitor,MtlDbmField, ref _mtlDbm);    
-            FloatType.Accept(visitor,MtlModeADbmField, ref _mtlModeADbm);    
-            FloatType.Accept(visitor,MtlModeCDbmField, ref _mtlModeCDbm);    
-            FloatType.Accept(visitor,MtlModeSDbmField, ref _mtlModeSDbm);    
-            FloatType.Accept(visitor,MtlAllCallDbmField, ref _mtlAllCallDbm);    
             UInt8Type.Accept(visitor,PowerMeasurementKindField, ref _powerMeasurementKind);    
             UInt8Type.Accept(visitor,ErpLimitAppliedField, ref _erpLimitApplied);    
             UInt8Type.Accept(visitor,Df17DetectedField, ref _df17Detected);    
             UInt8Type.Accept(visitor,TestGroupField, ref _testGroup);    
             UInt8Type.Accept(visitor,TestStatusField, ref _testStatus);    
-            FloatType.Accept(visitor,ReplyDelayModeSField, ref _replyDelayModeS);    
-            FloatType.Accept(visitor,ReplyJitterModeSField, ref _replyJitterModeS);    
-            FloatType.Accept(visitor,Uf0ModeCAltitudeFeetField, ref _uf0ModeCAltitudeFeet);    
-            FloatType.Accept(visitor,Uf4ModeCAltitudeFeetField, ref _uf4ModeCAltitudeFeet);    
-            FloatType.Accept(visitor,Uf16ModeCAltitudeFeetField, ref _uf16ModeCAltitudeFeet);    
-            FloatType.Accept(visitor,Uf20ModeCAltitudeFeetField, ref _uf20ModeCAltitudeFeet);    
             UInt8Type.Accept(visitor,AltitudeReferenceVersionField, ref _altitudeReferenceVersion);    
-            UInt32Type.Accept(visitor,TargetIcaoAddressField, ref _targetIcaoAddress);    
 
         }
 
@@ -8706,6 +8640,201 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private uint _df16IcaoAddress;
         public uint Df16IcaoAddress { get => _df16IcaoAddress; set => _df16IcaoAddress = value; }
+        /// <summary>
+        /// Instant effective radiated power
+        /// OriginName: erp_instant_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field ErpInstantDbmField = new Field.Builder()
+            .Name(nameof(ErpInstantDbm))
+            .Title("erp_instant_dbm")
+            .Description("Instant effective radiated power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _erpInstantDbm;
+        public float ErpInstantDbm { get => _erpInstantDbm; set => _erpInstantDbm = value; }
+        /// <summary>
+        /// Effective radiated power
+        /// OriginName: erp_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field ErpDbmField = new Field.Builder()
+            .Name(nameof(ErpDbm))
+            .Title("erp_dbm")
+            .Description("Effective radiated power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _erpDbm;
+        public float ErpDbm { get => _erpDbm; set => _erpDbm = value; }
+        /// <summary>
+        /// Instant minimum trigger level
+        /// OriginName: mtl_instant_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlInstantDbmField = new Field.Builder()
+            .Name(nameof(MtlInstantDbm))
+            .Title("mtl_instant_dbm")
+            .Description("Instant minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlInstantDbm;
+        public float MtlInstantDbm { get => _mtlInstantDbm; set => _mtlInstantDbm = value; }
+        /// <summary>
+        /// Minimum trigger level
+        /// OriginName: mtl_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlDbmField = new Field.Builder()
+            .Name(nameof(MtlDbm))
+            .Title("mtl_dbm")
+            .Description("Minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlDbm;
+        public float MtlDbm { get => _mtlDbm; set => _mtlDbm = value; }
+        /// <summary>
+        /// Mode A minimum trigger level
+        /// OriginName: mtl_mode_a_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlModeADbmField = new Field.Builder()
+            .Name(nameof(MtlModeADbm))
+            .Title("mtl_mode_a_dbm")
+            .Description("Mode A minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeADbm;
+        public float MtlModeADbm { get => _mtlModeADbm; set => _mtlModeADbm = value; }
+        /// <summary>
+        /// Mode C minimum trigger level
+        /// OriginName: mtl_mode_c_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlModeCDbmField = new Field.Builder()
+            .Name(nameof(MtlModeCDbm))
+            .Title("mtl_mode_c_dbm")
+            .Description("Mode C minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeCDbm;
+        public float MtlModeCDbm { get => _mtlModeCDbm; set => _mtlModeCDbm = value; }
+        /// <summary>
+        /// Mode S minimum trigger level
+        /// OriginName: mtl_mode_s_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlModeSDbmField = new Field.Builder()
+            .Name(nameof(MtlModeSDbm))
+            .Title("mtl_mode_s_dbm")
+            .Description("Mode S minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeSDbm;
+        public float MtlModeSDbm { get => _mtlModeSDbm; set => _mtlModeSDbm = value; }
+        /// <summary>
+        /// All-call minimum trigger level
+        /// OriginName: mtl_all_call_dbm, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlAllCallDbmField = new Field.Builder()
+            .Name(nameof(MtlAllCallDbm))
+            .Title("mtl_all_call_dbm")
+            .Description("All-call minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlAllCallDbm;
+        public float MtlAllCallDbm { get => _mtlAllCallDbm; set => _mtlAllCallDbm = value; }
+        /// <summary>
+        /// Mode S reply delay
+        /// OriginName: reply_delay_mode_s, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field ReplyDelayModeSField = new Field.Builder()
+            .Name(nameof(ReplyDelayModeS))
+            .Title("reply_delay_mode_s")
+            .Description("Mode S reply delay")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyDelayModeS;
+        public float ReplyDelayModeS { get => _replyDelayModeS; set => _replyDelayModeS = value; }
+        /// <summary>
+        /// Mode S reply delay jitter
+        /// OriginName: reply_jitter_mode_s, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field ReplyJitterModeSField = new Field.Builder()
+            .Name(nameof(ReplyJitterModeS))
+            .Title("reply_jitter_mode_s")
+            .Description("Mode S reply delay jitter")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyJitterModeS;
+        public float ReplyJitterModeS { get => _replyJitterModeS; set => _replyJitterModeS = value; }
+        /// <summary>
+        /// Mode C altitude reference used by the UF0 comparison; NaN when unavailable
+        /// OriginName: uf0_mode_c_altitude_feet, Units: ft, IsExtended: false
+        /// </summary>
+        public static readonly Field Uf0ModeCAltitudeFeetField = new Field.Builder()
+            .Name(nameof(Uf0ModeCAltitudeFeet))
+            .Title("uf0_mode_c_altitude_feet")
+            .Description("Mode C altitude reference used by the UF0 comparison; NaN when unavailable")
+.Units(@"ft")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _uf0ModeCAltitudeFeet;
+        public float Uf0ModeCAltitudeFeet { get => _uf0ModeCAltitudeFeet; set => _uf0ModeCAltitudeFeet = value; }
+        /// <summary>
+        /// Mode C altitude reference used by the UF4 comparison; NaN when unavailable
+        /// OriginName: uf4_mode_c_altitude_feet, Units: ft, IsExtended: false
+        /// </summary>
+        public static readonly Field Uf4ModeCAltitudeFeetField = new Field.Builder()
+            .Name(nameof(Uf4ModeCAltitudeFeet))
+            .Title("uf4_mode_c_altitude_feet")
+            .Description("Mode C altitude reference used by the UF4 comparison; NaN when unavailable")
+.Units(@"ft")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _uf4ModeCAltitudeFeet;
+        public float Uf4ModeCAltitudeFeet { get => _uf4ModeCAltitudeFeet; set => _uf4ModeCAltitudeFeet = value; }
+        /// <summary>
+        /// Mode C altitude reference used by the UF16 comparison; NaN when unavailable
+        /// OriginName: uf16_mode_c_altitude_feet, Units: ft, IsExtended: false
+        /// </summary>
+        public static readonly Field Uf16ModeCAltitudeFeetField = new Field.Builder()
+            .Name(nameof(Uf16ModeCAltitudeFeet))
+            .Title("uf16_mode_c_altitude_feet")
+            .Description("Mode C altitude reference used by the UF16 comparison; NaN when unavailable")
+.Units(@"ft")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _uf16ModeCAltitudeFeet;
+        public float Uf16ModeCAltitudeFeet { get => _uf16ModeCAltitudeFeet; set => _uf16ModeCAltitudeFeet = value; }
+        /// <summary>
+        /// Mode C altitude reference used by the UF20 comparison; NaN when unavailable
+        /// OriginName: uf20_mode_c_altitude_feet, Units: ft, IsExtended: false
+        /// </summary>
+        public static readonly Field Uf20ModeCAltitudeFeetField = new Field.Builder()
+            .Name(nameof(Uf20ModeCAltitudeFeet))
+            .Title("uf20_mode_c_altitude_feet")
+            .Description("Mode C altitude reference used by the UF20 comparison; NaN when unavailable")
+.Units(@"ft")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _uf20ModeCAltitudeFeet;
+        public float Uf20ModeCAltitudeFeet { get => _uf20ModeCAltitudeFeet; set => _uf20ModeCAltitudeFeet = value; }
+        /// <summary>
+        /// Requested/expected ICAO address used by the group; not detected identity
+        /// OriginName: target_icao_address, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field TargetIcaoAddressField = new Field.Builder()
+            .Name(nameof(TargetIcaoAddress))
+            .Title("target_icao_address")
+            .Description("Requested/expected ICAO address used by the group; not detected identity")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _targetIcaoAddress;
+        public uint TargetIcaoAddress { get => _targetIcaoAddress; set => _targetIcaoAddress = value; }
         /// <summary>
         /// Capability flags
         /// OriginName: capability, Units: , IsExtended: false
@@ -9138,112 +9267,8 @@ namespace Asv.Mavlink.AsvRsga
         public const int Bds60MaxItemsCount = 7;
         public byte[] Bds60 { get; } = new byte[7];
         /// <summary>
-        /// Instant effective radiated power
-        /// OriginName: erp_instant_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field ErpInstantDbmField = new Field.Builder()
-            .Name(nameof(ErpInstantDbm))
-            .Title("erp_instant_dbm")
-            .Description("Instant effective radiated power")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _erpInstantDbm;
-        public float ErpInstantDbm { get => _erpInstantDbm; set => _erpInstantDbm = value; }
-        /// <summary>
-        /// Effective radiated power
-        /// OriginName: erp_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field ErpDbmField = new Field.Builder()
-            .Name(nameof(ErpDbm))
-            .Title("erp_dbm")
-            .Description("Effective radiated power")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _erpDbm;
-        public float ErpDbm { get => _erpDbm; set => _erpDbm = value; }
-        /// <summary>
-        /// Instant minimum trigger level
-        /// OriginName: mtl_instant_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlInstantDbmField = new Field.Builder()
-            .Name(nameof(MtlInstantDbm))
-            .Title("mtl_instant_dbm")
-            .Description("Instant minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlInstantDbm;
-        public float MtlInstantDbm { get => _mtlInstantDbm; set => _mtlInstantDbm = value; }
-        /// <summary>
-        /// Minimum trigger level
-        /// OriginName: mtl_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlDbmField = new Field.Builder()
-            .Name(nameof(MtlDbm))
-            .Title("mtl_dbm")
-            .Description("Minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlDbm;
-        public float MtlDbm { get => _mtlDbm; set => _mtlDbm = value; }
-        /// <summary>
-        /// Mode A minimum trigger level
-        /// OriginName: mtl_mode_a_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlModeADbmField = new Field.Builder()
-            .Name(nameof(MtlModeADbm))
-            .Title("mtl_mode_a_dbm")
-            .Description("Mode A minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlModeADbm;
-        public float MtlModeADbm { get => _mtlModeADbm; set => _mtlModeADbm = value; }
-        /// <summary>
-        /// Mode C minimum trigger level
-        /// OriginName: mtl_mode_c_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlModeCDbmField = new Field.Builder()
-            .Name(nameof(MtlModeCDbm))
-            .Title("mtl_mode_c_dbm")
-            .Description("Mode C minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlModeCDbm;
-        public float MtlModeCDbm { get => _mtlModeCDbm; set => _mtlModeCDbm = value; }
-        /// <summary>
-        /// Mode S minimum trigger level
-        /// OriginName: mtl_mode_s_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlModeSDbmField = new Field.Builder()
-            .Name(nameof(MtlModeSDbm))
-            .Title("mtl_mode_s_dbm")
-            .Description("Mode S minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlModeSDbm;
-        public float MtlModeSDbm { get => _mtlModeSDbm; set => _mtlModeSDbm = value; }
-        /// <summary>
-        /// All-call minimum trigger level
-        /// OriginName: mtl_all_call_dbm, Units: dBm, IsExtended: true
-        /// </summary>
-        public static readonly Field MtlAllCallDbmField = new Field.Builder()
-            .Name(nameof(MtlAllCallDbm))
-            .Title("mtl_all_call_dbm")
-            .Description("All-call minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlAllCallDbm;
-        public float MtlAllCallDbm { get => _mtlAllCallDbm; set => _mtlAllCallDbm = value; }
-        /// <summary>
         /// Power measurement kind
-        /// OriginName: power_measurement_kind, Units: , IsExtended: true
+        /// OriginName: power_measurement_kind, Units: , IsExtended: false
         /// </summary>
         public static readonly Field PowerMeasurementKindField = new Field.Builder()
             .Name(nameof(PowerMeasurementKind))
@@ -9256,7 +9281,7 @@ namespace Asv.Mavlink.AsvRsga
         public byte PowerMeasurementKind { get => _powerMeasurementKind; set => _powerMeasurementKind = value; }
         /// <summary>
         /// ERP limit application mode
-        /// OriginName: erp_limit_applied, Units: , IsExtended: true
+        /// OriginName: erp_limit_applied, Units: , IsExtended: false
         /// </summary>
         public static readonly Field ErpLimitAppliedField = new Field.Builder()
             .Name(nameof(ErpLimitApplied))
@@ -9269,7 +9294,7 @@ namespace Asv.Mavlink.AsvRsga
         public byte ErpLimitApplied { get => _erpLimitApplied; set => _erpLimitApplied = value; }
         /// <summary>
         /// DF17 extended squitter detected
-        /// OriginName: df17_detected, Units: , IsExtended: true
+        /// OriginName: df17_detected, Units: , IsExtended: false
         /// </summary>
         public static readonly Field Df17DetectedField = new Field.Builder()
             .Name(nameof(Df17Detected))
@@ -9282,7 +9307,7 @@ namespace Asv.Mavlink.AsvRsga
         public byte Df17Detected { get => _df17Detected; set => _df17Detected = value; }
         /// <summary>
         /// IFR6000 test group; 255 when no group is selected
-        /// OriginName: test_group, Units: , IsExtended: true
+        /// OriginName: test_group, Units: , IsExtended: false
         /// </summary>
         public static readonly Field TestGroupField = new Field.Builder()
             .Name(nameof(TestGroup))
@@ -9295,7 +9320,7 @@ namespace Asv.Mavlink.AsvRsga
         public byte TestGroup { get => _testGroup; set => _testGroup = value; }
         /// <summary>
         /// IFR6000 test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)
-        /// OriginName: test_status, Units: , IsExtended: true
+        /// OriginName: test_status, Units: , IsExtended: false
         /// </summary>
         public static readonly Field TestStatusField = new Field.Builder()
             .Name(nameof(TestStatus))
@@ -9307,109 +9332,18 @@ namespace Asv.Mavlink.AsvRsga
         private byte _testStatus;
         public byte TestStatus { get => _testStatus; set => _testStatus = value; }
         /// <summary>
-        /// Mode S reply delay
-        /// OriginName: reply_delay_mode_s, Units: us, IsExtended: true
-        /// </summary>
-        public static readonly Field ReplyDelayModeSField = new Field.Builder()
-            .Name(nameof(ReplyDelayModeS))
-            .Title("reply_delay_mode_s")
-            .Description("Mode S reply delay")
-.Units(@"us")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _replyDelayModeS;
-        public float ReplyDelayModeS { get => _replyDelayModeS; set => _replyDelayModeS = value; }
-        /// <summary>
-        /// Mode S reply delay jitter
-        /// OriginName: reply_jitter_mode_s, Units: us, IsExtended: true
-        /// </summary>
-        public static readonly Field ReplyJitterModeSField = new Field.Builder()
-            .Name(nameof(ReplyJitterModeS))
-            .Title("reply_jitter_mode_s")
-            .Description("Mode S reply delay jitter")
-.Units(@"us")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _replyJitterModeS;
-        public float ReplyJitterModeS { get => _replyJitterModeS; set => _replyJitterModeS = value; }
-        /// <summary>
-        /// Mode C altitude reference used by the UF0 comparison; NaN when unavailable
-        /// OriginName: uf0_mode_c_altitude_feet, Units: ft, IsExtended: true
-        /// </summary>
-        public static readonly Field Uf0ModeCAltitudeFeetField = new Field.Builder()
-            .Name(nameof(Uf0ModeCAltitudeFeet))
-            .Title("uf0_mode_c_altitude_feet")
-            .Description("Mode C altitude reference used by the UF0 comparison; NaN when unavailable")
-.Units(@"ft")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _uf0ModeCAltitudeFeet;
-        public float Uf0ModeCAltitudeFeet { get => _uf0ModeCAltitudeFeet; set => _uf0ModeCAltitudeFeet = value; }
-        /// <summary>
-        /// Mode C altitude reference used by the UF4 comparison; NaN when unavailable
-        /// OriginName: uf4_mode_c_altitude_feet, Units: ft, IsExtended: true
-        /// </summary>
-        public static readonly Field Uf4ModeCAltitudeFeetField = new Field.Builder()
-            .Name(nameof(Uf4ModeCAltitudeFeet))
-            .Title("uf4_mode_c_altitude_feet")
-            .Description("Mode C altitude reference used by the UF4 comparison; NaN when unavailable")
-.Units(@"ft")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _uf4ModeCAltitudeFeet;
-        public float Uf4ModeCAltitudeFeet { get => _uf4ModeCAltitudeFeet; set => _uf4ModeCAltitudeFeet = value; }
-        /// <summary>
-        /// Mode C altitude reference used by the UF16 comparison; NaN when unavailable
-        /// OriginName: uf16_mode_c_altitude_feet, Units: ft, IsExtended: true
-        /// </summary>
-        public static readonly Field Uf16ModeCAltitudeFeetField = new Field.Builder()
-            .Name(nameof(Uf16ModeCAltitudeFeet))
-            .Title("uf16_mode_c_altitude_feet")
-            .Description("Mode C altitude reference used by the UF16 comparison; NaN when unavailable")
-.Units(@"ft")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _uf16ModeCAltitudeFeet;
-        public float Uf16ModeCAltitudeFeet { get => _uf16ModeCAltitudeFeet; set => _uf16ModeCAltitudeFeet = value; }
-        /// <summary>
-        /// Mode C altitude reference used by the UF20 comparison; NaN when unavailable
-        /// OriginName: uf20_mode_c_altitude_feet, Units: ft, IsExtended: true
-        /// </summary>
-        public static readonly Field Uf20ModeCAltitudeFeetField = new Field.Builder()
-            .Name(nameof(Uf20ModeCAltitudeFeet))
-            .Title("uf20_mode_c_altitude_feet")
-            .Description("Mode C altitude reference used by the UF20 comparison; NaN when unavailable")
-.Units(@"ft")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _uf20ModeCAltitudeFeet;
-        public float Uf20ModeCAltitudeFeet { get => _uf20ModeCAltitudeFeet; set => _uf20ModeCAltitudeFeet = value; }
-        /// <summary>
-        /// Altitude reference validity marker; send 1 when the four preceding references are encoded. Ignore those references if this marker is absent or not 1. The nonzero marker preserves zero-foot references during MAVLink trailing-zero trimming.
-        /// OriginName: altitude_reference_version, Units: , IsExtended: true
+        /// Altitude reference validity marker; set to 1 when the UF0, UF4, UF16 and UF20 Mode C altitude references are encoded. Ignore these references when the marker is not 1.
+        /// OriginName: altitude_reference_version, Units: , IsExtended: false
         /// </summary>
         public static readonly Field AltitudeReferenceVersionField = new Field.Builder()
             .Name(nameof(AltitudeReferenceVersion))
             .Title("altitude_reference_version")
-            .Description("Altitude reference validity marker; send 1 when the four preceding references are encoded. Ignore those references if this marker is absent or not 1. The nonzero marker preserves zero-foot references during MAVLink trailing-zero trimming.")
+            .Description("Altitude reference validity marker; set to 1 when the UF0, UF4, UF16 and UF20 Mode C altitude references are encoded. Ignore these references when the marker is not 1.")
 
             .DataType(UInt8Type.Default)
         .Build();
         private byte _altitudeReferenceVersion;
         public byte AltitudeReferenceVersion { get => _altitudeReferenceVersion; set => _altitudeReferenceVersion = value; }
-        /// <summary>
-        /// Requested/expected ICAO address used by the group; not detected identity
-        /// OriginName: target_icao_address, Units: , IsExtended: true
-        /// </summary>
-        public static readonly Field TargetIcaoAddressField = new Field.Builder()
-            .Name(nameof(TargetIcaoAddress))
-            .Title("target_icao_address")
-            .Description("Requested/expected ICAO address used by the group; not detected identity")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _targetIcaoAddress;
-        public uint TargetIcaoAddress { get => _targetIcaoAddress; set => _targetIcaoAddress = value; }
     }
     /// <summary>
     /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_ADSB_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
