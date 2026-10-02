@@ -363,6 +363,51 @@
                 <description>[DF24] Comm-D (ELM)</description>
             </entry>
         </enum>
+        <enum name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS">
+            <description>ADS-B extended squitter messages present in ASV_RSGA_RTT_ADS_B_REQ.[!THIS_IS_ENUM_FLAG!]</description>
+            <entry value="1" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS05_EVEN">
+                <description>BDS 0,5 airborne position even message is present</description>
+            </entry>
+            <entry value="2" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS05_ODD">
+                <description>BDS 0,5 airborne position odd message is present</description>
+            </entry>
+            <entry value="4" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS06_EVEN">
+                <description>BDS 0,6 surface position even message is present</description>
+            </entry>
+            <entry value="8" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS06_ODD">
+                <description>BDS 0,6 surface position odd message is present</description>
+            </entry>
+            <entry value="16" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS08">
+                <description>BDS 0,8 aircraft identification message is present</description>
+            </entry>
+            <entry value="32" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS09_GROUND_SPEED">
+                <description>BDS 0,9 ground speed message is present</description>
+            </entry>
+            <entry value="64" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS09_AIRSPEED">
+                <description>BDS 0,9 airspeed message is present</description>
+            </entry>
+            <entry value="128" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS0A_EVENT_DRIVEN">
+                <description>BDS 0,A event-driven message is present</description>
+            </entry>
+            <entry value="256" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS61_EMERGENCY">
+                <description>BDS 6,1 aircraft emergency or priority status message is present</description>
+            </entry>
+            <entry value="512" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS61_TCAS_RA">
+                <description>BDS 6,1 TCAS RA broadcast message is present</description>
+            </entry>
+            <entry value="1024" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS62_OLD">
+                <description>BDS 6,2 target state and status old format message is present</description>
+            </entry>
+            <entry value="2048" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS62_NEW">
+                <description>BDS 6,2 target state and status new format message is present</description>
+            </entry>
+            <entry value="4096" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS65_AIRBORNE">
+                <description>BDS 6,5 airborne aircraft operational status message is present</description>
+            </entry>
+            <entry value="8192" name="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS65_SURFACE">
+                <description>BDS 6,5 surface aircraft operational status message is present</description>
+            </entry>
+        </enum>
         <enum name="ASV_RSGA_RTT_CHART_TYPE">
             <description>Chart type</description>
 
@@ -868,8 +913,204 @@
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
         </message>
+
+        <message id="13469" name="ASV_RSGA_RTT_MODE_A_C_REQ">
+            <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_MODE_A_C_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+            <!-- Common header for all ASV_RSGA_RTT messages-->
+            <field type="uint32_t" name="index">Data index in record</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
+
+            <!-- TX/RX -->
+            <field type="float" name="tx_power" units="dBm">Output power</field>
+            <field type="float" name="tx_gain" units="%">Percent of total TX gain level (0.0 - 1.0)</field>
+            <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
+            <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong)</field>
+
+            <!-- Mode A/C metrics -->
+            <field type="float" name="reply_ratio_mode_a" units="%">Reply ratio for Mode A</field>
+            <field type="float" name="reply_ratio_mode_c" units="%">Reply ratio for Mode C</field>
+            <field type="char[4]" name="squawk">Mode A squawk code as text</field>
+            <field type="uint8_t" name="spi">SPI flag (0 - false, 1 - true)</field>
+            <field type="int32_t" name="mode_c_altitude">Mode C altitude</field>
+
+            <field type="float" name="f1_width_mode_a" units="us">F1 pulse width for Mode A</field>
+            <field type="float" name="f2_width_mode_a" units="us">F2 pulse width for Mode A</field>
+            <field type="float" name="f1_width_mode_c" units="us">F1 pulse width for Mode C</field>
+            <field type="float" name="f2_width_mode_c" units="us">F2 pulse width for Mode C</field>
+
+            <field type="float" name="pulse_spacing_mode_a" units="us">Pulse spacing for Mode A</field>
+            <field type="float" name="pulse_spacing_mode_c" units="us">Pulse spacing for Mode C</field>
+
+            <field type="float" name="reply_delay_mode_a" units="us">Reply delay for Mode A</field>
+            <field type="float" name="reply_delay_mode_c" units="us">Reply delay for Mode C</field>
+            <field type="float" name="reply_jitter_mode_a" units="us">Reply jitter for Mode A</field>
+            <field type="float" name="reply_jitter_mode_c" units="us">Reply jitter for Mode C</field>
+
+            <field type="int16_t" name="measure_time" units="ms">Measure time</field>
+
+            <!-- Preserve the 99-byte base payload and append fields in wire order. -->
+            <extensions/>
+            <field type="float" name="erp_instant_dbm" units="dBm" invalid="NaN">Instant effective radiated power</field>
+            <field type="float" name="erp_dbm" units="dBm" invalid="NaN">Effective radiated power</field>
+            <field type="float" name="mtl_instant_dbm" units="dBm" invalid="NaN">Instant minimum trigger level</field>
+            <field type="float" name="mtl_dbm" units="dBm" invalid="NaN">Minimum trigger level</field>
+            <field type="float" name="mtl_mode_a_dbm" units="dBm" invalid="NaN">Mode A minimum trigger level</field>
+            <field type="float" name="mtl_mode_c_dbm" units="dBm" invalid="NaN">Mode C minimum trigger level</field>
+            <field type="float" name="mtl_mode_s_dbm" units="dBm" invalid="NaN">Mode S minimum trigger level</field>
+            <field type="float" name="mtl_all_call_dbm" units="dBm" invalid="NaN">All-call minimum trigger level</field>
+            <field type="uint8_t" name="power_measurement_kind">Power measurement kind</field>
+            <field type="uint8_t" name="erp_limit_applied">ERP limit application mode</field>
+            <field type="uint8_t" name="test_group" invalid="255">IFR6000 test group; 255 when no group is selected</field>
+            <field type="uint8_t" name="test_status">IFR6000 test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)</field>
+        </message>
         
-        
+        <message id="13470" name="ASV_RSGA_RTT_MODE_S_REQ">
+            <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_MODE_S_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+            <!-- Common header for all ASV_RSGA_RTT messages-->
+            <field type="uint32_t" name="index">Data index in record</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags. Bits 8..14 indicate presence of BDS 1,0; 1,7; 2,0; 3,0; 4,0; 5,0; 6,0 respectively. All other bits retain their ASV_RSGA_DATA_FLAGS meaning.</field>
+
+            <field type="uint8_t" name="capability">Capability flags</field>
+            <field type="uint32_t" name="icao_address">ICAO address</field>
+            <field type="uint32_t" name="uf11_cnt">UF11 count</field>
+            <field type="uint32_t" name="df11_cnt">DF11 count</field>
+
+            <field type="uint8_t" name="df4_flight_status">DF4 flight status</field>
+            <field type="uint8_t" name="df4_downlink_request">DF4 downlink request</field>
+            <field type="uint8_t" name="df4_utility_message">DF4 utility message</field>
+            <field type="float" name="df4_altitude">DF4 altitude</field>
+            <field type="uint32_t" name="df4_icao_address">DF4 ICAO address</field>
+
+            <field type="uint8_t" name="df5_df4_flight_status">DF5/DF4 flight status</field>
+            <field type="uint8_t" name="df5_downlink_request">DF5 downlink request</field>
+            <field type="uint8_t" name="df5_utility_message">DF5 utility message</field>
+            <field type="char[4]" name="df5_identity">DF5 identity (4 chars)</field>
+            <field type="uint32_t" name="df5_icao_address">DF5 ICAO address</field>
+
+            <field type="uint8_t" name="df0_vertical_status">DF0 vertical status</field>
+            <field type="uint8_t" name="df0_cross_link_capability">DF0 cross-link capability</field>
+            <field type="uint8_t" name="df0_sensitivity_level">DF0 sensitivity level</field>
+            <field type="uint8_t" name="df0_reply_information">DF0 reply information</field>
+            <field type="float" name="df0_altitude">DF0 altitude</field>
+            <field type="uint32_t" name="df0_icao_address">DF0 ICAO address</field>
+
+            <field type="uint8_t" name="df20_df4_flight_status">DF20/DF4 flight status</field>
+            <field type="uint8_t" name="df20_downlink_request">DF20 downlink request</field>
+            <field type="uint8_t" name="df20_utility_message">DF20 utility message</field>
+            <field type="float" name="df20_altitude">DF20 altitude</field>
+            <field type="uint8_t[7]" name="df20_bds">DF20 BDS</field>
+            <field type="uint32_t" name="df20_icao_address">DF20 ICAO address</field>
+
+            <field type="uint8_t" name="df21_df4_flight_status">DF21/DF4 flight status</field>
+            <field type="uint8_t" name="df21_downlink_request">DF21 downlink request</field>
+            <field type="uint8_t" name="df21_utility_message">DF21 utility message</field>
+            <field type="char[4]" name="df21_identity">DF21 identity (4 chars)</field>
+            <field type="uint8_t[7]" name="df21_bds">DF21 BDS</field>
+            <field type="uint32_t" name="df21_icao_address">DF21 ICAO address</field>
+
+            <field type="uint8_t" name="df16_vertical_status">DF16 vertical status</field>
+            <field type="uint8_t" name="df16_cross_link_capability">DF16 cross-link capability</field>
+            <field type="uint8_t" name="df16_sensitivity_level">DF16 sensitivity level</field>
+            <field type="uint8_t" name="df16_reply_information">DF16 reply information</field>
+            <field type="float" name="df16_altitude">DF16 altitude</field>
+            <field type="uint8_t[7]" name="df16_bds">DF16 BDS</field>
+            <field type="uint32_t" name="df16_icao_address">DF16 ICAO address</field>
+
+            <field type="uint8_t[7]" name="bds10">BDS 1,0</field>
+            <field type="uint8_t[7]" name="bds17">BDS 1,7</field>
+            <field type="uint8_t[7]" name="bds20">BDS 2,0</field>
+            <field type="uint8_t[7]" name="bds30">BDS 3,0</field>
+            <field type="uint8_t[7]" name="bds40">BDS 4,0</field>
+            <field type="uint8_t[7]" name="bds50">BDS 5,0</field>
+            <field type="uint8_t[7]" name="bds60">BDS 6,0</field>
+
+            <!-- Preserve the 171-byte base payload and append fields in wire order. -->
+            <extensions/>
+            <field type="float" name="erp_instant_dbm" units="dBm" invalid="NaN">Instant effective radiated power</field>
+            <field type="float" name="erp_dbm" units="dBm" invalid="NaN">Effective radiated power</field>
+            <field type="float" name="mtl_instant_dbm" units="dBm" invalid="NaN">Instant minimum trigger level</field>
+            <field type="float" name="mtl_dbm" units="dBm" invalid="NaN">Minimum trigger level</field>
+            <field type="float" name="mtl_mode_a_dbm" units="dBm" invalid="NaN">Mode A minimum trigger level</field>
+            <field type="float" name="mtl_mode_c_dbm" units="dBm" invalid="NaN">Mode C minimum trigger level</field>
+            <field type="float" name="mtl_mode_s_dbm" units="dBm" invalid="NaN">Mode S minimum trigger level</field>
+            <field type="float" name="mtl_all_call_dbm" units="dBm" invalid="NaN">All-call minimum trigger level</field>
+            <field type="uint8_t" name="power_measurement_kind">Power measurement kind</field>
+            <field type="uint8_t" name="erp_limit_applied">ERP limit application mode</field>
+            <field type="uint8_t" name="df17_detected">DF17 extended squitter detected</field>
+            <field type="uint8_t" name="test_group" invalid="255">IFR6000 test group; 255 when no group is selected</field>
+            <field type="uint8_t" name="test_status">IFR6000 test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)</field>
+            <field type="float" name="reply_delay_mode_s" units="us" invalid="NaN">Mode S reply delay</field>
+            <field type="float" name="reply_jitter_mode_s" units="us" invalid="NaN">Mode S reply delay jitter</field>
+            <field type="float" name="uf0_mode_c_altitude_feet" units="ft" invalid="NaN">Mode C altitude reference used by the UF0 comparison; NaN when unavailable</field>
+            <field type="float" name="uf4_mode_c_altitude_feet" units="ft" invalid="NaN">Mode C altitude reference used by the UF4 comparison; NaN when unavailable</field>
+            <field type="float" name="uf16_mode_c_altitude_feet" units="ft" invalid="NaN">Mode C altitude reference used by the UF16 comparison; NaN when unavailable</field>
+            <field type="float" name="uf20_mode_c_altitude_feet" units="ft" invalid="NaN">Mode C altitude reference used by the UF20 comparison; NaN when unavailable</field>
+            <field type="uint8_t" name="altitude_reference_version">Altitude reference validity marker; send 1 when the four preceding references are encoded. Ignore those references if this marker is absent or not 1. The nonzero marker preserves zero-foot references during MAVLink trailing-zero trimming.</field>
+            <field type="uint32_t" name="target_icao_address" invalid="0">Requested/expected ICAO address used by the group; not detected identity</field>
+        </message>
+
+        <message id="13471" name="ASV_RSGA_RTT_ADS_B_REQ">
+            <description>Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_ADSB_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+            <!-- Common header for all ASV_RSGA_RTT messages-->
+            <field type="uint32_t" name="index">Data index in record</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
+
+            <!-- Common ADS-B frame metadata -->
+            <field type="uint16_t" name="messages_present" enum="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS">Flags that identify which ADS-B message bodies are valid</field>
+            <field type="uint32_t" name="icao_address">ICAO aircraft address common for decoded extended squitter messages</field>
+            <field type="uint8_t" name="capability">Mode S capability value common for decoded extended squitter messages</field>
+            <field type="uint8_t" name="squitter_type">ADS-B squitter type (17 - with transponder, 18 - non-transponder)</field>
+
+            <!-- ExSquitterMessages counters and periods -->
+            <field type="uint32_t" name="bds05_even_cnt">BDS 0,5 airborne position even message count</field>
+            <field type="float" name="bds05_even_period" units="s">BDS 0,5 airborne position even message period</field>
+            <field type="uint32_t" name="bds05_odd_cnt">BDS 0,5 airborne position odd message count</field>
+            <field type="float" name="bds05_odd_period" units="s">BDS 0,5 airborne position odd message period</field>
+            <field type="uint32_t" name="bds06_even_cnt">BDS 0,6 surface position even message count</field>
+            <field type="float" name="bds06_even_period" units="s">BDS 0,6 surface position even message period</field>
+            <field type="uint32_t" name="bds06_odd_cnt">BDS 0,6 surface position odd message count</field>
+            <field type="float" name="bds06_odd_period" units="s">BDS 0,6 surface position odd message period</field>
+            <field type="uint32_t" name="bds08_cnt">BDS 0,8 aircraft identification message count</field>
+            <field type="float" name="bds08_period" units="s">BDS 0,8 aircraft identification message period</field>
+            <field type="uint32_t" name="bds09_ground_speed_cnt">BDS 0,9 ground speed message count</field>
+            <field type="float" name="bds09_ground_speed_period" units="s">BDS 0,9 ground speed message period</field>
+            <field type="uint32_t" name="bds09_airspeed_cnt">BDS 0,9 airspeed message count</field>
+            <field type="float" name="bds09_airspeed_period" units="s">BDS 0,9 airspeed message period</field>
+            <field type="uint32_t" name="bds0a_event_driven_cnt">BDS 0,A event-driven message count</field>
+            <field type="float" name="bds0a_event_driven_period" units="s">BDS 0,A event-driven message period</field>
+            <field type="uint32_t" name="bds61_emergency_cnt">BDS 6,1 aircraft emergency or priority status message count</field>
+            <field type="float" name="bds61_emergency_period" units="s">BDS 6,1 aircraft emergency or priority status message period</field>
+            <field type="uint32_t" name="bds61_tcas_ra_cnt">BDS 6,1 TCAS RA broadcast message count</field>
+            <field type="float" name="bds61_tcas_ra_period" units="s">BDS 6,1 TCAS RA broadcast message period</field>
+            <field type="uint32_t" name="bds62_old_cnt">BDS 6,2 target state and status old format message count</field>
+            <field type="float" name="bds62_old_period" units="s">BDS 6,2 target state and status old format message period</field>
+            <field type="uint32_t" name="bds62_new_cnt">BDS 6,2 target state and status new format message count</field>
+            <field type="float" name="bds62_new_period" units="s">BDS 6,2 target state and status new format message period</field>
+            <field type="uint32_t" name="bds65_airborne_cnt">BDS 6,5 airborne aircraft operational status message count</field>
+            <field type="float" name="bds65_airborne_period" units="s">BDS 6,5 airborne aircraft operational status message period</field>
+            <field type="uint32_t" name="bds65_surface_cnt">BDS 6,5 surface aircraft operational status message count</field>
+            <field type="float" name="bds65_surface_period" units="s">BDS 6,5 surface aircraft operational status message period</field>
+
+            <!-- ADS-B ME/BDS payloads (56 bits each) -->
+            <field type="uint8_t[7]" name="bds05_even_me">BDS 0,5 airborne position even ME payload</field>
+            <field type="uint8_t[7]" name="bds05_odd_me">BDS 0,5 airborne position odd ME payload</field>
+            <field type="uint8_t[7]" name="bds06_even_me">BDS 0,6 surface position even ME payload</field>
+            <field type="uint8_t[7]" name="bds06_odd_me">BDS 0,6 surface position odd ME payload</field>
+            <field type="uint8_t[7]" name="bds08_me">BDS 0,8 aircraft identification ME payload</field>
+            <field type="uint8_t[7]" name="bds09_ground_speed_me">BDS 0,9 ground speed ME payload</field>
+            <field type="uint8_t[7]" name="bds09_airspeed_me">BDS 0,9 airspeed ME payload</field>
+            <field type="uint8_t[7]" name="bds0a_event_driven_me">BDS 0,A event-driven ME payload</field>
+            <field type="uint8_t[7]" name="bds61_emergency_me">BDS 6,1 aircraft emergency or priority status ME payload</field>
+            <field type="uint8_t[7]" name="bds61_tcas_ra_me">BDS 6,1 TCAS RA broadcast ME payload</field>
+            <field type="uint8_t[7]" name="bds62_old_me">BDS 6,2 target state and status old format ME payload</field>
+            <field type="uint8_t[7]" name="bds62_new_me">BDS 6,2 target state and status new format ME payload</field>
+            <field type="uint8_t[7]" name="bds65_airborne_me">BDS 6,5 airborne aircraft operational status ME payload</field>
+            <field type="uint8_t[7]" name="bds65_surface_me">BDS 6,5 surface aircraft operational status ME payload</field>
+        </message>
         
         
         

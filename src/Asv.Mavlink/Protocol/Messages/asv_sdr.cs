@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
+// This code was generate by tool Asv.Mavlink.Shell version 4.2.0-dev.0+8e63b509dd99e055f8e20059820597d78bfd4a5c 26-10-02.
 
 using System;
 using System.Text;
@@ -617,7 +617,7 @@ namespace Asv.Mavlink.AsvSdr
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 77; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 77; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 66; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {

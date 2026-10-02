@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
+// This code was generate by tool Asv.Mavlink.Shell version 4.2.0-dev.0+8e63b509dd99e055f8e20059820597d78bfd4a5c 26-10-02.
 
 using System;
 using System.Text;
@@ -63,6 +63,9 @@ namespace Asv.Mavlink.AsvRsga
             src.Add(AsvRsgaRttAdsbRepPacket.MessageId, ()=>new AsvRsgaRttAdsbRepPacket());
             src.Add(AsvRsgaRttRxGnssPacket.MessageId, ()=>new AsvRsgaRttRxGnssPacket());
             src.Add(AsvRsgaRttRdfPacket.MessageId, ()=>new AsvRsgaRttRdfPacket());
+            src.Add(AsvRsgaRttModeACReqPacket.MessageId, ()=>new AsvRsgaRttModeACReqPacket());
+            src.Add(AsvRsgaRttModeSReqPacket.MessageId, ()=>new AsvRsgaRttModeSReqPacket());
+            src.Add(AsvRsgaRttAdsBReqPacket.MessageId, ()=>new AsvRsgaRttAdsBReqPacket());
         }
  
     }
@@ -908,6 +911,121 @@ namespace Asv.Mavlink.AsvRsga
             yield return new EnumValue<T>(converter(4194304),"ASV_RSGA_RTT_ADSB_MSG_DF_22");
             yield return new EnumValue<T>(converter(8388608),"ASV_RSGA_RTT_ADSB_MSG_DF_23");
             yield return new EnumValue<T>(converter(16777216),"ASV_RSGA_RTT_ADSB_MSG_DF_24");
+        }
+    }
+    /// <summary>
+    /// ADS-B extended squitter messages present in ASV_RSGA_RTT_ADS_B_REQ.[!THIS_IS_ENUM_FLAG!]
+    ///  ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS
+    /// </summary>
+    [Flags]
+    public enum AsvRsgaRttAdsbBReqMsgFlags : ulong
+    {
+        /// <summary>
+        /// BDS 0,5 airborne position even message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS05_EVEN
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds05Even = 1,
+        /// <summary>
+        /// BDS 0,5 airborne position odd message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS05_ODD
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds05Odd = 2,
+        /// <summary>
+        /// BDS 0,6 surface position even message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS06_EVEN
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds06Even = 4,
+        /// <summary>
+        /// BDS 0,6 surface position odd message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS06_ODD
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds06Odd = 8,
+        /// <summary>
+        /// BDS 0,8 aircraft identification message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS08
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds08 = 16,
+        /// <summary>
+        /// BDS 0,9 ground speed message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS09_GROUND_SPEED
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds09GroundSpeed = 32,
+        /// <summary>
+        /// BDS 0,9 airspeed message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS09_AIRSPEED
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds09Airspeed = 64,
+        /// <summary>
+        /// BDS 0,A event-driven message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS0A_EVENT_DRIVEN
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds0aEventDriven = 128,
+        /// <summary>
+        /// BDS 6,1 aircraft emergency or priority status message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS61_EMERGENCY
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds61Emergency = 256,
+        /// <summary>
+        /// BDS 6,1 TCAS RA broadcast message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS61_TCAS_RA
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds61TcasRa = 512,
+        /// <summary>
+        /// BDS 6,2 target state and status old format message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS62_OLD
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds62Old = 1024,
+        /// <summary>
+        /// BDS 6,2 target state and status new format message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS62_NEW
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds62New = 2048,
+        /// <summary>
+        /// BDS 6,5 airborne aircraft operational status message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS65_AIRBORNE
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds65Airborne = 4096,
+        /// <summary>
+        /// BDS 6,5 surface aircraft operational status message is present
+        /// ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS65_SURFACE
+        /// </summary>
+        AsvRsgaRttAdsbBReqMsgFlagsBds65Surface = 8192,
+    }
+    public static class AsvRsgaRttAdsbBReqMsgFlagsHelper
+    {
+        public static IEnumerable<T> GetValues<T>(Func<ulong, T> converter)
+        {
+            yield return converter(1);
+            yield return converter(2);
+            yield return converter(4);
+            yield return converter(8);
+            yield return converter(16);
+            yield return converter(32);
+            yield return converter(64);
+            yield return converter(128);
+            yield return converter(256);
+            yield return converter(512);
+            yield return converter(1024);
+            yield return converter(2048);
+            yield return converter(4096);
+            yield return converter(8192);
+        }
+        public static IEnumerable<EnumValue<T>> GetEnumValues<T>(Func<ulong,T> converter)
+        {
+            yield return new EnumValue<T>(converter(1),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS05_EVEN");
+            yield return new EnumValue<T>(converter(2),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS05_ODD");
+            yield return new EnumValue<T>(converter(4),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS06_EVEN");
+            yield return new EnumValue<T>(converter(8),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS06_ODD");
+            yield return new EnumValue<T>(converter(16),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS08");
+            yield return new EnumValue<T>(converter(32),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS09_GROUND_SPEED");
+            yield return new EnumValue<T>(converter(64),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS09_AIRSPEED");
+            yield return new EnumValue<T>(converter(128),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS0A_EVENT_DRIVEN");
+            yield return new EnumValue<T>(converter(256),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS61_EMERGENCY");
+            yield return new EnumValue<T>(converter(512),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS61_TCAS_RA");
+            yield return new EnumValue<T>(converter(1024),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS62_OLD");
+            yield return new EnumValue<T>(converter(2048),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS62_NEW");
+            yield return new EnumValue<T>(converter(4096),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS65_AIRBORNE");
+            yield return new EnumValue<T>(converter(8192),"ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS_BDS65_SURFACE");
         }
     }
     /// <summary>
@@ -7141,6 +7259,3165 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
+    }
+    /// <summary>
+    /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_MODE_A_C_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_RSGA_RTT_MODE_A_C_REQ
+    /// </summary>
+    public class AsvRsgaRttModeACReqPacket : MavlinkV2Message<AsvRsgaRttModeACReqPayload>
+    {
+        public const int MessageId = 13469; 
+        public const string MessageIdAsString = "13469";
+        
+        public const byte CrcExtra = 125;
+        
+        public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
+        public override bool WrapToV2Extension => true;
+
+        public override AsvRsgaRttModeACReqPayload Payload { get; } = new();
+
+        public override string Name => "ASV_RSGA_RTT_MODE_A_C_REQ";
+
+    }
+
+    /// <summary>
+    ///  ASV_RSGA_RTT_MODE_A_C_REQ
+    /// </summary>
+    public class AsvRsgaRttModeACReqPayload : IPayload
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMaxByteSize() => 135; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMinByteSize() => 99; // of byte sized of fields (exclude extended)
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public int GetByteSize()
+        {
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            +4 // float tx_power
+            +4 // float tx_gain
+            +4 // float rx_power
+            +4 // float rx_gain
+            +4 // float rx_signal_overflow
+            +4 // float reply_ratio_mode_a
+            +4 // float reply_ratio_mode_c
+            +4 // int32_t mode_c_altitude
+            +4 // float f1_width_mode_a
+            +4 // float f2_width_mode_a
+            +4 // float f1_width_mode_c
+            +4 // float f2_width_mode_c
+            +4 // float pulse_spacing_mode_a
+            +4 // float pulse_spacing_mode_c
+            +4 // float reply_delay_mode_a
+            +4 // float reply_delay_mode_c
+            +4 // float reply_jitter_mode_a
+            +4 // float reply_jitter_mode_c
+            +2 // int16_t measure_time
+            +Squawk.Length // char[4] squawk
+            +1 // uint8_t spi
+            +4 // float erp_instant_dbm
+            +4 // float erp_dbm
+            +4 // float mtl_instant_dbm
+            +4 // float mtl_dbm
+            +4 // float mtl_mode_a_dbm
+            +4 // float mtl_mode_c_dbm
+            +4 // float mtl_mode_s_dbm
+            +4 // float mtl_all_call_dbm
+            +1 // uint8_t power_measurement_kind
+            +1 // uint8_t erp_limit_applied
+            +1 // uint8_t test_group
+            +1 // uint8_t test_status
+            );
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
+            TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
+            Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
+            Index = BinSerialize.ReadUInt(ref buffer);
+            TxPower = BinSerialize.ReadFloat(ref buffer);
+            TxGain = BinSerialize.ReadFloat(ref buffer);
+            RxPower = BinSerialize.ReadFloat(ref buffer);
+            RxGain = BinSerialize.ReadFloat(ref buffer);
+            RxSignalOverflow = BinSerialize.ReadFloat(ref buffer);
+            ReplyRatioModeA = BinSerialize.ReadFloat(ref buffer);
+            ReplyRatioModeC = BinSerialize.ReadFloat(ref buffer);
+            ModeCAltitude = BinSerialize.ReadInt(ref buffer);
+            F1WidthModeA = BinSerialize.ReadFloat(ref buffer);
+            F2WidthModeA = BinSerialize.ReadFloat(ref buffer);
+            F1WidthModeC = BinSerialize.ReadFloat(ref buffer);
+            F2WidthModeC = BinSerialize.ReadFloat(ref buffer);
+            PulseSpacingModeA = BinSerialize.ReadFloat(ref buffer);
+            PulseSpacingModeC = BinSerialize.ReadFloat(ref buffer);
+            ReplyDelayModeA = BinSerialize.ReadFloat(ref buffer);
+            ReplyDelayModeC = BinSerialize.ReadFloat(ref buffer);
+            ReplyJitterModeA = BinSerialize.ReadFloat(ref buffer);
+            ReplyJitterModeC = BinSerialize.ReadFloat(ref buffer);
+            MeasureTime = BinSerialize.ReadShort(ref buffer);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/135 - payloadSize - /*ExtendedFieldsLength*/36)/1 /*FieldTypeByteSize*/));
+            
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = Squawk)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Squawk.Length);
+                }
+            }
+            buffer = buffer[arraySize..];
+           
+            Spi = (byte)BinSerialize.ReadByte(ref buffer);
+            // extended field 'ErpInstantDbm' can be empty
+            if (buffer.IsEmpty) return;
+            ErpInstantDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'ErpDbm' can be empty
+            if (buffer.IsEmpty) return;
+            ErpDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlInstantDbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlInstantDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlDbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlModeADbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlModeADbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlModeCDbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlModeCDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlModeSDbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlModeSDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlAllCallDbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlAllCallDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'PowerMeasurementKind' can be empty
+            if (buffer.IsEmpty) return;
+            PowerMeasurementKind = (byte)BinSerialize.ReadByte(ref buffer);
+            // extended field 'ErpLimitApplied' can be empty
+            if (buffer.IsEmpty) return;
+            ErpLimitApplied = (byte)BinSerialize.ReadByte(ref buffer);
+            // extended field 'TestGroup' can be empty
+            if (buffer.IsEmpty) return;
+            TestGroup = (byte)BinSerialize.ReadByte(ref buffer);
+            // extended field 'TestStatus' can be empty
+            if (buffer.IsEmpty) return;
+            TestStatus = (byte)BinSerialize.ReadByte(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
+            BinSerialize.WriteULong(ref buffer,(ulong)Flags);
+            BinSerialize.WriteUInt(ref buffer,Index);
+            BinSerialize.WriteFloat(ref buffer,TxPower);
+            BinSerialize.WriteFloat(ref buffer,TxGain);
+            BinSerialize.WriteFloat(ref buffer,RxPower);
+            BinSerialize.WriteFloat(ref buffer,RxGain);
+            BinSerialize.WriteFloat(ref buffer,RxSignalOverflow);
+            BinSerialize.WriteFloat(ref buffer,ReplyRatioModeA);
+            BinSerialize.WriteFloat(ref buffer,ReplyRatioModeC);
+            BinSerialize.WriteInt(ref buffer,ModeCAltitude);
+            BinSerialize.WriteFloat(ref buffer,F1WidthModeA);
+            BinSerialize.WriteFloat(ref buffer,F2WidthModeA);
+            BinSerialize.WriteFloat(ref buffer,F1WidthModeC);
+            BinSerialize.WriteFloat(ref buffer,F2WidthModeC);
+            BinSerialize.WriteFloat(ref buffer,PulseSpacingModeA);
+            BinSerialize.WriteFloat(ref buffer,PulseSpacingModeC);
+            BinSerialize.WriteFloat(ref buffer,ReplyDelayModeA);
+            BinSerialize.WriteFloat(ref buffer,ReplyDelayModeC);
+            BinSerialize.WriteFloat(ref buffer,ReplyJitterModeA);
+            BinSerialize.WriteFloat(ref buffer,ReplyJitterModeC);
+            BinSerialize.WriteShort(ref buffer,MeasureTime);
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = Squawk)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, Squawk.Length, bytePointer, Squawk.Length);
+                }
+            }
+            buffer = buffer.Slice(Squawk.Length);
+            
+            BinSerialize.WriteByte(ref buffer,(byte)Spi);
+            BinSerialize.WriteFloat(ref buffer,ErpInstantDbm);
+            BinSerialize.WriteFloat(ref buffer,ErpDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlInstantDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeADbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeCDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeSDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlAllCallDbm);
+            BinSerialize.WriteByte(ref buffer,(byte)PowerMeasurementKind);
+            BinSerialize.WriteByte(ref buffer,(byte)ErpLimitApplied);
+            BinSerialize.WriteByte(ref buffer,(byte)TestGroup);
+            BinSerialize.WriteByte(ref buffer,(byte)TestStatus);
+            /* PayloadByteSize = 135 */;
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            FloatType.Accept(visitor,TxPowerField, ref _txPower);    
+            FloatType.Accept(visitor,TxGainField, ref _txGain);    
+            FloatType.Accept(visitor,RxPowerField, ref _rxPower);    
+            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
+            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
+            FloatType.Accept(visitor,ReplyRatioModeAField, ref _replyRatioModeA);    
+            FloatType.Accept(visitor,ReplyRatioModeCField, ref _replyRatioModeC);    
+            Int32Type.Accept(visitor,ModeCAltitudeField, ref _modeCAltitude);    
+            FloatType.Accept(visitor,F1WidthModeAField, ref _f1WidthModeA);    
+            FloatType.Accept(visitor,F2WidthModeAField, ref _f2WidthModeA);    
+            FloatType.Accept(visitor,F1WidthModeCField, ref _f1WidthModeC);    
+            FloatType.Accept(visitor,F2WidthModeCField, ref _f2WidthModeC);    
+            FloatType.Accept(visitor,PulseSpacingModeAField, ref _pulseSpacingModeA);    
+            FloatType.Accept(visitor,PulseSpacingModeCField, ref _pulseSpacingModeC);    
+            FloatType.Accept(visitor,ReplyDelayModeAField, ref _replyDelayModeA);    
+            FloatType.Accept(visitor,ReplyDelayModeCField, ref _replyDelayModeC);    
+            FloatType.Accept(visitor,ReplyJitterModeAField, ref _replyJitterModeA);    
+            FloatType.Accept(visitor,ReplyJitterModeCField, ref _replyJitterModeC);    
+            Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            ArrayType.Accept(visitor,SquawkField,  
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Squawk[index]));
+            UInt8Type.Accept(visitor,SpiField, ref _spi);    
+            FloatType.Accept(visitor,ErpInstantDbmField, ref _erpInstantDbm);    
+            FloatType.Accept(visitor,ErpDbmField, ref _erpDbm);    
+            FloatType.Accept(visitor,MtlInstantDbmField, ref _mtlInstantDbm);    
+            FloatType.Accept(visitor,MtlDbmField, ref _mtlDbm);    
+            FloatType.Accept(visitor,MtlModeADbmField, ref _mtlModeADbm);    
+            FloatType.Accept(visitor,MtlModeCDbmField, ref _mtlModeCDbm);    
+            FloatType.Accept(visitor,MtlModeSDbmField, ref _mtlModeSDbm);    
+            FloatType.Accept(visitor,MtlAllCallDbmField, ref _mtlAllCallDbm);    
+            UInt8Type.Accept(visitor,PowerMeasurementKindField, ref _powerMeasurementKind);    
+            UInt8Type.Accept(visitor,ErpLimitAppliedField, ref _erpLimitApplied);    
+            UInt8Type.Accept(visitor,TestGroupField, ref _testGroup);    
+            UInt8Type.Accept(visitor,TestStatusField, ref _testStatus);    
+
+        }
+
+        /// <summary>
+        /// Timestamp (UNIX epoch time)
+        /// OriginName: time_unix_usec, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time)")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
+        /// <summary>
+        /// Data flags
+        /// OriginName: flags, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
+        /// <summary>
+        /// Data index in record
+        /// OriginName: index, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
+        /// <summary>
+        /// Output power
+        /// OriginName: tx_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field TxPowerField = new Field.Builder()
+            .Name(nameof(TxPower))
+            .Title("tx_power")
+            .Description("Output power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _txPower;
+        public float TxPower { get => _txPower; set => _txPower = value; }
+        /// <summary>
+        /// Percent of total TX gain level (0.0 - 1.0)
+        /// OriginName: tx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field TxGainField = new Field.Builder()
+            .Name(nameof(TxGain))
+            .Title("tx_gain")
+            .Description("Percent of total TX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _txGain;
+        public float TxGain { get => _txGain; set => _txGain = value; }
+        /// <summary>
+        /// Receive power (peak)
+        /// OriginName: rx_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field RxPowerField = new Field.Builder()
+            .Name(nameof(RxPower))
+            .Title("rx_power")
+            .Description("Receive power (peak)")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxPower;
+        public float RxPower { get => _rxPower; set => _rxPower = value; }
+        /// <summary>
+        /// Percent of total RX gain level (0.0 - 1.0)
+        /// OriginName: rx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxGainField = new Field.Builder()
+            .Name(nameof(RxGain))
+            .Title("rx_gain")
+            .Description("Percent of total RX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxGain;
+        public float RxGain { get => _rxGain; set => _rxGain = value; }
+        /// <summary>
+        /// Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong)
+        /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxSignalOverflowField = new Field.Builder()
+            .Name(nameof(RxSignalOverflow))
+            .Title("rx_signal_overflow")
+            .Description("Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxSignalOverflow;
+        public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
+        /// <summary>
+        /// Reply ratio for Mode A
+        /// OriginName: reply_ratio_mode_a, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field ReplyRatioModeAField = new Field.Builder()
+            .Name(nameof(ReplyRatioModeA))
+            .Title("reply_ratio_mode_a")
+            .Description("Reply ratio for Mode A")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyRatioModeA;
+        public float ReplyRatioModeA { get => _replyRatioModeA; set => _replyRatioModeA = value; }
+        /// <summary>
+        /// Reply ratio for Mode C
+        /// OriginName: reply_ratio_mode_c, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field ReplyRatioModeCField = new Field.Builder()
+            .Name(nameof(ReplyRatioModeC))
+            .Title("reply_ratio_mode_c")
+            .Description("Reply ratio for Mode C")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyRatioModeC;
+        public float ReplyRatioModeC { get => _replyRatioModeC; set => _replyRatioModeC = value; }
+        /// <summary>
+        /// Mode C altitude
+        /// OriginName: mode_c_altitude, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field ModeCAltitudeField = new Field.Builder()
+            .Name(nameof(ModeCAltitude))
+            .Title("mode_c_altitude")
+            .Description("Mode C altitude")
+
+            .DataType(Int32Type.Default)
+        .Build();
+        private int _modeCAltitude;
+        public int ModeCAltitude { get => _modeCAltitude; set => _modeCAltitude = value; }
+        /// <summary>
+        /// F1 pulse width for Mode A
+        /// OriginName: f1_width_mode_a, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field F1WidthModeAField = new Field.Builder()
+            .Name(nameof(F1WidthModeA))
+            .Title("f1_width_mode_a")
+            .Description("F1 pulse width for Mode A")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _f1WidthModeA;
+        public float F1WidthModeA { get => _f1WidthModeA; set => _f1WidthModeA = value; }
+        /// <summary>
+        /// F2 pulse width for Mode A
+        /// OriginName: f2_width_mode_a, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field F2WidthModeAField = new Field.Builder()
+            .Name(nameof(F2WidthModeA))
+            .Title("f2_width_mode_a")
+            .Description("F2 pulse width for Mode A")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _f2WidthModeA;
+        public float F2WidthModeA { get => _f2WidthModeA; set => _f2WidthModeA = value; }
+        /// <summary>
+        /// F1 pulse width for Mode C
+        /// OriginName: f1_width_mode_c, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field F1WidthModeCField = new Field.Builder()
+            .Name(nameof(F1WidthModeC))
+            .Title("f1_width_mode_c")
+            .Description("F1 pulse width for Mode C")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _f1WidthModeC;
+        public float F1WidthModeC { get => _f1WidthModeC; set => _f1WidthModeC = value; }
+        /// <summary>
+        /// F2 pulse width for Mode C
+        /// OriginName: f2_width_mode_c, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field F2WidthModeCField = new Field.Builder()
+            .Name(nameof(F2WidthModeC))
+            .Title("f2_width_mode_c")
+            .Description("F2 pulse width for Mode C")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _f2WidthModeC;
+        public float F2WidthModeC { get => _f2WidthModeC; set => _f2WidthModeC = value; }
+        /// <summary>
+        /// Pulse spacing for Mode A
+        /// OriginName: pulse_spacing_mode_a, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseSpacingModeAField = new Field.Builder()
+            .Name(nameof(PulseSpacingModeA))
+            .Title("pulse_spacing_mode_a")
+            .Description("Pulse spacing for Mode A")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _pulseSpacingModeA;
+        public float PulseSpacingModeA { get => _pulseSpacingModeA; set => _pulseSpacingModeA = value; }
+        /// <summary>
+        /// Pulse spacing for Mode C
+        /// OriginName: pulse_spacing_mode_c, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseSpacingModeCField = new Field.Builder()
+            .Name(nameof(PulseSpacingModeC))
+            .Title("pulse_spacing_mode_c")
+            .Description("Pulse spacing for Mode C")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _pulseSpacingModeC;
+        public float PulseSpacingModeC { get => _pulseSpacingModeC; set => _pulseSpacingModeC = value; }
+        /// <summary>
+        /// Reply delay for Mode A
+        /// OriginName: reply_delay_mode_a, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field ReplyDelayModeAField = new Field.Builder()
+            .Name(nameof(ReplyDelayModeA))
+            .Title("reply_delay_mode_a")
+            .Description("Reply delay for Mode A")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyDelayModeA;
+        public float ReplyDelayModeA { get => _replyDelayModeA; set => _replyDelayModeA = value; }
+        /// <summary>
+        /// Reply delay for Mode C
+        /// OriginName: reply_delay_mode_c, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field ReplyDelayModeCField = new Field.Builder()
+            .Name(nameof(ReplyDelayModeC))
+            .Title("reply_delay_mode_c")
+            .Description("Reply delay for Mode C")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyDelayModeC;
+        public float ReplyDelayModeC { get => _replyDelayModeC; set => _replyDelayModeC = value; }
+        /// <summary>
+        /// Reply jitter for Mode A
+        /// OriginName: reply_jitter_mode_a, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field ReplyJitterModeAField = new Field.Builder()
+            .Name(nameof(ReplyJitterModeA))
+            .Title("reply_jitter_mode_a")
+            .Description("Reply jitter for Mode A")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyJitterModeA;
+        public float ReplyJitterModeA { get => _replyJitterModeA; set => _replyJitterModeA = value; }
+        /// <summary>
+        /// Reply jitter for Mode C
+        /// OriginName: reply_jitter_mode_c, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field ReplyJitterModeCField = new Field.Builder()
+            .Name(nameof(ReplyJitterModeC))
+            .Title("reply_jitter_mode_c")
+            .Description("Reply jitter for Mode C")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyJitterModeC;
+        public float ReplyJitterModeC { get => _replyJitterModeC; set => _replyJitterModeC = value; }
+        /// <summary>
+        /// Measure time
+        /// OriginName: measure_time, Units: ms, IsExtended: false
+        /// </summary>
+        public static readonly Field MeasureTimeField = new Field.Builder()
+            .Name(nameof(MeasureTime))
+            .Title("measure_time")
+            .Description("Measure time")
+.Units(@"ms")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _measureTime;
+        public short MeasureTime { get => _measureTime; set => _measureTime = value; }
+        /// <summary>
+        /// Mode A squawk code as text
+        /// OriginName: squawk, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field SquawkField = new Field.Builder()
+            .Name(nameof(Squawk))
+            .Title("squawk")
+            .Description("Mode A squawk code as text")
+
+            .DataType(new ArrayType(CharType.Ascii,4))
+        .Build();
+        public const int SquawkMaxItemsCount = 4;
+        public char[] Squawk { get; } = new char[4];
+        [Obsolete("This method is deprecated. Use GetSquawkMaxItemsCount instead.")]
+        public byte GetSquawkMaxItemsCount() => 4;
+        /// <summary>
+        /// SPI flag (0 - false, 1 - true)
+        /// OriginName: spi, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field SpiField = new Field.Builder()
+            .Name(nameof(Spi))
+            .Title("spi")
+            .Description("SPI flag (0 - false, 1 - true)")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _spi;
+        public byte Spi { get => _spi; set => _spi = value; }
+        /// <summary>
+        /// Instant effective radiated power
+        /// OriginName: erp_instant_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field ErpInstantDbmField = new Field.Builder()
+            .Name(nameof(ErpInstantDbm))
+            .Title("erp_instant_dbm")
+            .Description("Instant effective radiated power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _erpInstantDbm;
+        public float ErpInstantDbm { get => _erpInstantDbm; set => _erpInstantDbm = value; }
+        /// <summary>
+        /// Effective radiated power
+        /// OriginName: erp_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field ErpDbmField = new Field.Builder()
+            .Name(nameof(ErpDbm))
+            .Title("erp_dbm")
+            .Description("Effective radiated power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _erpDbm;
+        public float ErpDbm { get => _erpDbm; set => _erpDbm = value; }
+        /// <summary>
+        /// Instant minimum trigger level
+        /// OriginName: mtl_instant_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlInstantDbmField = new Field.Builder()
+            .Name(nameof(MtlInstantDbm))
+            .Title("mtl_instant_dbm")
+            .Description("Instant minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlInstantDbm;
+        public float MtlInstantDbm { get => _mtlInstantDbm; set => _mtlInstantDbm = value; }
+        /// <summary>
+        /// Minimum trigger level
+        /// OriginName: mtl_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlDbmField = new Field.Builder()
+            .Name(nameof(MtlDbm))
+            .Title("mtl_dbm")
+            .Description("Minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlDbm;
+        public float MtlDbm { get => _mtlDbm; set => _mtlDbm = value; }
+        /// <summary>
+        /// Mode A minimum trigger level
+        /// OriginName: mtl_mode_a_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlModeADbmField = new Field.Builder()
+            .Name(nameof(MtlModeADbm))
+            .Title("mtl_mode_a_dbm")
+            .Description("Mode A minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeADbm;
+        public float MtlModeADbm { get => _mtlModeADbm; set => _mtlModeADbm = value; }
+        /// <summary>
+        /// Mode C minimum trigger level
+        /// OriginName: mtl_mode_c_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlModeCDbmField = new Field.Builder()
+            .Name(nameof(MtlModeCDbm))
+            .Title("mtl_mode_c_dbm")
+            .Description("Mode C minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeCDbm;
+        public float MtlModeCDbm { get => _mtlModeCDbm; set => _mtlModeCDbm = value; }
+        /// <summary>
+        /// Mode S minimum trigger level
+        /// OriginName: mtl_mode_s_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlModeSDbmField = new Field.Builder()
+            .Name(nameof(MtlModeSDbm))
+            .Title("mtl_mode_s_dbm")
+            .Description("Mode S minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeSDbm;
+        public float MtlModeSDbm { get => _mtlModeSDbm; set => _mtlModeSDbm = value; }
+        /// <summary>
+        /// All-call minimum trigger level
+        /// OriginName: mtl_all_call_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlAllCallDbmField = new Field.Builder()
+            .Name(nameof(MtlAllCallDbm))
+            .Title("mtl_all_call_dbm")
+            .Description("All-call minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlAllCallDbm;
+        public float MtlAllCallDbm { get => _mtlAllCallDbm; set => _mtlAllCallDbm = value; }
+        /// <summary>
+        /// Power measurement kind
+        /// OriginName: power_measurement_kind, Units: , IsExtended: true
+        /// </summary>
+        public static readonly Field PowerMeasurementKindField = new Field.Builder()
+            .Name(nameof(PowerMeasurementKind))
+            .Title("power_measurement_kind")
+            .Description("Power measurement kind")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _powerMeasurementKind;
+        public byte PowerMeasurementKind { get => _powerMeasurementKind; set => _powerMeasurementKind = value; }
+        /// <summary>
+        /// ERP limit application mode
+        /// OriginName: erp_limit_applied, Units: , IsExtended: true
+        /// </summary>
+        public static readonly Field ErpLimitAppliedField = new Field.Builder()
+            .Name(nameof(ErpLimitApplied))
+            .Title("erp_limit_applied")
+            .Description("ERP limit application mode")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _erpLimitApplied;
+        public byte ErpLimitApplied { get => _erpLimitApplied; set => _erpLimitApplied = value; }
+        /// <summary>
+        /// IFR6000 test group; 255 when no group is selected
+        /// OriginName: test_group, Units: , IsExtended: true
+        /// </summary>
+        public static readonly Field TestGroupField = new Field.Builder()
+            .Name(nameof(TestGroup))
+            .Title("test_group")
+            .Description("IFR6000 test group; 255 when no group is selected")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _testGroup;
+        public byte TestGroup { get => _testGroup; set => _testGroup = value; }
+        /// <summary>
+        /// IFR6000 test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)
+        /// OriginName: test_status, Units: , IsExtended: true
+        /// </summary>
+        public static readonly Field TestStatusField = new Field.Builder()
+            .Name(nameof(TestStatus))
+            .Title("test_status")
+            .Description("IFR6000 test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _testStatus;
+        public byte TestStatus { get => _testStatus; set => _testStatus = value; }
+    }
+    /// <summary>
+    /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_MODE_S_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_RSGA_RTT_MODE_S_REQ
+    /// </summary>
+    public class AsvRsgaRttModeSReqPacket : MavlinkV2Message<AsvRsgaRttModeSReqPayload>
+    {
+        public const int MessageId = 13470; 
+        public const string MessageIdAsString = "13470";
+        
+        public const byte CrcExtra = 156;
+        
+        public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
+        public override bool WrapToV2Extension => true;
+
+        public override AsvRsgaRttModeSReqPayload Payload { get; } = new();
+
+        public override string Name => "ASV_RSGA_RTT_MODE_S_REQ";
+
+    }
+
+    /// <summary>
+    ///  ASV_RSGA_RTT_MODE_S_REQ
+    /// </summary>
+    public class AsvRsgaRttModeSReqPayload : IPayload
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMaxByteSize() => 237; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMinByteSize() => 171; // of byte sized of fields (exclude extended)
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public int GetByteSize()
+        {
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            +4 // uint32_t icao_address
+            +4 // uint32_t uf11_cnt
+            +4 // uint32_t df11_cnt
+            +4 // float df4_altitude
+            +4 // uint32_t df4_icao_address
+            +4 // uint32_t df5_icao_address
+            +4 // float df0_altitude
+            +4 // uint32_t df0_icao_address
+            +4 // float df20_altitude
+            +4 // uint32_t df20_icao_address
+            +4 // uint32_t df21_icao_address
+            +4 // float df16_altitude
+            +4 // uint32_t df16_icao_address
+            +1 // uint8_t capability
+            +1 // uint8_t df4_flight_status
+            +1 // uint8_t df4_downlink_request
+            +1 // uint8_t df4_utility_message
+            +1 // uint8_t df5_df4_flight_status
+            +1 // uint8_t df5_downlink_request
+            +1 // uint8_t df5_utility_message
+            +Df5Identity.Length // char[4] df5_identity
+            +1 // uint8_t df0_vertical_status
+            +1 // uint8_t df0_cross_link_capability
+            +1 // uint8_t df0_sensitivity_level
+            +1 // uint8_t df0_reply_information
+            +1 // uint8_t df20_df4_flight_status
+            +1 // uint8_t df20_downlink_request
+            +1 // uint8_t df20_utility_message
+            +Df20Bds.Length // uint8_t[7] df20_bds
+            +1 // uint8_t df21_df4_flight_status
+            +1 // uint8_t df21_downlink_request
+            +1 // uint8_t df21_utility_message
+            +Df21Identity.Length // char[4] df21_identity
+            +Df21Bds.Length // uint8_t[7] df21_bds
+            +1 // uint8_t df16_vertical_status
+            +1 // uint8_t df16_cross_link_capability
+            +1 // uint8_t df16_sensitivity_level
+            +1 // uint8_t df16_reply_information
+            +Df16Bds.Length // uint8_t[7] df16_bds
+            +Bds10.Length // uint8_t[7] bds10
+            +Bds17.Length // uint8_t[7] bds17
+            +Bds20.Length // uint8_t[7] bds20
+            +Bds30.Length // uint8_t[7] bds30
+            +Bds40.Length // uint8_t[7] bds40
+            +Bds50.Length // uint8_t[7] bds50
+            +Bds60.Length // uint8_t[7] bds60
+            +4 // float erp_instant_dbm
+            +4 // float erp_dbm
+            +4 // float mtl_instant_dbm
+            +4 // float mtl_dbm
+            +4 // float mtl_mode_a_dbm
+            +4 // float mtl_mode_c_dbm
+            +4 // float mtl_mode_s_dbm
+            +4 // float mtl_all_call_dbm
+            +1 // uint8_t power_measurement_kind
+            +1 // uint8_t erp_limit_applied
+            +1 // uint8_t df17_detected
+            +1 // uint8_t test_group
+            +1 // uint8_t test_status
+            +4 // float reply_delay_mode_s
+            +4 // float reply_jitter_mode_s
+            +4 // float uf0_mode_c_altitude_feet
+            +4 // float uf4_mode_c_altitude_feet
+            +4 // float uf16_mode_c_altitude_feet
+            +4 // float uf20_mode_c_altitude_feet
+            +1 // uint8_t altitude_reference_version
+            +4 // uint32_t target_icao_address
+            );
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
+            TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
+            Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
+            Index = BinSerialize.ReadUInt(ref buffer);
+            IcaoAddress = BinSerialize.ReadUInt(ref buffer);
+            Uf11Cnt = BinSerialize.ReadUInt(ref buffer);
+            Df11Cnt = BinSerialize.ReadUInt(ref buffer);
+            Df4Altitude = BinSerialize.ReadFloat(ref buffer);
+            Df4IcaoAddress = BinSerialize.ReadUInt(ref buffer);
+            Df5IcaoAddress = BinSerialize.ReadUInt(ref buffer);
+            Df0Altitude = BinSerialize.ReadFloat(ref buffer);
+            Df0IcaoAddress = BinSerialize.ReadUInt(ref buffer);
+            Df20Altitude = BinSerialize.ReadFloat(ref buffer);
+            Df20IcaoAddress = BinSerialize.ReadUInt(ref buffer);
+            Df21IcaoAddress = BinSerialize.ReadUInt(ref buffer);
+            Df16Altitude = BinSerialize.ReadFloat(ref buffer);
+            Df16IcaoAddress = BinSerialize.ReadUInt(ref buffer);
+            Capability = (byte)BinSerialize.ReadByte(ref buffer);
+            Df4FlightStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            Df4DownlinkRequest = (byte)BinSerialize.ReadByte(ref buffer);
+            Df4UtilityMessage = (byte)BinSerialize.ReadByte(ref buffer);
+            Df5Df4FlightStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            Df5DownlinkRequest = (byte)BinSerialize.ReadByte(ref buffer);
+            Df5UtilityMessage = (byte)BinSerialize.ReadByte(ref buffer);
+            arraySize = 4;
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = Df5Identity)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Df5Identity.Length);
+                }
+            }
+            buffer = buffer[arraySize..];
+           
+            Df0VerticalStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            Df0CrossLinkCapability = (byte)BinSerialize.ReadByte(ref buffer);
+            Df0SensitivityLevel = (byte)BinSerialize.ReadByte(ref buffer);
+            Df0ReplyInformation = (byte)BinSerialize.ReadByte(ref buffer);
+            Df20Df4FlightStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            Df20DownlinkRequest = (byte)BinSerialize.ReadByte(ref buffer);
+            Df20UtilityMessage = (byte)BinSerialize.ReadByte(ref buffer);
+            arraySize = /*ArrayLength*/7 - Math.Max(0,((/*PayloadByteSize*/237 - payloadSize - /*ExtendedFieldsLength*/66)/1 /*FieldTypeByteSize*/));
+            
+            for(var i=0;i<arraySize;i++)
+            {
+                Df20Bds[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            Df21Df4FlightStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            Df21DownlinkRequest = (byte)BinSerialize.ReadByte(ref buffer);
+            Df21UtilityMessage = (byte)BinSerialize.ReadByte(ref buffer);
+            arraySize = 4;
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = Df21Identity)
+                {
+                    Encoding.ASCII.GetChars(bytePointer, arraySize, charPointer, Df21Identity.Length);
+                }
+            }
+            buffer = buffer[arraySize..];
+           
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Df21Bds[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            Df16VerticalStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            Df16CrossLinkCapability = (byte)BinSerialize.ReadByte(ref buffer);
+            Df16SensitivityLevel = (byte)BinSerialize.ReadByte(ref buffer);
+            Df16ReplyInformation = (byte)BinSerialize.ReadByte(ref buffer);
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Df16Bds[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds10[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds17[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds20[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds30[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds40[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds50[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds60[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            // extended field 'ErpInstantDbm' can be empty
+            if (buffer.IsEmpty) return;
+            ErpInstantDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'ErpDbm' can be empty
+            if (buffer.IsEmpty) return;
+            ErpDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlInstantDbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlInstantDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlDbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlModeADbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlModeADbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlModeCDbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlModeCDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlModeSDbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlModeSDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'MtlAllCallDbm' can be empty
+            if (buffer.IsEmpty) return;
+            MtlAllCallDbm = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'PowerMeasurementKind' can be empty
+            if (buffer.IsEmpty) return;
+            PowerMeasurementKind = (byte)BinSerialize.ReadByte(ref buffer);
+            // extended field 'ErpLimitApplied' can be empty
+            if (buffer.IsEmpty) return;
+            ErpLimitApplied = (byte)BinSerialize.ReadByte(ref buffer);
+            // extended field 'Df17Detected' can be empty
+            if (buffer.IsEmpty) return;
+            Df17Detected = (byte)BinSerialize.ReadByte(ref buffer);
+            // extended field 'TestGroup' can be empty
+            if (buffer.IsEmpty) return;
+            TestGroup = (byte)BinSerialize.ReadByte(ref buffer);
+            // extended field 'TestStatus' can be empty
+            if (buffer.IsEmpty) return;
+            TestStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            // extended field 'ReplyDelayModeS' can be empty
+            if (buffer.IsEmpty) return;
+            ReplyDelayModeS = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'ReplyJitterModeS' can be empty
+            if (buffer.IsEmpty) return;
+            ReplyJitterModeS = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'Uf0ModeCAltitudeFeet' can be empty
+            if (buffer.IsEmpty) return;
+            Uf0ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'Uf4ModeCAltitudeFeet' can be empty
+            if (buffer.IsEmpty) return;
+            Uf4ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'Uf16ModeCAltitudeFeet' can be empty
+            if (buffer.IsEmpty) return;
+            Uf16ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'Uf20ModeCAltitudeFeet' can be empty
+            if (buffer.IsEmpty) return;
+            Uf20ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
+            // extended field 'AltitudeReferenceVersion' can be empty
+            if (buffer.IsEmpty) return;
+            AltitudeReferenceVersion = (byte)BinSerialize.ReadByte(ref buffer);
+            // extended field 'TargetIcaoAddress' can be empty
+            if (buffer.IsEmpty) return;
+            TargetIcaoAddress = BinSerialize.ReadUInt(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
+            BinSerialize.WriteULong(ref buffer,(ulong)Flags);
+            BinSerialize.WriteUInt(ref buffer,Index);
+            BinSerialize.WriteUInt(ref buffer,IcaoAddress);
+            BinSerialize.WriteUInt(ref buffer,Uf11Cnt);
+            BinSerialize.WriteUInt(ref buffer,Df11Cnt);
+            BinSerialize.WriteFloat(ref buffer,Df4Altitude);
+            BinSerialize.WriteUInt(ref buffer,Df4IcaoAddress);
+            BinSerialize.WriteUInt(ref buffer,Df5IcaoAddress);
+            BinSerialize.WriteFloat(ref buffer,Df0Altitude);
+            BinSerialize.WriteUInt(ref buffer,Df0IcaoAddress);
+            BinSerialize.WriteFloat(ref buffer,Df20Altitude);
+            BinSerialize.WriteUInt(ref buffer,Df20IcaoAddress);
+            BinSerialize.WriteUInt(ref buffer,Df21IcaoAddress);
+            BinSerialize.WriteFloat(ref buffer,Df16Altitude);
+            BinSerialize.WriteUInt(ref buffer,Df16IcaoAddress);
+            BinSerialize.WriteByte(ref buffer,(byte)Capability);
+            BinSerialize.WriteByte(ref buffer,(byte)Df4FlightStatus);
+            BinSerialize.WriteByte(ref buffer,(byte)Df4DownlinkRequest);
+            BinSerialize.WriteByte(ref buffer,(byte)Df4UtilityMessage);
+            BinSerialize.WriteByte(ref buffer,(byte)Df5Df4FlightStatus);
+            BinSerialize.WriteByte(ref buffer,(byte)Df5DownlinkRequest);
+            BinSerialize.WriteByte(ref buffer,(byte)Df5UtilityMessage);
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = Df5Identity)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, Df5Identity.Length, bytePointer, Df5Identity.Length);
+                }
+            }
+            buffer = buffer.Slice(Df5Identity.Length);
+            
+            BinSerialize.WriteByte(ref buffer,(byte)Df0VerticalStatus);
+            BinSerialize.WriteByte(ref buffer,(byte)Df0CrossLinkCapability);
+            BinSerialize.WriteByte(ref buffer,(byte)Df0SensitivityLevel);
+            BinSerialize.WriteByte(ref buffer,(byte)Df0ReplyInformation);
+            BinSerialize.WriteByte(ref buffer,(byte)Df20Df4FlightStatus);
+            BinSerialize.WriteByte(ref buffer,(byte)Df20DownlinkRequest);
+            BinSerialize.WriteByte(ref buffer,(byte)Df20UtilityMessage);
+            for(var i=0;i<Df20Bds.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Df20Bds[i]);
+            }
+            BinSerialize.WriteByte(ref buffer,(byte)Df21Df4FlightStatus);
+            BinSerialize.WriteByte(ref buffer,(byte)Df21DownlinkRequest);
+            BinSerialize.WriteByte(ref buffer,(byte)Df21UtilityMessage);
+            unsafe
+            {
+                fixed (byte* bytePointer = buffer)
+                fixed (char* charPointer = Df21Identity)
+                {
+                    Encoding.ASCII.GetBytes(charPointer, Df21Identity.Length, bytePointer, Df21Identity.Length);
+                }
+            }
+            buffer = buffer.Slice(Df21Identity.Length);
+            
+            for(var i=0;i<Df21Bds.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Df21Bds[i]);
+            }
+            BinSerialize.WriteByte(ref buffer,(byte)Df16VerticalStatus);
+            BinSerialize.WriteByte(ref buffer,(byte)Df16CrossLinkCapability);
+            BinSerialize.WriteByte(ref buffer,(byte)Df16SensitivityLevel);
+            BinSerialize.WriteByte(ref buffer,(byte)Df16ReplyInformation);
+            for(var i=0;i<Df16Bds.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Df16Bds[i]);
+            }
+            for(var i=0;i<Bds10.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds10[i]);
+            }
+            for(var i=0;i<Bds17.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds17[i]);
+            }
+            for(var i=0;i<Bds20.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds20[i]);
+            }
+            for(var i=0;i<Bds30.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds30[i]);
+            }
+            for(var i=0;i<Bds40.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds40[i]);
+            }
+            for(var i=0;i<Bds50.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds50[i]);
+            }
+            for(var i=0;i<Bds60.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds60[i]);
+            }
+            BinSerialize.WriteFloat(ref buffer,ErpInstantDbm);
+            BinSerialize.WriteFloat(ref buffer,ErpDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlInstantDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeADbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeCDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlModeSDbm);
+            BinSerialize.WriteFloat(ref buffer,MtlAllCallDbm);
+            BinSerialize.WriteByte(ref buffer,(byte)PowerMeasurementKind);
+            BinSerialize.WriteByte(ref buffer,(byte)ErpLimitApplied);
+            BinSerialize.WriteByte(ref buffer,(byte)Df17Detected);
+            BinSerialize.WriteByte(ref buffer,(byte)TestGroup);
+            BinSerialize.WriteByte(ref buffer,(byte)TestStatus);
+            BinSerialize.WriteFloat(ref buffer,ReplyDelayModeS);
+            BinSerialize.WriteFloat(ref buffer,ReplyJitterModeS);
+            BinSerialize.WriteFloat(ref buffer,Uf0ModeCAltitudeFeet);
+            BinSerialize.WriteFloat(ref buffer,Uf4ModeCAltitudeFeet);
+            BinSerialize.WriteFloat(ref buffer,Uf16ModeCAltitudeFeet);
+            BinSerialize.WriteFloat(ref buffer,Uf20ModeCAltitudeFeet);
+            BinSerialize.WriteByte(ref buffer,(byte)AltitudeReferenceVersion);
+            BinSerialize.WriteUInt(ref buffer,TargetIcaoAddress);
+            /* PayloadByteSize = 237 */;
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IcaoAddressField, ref _icaoAddress);    
+            UInt32Type.Accept(visitor,Uf11CntField, ref _uf11Cnt);    
+            UInt32Type.Accept(visitor,Df11CntField, ref _df11Cnt);    
+            FloatType.Accept(visitor,Df4AltitudeField, ref _df4Altitude);    
+            UInt32Type.Accept(visitor,Df4IcaoAddressField, ref _df4IcaoAddress);    
+            UInt32Type.Accept(visitor,Df5IcaoAddressField, ref _df5IcaoAddress);    
+            FloatType.Accept(visitor,Df0AltitudeField, ref _df0Altitude);    
+            UInt32Type.Accept(visitor,Df0IcaoAddressField, ref _df0IcaoAddress);    
+            FloatType.Accept(visitor,Df20AltitudeField, ref _df20Altitude);    
+            UInt32Type.Accept(visitor,Df20IcaoAddressField, ref _df20IcaoAddress);    
+            UInt32Type.Accept(visitor,Df21IcaoAddressField, ref _df21IcaoAddress);    
+            FloatType.Accept(visitor,Df16AltitudeField, ref _df16Altitude);    
+            UInt32Type.Accept(visitor,Df16IcaoAddressField, ref _df16IcaoAddress);    
+            UInt8Type.Accept(visitor,CapabilityField, ref _capability);    
+            UInt8Type.Accept(visitor,Df4FlightStatusField, ref _df4FlightStatus);    
+            UInt8Type.Accept(visitor,Df4DownlinkRequestField, ref _df4DownlinkRequest);    
+            UInt8Type.Accept(visitor,Df4UtilityMessageField, ref _df4UtilityMessage);    
+            UInt8Type.Accept(visitor,Df5Df4FlightStatusField, ref _df5Df4FlightStatus);    
+            UInt8Type.Accept(visitor,Df5DownlinkRequestField, ref _df5DownlinkRequest);    
+            UInt8Type.Accept(visitor,Df5UtilityMessageField, ref _df5UtilityMessage);    
+            ArrayType.Accept(visitor,Df5IdentityField,  
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Df5Identity[index]));
+            UInt8Type.Accept(visitor,Df0VerticalStatusField, ref _df0VerticalStatus);    
+            UInt8Type.Accept(visitor,Df0CrossLinkCapabilityField, ref _df0CrossLinkCapability);    
+            UInt8Type.Accept(visitor,Df0SensitivityLevelField, ref _df0SensitivityLevel);    
+            UInt8Type.Accept(visitor,Df0ReplyInformationField, ref _df0ReplyInformation);    
+            UInt8Type.Accept(visitor,Df20Df4FlightStatusField, ref _df20Df4FlightStatus);    
+            UInt8Type.Accept(visitor,Df20DownlinkRequestField, ref _df20DownlinkRequest);    
+            UInt8Type.Accept(visitor,Df20UtilityMessageField, ref _df20UtilityMessage);    
+            ArrayType.Accept(visitor,Df20BdsField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Df20Bds[index]));    
+            UInt8Type.Accept(visitor,Df21Df4FlightStatusField, ref _df21Df4FlightStatus);    
+            UInt8Type.Accept(visitor,Df21DownlinkRequestField, ref _df21DownlinkRequest);    
+            UInt8Type.Accept(visitor,Df21UtilityMessageField, ref _df21UtilityMessage);    
+            ArrayType.Accept(visitor,Df21IdentityField,  
+                (index, v, f, t) => CharType.Accept(v, f, t, ref Df21Identity[index]));
+            ArrayType.Accept(visitor,Df21BdsField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Df21Bds[index]));    
+            UInt8Type.Accept(visitor,Df16VerticalStatusField, ref _df16VerticalStatus);    
+            UInt8Type.Accept(visitor,Df16CrossLinkCapabilityField, ref _df16CrossLinkCapability);    
+            UInt8Type.Accept(visitor,Df16SensitivityLevelField, ref _df16SensitivityLevel);    
+            UInt8Type.Accept(visitor,Df16ReplyInformationField, ref _df16ReplyInformation);    
+            ArrayType.Accept(visitor,Df16BdsField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Df16Bds[index]));    
+            ArrayType.Accept(visitor,Bds10Field, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds10[index]));    
+            ArrayType.Accept(visitor,Bds17Field, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds17[index]));    
+            ArrayType.Accept(visitor,Bds20Field, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds20[index]));    
+            ArrayType.Accept(visitor,Bds30Field, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds30[index]));    
+            ArrayType.Accept(visitor,Bds40Field, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds40[index]));    
+            ArrayType.Accept(visitor,Bds50Field, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds50[index]));    
+            ArrayType.Accept(visitor,Bds60Field, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds60[index]));    
+            FloatType.Accept(visitor,ErpInstantDbmField, ref _erpInstantDbm);    
+            FloatType.Accept(visitor,ErpDbmField, ref _erpDbm);    
+            FloatType.Accept(visitor,MtlInstantDbmField, ref _mtlInstantDbm);    
+            FloatType.Accept(visitor,MtlDbmField, ref _mtlDbm);    
+            FloatType.Accept(visitor,MtlModeADbmField, ref _mtlModeADbm);    
+            FloatType.Accept(visitor,MtlModeCDbmField, ref _mtlModeCDbm);    
+            FloatType.Accept(visitor,MtlModeSDbmField, ref _mtlModeSDbm);    
+            FloatType.Accept(visitor,MtlAllCallDbmField, ref _mtlAllCallDbm);    
+            UInt8Type.Accept(visitor,PowerMeasurementKindField, ref _powerMeasurementKind);    
+            UInt8Type.Accept(visitor,ErpLimitAppliedField, ref _erpLimitApplied);    
+            UInt8Type.Accept(visitor,Df17DetectedField, ref _df17Detected);    
+            UInt8Type.Accept(visitor,TestGroupField, ref _testGroup);    
+            UInt8Type.Accept(visitor,TestStatusField, ref _testStatus);    
+            FloatType.Accept(visitor,ReplyDelayModeSField, ref _replyDelayModeS);    
+            FloatType.Accept(visitor,ReplyJitterModeSField, ref _replyJitterModeS);    
+            FloatType.Accept(visitor,Uf0ModeCAltitudeFeetField, ref _uf0ModeCAltitudeFeet);    
+            FloatType.Accept(visitor,Uf4ModeCAltitudeFeetField, ref _uf4ModeCAltitudeFeet);    
+            FloatType.Accept(visitor,Uf16ModeCAltitudeFeetField, ref _uf16ModeCAltitudeFeet);    
+            FloatType.Accept(visitor,Uf20ModeCAltitudeFeetField, ref _uf20ModeCAltitudeFeet);    
+            UInt8Type.Accept(visitor,AltitudeReferenceVersionField, ref _altitudeReferenceVersion);    
+            UInt32Type.Accept(visitor,TargetIcaoAddressField, ref _targetIcaoAddress);    
+
+        }
+
+        /// <summary>
+        /// Timestamp (UNIX epoch time)
+        /// OriginName: time_unix_usec, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time)")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
+        /// <summary>
+        /// Data flags. Bits 8..14 indicate presence of BDS 1,0; 1,7; 2,0; 3,0; 4,0; 5,0; 6,0 respectively. All other bits retain their ASV_RSGA_DATA_FLAGS meaning.
+        /// OriginName: flags, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags. Bits 8..14 indicate presence of BDS 1,0; 1,7; 2,0; 3,0; 4,0; 5,0; 6,0 respectively. All other bits retain their ASV_RSGA_DATA_FLAGS meaning.")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
+        /// <summary>
+        /// Data index in record
+        /// OriginName: index, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
+        /// <summary>
+        /// ICAO address
+        /// OriginName: icao_address, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field IcaoAddressField = new Field.Builder()
+            .Name(nameof(IcaoAddress))
+            .Title("icao_address")
+            .Description("ICAO address")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _icaoAddress;
+        public uint IcaoAddress { get => _icaoAddress; set => _icaoAddress = value; }
+        /// <summary>
+        /// UF11 count
+        /// OriginName: uf11_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Uf11CntField = new Field.Builder()
+            .Name(nameof(Uf11Cnt))
+            .Title("uf11_cnt")
+            .Description("UF11 count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _uf11Cnt;
+        public uint Uf11Cnt { get => _uf11Cnt; set => _uf11Cnt = value; }
+        /// <summary>
+        /// DF11 count
+        /// OriginName: df11_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df11CntField = new Field.Builder()
+            .Name(nameof(Df11Cnt))
+            .Title("df11_cnt")
+            .Description("DF11 count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _df11Cnt;
+        public uint Df11Cnt { get => _df11Cnt; set => _df11Cnt = value; }
+        /// <summary>
+        /// DF4 altitude
+        /// OriginName: df4_altitude, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df4AltitudeField = new Field.Builder()
+            .Name(nameof(Df4Altitude))
+            .Title("df4_altitude")
+            .Description("DF4 altitude")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _df4Altitude;
+        public float Df4Altitude { get => _df4Altitude; set => _df4Altitude = value; }
+        /// <summary>
+        /// DF4 ICAO address
+        /// OriginName: df4_icao_address, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df4IcaoAddressField = new Field.Builder()
+            .Name(nameof(Df4IcaoAddress))
+            .Title("df4_icao_address")
+            .Description("DF4 ICAO address")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _df4IcaoAddress;
+        public uint Df4IcaoAddress { get => _df4IcaoAddress; set => _df4IcaoAddress = value; }
+        /// <summary>
+        /// DF5 ICAO address
+        /// OriginName: df5_icao_address, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df5IcaoAddressField = new Field.Builder()
+            .Name(nameof(Df5IcaoAddress))
+            .Title("df5_icao_address")
+            .Description("DF5 ICAO address")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _df5IcaoAddress;
+        public uint Df5IcaoAddress { get => _df5IcaoAddress; set => _df5IcaoAddress = value; }
+        /// <summary>
+        /// DF0 altitude
+        /// OriginName: df0_altitude, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df0AltitudeField = new Field.Builder()
+            .Name(nameof(Df0Altitude))
+            .Title("df0_altitude")
+            .Description("DF0 altitude")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _df0Altitude;
+        public float Df0Altitude { get => _df0Altitude; set => _df0Altitude = value; }
+        /// <summary>
+        /// DF0 ICAO address
+        /// OriginName: df0_icao_address, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df0IcaoAddressField = new Field.Builder()
+            .Name(nameof(Df0IcaoAddress))
+            .Title("df0_icao_address")
+            .Description("DF0 ICAO address")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _df0IcaoAddress;
+        public uint Df0IcaoAddress { get => _df0IcaoAddress; set => _df0IcaoAddress = value; }
+        /// <summary>
+        /// DF20 altitude
+        /// OriginName: df20_altitude, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df20AltitudeField = new Field.Builder()
+            .Name(nameof(Df20Altitude))
+            .Title("df20_altitude")
+            .Description("DF20 altitude")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _df20Altitude;
+        public float Df20Altitude { get => _df20Altitude; set => _df20Altitude = value; }
+        /// <summary>
+        /// DF20 ICAO address
+        /// OriginName: df20_icao_address, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df20IcaoAddressField = new Field.Builder()
+            .Name(nameof(Df20IcaoAddress))
+            .Title("df20_icao_address")
+            .Description("DF20 ICAO address")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _df20IcaoAddress;
+        public uint Df20IcaoAddress { get => _df20IcaoAddress; set => _df20IcaoAddress = value; }
+        /// <summary>
+        /// DF21 ICAO address
+        /// OriginName: df21_icao_address, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df21IcaoAddressField = new Field.Builder()
+            .Name(nameof(Df21IcaoAddress))
+            .Title("df21_icao_address")
+            .Description("DF21 ICAO address")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _df21IcaoAddress;
+        public uint Df21IcaoAddress { get => _df21IcaoAddress; set => _df21IcaoAddress = value; }
+        /// <summary>
+        /// DF16 altitude
+        /// OriginName: df16_altitude, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df16AltitudeField = new Field.Builder()
+            .Name(nameof(Df16Altitude))
+            .Title("df16_altitude")
+            .Description("DF16 altitude")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _df16Altitude;
+        public float Df16Altitude { get => _df16Altitude; set => _df16Altitude = value; }
+        /// <summary>
+        /// DF16 ICAO address
+        /// OriginName: df16_icao_address, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df16IcaoAddressField = new Field.Builder()
+            .Name(nameof(Df16IcaoAddress))
+            .Title("df16_icao_address")
+            .Description("DF16 ICAO address")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _df16IcaoAddress;
+        public uint Df16IcaoAddress { get => _df16IcaoAddress; set => _df16IcaoAddress = value; }
+        /// <summary>
+        /// Capability flags
+        /// OriginName: capability, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field CapabilityField = new Field.Builder()
+            .Name(nameof(Capability))
+            .Title("capability")
+            .Description("Capability flags")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _capability;
+        public byte Capability { get => _capability; set => _capability = value; }
+        /// <summary>
+        /// DF4 flight status
+        /// OriginName: df4_flight_status, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df4FlightStatusField = new Field.Builder()
+            .Name(nameof(Df4FlightStatus))
+            .Title("df4_flight_status")
+            .Description("DF4 flight status")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df4FlightStatus;
+        public byte Df4FlightStatus { get => _df4FlightStatus; set => _df4FlightStatus = value; }
+        /// <summary>
+        /// DF4 downlink request
+        /// OriginName: df4_downlink_request, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df4DownlinkRequestField = new Field.Builder()
+            .Name(nameof(Df4DownlinkRequest))
+            .Title("df4_downlink_request")
+            .Description("DF4 downlink request")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df4DownlinkRequest;
+        public byte Df4DownlinkRequest { get => _df4DownlinkRequest; set => _df4DownlinkRequest = value; }
+        /// <summary>
+        /// DF4 utility message
+        /// OriginName: df4_utility_message, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df4UtilityMessageField = new Field.Builder()
+            .Name(nameof(Df4UtilityMessage))
+            .Title("df4_utility_message")
+            .Description("DF4 utility message")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df4UtilityMessage;
+        public byte Df4UtilityMessage { get => _df4UtilityMessage; set => _df4UtilityMessage = value; }
+        /// <summary>
+        /// DF5/DF4 flight status
+        /// OriginName: df5_df4_flight_status, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df5Df4FlightStatusField = new Field.Builder()
+            .Name(nameof(Df5Df4FlightStatus))
+            .Title("df5_df4_flight_status")
+            .Description("DF5/DF4 flight status")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df5Df4FlightStatus;
+        public byte Df5Df4FlightStatus { get => _df5Df4FlightStatus; set => _df5Df4FlightStatus = value; }
+        /// <summary>
+        /// DF5 downlink request
+        /// OriginName: df5_downlink_request, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df5DownlinkRequestField = new Field.Builder()
+            .Name(nameof(Df5DownlinkRequest))
+            .Title("df5_downlink_request")
+            .Description("DF5 downlink request")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df5DownlinkRequest;
+        public byte Df5DownlinkRequest { get => _df5DownlinkRequest; set => _df5DownlinkRequest = value; }
+        /// <summary>
+        /// DF5 utility message
+        /// OriginName: df5_utility_message, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df5UtilityMessageField = new Field.Builder()
+            .Name(nameof(Df5UtilityMessage))
+            .Title("df5_utility_message")
+            .Description("DF5 utility message")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df5UtilityMessage;
+        public byte Df5UtilityMessage { get => _df5UtilityMessage; set => _df5UtilityMessage = value; }
+        /// <summary>
+        /// DF5 identity (4 chars)
+        /// OriginName: df5_identity, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df5IdentityField = new Field.Builder()
+            .Name(nameof(Df5Identity))
+            .Title("df5_identity")
+            .Description("DF5 identity (4 chars)")
+
+            .DataType(new ArrayType(CharType.Ascii,4))
+        .Build();
+        public const int Df5IdentityMaxItemsCount = 4;
+        public char[] Df5Identity { get; } = new char[4];
+        /// <summary>
+        /// DF0 vertical status
+        /// OriginName: df0_vertical_status, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df0VerticalStatusField = new Field.Builder()
+            .Name(nameof(Df0VerticalStatus))
+            .Title("df0_vertical_status")
+            .Description("DF0 vertical status")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df0VerticalStatus;
+        public byte Df0VerticalStatus { get => _df0VerticalStatus; set => _df0VerticalStatus = value; }
+        /// <summary>
+        /// DF0 cross-link capability
+        /// OriginName: df0_cross_link_capability, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df0CrossLinkCapabilityField = new Field.Builder()
+            .Name(nameof(Df0CrossLinkCapability))
+            .Title("df0_cross_link_capability")
+            .Description("DF0 cross-link capability")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df0CrossLinkCapability;
+        public byte Df0CrossLinkCapability { get => _df0CrossLinkCapability; set => _df0CrossLinkCapability = value; }
+        /// <summary>
+        /// DF0 sensitivity level
+        /// OriginName: df0_sensitivity_level, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df0SensitivityLevelField = new Field.Builder()
+            .Name(nameof(Df0SensitivityLevel))
+            .Title("df0_sensitivity_level")
+            .Description("DF0 sensitivity level")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df0SensitivityLevel;
+        public byte Df0SensitivityLevel { get => _df0SensitivityLevel; set => _df0SensitivityLevel = value; }
+        /// <summary>
+        /// DF0 reply information
+        /// OriginName: df0_reply_information, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df0ReplyInformationField = new Field.Builder()
+            .Name(nameof(Df0ReplyInformation))
+            .Title("df0_reply_information")
+            .Description("DF0 reply information")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df0ReplyInformation;
+        public byte Df0ReplyInformation { get => _df0ReplyInformation; set => _df0ReplyInformation = value; }
+        /// <summary>
+        /// DF20/DF4 flight status
+        /// OriginName: df20_df4_flight_status, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df20Df4FlightStatusField = new Field.Builder()
+            .Name(nameof(Df20Df4FlightStatus))
+            .Title("df20_df4_flight_status")
+            .Description("DF20/DF4 flight status")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df20Df4FlightStatus;
+        public byte Df20Df4FlightStatus { get => _df20Df4FlightStatus; set => _df20Df4FlightStatus = value; }
+        /// <summary>
+        /// DF20 downlink request
+        /// OriginName: df20_downlink_request, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df20DownlinkRequestField = new Field.Builder()
+            .Name(nameof(Df20DownlinkRequest))
+            .Title("df20_downlink_request")
+            .Description("DF20 downlink request")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df20DownlinkRequest;
+        public byte Df20DownlinkRequest { get => _df20DownlinkRequest; set => _df20DownlinkRequest = value; }
+        /// <summary>
+        /// DF20 utility message
+        /// OriginName: df20_utility_message, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df20UtilityMessageField = new Field.Builder()
+            .Name(nameof(Df20UtilityMessage))
+            .Title("df20_utility_message")
+            .Description("DF20 utility message")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df20UtilityMessage;
+        public byte Df20UtilityMessage { get => _df20UtilityMessage; set => _df20UtilityMessage = value; }
+        /// <summary>
+        /// DF20 BDS
+        /// OriginName: df20_bds, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df20BdsField = new Field.Builder()
+            .Name(nameof(Df20Bds))
+            .Title("df20_bds")
+            .Description("DF20 BDS")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Df20BdsMaxItemsCount = 7;
+        public byte[] Df20Bds { get; } = new byte[7];
+        [Obsolete("This method is deprecated. Use GetDf20BdsMaxItemsCount instead.")]
+        public byte GetDf20BdsMaxItemsCount() => 7;
+        /// <summary>
+        /// DF21/DF4 flight status
+        /// OriginName: df21_df4_flight_status, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df21Df4FlightStatusField = new Field.Builder()
+            .Name(nameof(Df21Df4FlightStatus))
+            .Title("df21_df4_flight_status")
+            .Description("DF21/DF4 flight status")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df21Df4FlightStatus;
+        public byte Df21Df4FlightStatus { get => _df21Df4FlightStatus; set => _df21Df4FlightStatus = value; }
+        /// <summary>
+        /// DF21 downlink request
+        /// OriginName: df21_downlink_request, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df21DownlinkRequestField = new Field.Builder()
+            .Name(nameof(Df21DownlinkRequest))
+            .Title("df21_downlink_request")
+            .Description("DF21 downlink request")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df21DownlinkRequest;
+        public byte Df21DownlinkRequest { get => _df21DownlinkRequest; set => _df21DownlinkRequest = value; }
+        /// <summary>
+        /// DF21 utility message
+        /// OriginName: df21_utility_message, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df21UtilityMessageField = new Field.Builder()
+            .Name(nameof(Df21UtilityMessage))
+            .Title("df21_utility_message")
+            .Description("DF21 utility message")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df21UtilityMessage;
+        public byte Df21UtilityMessage { get => _df21UtilityMessage; set => _df21UtilityMessage = value; }
+        /// <summary>
+        /// DF21 identity (4 chars)
+        /// OriginName: df21_identity, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df21IdentityField = new Field.Builder()
+            .Name(nameof(Df21Identity))
+            .Title("df21_identity")
+            .Description("DF21 identity (4 chars)")
+
+            .DataType(new ArrayType(CharType.Ascii,4))
+        .Build();
+        public const int Df21IdentityMaxItemsCount = 4;
+        public char[] Df21Identity { get; } = new char[4];
+        /// <summary>
+        /// DF21 BDS
+        /// OriginName: df21_bds, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df21BdsField = new Field.Builder()
+            .Name(nameof(Df21Bds))
+            .Title("df21_bds")
+            .Description("DF21 BDS")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Df21BdsMaxItemsCount = 7;
+        public byte[] Df21Bds { get; } = new byte[7];
+        /// <summary>
+        /// DF16 vertical status
+        /// OriginName: df16_vertical_status, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df16VerticalStatusField = new Field.Builder()
+            .Name(nameof(Df16VerticalStatus))
+            .Title("df16_vertical_status")
+            .Description("DF16 vertical status")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df16VerticalStatus;
+        public byte Df16VerticalStatus { get => _df16VerticalStatus; set => _df16VerticalStatus = value; }
+        /// <summary>
+        /// DF16 cross-link capability
+        /// OriginName: df16_cross_link_capability, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df16CrossLinkCapabilityField = new Field.Builder()
+            .Name(nameof(Df16CrossLinkCapability))
+            .Title("df16_cross_link_capability")
+            .Description("DF16 cross-link capability")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df16CrossLinkCapability;
+        public byte Df16CrossLinkCapability { get => _df16CrossLinkCapability; set => _df16CrossLinkCapability = value; }
+        /// <summary>
+        /// DF16 sensitivity level
+        /// OriginName: df16_sensitivity_level, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df16SensitivityLevelField = new Field.Builder()
+            .Name(nameof(Df16SensitivityLevel))
+            .Title("df16_sensitivity_level")
+            .Description("DF16 sensitivity level")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df16SensitivityLevel;
+        public byte Df16SensitivityLevel { get => _df16SensitivityLevel; set => _df16SensitivityLevel = value; }
+        /// <summary>
+        /// DF16 reply information
+        /// OriginName: df16_reply_information, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df16ReplyInformationField = new Field.Builder()
+            .Name(nameof(Df16ReplyInformation))
+            .Title("df16_reply_information")
+            .Description("DF16 reply information")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df16ReplyInformation;
+        public byte Df16ReplyInformation { get => _df16ReplyInformation; set => _df16ReplyInformation = value; }
+        /// <summary>
+        /// DF16 BDS
+        /// OriginName: df16_bds, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df16BdsField = new Field.Builder()
+            .Name(nameof(Df16Bds))
+            .Title("df16_bds")
+            .Description("DF16 BDS")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Df16BdsMaxItemsCount = 7;
+        public byte[] Df16Bds { get; } = new byte[7];
+        /// <summary>
+        /// BDS 1,0
+        /// OriginName: bds10, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds10Field = new Field.Builder()
+            .Name(nameof(Bds10))
+            .Title("bds10")
+            .Description("BDS 1,0")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds10MaxItemsCount = 7;
+        public byte[] Bds10 { get; } = new byte[7];
+        /// <summary>
+        /// BDS 1,7
+        /// OriginName: bds17, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds17Field = new Field.Builder()
+            .Name(nameof(Bds17))
+            .Title("bds17")
+            .Description("BDS 1,7")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds17MaxItemsCount = 7;
+        public byte[] Bds17 { get; } = new byte[7];
+        /// <summary>
+        /// BDS 2,0
+        /// OriginName: bds20, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds20Field = new Field.Builder()
+            .Name(nameof(Bds20))
+            .Title("bds20")
+            .Description("BDS 2,0")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds20MaxItemsCount = 7;
+        public byte[] Bds20 { get; } = new byte[7];
+        /// <summary>
+        /// BDS 3,0
+        /// OriginName: bds30, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds30Field = new Field.Builder()
+            .Name(nameof(Bds30))
+            .Title("bds30")
+            .Description("BDS 3,0")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds30MaxItemsCount = 7;
+        public byte[] Bds30 { get; } = new byte[7];
+        /// <summary>
+        /// BDS 4,0
+        /// OriginName: bds40, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds40Field = new Field.Builder()
+            .Name(nameof(Bds40))
+            .Title("bds40")
+            .Description("BDS 4,0")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds40MaxItemsCount = 7;
+        public byte[] Bds40 { get; } = new byte[7];
+        /// <summary>
+        /// BDS 5,0
+        /// OriginName: bds50, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds50Field = new Field.Builder()
+            .Name(nameof(Bds50))
+            .Title("bds50")
+            .Description("BDS 5,0")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds50MaxItemsCount = 7;
+        public byte[] Bds50 { get; } = new byte[7];
+        /// <summary>
+        /// BDS 6,0
+        /// OriginName: bds60, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds60Field = new Field.Builder()
+            .Name(nameof(Bds60))
+            .Title("bds60")
+            .Description("BDS 6,0")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds60MaxItemsCount = 7;
+        public byte[] Bds60 { get; } = new byte[7];
+        /// <summary>
+        /// Instant effective radiated power
+        /// OriginName: erp_instant_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field ErpInstantDbmField = new Field.Builder()
+            .Name(nameof(ErpInstantDbm))
+            .Title("erp_instant_dbm")
+            .Description("Instant effective radiated power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _erpInstantDbm;
+        public float ErpInstantDbm { get => _erpInstantDbm; set => _erpInstantDbm = value; }
+        /// <summary>
+        /// Effective radiated power
+        /// OriginName: erp_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field ErpDbmField = new Field.Builder()
+            .Name(nameof(ErpDbm))
+            .Title("erp_dbm")
+            .Description("Effective radiated power")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _erpDbm;
+        public float ErpDbm { get => _erpDbm; set => _erpDbm = value; }
+        /// <summary>
+        /// Instant minimum trigger level
+        /// OriginName: mtl_instant_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlInstantDbmField = new Field.Builder()
+            .Name(nameof(MtlInstantDbm))
+            .Title("mtl_instant_dbm")
+            .Description("Instant minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlInstantDbm;
+        public float MtlInstantDbm { get => _mtlInstantDbm; set => _mtlInstantDbm = value; }
+        /// <summary>
+        /// Minimum trigger level
+        /// OriginName: mtl_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlDbmField = new Field.Builder()
+            .Name(nameof(MtlDbm))
+            .Title("mtl_dbm")
+            .Description("Minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlDbm;
+        public float MtlDbm { get => _mtlDbm; set => _mtlDbm = value; }
+        /// <summary>
+        /// Mode A minimum trigger level
+        /// OriginName: mtl_mode_a_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlModeADbmField = new Field.Builder()
+            .Name(nameof(MtlModeADbm))
+            .Title("mtl_mode_a_dbm")
+            .Description("Mode A minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeADbm;
+        public float MtlModeADbm { get => _mtlModeADbm; set => _mtlModeADbm = value; }
+        /// <summary>
+        /// Mode C minimum trigger level
+        /// OriginName: mtl_mode_c_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlModeCDbmField = new Field.Builder()
+            .Name(nameof(MtlModeCDbm))
+            .Title("mtl_mode_c_dbm")
+            .Description("Mode C minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeCDbm;
+        public float MtlModeCDbm { get => _mtlModeCDbm; set => _mtlModeCDbm = value; }
+        /// <summary>
+        /// Mode S minimum trigger level
+        /// OriginName: mtl_mode_s_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlModeSDbmField = new Field.Builder()
+            .Name(nameof(MtlModeSDbm))
+            .Title("mtl_mode_s_dbm")
+            .Description("Mode S minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlModeSDbm;
+        public float MtlModeSDbm { get => _mtlModeSDbm; set => _mtlModeSDbm = value; }
+        /// <summary>
+        /// All-call minimum trigger level
+        /// OriginName: mtl_all_call_dbm, Units: dBm, IsExtended: true
+        /// </summary>
+        public static readonly Field MtlAllCallDbmField = new Field.Builder()
+            .Name(nameof(MtlAllCallDbm))
+            .Title("mtl_all_call_dbm")
+            .Description("All-call minimum trigger level")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtlAllCallDbm;
+        public float MtlAllCallDbm { get => _mtlAllCallDbm; set => _mtlAllCallDbm = value; }
+        /// <summary>
+        /// Power measurement kind
+        /// OriginName: power_measurement_kind, Units: , IsExtended: true
+        /// </summary>
+        public static readonly Field PowerMeasurementKindField = new Field.Builder()
+            .Name(nameof(PowerMeasurementKind))
+            .Title("power_measurement_kind")
+            .Description("Power measurement kind")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _powerMeasurementKind;
+        public byte PowerMeasurementKind { get => _powerMeasurementKind; set => _powerMeasurementKind = value; }
+        /// <summary>
+        /// ERP limit application mode
+        /// OriginName: erp_limit_applied, Units: , IsExtended: true
+        /// </summary>
+        public static readonly Field ErpLimitAppliedField = new Field.Builder()
+            .Name(nameof(ErpLimitApplied))
+            .Title("erp_limit_applied")
+            .Description("ERP limit application mode")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _erpLimitApplied;
+        public byte ErpLimitApplied { get => _erpLimitApplied; set => _erpLimitApplied = value; }
+        /// <summary>
+        /// DF17 extended squitter detected
+        /// OriginName: df17_detected, Units: , IsExtended: true
+        /// </summary>
+        public static readonly Field Df17DetectedField = new Field.Builder()
+            .Name(nameof(Df17Detected))
+            .Title("df17_detected")
+            .Description("DF17 extended squitter detected")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _df17Detected;
+        public byte Df17Detected { get => _df17Detected; set => _df17Detected = value; }
+        /// <summary>
+        /// IFR6000 test group; 255 when no group is selected
+        /// OriginName: test_group, Units: , IsExtended: true
+        /// </summary>
+        public static readonly Field TestGroupField = new Field.Builder()
+            .Name(nameof(TestGroup))
+            .Title("test_group")
+            .Description("IFR6000 test group; 255 when no group is selected")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _testGroup;
+        public byte TestGroup { get => _testGroup; set => _testGroup = value; }
+        /// <summary>
+        /// IFR6000 test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)
+        /// OriginName: test_status, Units: , IsExtended: true
+        /// </summary>
+        public static readonly Field TestStatusField = new Field.Builder()
+            .Name(nameof(TestStatus))
+            .Title("test_status")
+            .Description("IFR6000 test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _testStatus;
+        public byte TestStatus { get => _testStatus; set => _testStatus = value; }
+        /// <summary>
+        /// Mode S reply delay
+        /// OriginName: reply_delay_mode_s, Units: us, IsExtended: true
+        /// </summary>
+        public static readonly Field ReplyDelayModeSField = new Field.Builder()
+            .Name(nameof(ReplyDelayModeS))
+            .Title("reply_delay_mode_s")
+            .Description("Mode S reply delay")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyDelayModeS;
+        public float ReplyDelayModeS { get => _replyDelayModeS; set => _replyDelayModeS = value; }
+        /// <summary>
+        /// Mode S reply delay jitter
+        /// OriginName: reply_jitter_mode_s, Units: us, IsExtended: true
+        /// </summary>
+        public static readonly Field ReplyJitterModeSField = new Field.Builder()
+            .Name(nameof(ReplyJitterModeS))
+            .Title("reply_jitter_mode_s")
+            .Description("Mode S reply delay jitter")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyJitterModeS;
+        public float ReplyJitterModeS { get => _replyJitterModeS; set => _replyJitterModeS = value; }
+        /// <summary>
+        /// Mode C altitude reference used by the UF0 comparison; NaN when unavailable
+        /// OriginName: uf0_mode_c_altitude_feet, Units: ft, IsExtended: true
+        /// </summary>
+        public static readonly Field Uf0ModeCAltitudeFeetField = new Field.Builder()
+            .Name(nameof(Uf0ModeCAltitudeFeet))
+            .Title("uf0_mode_c_altitude_feet")
+            .Description("Mode C altitude reference used by the UF0 comparison; NaN when unavailable")
+.Units(@"ft")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _uf0ModeCAltitudeFeet;
+        public float Uf0ModeCAltitudeFeet { get => _uf0ModeCAltitudeFeet; set => _uf0ModeCAltitudeFeet = value; }
+        /// <summary>
+        /// Mode C altitude reference used by the UF4 comparison; NaN when unavailable
+        /// OriginName: uf4_mode_c_altitude_feet, Units: ft, IsExtended: true
+        /// </summary>
+        public static readonly Field Uf4ModeCAltitudeFeetField = new Field.Builder()
+            .Name(nameof(Uf4ModeCAltitudeFeet))
+            .Title("uf4_mode_c_altitude_feet")
+            .Description("Mode C altitude reference used by the UF4 comparison; NaN when unavailable")
+.Units(@"ft")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _uf4ModeCAltitudeFeet;
+        public float Uf4ModeCAltitudeFeet { get => _uf4ModeCAltitudeFeet; set => _uf4ModeCAltitudeFeet = value; }
+        /// <summary>
+        /// Mode C altitude reference used by the UF16 comparison; NaN when unavailable
+        /// OriginName: uf16_mode_c_altitude_feet, Units: ft, IsExtended: true
+        /// </summary>
+        public static readonly Field Uf16ModeCAltitudeFeetField = new Field.Builder()
+            .Name(nameof(Uf16ModeCAltitudeFeet))
+            .Title("uf16_mode_c_altitude_feet")
+            .Description("Mode C altitude reference used by the UF16 comparison; NaN when unavailable")
+.Units(@"ft")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _uf16ModeCAltitudeFeet;
+        public float Uf16ModeCAltitudeFeet { get => _uf16ModeCAltitudeFeet; set => _uf16ModeCAltitudeFeet = value; }
+        /// <summary>
+        /// Mode C altitude reference used by the UF20 comparison; NaN when unavailable
+        /// OriginName: uf20_mode_c_altitude_feet, Units: ft, IsExtended: true
+        /// </summary>
+        public static readonly Field Uf20ModeCAltitudeFeetField = new Field.Builder()
+            .Name(nameof(Uf20ModeCAltitudeFeet))
+            .Title("uf20_mode_c_altitude_feet")
+            .Description("Mode C altitude reference used by the UF20 comparison; NaN when unavailable")
+.Units(@"ft")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _uf20ModeCAltitudeFeet;
+        public float Uf20ModeCAltitudeFeet { get => _uf20ModeCAltitudeFeet; set => _uf20ModeCAltitudeFeet = value; }
+        /// <summary>
+        /// Altitude reference validity marker; send 1 when the four preceding references are encoded. Ignore those references if this marker is absent or not 1. The nonzero marker preserves zero-foot references during MAVLink trailing-zero trimming.
+        /// OriginName: altitude_reference_version, Units: , IsExtended: true
+        /// </summary>
+        public static readonly Field AltitudeReferenceVersionField = new Field.Builder()
+            .Name(nameof(AltitudeReferenceVersion))
+            .Title("altitude_reference_version")
+            .Description("Altitude reference validity marker; send 1 when the four preceding references are encoded. Ignore those references if this marker is absent or not 1. The nonzero marker preserves zero-foot references during MAVLink trailing-zero trimming.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _altitudeReferenceVersion;
+        public byte AltitudeReferenceVersion { get => _altitudeReferenceVersion; set => _altitudeReferenceVersion = value; }
+        /// <summary>
+        /// Requested/expected ICAO address used by the group; not detected identity
+        /// OriginName: target_icao_address, Units: , IsExtended: true
+        /// </summary>
+        public static readonly Field TargetIcaoAddressField = new Field.Builder()
+            .Name(nameof(TargetIcaoAddress))
+            .Title("target_icao_address")
+            .Description("Requested/expected ICAO address used by the group; not detected identity")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _targetIcaoAddress;
+        public uint TargetIcaoAddress { get => _targetIcaoAddress; set => _targetIcaoAddress = value; }
+    }
+    /// <summary>
+    /// Real time telemetry (RTT) for ASV_RSGA_CUSTOM_MODE_ADSB_REQ mode. [!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_RSGA_RTT_ADS_B_REQ
+    /// </summary>
+    public class AsvRsgaRttAdsBReqPacket : MavlinkV2Message<AsvRsgaRttAdsBReqPayload>
+    {
+        public const int MessageId = 13471; 
+        public const string MessageIdAsString = "13471";
+        
+        public const byte CrcExtra = 144;
+        
+        public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
+        public override bool WrapToV2Extension => true;
+
+        public override AsvRsgaRttAdsBReqPayload Payload { get; } = new();
+
+        public override string Name => "ASV_RSGA_RTT_ADS_B_REQ";
+
+    }
+
+    /// <summary>
+    ///  ASV_RSGA_RTT_ADS_B_REQ
+    /// </summary>
+    public class AsvRsgaRttAdsBReqPayload : IPayload
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMaxByteSize() => 238; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMinByteSize() => 238; // of byte sized of fields (exclude extended)
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public int GetByteSize()
+        {
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            +4 // uint32_t icao_address
+            +4 // uint32_t bds05_even_cnt
+            +4 // float bds05_even_period
+            +4 // uint32_t bds05_odd_cnt
+            +4 // float bds05_odd_period
+            +4 // uint32_t bds06_even_cnt
+            +4 // float bds06_even_period
+            +4 // uint32_t bds06_odd_cnt
+            +4 // float bds06_odd_period
+            +4 // uint32_t bds08_cnt
+            +4 // float bds08_period
+            +4 // uint32_t bds09_ground_speed_cnt
+            +4 // float bds09_ground_speed_period
+            +4 // uint32_t bds09_airspeed_cnt
+            +4 // float bds09_airspeed_period
+            +4 // uint32_t bds0a_event_driven_cnt
+            +4 // float bds0a_event_driven_period
+            +4 // uint32_t bds61_emergency_cnt
+            +4 // float bds61_emergency_period
+            +4 // uint32_t bds61_tcas_ra_cnt
+            +4 // float bds61_tcas_ra_period
+            +4 // uint32_t bds62_old_cnt
+            +4 // float bds62_old_period
+            +4 // uint32_t bds62_new_cnt
+            +4 // float bds62_new_period
+            +4 // uint32_t bds65_airborne_cnt
+            +4 // float bds65_airborne_period
+            +4 // uint32_t bds65_surface_cnt
+            +4 // float bds65_surface_period
+            + 2 // uint16_t messages_present
+            +1 // uint8_t capability
+            +1 // uint8_t squitter_type
+            +Bds05EvenMe.Length // uint8_t[7] bds05_even_me
+            +Bds05OddMe.Length // uint8_t[7] bds05_odd_me
+            +Bds06EvenMe.Length // uint8_t[7] bds06_even_me
+            +Bds06OddMe.Length // uint8_t[7] bds06_odd_me
+            +Bds08Me.Length // uint8_t[7] bds08_me
+            +Bds09GroundSpeedMe.Length // uint8_t[7] bds09_ground_speed_me
+            +Bds09AirspeedMe.Length // uint8_t[7] bds09_airspeed_me
+            +Bds0aEventDrivenMe.Length // uint8_t[7] bds0a_event_driven_me
+            +Bds61EmergencyMe.Length // uint8_t[7] bds61_emergency_me
+            +Bds61TcasRaMe.Length // uint8_t[7] bds61_tcas_ra_me
+            +Bds62OldMe.Length // uint8_t[7] bds62_old_me
+            +Bds62NewMe.Length // uint8_t[7] bds62_new_me
+            +Bds65AirborneMe.Length // uint8_t[7] bds65_airborne_me
+            +Bds65SurfaceMe.Length // uint8_t[7] bds65_surface_me
+            );
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
+            TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
+            Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
+            Index = BinSerialize.ReadUInt(ref buffer);
+            IcaoAddress = BinSerialize.ReadUInt(ref buffer);
+            Bds05EvenCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds05EvenPeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds05OddCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds05OddPeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds06EvenCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds06EvenPeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds06OddCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds06OddPeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds08Cnt = BinSerialize.ReadUInt(ref buffer);
+            Bds08Period = BinSerialize.ReadFloat(ref buffer);
+            Bds09GroundSpeedCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds09GroundSpeedPeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds09AirspeedCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds09AirspeedPeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds0aEventDrivenCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds0aEventDrivenPeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds61EmergencyCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds61EmergencyPeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds61TcasRaCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds61TcasRaPeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds62OldCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds62OldPeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds62NewCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds62NewPeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds65AirborneCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds65AirbornePeriod = BinSerialize.ReadFloat(ref buffer);
+            Bds65SurfaceCnt = BinSerialize.ReadUInt(ref buffer);
+            Bds65SurfacePeriod = BinSerialize.ReadFloat(ref buffer);
+            MessagesPresent = (AsvRsgaRttAdsbBReqMsgFlags)BinSerialize.ReadUShort(ref buffer);
+            Capability = (byte)BinSerialize.ReadByte(ref buffer);
+            SquitterType = (byte)BinSerialize.ReadByte(ref buffer);
+            arraySize = /*ArrayLength*/7 - Math.Max(0,((/*PayloadByteSize*/238 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds05EvenMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds05OddMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds06EvenMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds06OddMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds08Me[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds09GroundSpeedMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds09AirspeedMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds0aEventDrivenMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds61EmergencyMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds61TcasRaMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds62OldMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds62NewMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds65AirborneMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            arraySize = 7;
+            for(var i=0;i<arraySize;i++)
+            {
+                Bds65SurfaceMe[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
+            BinSerialize.WriteULong(ref buffer,(ulong)Flags);
+            BinSerialize.WriteUInt(ref buffer,Index);
+            BinSerialize.WriteUInt(ref buffer,IcaoAddress);
+            BinSerialize.WriteUInt(ref buffer,Bds05EvenCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds05EvenPeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds05OddCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds05OddPeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds06EvenCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds06EvenPeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds06OddCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds06OddPeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds08Cnt);
+            BinSerialize.WriteFloat(ref buffer,Bds08Period);
+            BinSerialize.WriteUInt(ref buffer,Bds09GroundSpeedCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds09GroundSpeedPeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds09AirspeedCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds09AirspeedPeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds0aEventDrivenCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds0aEventDrivenPeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds61EmergencyCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds61EmergencyPeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds61TcasRaCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds61TcasRaPeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds62OldCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds62OldPeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds62NewCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds62NewPeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds65AirborneCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds65AirbornePeriod);
+            BinSerialize.WriteUInt(ref buffer,Bds65SurfaceCnt);
+            BinSerialize.WriteFloat(ref buffer,Bds65SurfacePeriod);
+            BinSerialize.WriteUShort(ref buffer,(ushort)MessagesPresent);
+            BinSerialize.WriteByte(ref buffer,(byte)Capability);
+            BinSerialize.WriteByte(ref buffer,(byte)SquitterType);
+            for(var i=0;i<Bds05EvenMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds05EvenMe[i]);
+            }
+            for(var i=0;i<Bds05OddMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds05OddMe[i]);
+            }
+            for(var i=0;i<Bds06EvenMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds06EvenMe[i]);
+            }
+            for(var i=0;i<Bds06OddMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds06OddMe[i]);
+            }
+            for(var i=0;i<Bds08Me.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds08Me[i]);
+            }
+            for(var i=0;i<Bds09GroundSpeedMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds09GroundSpeedMe[i]);
+            }
+            for(var i=0;i<Bds09AirspeedMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds09AirspeedMe[i]);
+            }
+            for(var i=0;i<Bds0aEventDrivenMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds0aEventDrivenMe[i]);
+            }
+            for(var i=0;i<Bds61EmergencyMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds61EmergencyMe[i]);
+            }
+            for(var i=0;i<Bds61TcasRaMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds61TcasRaMe[i]);
+            }
+            for(var i=0;i<Bds62OldMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds62OldMe[i]);
+            }
+            for(var i=0;i<Bds62NewMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds62NewMe[i]);
+            }
+            for(var i=0;i<Bds65AirborneMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds65AirborneMe[i]);
+            }
+            for(var i=0;i<Bds65SurfaceMe.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Bds65SurfaceMe[i]);
+            }
+            /* PayloadByteSize = 238 */;
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,IcaoAddressField, ref _icaoAddress);    
+            UInt32Type.Accept(visitor,Bds05EvenCntField, ref _bds05EvenCnt);    
+            FloatType.Accept(visitor,Bds05EvenPeriodField, ref _bds05EvenPeriod);    
+            UInt32Type.Accept(visitor,Bds05OddCntField, ref _bds05OddCnt);    
+            FloatType.Accept(visitor,Bds05OddPeriodField, ref _bds05OddPeriod);    
+            UInt32Type.Accept(visitor,Bds06EvenCntField, ref _bds06EvenCnt);    
+            FloatType.Accept(visitor,Bds06EvenPeriodField, ref _bds06EvenPeriod);    
+            UInt32Type.Accept(visitor,Bds06OddCntField, ref _bds06OddCnt);    
+            FloatType.Accept(visitor,Bds06OddPeriodField, ref _bds06OddPeriod);    
+            UInt32Type.Accept(visitor,Bds08CntField, ref _bds08Cnt);    
+            FloatType.Accept(visitor,Bds08PeriodField, ref _bds08Period);    
+            UInt32Type.Accept(visitor,Bds09GroundSpeedCntField, ref _bds09GroundSpeedCnt);    
+            FloatType.Accept(visitor,Bds09GroundSpeedPeriodField, ref _bds09GroundSpeedPeriod);    
+            UInt32Type.Accept(visitor,Bds09AirspeedCntField, ref _bds09AirspeedCnt);    
+            FloatType.Accept(visitor,Bds09AirspeedPeriodField, ref _bds09AirspeedPeriod);    
+            UInt32Type.Accept(visitor,Bds0aEventDrivenCntField, ref _bds0aEventDrivenCnt);    
+            FloatType.Accept(visitor,Bds0aEventDrivenPeriodField, ref _bds0aEventDrivenPeriod);    
+            UInt32Type.Accept(visitor,Bds61EmergencyCntField, ref _bds61EmergencyCnt);    
+            FloatType.Accept(visitor,Bds61EmergencyPeriodField, ref _bds61EmergencyPeriod);    
+            UInt32Type.Accept(visitor,Bds61TcasRaCntField, ref _bds61TcasRaCnt);    
+            FloatType.Accept(visitor,Bds61TcasRaPeriodField, ref _bds61TcasRaPeriod);    
+            UInt32Type.Accept(visitor,Bds62OldCntField, ref _bds62OldCnt);    
+            FloatType.Accept(visitor,Bds62OldPeriodField, ref _bds62OldPeriod);    
+            UInt32Type.Accept(visitor,Bds62NewCntField, ref _bds62NewCnt);    
+            FloatType.Accept(visitor,Bds62NewPeriodField, ref _bds62NewPeriod);    
+            UInt32Type.Accept(visitor,Bds65AirborneCntField, ref _bds65AirborneCnt);    
+            FloatType.Accept(visitor,Bds65AirbornePeriodField, ref _bds65AirbornePeriod);    
+            UInt32Type.Accept(visitor,Bds65SurfaceCntField, ref _bds65SurfaceCnt);    
+            FloatType.Accept(visitor,Bds65SurfacePeriodField, ref _bds65SurfacePeriod);    
+            var tmpMessagesPresent = (ushort)MessagesPresent;
+            UInt16Type.Accept(visitor,MessagesPresentField, ref tmpMessagesPresent);
+            MessagesPresent = (AsvRsgaRttAdsbBReqMsgFlags)tmpMessagesPresent;
+            UInt8Type.Accept(visitor,CapabilityField, ref _capability);    
+            UInt8Type.Accept(visitor,SquitterTypeField, ref _squitterType);    
+            ArrayType.Accept(visitor,Bds05EvenMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds05EvenMe[index]));    
+            ArrayType.Accept(visitor,Bds05OddMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds05OddMe[index]));    
+            ArrayType.Accept(visitor,Bds06EvenMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds06EvenMe[index]));    
+            ArrayType.Accept(visitor,Bds06OddMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds06OddMe[index]));    
+            ArrayType.Accept(visitor,Bds08MeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds08Me[index]));    
+            ArrayType.Accept(visitor,Bds09GroundSpeedMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds09GroundSpeedMe[index]));    
+            ArrayType.Accept(visitor,Bds09AirspeedMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds09AirspeedMe[index]));    
+            ArrayType.Accept(visitor,Bds0aEventDrivenMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds0aEventDrivenMe[index]));    
+            ArrayType.Accept(visitor,Bds61EmergencyMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds61EmergencyMe[index]));    
+            ArrayType.Accept(visitor,Bds61TcasRaMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds61TcasRaMe[index]));    
+            ArrayType.Accept(visitor,Bds62OldMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds62OldMe[index]));    
+            ArrayType.Accept(visitor,Bds62NewMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds62NewMe[index]));    
+            ArrayType.Accept(visitor,Bds65AirborneMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds65AirborneMe[index]));    
+            ArrayType.Accept(visitor,Bds65SurfaceMeField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds65SurfaceMe[index]));    
+
+        }
+
+        /// <summary>
+        /// Timestamp (UNIX epoch time)
+        /// OriginName: time_unix_usec, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Timestamp (UNIX epoch time)")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
+        /// <summary>
+        /// Data flags
+        /// OriginName: flags, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
+        /// <summary>
+        /// Data index in record
+        /// OriginName: index, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Data index in record")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
+        /// <summary>
+        /// ICAO aircraft address common for decoded extended squitter messages
+        /// OriginName: icao_address, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field IcaoAddressField = new Field.Builder()
+            .Name(nameof(IcaoAddress))
+            .Title("icao_address")
+            .Description("ICAO aircraft address common for decoded extended squitter messages")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _icaoAddress;
+        public uint IcaoAddress { get => _icaoAddress; set => _icaoAddress = value; }
+        /// <summary>
+        /// BDS 0,5 airborne position even message count
+        /// OriginName: bds05_even_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds05EvenCntField = new Field.Builder()
+            .Name(nameof(Bds05EvenCnt))
+            .Title("bds05_even_cnt")
+            .Description("BDS 0,5 airborne position even message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds05EvenCnt;
+        public uint Bds05EvenCnt { get => _bds05EvenCnt; set => _bds05EvenCnt = value; }
+        /// <summary>
+        /// BDS 0,5 airborne position even message period
+        /// OriginName: bds05_even_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds05EvenPeriodField = new Field.Builder()
+            .Name(nameof(Bds05EvenPeriod))
+            .Title("bds05_even_period")
+            .Description("BDS 0,5 airborne position even message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds05EvenPeriod;
+        public float Bds05EvenPeriod { get => _bds05EvenPeriod; set => _bds05EvenPeriod = value; }
+        /// <summary>
+        /// BDS 0,5 airborne position odd message count
+        /// OriginName: bds05_odd_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds05OddCntField = new Field.Builder()
+            .Name(nameof(Bds05OddCnt))
+            .Title("bds05_odd_cnt")
+            .Description("BDS 0,5 airborne position odd message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds05OddCnt;
+        public uint Bds05OddCnt { get => _bds05OddCnt; set => _bds05OddCnt = value; }
+        /// <summary>
+        /// BDS 0,5 airborne position odd message period
+        /// OriginName: bds05_odd_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds05OddPeriodField = new Field.Builder()
+            .Name(nameof(Bds05OddPeriod))
+            .Title("bds05_odd_period")
+            .Description("BDS 0,5 airborne position odd message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds05OddPeriod;
+        public float Bds05OddPeriod { get => _bds05OddPeriod; set => _bds05OddPeriod = value; }
+        /// <summary>
+        /// BDS 0,6 surface position even message count
+        /// OriginName: bds06_even_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds06EvenCntField = new Field.Builder()
+            .Name(nameof(Bds06EvenCnt))
+            .Title("bds06_even_cnt")
+            .Description("BDS 0,6 surface position even message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds06EvenCnt;
+        public uint Bds06EvenCnt { get => _bds06EvenCnt; set => _bds06EvenCnt = value; }
+        /// <summary>
+        /// BDS 0,6 surface position even message period
+        /// OriginName: bds06_even_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds06EvenPeriodField = new Field.Builder()
+            .Name(nameof(Bds06EvenPeriod))
+            .Title("bds06_even_period")
+            .Description("BDS 0,6 surface position even message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds06EvenPeriod;
+        public float Bds06EvenPeriod { get => _bds06EvenPeriod; set => _bds06EvenPeriod = value; }
+        /// <summary>
+        /// BDS 0,6 surface position odd message count
+        /// OriginName: bds06_odd_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds06OddCntField = new Field.Builder()
+            .Name(nameof(Bds06OddCnt))
+            .Title("bds06_odd_cnt")
+            .Description("BDS 0,6 surface position odd message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds06OddCnt;
+        public uint Bds06OddCnt { get => _bds06OddCnt; set => _bds06OddCnt = value; }
+        /// <summary>
+        /// BDS 0,6 surface position odd message period
+        /// OriginName: bds06_odd_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds06OddPeriodField = new Field.Builder()
+            .Name(nameof(Bds06OddPeriod))
+            .Title("bds06_odd_period")
+            .Description("BDS 0,6 surface position odd message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds06OddPeriod;
+        public float Bds06OddPeriod { get => _bds06OddPeriod; set => _bds06OddPeriod = value; }
+        /// <summary>
+        /// BDS 0,8 aircraft identification message count
+        /// OriginName: bds08_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds08CntField = new Field.Builder()
+            .Name(nameof(Bds08Cnt))
+            .Title("bds08_cnt")
+            .Description("BDS 0,8 aircraft identification message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds08Cnt;
+        public uint Bds08Cnt { get => _bds08Cnt; set => _bds08Cnt = value; }
+        /// <summary>
+        /// BDS 0,8 aircraft identification message period
+        /// OriginName: bds08_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds08PeriodField = new Field.Builder()
+            .Name(nameof(Bds08Period))
+            .Title("bds08_period")
+            .Description("BDS 0,8 aircraft identification message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds08Period;
+        public float Bds08Period { get => _bds08Period; set => _bds08Period = value; }
+        /// <summary>
+        /// BDS 0,9 ground speed message count
+        /// OriginName: bds09_ground_speed_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds09GroundSpeedCntField = new Field.Builder()
+            .Name(nameof(Bds09GroundSpeedCnt))
+            .Title("bds09_ground_speed_cnt")
+            .Description("BDS 0,9 ground speed message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds09GroundSpeedCnt;
+        public uint Bds09GroundSpeedCnt { get => _bds09GroundSpeedCnt; set => _bds09GroundSpeedCnt = value; }
+        /// <summary>
+        /// BDS 0,9 ground speed message period
+        /// OriginName: bds09_ground_speed_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds09GroundSpeedPeriodField = new Field.Builder()
+            .Name(nameof(Bds09GroundSpeedPeriod))
+            .Title("bds09_ground_speed_period")
+            .Description("BDS 0,9 ground speed message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds09GroundSpeedPeriod;
+        public float Bds09GroundSpeedPeriod { get => _bds09GroundSpeedPeriod; set => _bds09GroundSpeedPeriod = value; }
+        /// <summary>
+        /// BDS 0,9 airspeed message count
+        /// OriginName: bds09_airspeed_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds09AirspeedCntField = new Field.Builder()
+            .Name(nameof(Bds09AirspeedCnt))
+            .Title("bds09_airspeed_cnt")
+            .Description("BDS 0,9 airspeed message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds09AirspeedCnt;
+        public uint Bds09AirspeedCnt { get => _bds09AirspeedCnt; set => _bds09AirspeedCnt = value; }
+        /// <summary>
+        /// BDS 0,9 airspeed message period
+        /// OriginName: bds09_airspeed_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds09AirspeedPeriodField = new Field.Builder()
+            .Name(nameof(Bds09AirspeedPeriod))
+            .Title("bds09_airspeed_period")
+            .Description("BDS 0,9 airspeed message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds09AirspeedPeriod;
+        public float Bds09AirspeedPeriod { get => _bds09AirspeedPeriod; set => _bds09AirspeedPeriod = value; }
+        /// <summary>
+        /// BDS 0,A event-driven message count
+        /// OriginName: bds0a_event_driven_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds0aEventDrivenCntField = new Field.Builder()
+            .Name(nameof(Bds0aEventDrivenCnt))
+            .Title("bds0a_event_driven_cnt")
+            .Description("BDS 0,A event-driven message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds0aEventDrivenCnt;
+        public uint Bds0aEventDrivenCnt { get => _bds0aEventDrivenCnt; set => _bds0aEventDrivenCnt = value; }
+        /// <summary>
+        /// BDS 0,A event-driven message period
+        /// OriginName: bds0a_event_driven_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds0aEventDrivenPeriodField = new Field.Builder()
+            .Name(nameof(Bds0aEventDrivenPeriod))
+            .Title("bds0a_event_driven_period")
+            .Description("BDS 0,A event-driven message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds0aEventDrivenPeriod;
+        public float Bds0aEventDrivenPeriod { get => _bds0aEventDrivenPeriod; set => _bds0aEventDrivenPeriod = value; }
+        /// <summary>
+        /// BDS 6,1 aircraft emergency or priority status message count
+        /// OriginName: bds61_emergency_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds61EmergencyCntField = new Field.Builder()
+            .Name(nameof(Bds61EmergencyCnt))
+            .Title("bds61_emergency_cnt")
+            .Description("BDS 6,1 aircraft emergency or priority status message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds61EmergencyCnt;
+        public uint Bds61EmergencyCnt { get => _bds61EmergencyCnt; set => _bds61EmergencyCnt = value; }
+        /// <summary>
+        /// BDS 6,1 aircraft emergency or priority status message period
+        /// OriginName: bds61_emergency_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds61EmergencyPeriodField = new Field.Builder()
+            .Name(nameof(Bds61EmergencyPeriod))
+            .Title("bds61_emergency_period")
+            .Description("BDS 6,1 aircraft emergency or priority status message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds61EmergencyPeriod;
+        public float Bds61EmergencyPeriod { get => _bds61EmergencyPeriod; set => _bds61EmergencyPeriod = value; }
+        /// <summary>
+        /// BDS 6,1 TCAS RA broadcast message count
+        /// OriginName: bds61_tcas_ra_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds61TcasRaCntField = new Field.Builder()
+            .Name(nameof(Bds61TcasRaCnt))
+            .Title("bds61_tcas_ra_cnt")
+            .Description("BDS 6,1 TCAS RA broadcast message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds61TcasRaCnt;
+        public uint Bds61TcasRaCnt { get => _bds61TcasRaCnt; set => _bds61TcasRaCnt = value; }
+        /// <summary>
+        /// BDS 6,1 TCAS RA broadcast message period
+        /// OriginName: bds61_tcas_ra_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds61TcasRaPeriodField = new Field.Builder()
+            .Name(nameof(Bds61TcasRaPeriod))
+            .Title("bds61_tcas_ra_period")
+            .Description("BDS 6,1 TCAS RA broadcast message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds61TcasRaPeriod;
+        public float Bds61TcasRaPeriod { get => _bds61TcasRaPeriod; set => _bds61TcasRaPeriod = value; }
+        /// <summary>
+        /// BDS 6,2 target state and status old format message count
+        /// OriginName: bds62_old_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds62OldCntField = new Field.Builder()
+            .Name(nameof(Bds62OldCnt))
+            .Title("bds62_old_cnt")
+            .Description("BDS 6,2 target state and status old format message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds62OldCnt;
+        public uint Bds62OldCnt { get => _bds62OldCnt; set => _bds62OldCnt = value; }
+        /// <summary>
+        /// BDS 6,2 target state and status old format message period
+        /// OriginName: bds62_old_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds62OldPeriodField = new Field.Builder()
+            .Name(nameof(Bds62OldPeriod))
+            .Title("bds62_old_period")
+            .Description("BDS 6,2 target state and status old format message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds62OldPeriod;
+        public float Bds62OldPeriod { get => _bds62OldPeriod; set => _bds62OldPeriod = value; }
+        /// <summary>
+        /// BDS 6,2 target state and status new format message count
+        /// OriginName: bds62_new_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds62NewCntField = new Field.Builder()
+            .Name(nameof(Bds62NewCnt))
+            .Title("bds62_new_cnt")
+            .Description("BDS 6,2 target state and status new format message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds62NewCnt;
+        public uint Bds62NewCnt { get => _bds62NewCnt; set => _bds62NewCnt = value; }
+        /// <summary>
+        /// BDS 6,2 target state and status new format message period
+        /// OriginName: bds62_new_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds62NewPeriodField = new Field.Builder()
+            .Name(nameof(Bds62NewPeriod))
+            .Title("bds62_new_period")
+            .Description("BDS 6,2 target state and status new format message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds62NewPeriod;
+        public float Bds62NewPeriod { get => _bds62NewPeriod; set => _bds62NewPeriod = value; }
+        /// <summary>
+        /// BDS 6,5 airborne aircraft operational status message count
+        /// OriginName: bds65_airborne_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds65AirborneCntField = new Field.Builder()
+            .Name(nameof(Bds65AirborneCnt))
+            .Title("bds65_airborne_cnt")
+            .Description("BDS 6,5 airborne aircraft operational status message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds65AirborneCnt;
+        public uint Bds65AirborneCnt { get => _bds65AirborneCnt; set => _bds65AirborneCnt = value; }
+        /// <summary>
+        /// BDS 6,5 airborne aircraft operational status message period
+        /// OriginName: bds65_airborne_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds65AirbornePeriodField = new Field.Builder()
+            .Name(nameof(Bds65AirbornePeriod))
+            .Title("bds65_airborne_period")
+            .Description("BDS 6,5 airborne aircraft operational status message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds65AirbornePeriod;
+        public float Bds65AirbornePeriod { get => _bds65AirbornePeriod; set => _bds65AirbornePeriod = value; }
+        /// <summary>
+        /// BDS 6,5 surface aircraft operational status message count
+        /// OriginName: bds65_surface_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds65SurfaceCntField = new Field.Builder()
+            .Name(nameof(Bds65SurfaceCnt))
+            .Title("bds65_surface_cnt")
+            .Description("BDS 6,5 surface aircraft operational status message count")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _bds65SurfaceCnt;
+        public uint Bds65SurfaceCnt { get => _bds65SurfaceCnt; set => _bds65SurfaceCnt = value; }
+        /// <summary>
+        /// BDS 6,5 surface aircraft operational status message period
+        /// OriginName: bds65_surface_period, Units: s, IsExtended: false
+        /// </summary>
+        public static readonly Field Bds65SurfacePeriodField = new Field.Builder()
+            .Name(nameof(Bds65SurfacePeriod))
+            .Title("bds65_surface_period")
+            .Description("BDS 6,5 surface aircraft operational status message period")
+.Units(@"s")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _bds65SurfacePeriod;
+        public float Bds65SurfacePeriod { get => _bds65SurfacePeriod; set => _bds65SurfacePeriod = value; }
+        /// <summary>
+        /// Flags that identify which ADS-B message bodies are valid
+        /// OriginName: messages_present, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field MessagesPresentField = new Field.Builder()
+            .Name(nameof(MessagesPresent))
+            .Title("messages_present")
+            .Description("Flags that identify which ADS-B message bodies are valid")
+            .DataType(new UInt16Type(AsvRsgaRttAdsbBReqMsgFlagsHelper.GetValues(x=>(ushort)x).Min(),AsvRsgaRttAdsbBReqMsgFlagsHelper.GetValues(x=>(ushort)x).Max()))
+            .Enum(AsvRsgaRttAdsbBReqMsgFlagsHelper.GetEnumValues(x=>(ushort)x))
+            .Build();
+        private AsvRsgaRttAdsbBReqMsgFlags _messagesPresent;
+        public AsvRsgaRttAdsbBReqMsgFlags MessagesPresent { get => _messagesPresent; set => _messagesPresent = value; } 
+        /// <summary>
+        /// Mode S capability value common for decoded extended squitter messages
+        /// OriginName: capability, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field CapabilityField = new Field.Builder()
+            .Name(nameof(Capability))
+            .Title("capability")
+            .Description("Mode S capability value common for decoded extended squitter messages")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _capability;
+        public byte Capability { get => _capability; set => _capability = value; }
+        /// <summary>
+        /// ADS-B squitter type (17 - with transponder, 18 - non-transponder)
+        /// OriginName: squitter_type, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field SquitterTypeField = new Field.Builder()
+            .Name(nameof(SquitterType))
+            .Title("squitter_type")
+            .Description("ADS-B squitter type (17 - with transponder, 18 - non-transponder)")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _squitterType;
+        public byte SquitterType { get => _squitterType; set => _squitterType = value; }
+        /// <summary>
+        /// BDS 0,5 airborne position even ME payload
+        /// OriginName: bds05_even_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds05EvenMeField = new Field.Builder()
+            .Name(nameof(Bds05EvenMe))
+            .Title("bds05_even_me")
+            .Description("BDS 0,5 airborne position even ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds05EvenMeMaxItemsCount = 7;
+        public byte[] Bds05EvenMe { get; } = new byte[7];
+        [Obsolete("This method is deprecated. Use GetBds05EvenMeMaxItemsCount instead.")]
+        public byte GetBds05EvenMeMaxItemsCount() => 7;
+        /// <summary>
+        /// BDS 0,5 airborne position odd ME payload
+        /// OriginName: bds05_odd_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds05OddMeField = new Field.Builder()
+            .Name(nameof(Bds05OddMe))
+            .Title("bds05_odd_me")
+            .Description("BDS 0,5 airborne position odd ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds05OddMeMaxItemsCount = 7;
+        public byte[] Bds05OddMe { get; } = new byte[7];
+        /// <summary>
+        /// BDS 0,6 surface position even ME payload
+        /// OriginName: bds06_even_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds06EvenMeField = new Field.Builder()
+            .Name(nameof(Bds06EvenMe))
+            .Title("bds06_even_me")
+            .Description("BDS 0,6 surface position even ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds06EvenMeMaxItemsCount = 7;
+        public byte[] Bds06EvenMe { get; } = new byte[7];
+        /// <summary>
+        /// BDS 0,6 surface position odd ME payload
+        /// OriginName: bds06_odd_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds06OddMeField = new Field.Builder()
+            .Name(nameof(Bds06OddMe))
+            .Title("bds06_odd_me")
+            .Description("BDS 0,6 surface position odd ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds06OddMeMaxItemsCount = 7;
+        public byte[] Bds06OddMe { get; } = new byte[7];
+        /// <summary>
+        /// BDS 0,8 aircraft identification ME payload
+        /// OriginName: bds08_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds08MeField = new Field.Builder()
+            .Name(nameof(Bds08Me))
+            .Title("bds08_me")
+            .Description("BDS 0,8 aircraft identification ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds08MeMaxItemsCount = 7;
+        public byte[] Bds08Me { get; } = new byte[7];
+        /// <summary>
+        /// BDS 0,9 ground speed ME payload
+        /// OriginName: bds09_ground_speed_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds09GroundSpeedMeField = new Field.Builder()
+            .Name(nameof(Bds09GroundSpeedMe))
+            .Title("bds09_ground_speed_me")
+            .Description("BDS 0,9 ground speed ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds09GroundSpeedMeMaxItemsCount = 7;
+        public byte[] Bds09GroundSpeedMe { get; } = new byte[7];
+        /// <summary>
+        /// BDS 0,9 airspeed ME payload
+        /// OriginName: bds09_airspeed_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds09AirspeedMeField = new Field.Builder()
+            .Name(nameof(Bds09AirspeedMe))
+            .Title("bds09_airspeed_me")
+            .Description("BDS 0,9 airspeed ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds09AirspeedMeMaxItemsCount = 7;
+        public byte[] Bds09AirspeedMe { get; } = new byte[7];
+        /// <summary>
+        /// BDS 0,A event-driven ME payload
+        /// OriginName: bds0a_event_driven_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds0aEventDrivenMeField = new Field.Builder()
+            .Name(nameof(Bds0aEventDrivenMe))
+            .Title("bds0a_event_driven_me")
+            .Description("BDS 0,A event-driven ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds0aEventDrivenMeMaxItemsCount = 7;
+        public byte[] Bds0aEventDrivenMe { get; } = new byte[7];
+        /// <summary>
+        /// BDS 6,1 aircraft emergency or priority status ME payload
+        /// OriginName: bds61_emergency_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds61EmergencyMeField = new Field.Builder()
+            .Name(nameof(Bds61EmergencyMe))
+            .Title("bds61_emergency_me")
+            .Description("BDS 6,1 aircraft emergency or priority status ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds61EmergencyMeMaxItemsCount = 7;
+        public byte[] Bds61EmergencyMe { get; } = new byte[7];
+        /// <summary>
+        /// BDS 6,1 TCAS RA broadcast ME payload
+        /// OriginName: bds61_tcas_ra_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds61TcasRaMeField = new Field.Builder()
+            .Name(nameof(Bds61TcasRaMe))
+            .Title("bds61_tcas_ra_me")
+            .Description("BDS 6,1 TCAS RA broadcast ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds61TcasRaMeMaxItemsCount = 7;
+        public byte[] Bds61TcasRaMe { get; } = new byte[7];
+        /// <summary>
+        /// BDS 6,2 target state and status old format ME payload
+        /// OriginName: bds62_old_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds62OldMeField = new Field.Builder()
+            .Name(nameof(Bds62OldMe))
+            .Title("bds62_old_me")
+            .Description("BDS 6,2 target state and status old format ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds62OldMeMaxItemsCount = 7;
+        public byte[] Bds62OldMe { get; } = new byte[7];
+        /// <summary>
+        /// BDS 6,2 target state and status new format ME payload
+        /// OriginName: bds62_new_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds62NewMeField = new Field.Builder()
+            .Name(nameof(Bds62NewMe))
+            .Title("bds62_new_me")
+            .Description("BDS 6,2 target state and status new format ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds62NewMeMaxItemsCount = 7;
+        public byte[] Bds62NewMe { get; } = new byte[7];
+        /// <summary>
+        /// BDS 6,5 airborne aircraft operational status ME payload
+        /// OriginName: bds65_airborne_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds65AirborneMeField = new Field.Builder()
+            .Name(nameof(Bds65AirborneMe))
+            .Title("bds65_airborne_me")
+            .Description("BDS 6,5 airborne aircraft operational status ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds65AirborneMeMaxItemsCount = 7;
+        public byte[] Bds65AirborneMe { get; } = new byte[7];
+        /// <summary>
+        /// BDS 6,5 surface aircraft operational status ME payload
+        /// OriginName: bds65_surface_me, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds65SurfaceMeField = new Field.Builder()
+            .Name(nameof(Bds65SurfaceMe))
+            .Title("bds65_surface_me")
+            .Description("BDS 6,5 surface aircraft operational status ME payload")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int Bds65SurfaceMeMaxItemsCount = 7;
+        public byte[] Bds65SurfaceMe { get; } = new byte[7];
     }
 
 

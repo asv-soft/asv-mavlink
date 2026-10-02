@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.0.18-dev.4+babdac890880291504c5fb2ad6a3501c00af2295 25-10-03.
+// This code was generate by tool Asv.Mavlink.Shell version 4.2.0-dev.0+8e63b509dd99e055f8e20059820597d78bfd4a5c 26-10-02.
 
 using System;
 using System.Text;
@@ -12149,7 +12149,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 43; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 43; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 31; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -14101,7 +14101,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 52; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 52; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 30; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -14656,7 +14656,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -14906,7 +14906,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 29; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 29; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -15321,7 +15321,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -15649,7 +15649,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 48; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 48; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -16766,7 +16766,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 37; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 21; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -17161,7 +17161,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -17323,7 +17323,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 7; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 7; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -17486,7 +17486,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -17822,7 +17822,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -18091,7 +18091,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 6; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 6; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -18240,7 +18240,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -18368,7 +18368,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -18513,7 +18513,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 3; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 2; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -18719,7 +18719,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 4; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -18854,7 +18854,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 21; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 21; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -19002,7 +19002,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 12; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -19396,7 +19396,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 5; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 4; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -21534,7 +21534,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 30; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 30; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 11; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -21899,7 +21899,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -22333,7 +22333,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 38; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 38; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 37; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -23380,7 +23380,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 10; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 10; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 3; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -23873,7 +23873,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 51; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 51; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 39; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -26834,7 +26834,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 34; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 34; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 26; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -27069,7 +27069,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 117; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 117; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -27297,7 +27297,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 117; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 117; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -27525,7 +27525,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 57; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 57; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -27702,7 +27702,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 116; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 116; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -27911,7 +27911,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 63; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 63; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 62; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -28513,7 +28513,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 65; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 65; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 64; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -28850,7 +28850,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 92; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 92; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 84; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -29649,7 +29649,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 18; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -29878,7 +29878,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 39; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 39; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -30809,7 +30809,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -32014,7 +32014,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 57; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 57; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 35; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -32509,7 +32509,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 81; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 81; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 79; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -33295,7 +33295,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 24; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 24; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -33835,7 +33835,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 39; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 39; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -34685,7 +34685,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -34833,7 +34833,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 120; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 120; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -35662,7 +35662,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 16; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 14; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -36482,7 +36482,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 54; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 54; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 36; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -36822,7 +36822,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 78; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 78; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 60; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -37128,7 +37128,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 60; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 60; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 30; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -37453,7 +37453,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 9; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 9; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 8; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -37605,7 +37605,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 54; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 54; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 44; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -37986,7 +37986,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 73; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 73; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 65; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -38821,7 +38821,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 65; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 65; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 63; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -40523,7 +40523,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 60; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 60; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 52; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -40798,7 +40798,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 61; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 61; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 53; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -42533,7 +42533,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 54; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 54; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 51; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -43083,7 +43083,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 232; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 232; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 32; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -43259,7 +43259,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 236; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 236; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 235; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -43603,7 +43603,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 13; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 13; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 5; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -43738,7 +43738,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 61; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 61; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 27; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -44040,7 +44040,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 22; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 22; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 18; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -44640,7 +44640,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 20; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 16; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -47188,7 +47188,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 145; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 145; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 144; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -47834,7 +47834,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 49; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 49; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 40; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -48134,7 +48134,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 57; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 57; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 53; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -49283,7 +49283,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 98; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 98; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 96; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -51129,7 +51129,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 167; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 167; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 158; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -51366,7 +51366,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 233; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 233; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 230; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -53553,7 +53553,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 252; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 252; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 20; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -53882,7 +53882,7 @@ namespace Asv.Mavlink.Common
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => 109; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 109; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 87; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
