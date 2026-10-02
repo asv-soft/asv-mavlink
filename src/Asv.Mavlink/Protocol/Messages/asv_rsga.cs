@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.3.1+c664518f08367393afac98995836aba74eff379a 26-10-02.
+// This code was generate by tool Asv.Mavlink.Shell version 4.3.1+30aefac0323aceecb0f53ee8deb119255187be0e 26-10-02.
 
 using System;
 using System.Text;
@@ -4340,27 +4340,27 @@ namespace Asv.Mavlink.AsvRsga
         private float _rxGain;
         public float RxGain { get => _rxGain; set => _rxGain = value; }
         /// <summary>
-        /// Total amplitude modulation of 90Hz
-        /// OriginName: am_90, Units: %, IsExtended: false
+        /// Total 90 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).
+        /// OriginName: am_90, Units: , IsExtended: false
         /// </summary>
         public static readonly Field Am90Field = new Field.Builder()
             .Name(nameof(Am90))
             .Title("am_90")
-            .Description("Total amplitude modulation of 90Hz")
-.Units(@"%")
+            .Description("Total 90 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _am90;
         public float Am90 { get => _am90; set => _am90 = value; }
         /// <summary>
-        /// Total amplitude modulation of 150Hz
-        /// OriginName: am_150, Units: %, IsExtended: false
+        /// Total 150 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).
+        /// OriginName: am_150, Units: , IsExtended: false
         /// </summary>
         public static readonly Field Am150Field = new Field.Builder()
             .Name(nameof(Am150))
             .Title("am_150")
-            .Description("Total amplitude modulation of 150Hz")
-.Units(@"%")
+            .Description("Total 150 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _am150;
@@ -4405,27 +4405,27 @@ namespace Asv.Mavlink.AsvRsga
         private float _lowPower;
         public float LowPower { get => _lowPower; set => _lowPower = value; }
         /// <summary>
-        /// Aplitude modulation of 90Hz of low freq channel
-        /// OriginName: low_am_90, Units: %, IsExtended: false
+        /// 90 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).
+        /// OriginName: low_am_90, Units: , IsExtended: false
         /// </summary>
         public static readonly Field LowAm90Field = new Field.Builder()
             .Name(nameof(LowAm90))
             .Title("low_am_90")
-            .Description("Aplitude modulation of 90Hz of low freq channel")
-.Units(@"%")
+            .Description("90 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _lowAm90;
         public float LowAm90 { get => _lowAm90; set => _lowAm90 = value; }
         /// <summary>
-        /// Aplitude modulation of 150Hz of low freq channel
-        /// OriginName: low_am_150, Units: %, IsExtended: false
+        /// 150 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).
+        /// OriginName: low_am_150, Units: , IsExtended: false
         /// </summary>
         public static readonly Field LowAm150Field = new Field.Builder()
             .Name(nameof(LowAm150))
             .Title("low_am_150")
-            .Description("Aplitude modulation of 150Hz of low freq channel")
-.Units(@"%")
+            .Description("150 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _lowAm150;
@@ -4444,66 +4444,66 @@ namespace Asv.Mavlink.AsvRsga
         private float _highPower;
         public float HighPower { get => _highPower; set => _highPower = value; }
         /// <summary>
-        /// Aplitude modulation of 90Hz of high freq channel
-        /// OriginName: high_am_90, Units: %, IsExtended: false
+        /// 90 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).
+        /// OriginName: high_am_90, Units: , IsExtended: false
         /// </summary>
         public static readonly Field HighAm90Field = new Field.Builder()
             .Name(nameof(HighAm90))
             .Title("high_am_90")
-            .Description("Aplitude modulation of 90Hz of high freq channel")
-.Units(@"%")
+            .Description("90 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _highAm90;
         public float HighAm90 { get => _highAm90; set => _highAm90 = value; }
         /// <summary>
-        /// Aplitude modulation of 150Hz of high freq channel
-        /// OriginName: high_am_150, Units: % E2, IsExtended: false
+        /// 150 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).
+        /// OriginName: high_am_150, Units: , IsExtended: false
         /// </summary>
         public static readonly Field HighAm150Field = new Field.Builder()
             .Name(nameof(HighAm150))
             .Title("high_am_150")
-            .Description("Aplitude modulation of 150Hz of high freq channel")
-.Units(@"% E2")
+            .Description("150 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _highAm150;
         public float HighAm150 { get => _highAm150; set => _highAm150 = value; }
         /// <summary>
-        /// Current amplitude modulation of Code ID
-        /// OriginName: code_id_am_1020, Units: %, IsExtended: false
+        /// Current amplitude-modulation depth of the 1020 Hz identification code as a fraction of one (1.0 = 100%).
+        /// OriginName: code_id_am_1020, Units: , IsExtended: false
         /// </summary>
         public static readonly Field CodeIdAm1020Field = new Field.Builder()
             .Name(nameof(CodeIdAm1020))
             .Title("code_id_am_1020")
-            .Description("Current amplitude modulation of Code ID")
-.Units(@"%")
+            .Description("Current amplitude-modulation depth of the 1020 Hz identification code as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _codeIdAm1020;
         public float CodeIdAm1020 { get => _codeIdAm1020; set => _codeIdAm1020 = value; }
         /// <summary>
-        /// Min amplitude modulation of Code ID
-        /// OriginName: code_id_am_min_1020, Units: %, IsExtended: false
+        /// Minimum amplitude-modulation depth of the 1020 Hz identification code as a fraction of one (1.0 = 100%).
+        /// OriginName: code_id_am_min_1020, Units: , IsExtended: false
         /// </summary>
         public static readonly Field CodeIdAmMin1020Field = new Field.Builder()
             .Name(nameof(CodeIdAmMin1020))
             .Title("code_id_am_min_1020")
-            .Description("Min amplitude modulation of Code ID")
-.Units(@"%")
+            .Description("Minimum amplitude-modulation depth of the 1020 Hz identification code as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _codeIdAmMin1020;
         public float CodeIdAmMin1020 { get => _codeIdAmMin1020; set => _codeIdAmMin1020 = value; }
         /// <summary>
-        /// Max amplitude modulation of Code ID
-        /// OriginName: code_id_am_max_1020, Units: %, IsExtended: false
+        /// Maximum amplitude-modulation depth of the 1020 Hz identification code as a fraction of one (1.0 = 100%).
+        /// OriginName: code_id_am_max_1020, Units: , IsExtended: false
         /// </summary>
         public static readonly Field CodeIdAmMax1020Field = new Field.Builder()
             .Name(nameof(CodeIdAmMax1020))
             .Title("code_id_am_max_1020")
-            .Description("Max amplitude modulation of Code ID")
-.Units(@"%")
+            .Description("Maximum amplitude-modulation depth of the 1020 Hz identification code as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _codeIdAmMax1020;
@@ -5011,27 +5011,27 @@ namespace Asv.Mavlink.AsvRsga
         private float _lowPower;
         public float LowPower { get => _lowPower; set => _lowPower = value; }
         /// <summary>
-        /// Aplitude modulation of 90Hz of low freq channel
-        /// OriginName: low_am_90, Units: %, IsExtended: false
+        /// 90 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).
+        /// OriginName: low_am_90, Units: , IsExtended: false
         /// </summary>
         public static readonly Field LowAm90Field = new Field.Builder()
             .Name(nameof(LowAm90))
             .Title("low_am_90")
-            .Description("Aplitude modulation of 90Hz of low freq channel")
-.Units(@"%")
+            .Description("90 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _lowAm90;
         public float LowAm90 { get => _lowAm90; set => _lowAm90 = value; }
         /// <summary>
-        /// Aplitude modulation of 150Hz of low freq channel
-        /// OriginName: low_am_150, Units: %, IsExtended: false
+        /// 150 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).
+        /// OriginName: low_am_150, Units: , IsExtended: false
         /// </summary>
         public static readonly Field LowAm150Field = new Field.Builder()
             .Name(nameof(LowAm150))
             .Title("low_am_150")
-            .Description("Aplitude modulation of 150Hz of low freq channel")
-.Units(@"%")
+            .Description("150 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _lowAm150;
@@ -5050,53 +5050,53 @@ namespace Asv.Mavlink.AsvRsga
         private float _highPower;
         public float HighPower { get => _highPower; set => _highPower = value; }
         /// <summary>
-        /// Aplitude modulation of 90Hz of high freq channel
-        /// OriginName: high_am_90, Units: %, IsExtended: false
+        /// 90 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).
+        /// OriginName: high_am_90, Units: , IsExtended: false
         /// </summary>
         public static readonly Field HighAm90Field = new Field.Builder()
             .Name(nameof(HighAm90))
             .Title("high_am_90")
-            .Description("Aplitude modulation of 90Hz of high freq channel")
-.Units(@"%")
+            .Description("90 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _highAm90;
         public float HighAm90 { get => _highAm90; set => _highAm90 = value; }
         /// <summary>
-        /// Aplitude modulation of 150Hz of high freq channel
-        /// OriginName: high_am_150, Units: % E2, IsExtended: false
+        /// 150 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).
+        /// OriginName: high_am_150, Units: , IsExtended: false
         /// </summary>
         public static readonly Field HighAm150Field = new Field.Builder()
             .Name(nameof(HighAm150))
             .Title("high_am_150")
-            .Description("Aplitude modulation of 150Hz of high freq channel")
-.Units(@"% E2")
+            .Description("150 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _highAm150;
         public float HighAm150 { get => _highAm150; set => _highAm150 = value; }
         /// <summary>
-        /// Total amplitude modulation of 90Hz
-        /// OriginName: am_90, Units: %, IsExtended: false
+        /// Total 90 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).
+        /// OriginName: am_90, Units: , IsExtended: false
         /// </summary>
         public static readonly Field Am90Field = new Field.Builder()
             .Name(nameof(Am90))
             .Title("am_90")
-            .Description("Total amplitude modulation of 90Hz")
-.Units(@"%")
+            .Description("Total 90 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _am90;
         public float Am90 { get => _am90; set => _am90 = value; }
         /// <summary>
-        /// Total amplitude modulation of 150Hz
-        /// OriginName: am_150, Units: %, IsExtended: false
+        /// Total 150 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).
+        /// OriginName: am_150, Units: , IsExtended: false
         /// </summary>
         public static readonly Field Am150Field = new Field.Builder()
             .Name(nameof(Am150))
             .Title("am_150")
-            .Description("Total amplitude modulation of 150Hz")
-.Units(@"%")
+            .Description("Total 150 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).")
+
             .DataType(FloatType.Default)
         .Build();
         private float _am150;
@@ -7976,7 +7976,7 @@ namespace Asv.Mavlink.AsvRsga
         public const int MessageId = 13470; 
         public const string MessageIdAsString = "13470";
         
-        public const byte CrcExtra = 63;
+        public const byte CrcExtra = 99;
         
         public override int Id => MessageId;
                             
@@ -8010,9 +8010,8 @@ namespace Asv.Mavlink.AsvRsga
             +8 // uint64_t time_unix_usec
             + 8 // uint64_t flags
             +4 // uint32_t index
+            +4 // float rx_signal_overflow
             +4 // uint32_t icao_address
-            +4 // uint32_t uf11_cnt
-            +4 // uint32_t df11_cnt
             +4 // float df4_altitude
             +4 // uint32_t df4_icao_address
             +4 // uint32_t df5_icao_address
@@ -8038,6 +8037,8 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float uf16_mode_c_altitude_feet
             +4 // float uf20_mode_c_altitude_feet
             +4 // uint32_t target_icao_address
+            +2 // uint16_t uf11_cnt
+            +2 // uint16_t df11_cnt
             +1 // uint8_t capability
             +1 // uint8_t df4_flight_status
             +1 // uint8_t df4_downlink_request
@@ -8089,9 +8090,8 @@ namespace Asv.Mavlink.AsvRsga
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
             Index = BinSerialize.ReadUInt(ref buffer);
+            RxSignalOverflow = BinSerialize.ReadFloat(ref buffer);
             IcaoAddress = BinSerialize.ReadUInt(ref buffer);
-            Uf11Cnt = BinSerialize.ReadUInt(ref buffer);
-            Df11Cnt = BinSerialize.ReadUInt(ref buffer);
             Df4Altitude = BinSerialize.ReadFloat(ref buffer);
             Df4IcaoAddress = BinSerialize.ReadUInt(ref buffer);
             Df5IcaoAddress = BinSerialize.ReadUInt(ref buffer);
@@ -8117,6 +8117,8 @@ namespace Asv.Mavlink.AsvRsga
             Uf16ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
             Uf20ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
             TargetIcaoAddress = BinSerialize.ReadUInt(ref buffer);
+            Uf11Cnt = BinSerialize.ReadUShort(ref buffer);
+            Df11Cnt = BinSerialize.ReadUShort(ref buffer);
             Capability = (byte)BinSerialize.ReadByte(ref buffer);
             Df4FlightStatus = (byte)BinSerialize.ReadByte(ref buffer);
             Df4DownlinkRequest = (byte)BinSerialize.ReadByte(ref buffer);
@@ -8225,9 +8227,8 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
             BinSerialize.WriteUInt(ref buffer,Index);
+            BinSerialize.WriteFloat(ref buffer,RxSignalOverflow);
             BinSerialize.WriteUInt(ref buffer,IcaoAddress);
-            BinSerialize.WriteUInt(ref buffer,Uf11Cnt);
-            BinSerialize.WriteUInt(ref buffer,Df11Cnt);
             BinSerialize.WriteFloat(ref buffer,Df4Altitude);
             BinSerialize.WriteUInt(ref buffer,Df4IcaoAddress);
             BinSerialize.WriteUInt(ref buffer,Df5IcaoAddress);
@@ -8253,6 +8254,8 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,Uf16ModeCAltitudeFeet);
             BinSerialize.WriteFloat(ref buffer,Uf20ModeCAltitudeFeet);
             BinSerialize.WriteUInt(ref buffer,TargetIcaoAddress);
+            BinSerialize.WriteUShort(ref buffer,Uf11Cnt);
+            BinSerialize.WriteUShort(ref buffer,Df11Cnt);
             BinSerialize.WriteByte(ref buffer,(byte)Capability);
             BinSerialize.WriteByte(ref buffer,(byte)Df4FlightStatus);
             BinSerialize.WriteByte(ref buffer,(byte)Df4DownlinkRequest);
@@ -8350,9 +8353,8 @@ namespace Asv.Mavlink.AsvRsga
             UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
             UInt32Type.Accept(visitor,IndexField, ref _index);    
+            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
             UInt32Type.Accept(visitor,IcaoAddressField, ref _icaoAddress);    
-            UInt32Type.Accept(visitor,Uf11CntField, ref _uf11Cnt);    
-            UInt32Type.Accept(visitor,Df11CntField, ref _df11Cnt);    
             FloatType.Accept(visitor,Df4AltitudeField, ref _df4Altitude);    
             UInt32Type.Accept(visitor,Df4IcaoAddressField, ref _df4IcaoAddress);    
             UInt32Type.Accept(visitor,Df5IcaoAddressField, ref _df5IcaoAddress);    
@@ -8378,6 +8380,8 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,Uf16ModeCAltitudeFeetField, ref _uf16ModeCAltitudeFeet);    
             FloatType.Accept(visitor,Uf20ModeCAltitudeFeetField, ref _uf20ModeCAltitudeFeet);    
             UInt32Type.Accept(visitor,TargetIcaoAddressField, ref _targetIcaoAddress);    
+            UInt16Type.Accept(visitor,Uf11CntField, ref _uf11Cnt);    
+            UInt16Type.Accept(visitor,Df11CntField, ref _df11Cnt);    
             UInt8Type.Accept(visitor,CapabilityField, ref _capability);    
             UInt8Type.Accept(visitor,Df4FlightStatusField, ref _df4FlightStatus);    
             UInt8Type.Accept(visitor,Df4DownlinkRequestField, ref _df4DownlinkRequest);    
@@ -8472,6 +8476,19 @@ namespace Asv.Mavlink.AsvRsga
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
         /// <summary>
+        /// Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong)
+        /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxSignalOverflowField = new Field.Builder()
+            .Name(nameof(RxSignalOverflow))
+            .Title("rx_signal_overflow")
+            .Description("Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxSignalOverflow;
+        public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
+        /// <summary>
         /// ICAO address
         /// OriginName: icao_address, Units: , IsExtended: false
         /// </summary>
@@ -8484,32 +8501,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private uint _icaoAddress;
         public uint IcaoAddress { get => _icaoAddress; set => _icaoAddress = value; }
-        /// <summary>
-        /// UF11 count
-        /// OriginName: uf11_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Uf11CntField = new Field.Builder()
-            .Name(nameof(Uf11Cnt))
-            .Title("uf11_cnt")
-            .Description("UF11 count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _uf11Cnt;
-        public uint Uf11Cnt { get => _uf11Cnt; set => _uf11Cnt = value; }
-        /// <summary>
-        /// DF11 count
-        /// OriginName: df11_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Df11CntField = new Field.Builder()
-            .Name(nameof(Df11Cnt))
-            .Title("df11_cnt")
-            .Description("DF11 count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _df11Cnt;
-        public uint Df11Cnt { get => _df11Cnt; set => _df11Cnt = value; }
         /// <summary>
         /// DF4 altitude
         /// OriginName: df4_altitude, Units: , IsExtended: false
@@ -8835,6 +8826,32 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private uint _targetIcaoAddress;
         public uint TargetIcaoAddress { get => _targetIcaoAddress; set => _targetIcaoAddress = value; }
+        /// <summary>
+        /// UF11 count
+        /// OriginName: uf11_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Uf11CntField = new Field.Builder()
+            .Name(nameof(Uf11Cnt))
+            .Title("uf11_cnt")
+            .Description("UF11 count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _uf11Cnt;
+        public ushort Uf11Cnt { get => _uf11Cnt; set => _uf11Cnt = value; }
+        /// <summary>
+        /// DF11 count
+        /// OriginName: df11_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Df11CntField = new Field.Builder()
+            .Name(nameof(Df11Cnt))
+            .Title("df11_cnt")
+            .Description("DF11 count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _df11Cnt;
+        public ushort Df11Cnt { get => _df11Cnt; set => _df11Cnt = value; }
         /// <summary>
         /// Capability flags
         /// OriginName: capability, Units: , IsExtended: false
@@ -9354,7 +9371,7 @@ namespace Asv.Mavlink.AsvRsga
         public const int MessageId = 13471; 
         public const string MessageIdAsString = "13471";
         
-        public const byte CrcExtra = 144;
+        public const byte CrcExtra = 108;
         
         public override int Id => MessageId;
                             
@@ -9378,9 +9395,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttAdsBReqPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 238; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 222; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 238; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 222; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -9388,36 +9405,39 @@ namespace Asv.Mavlink.AsvRsga
             +8 // uint64_t time_unix_usec
             + 8 // uint64_t flags
             +4 // uint32_t index
+            +4 // float rx_power
+            +4 // float rx_gain
+            +4 // float rx_signal_overflow
             +4 // uint32_t icao_address
-            +4 // uint32_t bds05_even_cnt
             +4 // float bds05_even_period
-            +4 // uint32_t bds05_odd_cnt
             +4 // float bds05_odd_period
-            +4 // uint32_t bds06_even_cnt
             +4 // float bds06_even_period
-            +4 // uint32_t bds06_odd_cnt
             +4 // float bds06_odd_period
-            +4 // uint32_t bds08_cnt
             +4 // float bds08_period
-            +4 // uint32_t bds09_ground_speed_cnt
             +4 // float bds09_ground_speed_period
-            +4 // uint32_t bds09_airspeed_cnt
             +4 // float bds09_airspeed_period
-            +4 // uint32_t bds0a_event_driven_cnt
             +4 // float bds0a_event_driven_period
-            +4 // uint32_t bds61_emergency_cnt
             +4 // float bds61_emergency_period
-            +4 // uint32_t bds61_tcas_ra_cnt
             +4 // float bds61_tcas_ra_period
-            +4 // uint32_t bds62_old_cnt
             +4 // float bds62_old_period
-            +4 // uint32_t bds62_new_cnt
             +4 // float bds62_new_period
-            +4 // uint32_t bds65_airborne_cnt
             +4 // float bds65_airborne_period
-            +4 // uint32_t bds65_surface_cnt
             +4 // float bds65_surface_period
             + 2 // uint16_t messages_present
+            +2 // uint16_t bds05_even_cnt
+            +2 // uint16_t bds05_odd_cnt
+            +2 // uint16_t bds06_even_cnt
+            +2 // uint16_t bds06_odd_cnt
+            +2 // uint16_t bds08_cnt
+            +2 // uint16_t bds09_ground_speed_cnt
+            +2 // uint16_t bds09_airspeed_cnt
+            +2 // uint16_t bds0a_event_driven_cnt
+            +2 // uint16_t bds61_emergency_cnt
+            +2 // uint16_t bds61_tcas_ra_cnt
+            +2 // uint16_t bds62_old_cnt
+            +2 // uint16_t bds62_new_cnt
+            +2 // uint16_t bds65_airborne_cnt
+            +2 // uint16_t bds65_surface_cnt
             +1 // uint8_t capability
             +1 // uint8_t squitter_type
             +Bds05EvenMe.Length // uint8_t[7] bds05_even_me
@@ -9446,39 +9466,42 @@ namespace Asv.Mavlink.AsvRsga
             TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
             Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
             Index = BinSerialize.ReadUInt(ref buffer);
+            RxPower = BinSerialize.ReadFloat(ref buffer);
+            RxGain = BinSerialize.ReadFloat(ref buffer);
+            RxSignalOverflow = BinSerialize.ReadFloat(ref buffer);
             IcaoAddress = BinSerialize.ReadUInt(ref buffer);
-            Bds05EvenCnt = BinSerialize.ReadUInt(ref buffer);
             Bds05EvenPeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds05OddCnt = BinSerialize.ReadUInt(ref buffer);
             Bds05OddPeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds06EvenCnt = BinSerialize.ReadUInt(ref buffer);
             Bds06EvenPeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds06OddCnt = BinSerialize.ReadUInt(ref buffer);
             Bds06OddPeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds08Cnt = BinSerialize.ReadUInt(ref buffer);
             Bds08Period = BinSerialize.ReadFloat(ref buffer);
-            Bds09GroundSpeedCnt = BinSerialize.ReadUInt(ref buffer);
             Bds09GroundSpeedPeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds09AirspeedCnt = BinSerialize.ReadUInt(ref buffer);
             Bds09AirspeedPeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds0aEventDrivenCnt = BinSerialize.ReadUInt(ref buffer);
             Bds0aEventDrivenPeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds61EmergencyCnt = BinSerialize.ReadUInt(ref buffer);
             Bds61EmergencyPeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds61TcasRaCnt = BinSerialize.ReadUInt(ref buffer);
             Bds61TcasRaPeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds62OldCnt = BinSerialize.ReadUInt(ref buffer);
             Bds62OldPeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds62NewCnt = BinSerialize.ReadUInt(ref buffer);
             Bds62NewPeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds65AirborneCnt = BinSerialize.ReadUInt(ref buffer);
             Bds65AirbornePeriod = BinSerialize.ReadFloat(ref buffer);
-            Bds65SurfaceCnt = BinSerialize.ReadUInt(ref buffer);
             Bds65SurfacePeriod = BinSerialize.ReadFloat(ref buffer);
             MessagesPresent = (AsvRsgaRttAdsbBReqMsgFlags)BinSerialize.ReadUShort(ref buffer);
+            Bds05EvenCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds05OddCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds06EvenCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds06OddCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds08Cnt = BinSerialize.ReadUShort(ref buffer);
+            Bds09GroundSpeedCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds09AirspeedCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds0aEventDrivenCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds61EmergencyCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds61TcasRaCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds62OldCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds62NewCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds65AirborneCnt = BinSerialize.ReadUShort(ref buffer);
+            Bds65SurfaceCnt = BinSerialize.ReadUShort(ref buffer);
             Capability = (byte)BinSerialize.ReadByte(ref buffer);
             SquitterType = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/7 - Math.Max(0,((/*PayloadByteSize*/238 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/7 - Math.Max(0,((/*PayloadByteSize*/222 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             for(var i=0;i<arraySize;i++)
             {
@@ -9557,36 +9580,39 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
             BinSerialize.WriteULong(ref buffer,(ulong)Flags);
             BinSerialize.WriteUInt(ref buffer,Index);
+            BinSerialize.WriteFloat(ref buffer,RxPower);
+            BinSerialize.WriteFloat(ref buffer,RxGain);
+            BinSerialize.WriteFloat(ref buffer,RxSignalOverflow);
             BinSerialize.WriteUInt(ref buffer,IcaoAddress);
-            BinSerialize.WriteUInt(ref buffer,Bds05EvenCnt);
             BinSerialize.WriteFloat(ref buffer,Bds05EvenPeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds05OddCnt);
             BinSerialize.WriteFloat(ref buffer,Bds05OddPeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds06EvenCnt);
             BinSerialize.WriteFloat(ref buffer,Bds06EvenPeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds06OddCnt);
             BinSerialize.WriteFloat(ref buffer,Bds06OddPeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds08Cnt);
             BinSerialize.WriteFloat(ref buffer,Bds08Period);
-            BinSerialize.WriteUInt(ref buffer,Bds09GroundSpeedCnt);
             BinSerialize.WriteFloat(ref buffer,Bds09GroundSpeedPeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds09AirspeedCnt);
             BinSerialize.WriteFloat(ref buffer,Bds09AirspeedPeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds0aEventDrivenCnt);
             BinSerialize.WriteFloat(ref buffer,Bds0aEventDrivenPeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds61EmergencyCnt);
             BinSerialize.WriteFloat(ref buffer,Bds61EmergencyPeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds61TcasRaCnt);
             BinSerialize.WriteFloat(ref buffer,Bds61TcasRaPeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds62OldCnt);
             BinSerialize.WriteFloat(ref buffer,Bds62OldPeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds62NewCnt);
             BinSerialize.WriteFloat(ref buffer,Bds62NewPeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds65AirborneCnt);
             BinSerialize.WriteFloat(ref buffer,Bds65AirbornePeriod);
-            BinSerialize.WriteUInt(ref buffer,Bds65SurfaceCnt);
             BinSerialize.WriteFloat(ref buffer,Bds65SurfacePeriod);
             BinSerialize.WriteUShort(ref buffer,(ushort)MessagesPresent);
+            BinSerialize.WriteUShort(ref buffer,Bds05EvenCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds05OddCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds06EvenCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds06OddCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds08Cnt);
+            BinSerialize.WriteUShort(ref buffer,Bds09GroundSpeedCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds09AirspeedCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds0aEventDrivenCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds61EmergencyCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds61TcasRaCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds62OldCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds62NewCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds65AirborneCnt);
+            BinSerialize.WriteUShort(ref buffer,Bds65SurfaceCnt);
             BinSerialize.WriteByte(ref buffer,(byte)Capability);
             BinSerialize.WriteByte(ref buffer,(byte)SquitterType);
             for(var i=0;i<Bds05EvenMe.Length;i++)
@@ -9645,7 +9671,7 @@ namespace Asv.Mavlink.AsvRsga
             {
                 BinSerialize.WriteByte(ref buffer,(byte)Bds65SurfaceMe[i]);
             }
-            /* PayloadByteSize = 238 */;
+            /* PayloadByteSize = 222 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -9655,38 +9681,41 @@ namespace Asv.Mavlink.AsvRsga
             UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
             Flags = (AsvRsgaDataFlags)tmpFlags;
             UInt32Type.Accept(visitor,IndexField, ref _index);    
+            FloatType.Accept(visitor,RxPowerField, ref _rxPower);    
+            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
+            FloatType.Accept(visitor,RxSignalOverflowField, ref _rxSignalOverflow);    
             UInt32Type.Accept(visitor,IcaoAddressField, ref _icaoAddress);    
-            UInt32Type.Accept(visitor,Bds05EvenCntField, ref _bds05EvenCnt);    
             FloatType.Accept(visitor,Bds05EvenPeriodField, ref _bds05EvenPeriod);    
-            UInt32Type.Accept(visitor,Bds05OddCntField, ref _bds05OddCnt);    
             FloatType.Accept(visitor,Bds05OddPeriodField, ref _bds05OddPeriod);    
-            UInt32Type.Accept(visitor,Bds06EvenCntField, ref _bds06EvenCnt);    
             FloatType.Accept(visitor,Bds06EvenPeriodField, ref _bds06EvenPeriod);    
-            UInt32Type.Accept(visitor,Bds06OddCntField, ref _bds06OddCnt);    
             FloatType.Accept(visitor,Bds06OddPeriodField, ref _bds06OddPeriod);    
-            UInt32Type.Accept(visitor,Bds08CntField, ref _bds08Cnt);    
             FloatType.Accept(visitor,Bds08PeriodField, ref _bds08Period);    
-            UInt32Type.Accept(visitor,Bds09GroundSpeedCntField, ref _bds09GroundSpeedCnt);    
             FloatType.Accept(visitor,Bds09GroundSpeedPeriodField, ref _bds09GroundSpeedPeriod);    
-            UInt32Type.Accept(visitor,Bds09AirspeedCntField, ref _bds09AirspeedCnt);    
             FloatType.Accept(visitor,Bds09AirspeedPeriodField, ref _bds09AirspeedPeriod);    
-            UInt32Type.Accept(visitor,Bds0aEventDrivenCntField, ref _bds0aEventDrivenCnt);    
             FloatType.Accept(visitor,Bds0aEventDrivenPeriodField, ref _bds0aEventDrivenPeriod);    
-            UInt32Type.Accept(visitor,Bds61EmergencyCntField, ref _bds61EmergencyCnt);    
             FloatType.Accept(visitor,Bds61EmergencyPeriodField, ref _bds61EmergencyPeriod);    
-            UInt32Type.Accept(visitor,Bds61TcasRaCntField, ref _bds61TcasRaCnt);    
             FloatType.Accept(visitor,Bds61TcasRaPeriodField, ref _bds61TcasRaPeriod);    
-            UInt32Type.Accept(visitor,Bds62OldCntField, ref _bds62OldCnt);    
             FloatType.Accept(visitor,Bds62OldPeriodField, ref _bds62OldPeriod);    
-            UInt32Type.Accept(visitor,Bds62NewCntField, ref _bds62NewCnt);    
             FloatType.Accept(visitor,Bds62NewPeriodField, ref _bds62NewPeriod);    
-            UInt32Type.Accept(visitor,Bds65AirborneCntField, ref _bds65AirborneCnt);    
             FloatType.Accept(visitor,Bds65AirbornePeriodField, ref _bds65AirbornePeriod);    
-            UInt32Type.Accept(visitor,Bds65SurfaceCntField, ref _bds65SurfaceCnt);    
             FloatType.Accept(visitor,Bds65SurfacePeriodField, ref _bds65SurfacePeriod);    
             var tmpMessagesPresent = (ushort)MessagesPresent;
             UInt16Type.Accept(visitor,MessagesPresentField, ref tmpMessagesPresent);
             MessagesPresent = (AsvRsgaRttAdsbBReqMsgFlags)tmpMessagesPresent;
+            UInt16Type.Accept(visitor,Bds05EvenCntField, ref _bds05EvenCnt);    
+            UInt16Type.Accept(visitor,Bds05OddCntField, ref _bds05OddCnt);    
+            UInt16Type.Accept(visitor,Bds06EvenCntField, ref _bds06EvenCnt);    
+            UInt16Type.Accept(visitor,Bds06OddCntField, ref _bds06OddCnt);    
+            UInt16Type.Accept(visitor,Bds08CntField, ref _bds08Cnt);    
+            UInt16Type.Accept(visitor,Bds09GroundSpeedCntField, ref _bds09GroundSpeedCnt);    
+            UInt16Type.Accept(visitor,Bds09AirspeedCntField, ref _bds09AirspeedCnt);    
+            UInt16Type.Accept(visitor,Bds0aEventDrivenCntField, ref _bds0aEventDrivenCnt);    
+            UInt16Type.Accept(visitor,Bds61EmergencyCntField, ref _bds61EmergencyCnt);    
+            UInt16Type.Accept(visitor,Bds61TcasRaCntField, ref _bds61TcasRaCnt);    
+            UInt16Type.Accept(visitor,Bds62OldCntField, ref _bds62OldCnt);    
+            UInt16Type.Accept(visitor,Bds62NewCntField, ref _bds62NewCnt);    
+            UInt16Type.Accept(visitor,Bds65AirborneCntField, ref _bds65AirborneCnt);    
+            UInt16Type.Accept(visitor,Bds65SurfaceCntField, ref _bds65SurfaceCnt);    
             UInt8Type.Accept(visitor,CapabilityField, ref _capability);    
             UInt8Type.Accept(visitor,SquitterTypeField, ref _squitterType);    
             ArrayType.Accept(visitor,Bds05EvenMeField, 
@@ -9760,6 +9789,45 @@ namespace Asv.Mavlink.AsvRsga
         private uint _index;
         public uint Index { get => _index; set => _index = value; }
         /// <summary>
+        /// Receive power (peak)
+        /// OriginName: rx_power, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field RxPowerField = new Field.Builder()
+            .Name(nameof(RxPower))
+            .Title("rx_power")
+            .Description("Receive power (peak)")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxPower;
+        public float RxPower { get => _rxPower; set => _rxPower = value; }
+        /// <summary>
+        /// Percent of total RX gain level (0.0 - 1.0)
+        /// OriginName: rx_gain, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxGainField = new Field.Builder()
+            .Name(nameof(RxGain))
+            .Title("rx_gain")
+            .Description("Percent of total RX gain level (0.0 - 1.0)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxGain;
+        public float RxGain { get => _rxGain; set => _rxGain = value; }
+        /// <summary>
+        /// Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong)
+        /// OriginName: rx_signal_overflow, Units: %, IsExtended: false
+        /// </summary>
+        public static readonly Field RxSignalOverflowField = new Field.Builder()
+            .Name(nameof(RxSignalOverflow))
+            .Title("rx_signal_overflow")
+            .Description("Signal overflow indicator (\u22640.2 \u2014 too weak, \u22650.8 \u2014 too strong)")
+.Units(@"%")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxSignalOverflow;
+        public float RxSignalOverflow { get => _rxSignalOverflow; set => _rxSignalOverflow = value; }
+        /// <summary>
         /// ICAO aircraft address common for decoded extended squitter messages
         /// OriginName: icao_address, Units: , IsExtended: false
         /// </summary>
@@ -9772,19 +9840,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private uint _icaoAddress;
         public uint IcaoAddress { get => _icaoAddress; set => _icaoAddress = value; }
-        /// <summary>
-        /// BDS 0,5 airborne position even message count
-        /// OriginName: bds05_even_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds05EvenCntField = new Field.Builder()
-            .Name(nameof(Bds05EvenCnt))
-            .Title("bds05_even_cnt")
-            .Description("BDS 0,5 airborne position even message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds05EvenCnt;
-        public uint Bds05EvenCnt { get => _bds05EvenCnt; set => _bds05EvenCnt = value; }
         /// <summary>
         /// BDS 0,5 airborne position even message period
         /// OriginName: bds05_even_period, Units: s, IsExtended: false
@@ -9799,19 +9854,6 @@ namespace Asv.Mavlink.AsvRsga
         private float _bds05EvenPeriod;
         public float Bds05EvenPeriod { get => _bds05EvenPeriod; set => _bds05EvenPeriod = value; }
         /// <summary>
-        /// BDS 0,5 airborne position odd message count
-        /// OriginName: bds05_odd_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds05OddCntField = new Field.Builder()
-            .Name(nameof(Bds05OddCnt))
-            .Title("bds05_odd_cnt")
-            .Description("BDS 0,5 airborne position odd message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds05OddCnt;
-        public uint Bds05OddCnt { get => _bds05OddCnt; set => _bds05OddCnt = value; }
-        /// <summary>
         /// BDS 0,5 airborne position odd message period
         /// OriginName: bds05_odd_period, Units: s, IsExtended: false
         /// </summary>
@@ -9824,19 +9866,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private float _bds05OddPeriod;
         public float Bds05OddPeriod { get => _bds05OddPeriod; set => _bds05OddPeriod = value; }
-        /// <summary>
-        /// BDS 0,6 surface position even message count
-        /// OriginName: bds06_even_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds06EvenCntField = new Field.Builder()
-            .Name(nameof(Bds06EvenCnt))
-            .Title("bds06_even_cnt")
-            .Description("BDS 0,6 surface position even message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds06EvenCnt;
-        public uint Bds06EvenCnt { get => _bds06EvenCnt; set => _bds06EvenCnt = value; }
         /// <summary>
         /// BDS 0,6 surface position even message period
         /// OriginName: bds06_even_period, Units: s, IsExtended: false
@@ -9851,19 +9880,6 @@ namespace Asv.Mavlink.AsvRsga
         private float _bds06EvenPeriod;
         public float Bds06EvenPeriod { get => _bds06EvenPeriod; set => _bds06EvenPeriod = value; }
         /// <summary>
-        /// BDS 0,6 surface position odd message count
-        /// OriginName: bds06_odd_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds06OddCntField = new Field.Builder()
-            .Name(nameof(Bds06OddCnt))
-            .Title("bds06_odd_cnt")
-            .Description("BDS 0,6 surface position odd message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds06OddCnt;
-        public uint Bds06OddCnt { get => _bds06OddCnt; set => _bds06OddCnt = value; }
-        /// <summary>
         /// BDS 0,6 surface position odd message period
         /// OriginName: bds06_odd_period, Units: s, IsExtended: false
         /// </summary>
@@ -9876,19 +9892,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private float _bds06OddPeriod;
         public float Bds06OddPeriod { get => _bds06OddPeriod; set => _bds06OddPeriod = value; }
-        /// <summary>
-        /// BDS 0,8 aircraft identification message count
-        /// OriginName: bds08_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds08CntField = new Field.Builder()
-            .Name(nameof(Bds08Cnt))
-            .Title("bds08_cnt")
-            .Description("BDS 0,8 aircraft identification message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds08Cnt;
-        public uint Bds08Cnt { get => _bds08Cnt; set => _bds08Cnt = value; }
         /// <summary>
         /// BDS 0,8 aircraft identification message period
         /// OriginName: bds08_period, Units: s, IsExtended: false
@@ -9903,19 +9906,6 @@ namespace Asv.Mavlink.AsvRsga
         private float _bds08Period;
         public float Bds08Period { get => _bds08Period; set => _bds08Period = value; }
         /// <summary>
-        /// BDS 0,9 ground speed message count
-        /// OriginName: bds09_ground_speed_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds09GroundSpeedCntField = new Field.Builder()
-            .Name(nameof(Bds09GroundSpeedCnt))
-            .Title("bds09_ground_speed_cnt")
-            .Description("BDS 0,9 ground speed message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds09GroundSpeedCnt;
-        public uint Bds09GroundSpeedCnt { get => _bds09GroundSpeedCnt; set => _bds09GroundSpeedCnt = value; }
-        /// <summary>
         /// BDS 0,9 ground speed message period
         /// OriginName: bds09_ground_speed_period, Units: s, IsExtended: false
         /// </summary>
@@ -9928,19 +9918,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private float _bds09GroundSpeedPeriod;
         public float Bds09GroundSpeedPeriod { get => _bds09GroundSpeedPeriod; set => _bds09GroundSpeedPeriod = value; }
-        /// <summary>
-        /// BDS 0,9 airspeed message count
-        /// OriginName: bds09_airspeed_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds09AirspeedCntField = new Field.Builder()
-            .Name(nameof(Bds09AirspeedCnt))
-            .Title("bds09_airspeed_cnt")
-            .Description("BDS 0,9 airspeed message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds09AirspeedCnt;
-        public uint Bds09AirspeedCnt { get => _bds09AirspeedCnt; set => _bds09AirspeedCnt = value; }
         /// <summary>
         /// BDS 0,9 airspeed message period
         /// OriginName: bds09_airspeed_period, Units: s, IsExtended: false
@@ -9955,19 +9932,6 @@ namespace Asv.Mavlink.AsvRsga
         private float _bds09AirspeedPeriod;
         public float Bds09AirspeedPeriod { get => _bds09AirspeedPeriod; set => _bds09AirspeedPeriod = value; }
         /// <summary>
-        /// BDS 0,A event-driven message count
-        /// OriginName: bds0a_event_driven_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds0aEventDrivenCntField = new Field.Builder()
-            .Name(nameof(Bds0aEventDrivenCnt))
-            .Title("bds0a_event_driven_cnt")
-            .Description("BDS 0,A event-driven message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds0aEventDrivenCnt;
-        public uint Bds0aEventDrivenCnt { get => _bds0aEventDrivenCnt; set => _bds0aEventDrivenCnt = value; }
-        /// <summary>
         /// BDS 0,A event-driven message period
         /// OriginName: bds0a_event_driven_period, Units: s, IsExtended: false
         /// </summary>
@@ -9980,19 +9944,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private float _bds0aEventDrivenPeriod;
         public float Bds0aEventDrivenPeriod { get => _bds0aEventDrivenPeriod; set => _bds0aEventDrivenPeriod = value; }
-        /// <summary>
-        /// BDS 6,1 aircraft emergency or priority status message count
-        /// OriginName: bds61_emergency_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds61EmergencyCntField = new Field.Builder()
-            .Name(nameof(Bds61EmergencyCnt))
-            .Title("bds61_emergency_cnt")
-            .Description("BDS 6,1 aircraft emergency or priority status message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds61EmergencyCnt;
-        public uint Bds61EmergencyCnt { get => _bds61EmergencyCnt; set => _bds61EmergencyCnt = value; }
         /// <summary>
         /// BDS 6,1 aircraft emergency or priority status message period
         /// OriginName: bds61_emergency_period, Units: s, IsExtended: false
@@ -10007,19 +9958,6 @@ namespace Asv.Mavlink.AsvRsga
         private float _bds61EmergencyPeriod;
         public float Bds61EmergencyPeriod { get => _bds61EmergencyPeriod; set => _bds61EmergencyPeriod = value; }
         /// <summary>
-        /// BDS 6,1 TCAS RA broadcast message count
-        /// OriginName: bds61_tcas_ra_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds61TcasRaCntField = new Field.Builder()
-            .Name(nameof(Bds61TcasRaCnt))
-            .Title("bds61_tcas_ra_cnt")
-            .Description("BDS 6,1 TCAS RA broadcast message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds61TcasRaCnt;
-        public uint Bds61TcasRaCnt { get => _bds61TcasRaCnt; set => _bds61TcasRaCnt = value; }
-        /// <summary>
         /// BDS 6,1 TCAS RA broadcast message period
         /// OriginName: bds61_tcas_ra_period, Units: s, IsExtended: false
         /// </summary>
@@ -10032,19 +9970,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private float _bds61TcasRaPeriod;
         public float Bds61TcasRaPeriod { get => _bds61TcasRaPeriod; set => _bds61TcasRaPeriod = value; }
-        /// <summary>
-        /// BDS 6,2 target state and status old format message count
-        /// OriginName: bds62_old_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds62OldCntField = new Field.Builder()
-            .Name(nameof(Bds62OldCnt))
-            .Title("bds62_old_cnt")
-            .Description("BDS 6,2 target state and status old format message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds62OldCnt;
-        public uint Bds62OldCnt { get => _bds62OldCnt; set => _bds62OldCnt = value; }
         /// <summary>
         /// BDS 6,2 target state and status old format message period
         /// OriginName: bds62_old_period, Units: s, IsExtended: false
@@ -10059,19 +9984,6 @@ namespace Asv.Mavlink.AsvRsga
         private float _bds62OldPeriod;
         public float Bds62OldPeriod { get => _bds62OldPeriod; set => _bds62OldPeriod = value; }
         /// <summary>
-        /// BDS 6,2 target state and status new format message count
-        /// OriginName: bds62_new_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds62NewCntField = new Field.Builder()
-            .Name(nameof(Bds62NewCnt))
-            .Title("bds62_new_cnt")
-            .Description("BDS 6,2 target state and status new format message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds62NewCnt;
-        public uint Bds62NewCnt { get => _bds62NewCnt; set => _bds62NewCnt = value; }
-        /// <summary>
         /// BDS 6,2 target state and status new format message period
         /// OriginName: bds62_new_period, Units: s, IsExtended: false
         /// </summary>
@@ -10085,19 +9997,6 @@ namespace Asv.Mavlink.AsvRsga
         private float _bds62NewPeriod;
         public float Bds62NewPeriod { get => _bds62NewPeriod; set => _bds62NewPeriod = value; }
         /// <summary>
-        /// BDS 6,5 airborne aircraft operational status message count
-        /// OriginName: bds65_airborne_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds65AirborneCntField = new Field.Builder()
-            .Name(nameof(Bds65AirborneCnt))
-            .Title("bds65_airborne_cnt")
-            .Description("BDS 6,5 airborne aircraft operational status message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds65AirborneCnt;
-        public uint Bds65AirborneCnt { get => _bds65AirborneCnt; set => _bds65AirborneCnt = value; }
-        /// <summary>
         /// BDS 6,5 airborne aircraft operational status message period
         /// OriginName: bds65_airborne_period, Units: s, IsExtended: false
         /// </summary>
@@ -10110,19 +10009,6 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private float _bds65AirbornePeriod;
         public float Bds65AirbornePeriod { get => _bds65AirbornePeriod; set => _bds65AirbornePeriod = value; }
-        /// <summary>
-        /// BDS 6,5 surface aircraft operational status message count
-        /// OriginName: bds65_surface_cnt, Units: , IsExtended: false
-        /// </summary>
-        public static readonly Field Bds65SurfaceCntField = new Field.Builder()
-            .Name(nameof(Bds65SurfaceCnt))
-            .Title("bds65_surface_cnt")
-            .Description("BDS 6,5 surface aircraft operational status message count")
-
-            .DataType(UInt32Type.Default)
-        .Build();
-        private uint _bds65SurfaceCnt;
-        public uint Bds65SurfaceCnt { get => _bds65SurfaceCnt; set => _bds65SurfaceCnt = value; }
         /// <summary>
         /// BDS 6,5 surface aircraft operational status message period
         /// OriginName: bds65_surface_period, Units: s, IsExtended: false
@@ -10149,6 +10035,188 @@ namespace Asv.Mavlink.AsvRsga
             .Build();
         private AsvRsgaRttAdsbBReqMsgFlags _messagesPresent;
         public AsvRsgaRttAdsbBReqMsgFlags MessagesPresent { get => _messagesPresent; set => _messagesPresent = value; } 
+        /// <summary>
+        /// BDS 0,5 airborne position even message count
+        /// OriginName: bds05_even_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds05EvenCntField = new Field.Builder()
+            .Name(nameof(Bds05EvenCnt))
+            .Title("bds05_even_cnt")
+            .Description("BDS 0,5 airborne position even message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds05EvenCnt;
+        public ushort Bds05EvenCnt { get => _bds05EvenCnt; set => _bds05EvenCnt = value; }
+        /// <summary>
+        /// BDS 0,5 airborne position odd message count
+        /// OriginName: bds05_odd_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds05OddCntField = new Field.Builder()
+            .Name(nameof(Bds05OddCnt))
+            .Title("bds05_odd_cnt")
+            .Description("BDS 0,5 airborne position odd message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds05OddCnt;
+        public ushort Bds05OddCnt { get => _bds05OddCnt; set => _bds05OddCnt = value; }
+        /// <summary>
+        /// BDS 0,6 surface position even message count
+        /// OriginName: bds06_even_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds06EvenCntField = new Field.Builder()
+            .Name(nameof(Bds06EvenCnt))
+            .Title("bds06_even_cnt")
+            .Description("BDS 0,6 surface position even message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds06EvenCnt;
+        public ushort Bds06EvenCnt { get => _bds06EvenCnt; set => _bds06EvenCnt = value; }
+        /// <summary>
+        /// BDS 0,6 surface position odd message count
+        /// OriginName: bds06_odd_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds06OddCntField = new Field.Builder()
+            .Name(nameof(Bds06OddCnt))
+            .Title("bds06_odd_cnt")
+            .Description("BDS 0,6 surface position odd message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds06OddCnt;
+        public ushort Bds06OddCnt { get => _bds06OddCnt; set => _bds06OddCnt = value; }
+        /// <summary>
+        /// BDS 0,8 aircraft identification message count
+        /// OriginName: bds08_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds08CntField = new Field.Builder()
+            .Name(nameof(Bds08Cnt))
+            .Title("bds08_cnt")
+            .Description("BDS 0,8 aircraft identification message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds08Cnt;
+        public ushort Bds08Cnt { get => _bds08Cnt; set => _bds08Cnt = value; }
+        /// <summary>
+        /// BDS 0,9 ground speed message count
+        /// OriginName: bds09_ground_speed_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds09GroundSpeedCntField = new Field.Builder()
+            .Name(nameof(Bds09GroundSpeedCnt))
+            .Title("bds09_ground_speed_cnt")
+            .Description("BDS 0,9 ground speed message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds09GroundSpeedCnt;
+        public ushort Bds09GroundSpeedCnt { get => _bds09GroundSpeedCnt; set => _bds09GroundSpeedCnt = value; }
+        /// <summary>
+        /// BDS 0,9 airspeed message count
+        /// OriginName: bds09_airspeed_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds09AirspeedCntField = new Field.Builder()
+            .Name(nameof(Bds09AirspeedCnt))
+            .Title("bds09_airspeed_cnt")
+            .Description("BDS 0,9 airspeed message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds09AirspeedCnt;
+        public ushort Bds09AirspeedCnt { get => _bds09AirspeedCnt; set => _bds09AirspeedCnt = value; }
+        /// <summary>
+        /// BDS 0,A event-driven message count
+        /// OriginName: bds0a_event_driven_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds0aEventDrivenCntField = new Field.Builder()
+            .Name(nameof(Bds0aEventDrivenCnt))
+            .Title("bds0a_event_driven_cnt")
+            .Description("BDS 0,A event-driven message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds0aEventDrivenCnt;
+        public ushort Bds0aEventDrivenCnt { get => _bds0aEventDrivenCnt; set => _bds0aEventDrivenCnt = value; }
+        /// <summary>
+        /// BDS 6,1 aircraft emergency or priority status message count
+        /// OriginName: bds61_emergency_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds61EmergencyCntField = new Field.Builder()
+            .Name(nameof(Bds61EmergencyCnt))
+            .Title("bds61_emergency_cnt")
+            .Description("BDS 6,1 aircraft emergency or priority status message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds61EmergencyCnt;
+        public ushort Bds61EmergencyCnt { get => _bds61EmergencyCnt; set => _bds61EmergencyCnt = value; }
+        /// <summary>
+        /// BDS 6,1 TCAS RA broadcast message count
+        /// OriginName: bds61_tcas_ra_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds61TcasRaCntField = new Field.Builder()
+            .Name(nameof(Bds61TcasRaCnt))
+            .Title("bds61_tcas_ra_cnt")
+            .Description("BDS 6,1 TCAS RA broadcast message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds61TcasRaCnt;
+        public ushort Bds61TcasRaCnt { get => _bds61TcasRaCnt; set => _bds61TcasRaCnt = value; }
+        /// <summary>
+        /// BDS 6,2 target state and status old format message count
+        /// OriginName: bds62_old_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds62OldCntField = new Field.Builder()
+            .Name(nameof(Bds62OldCnt))
+            .Title("bds62_old_cnt")
+            .Description("BDS 6,2 target state and status old format message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds62OldCnt;
+        public ushort Bds62OldCnt { get => _bds62OldCnt; set => _bds62OldCnt = value; }
+        /// <summary>
+        /// BDS 6,2 target state and status new format message count
+        /// OriginName: bds62_new_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds62NewCntField = new Field.Builder()
+            .Name(nameof(Bds62NewCnt))
+            .Title("bds62_new_cnt")
+            .Description("BDS 6,2 target state and status new format message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds62NewCnt;
+        public ushort Bds62NewCnt { get => _bds62NewCnt; set => _bds62NewCnt = value; }
+        /// <summary>
+        /// BDS 6,5 airborne aircraft operational status message count
+        /// OriginName: bds65_airborne_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds65AirborneCntField = new Field.Builder()
+            .Name(nameof(Bds65AirborneCnt))
+            .Title("bds65_airborne_cnt")
+            .Description("BDS 6,5 airborne aircraft operational status message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds65AirborneCnt;
+        public ushort Bds65AirborneCnt { get => _bds65AirborneCnt; set => _bds65AirborneCnt = value; }
+        /// <summary>
+        /// BDS 6,5 surface aircraft operational status message count
+        /// OriginName: bds65_surface_cnt, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field Bds65SurfaceCntField = new Field.Builder()
+            .Name(nameof(Bds65SurfaceCnt))
+            .Title("bds65_surface_cnt")
+            .Description("BDS 6,5 surface aircraft operational status message count")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _bds65SurfaceCnt;
+        public ushort Bds65SurfaceCnt { get => _bds65SurfaceCnt; set => _bds65SurfaceCnt = value; }
         /// <summary>
         /// Mode S capability value common for decoded extended squitter messages
         /// OriginName: capability, Units: , IsExtended: false
