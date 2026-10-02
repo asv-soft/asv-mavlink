@@ -953,8 +953,6 @@
 
             <field type="int16_t" name="measure_time" units="ms">Measure time</field>
 
-            <!-- Preserve the 99-byte base payload and append fields in wire order. -->
-            <extensions/>
             <field type="float" name="erp_instant_dbm" units="dBm" invalid="NaN">Instant effective radiated power</field>
             <field type="float" name="erp_dbm" units="dBm" invalid="NaN">Effective radiated power</field>
             <field type="float" name="mtl_instant_dbm" units="dBm" invalid="NaN">Instant minimum trigger level</field>
@@ -1030,8 +1028,6 @@
             <field type="uint8_t[7]" name="bds50">BDS 5,0</field>
             <field type="uint8_t[7]" name="bds60">BDS 6,0</field>
 
-            <!-- Preserve the 171-byte base payload and append fields in wire order. -->
-            <extensions/>
             <field type="float" name="erp_instant_dbm" units="dBm" invalid="NaN">Instant effective radiated power</field>
             <field type="float" name="erp_dbm" units="dBm" invalid="NaN">Effective radiated power</field>
             <field type="float" name="mtl_instant_dbm" units="dBm" invalid="NaN">Instant minimum trigger level</field>
@@ -1051,7 +1047,7 @@
             <field type="float" name="uf4_mode_c_altitude_feet" units="ft" invalid="NaN">Mode C altitude reference used by the UF4 comparison; NaN when unavailable</field>
             <field type="float" name="uf16_mode_c_altitude_feet" units="ft" invalid="NaN">Mode C altitude reference used by the UF16 comparison; NaN when unavailable</field>
             <field type="float" name="uf20_mode_c_altitude_feet" units="ft" invalid="NaN">Mode C altitude reference used by the UF20 comparison; NaN when unavailable</field>
-            <field type="uint8_t" name="altitude_reference_version">Altitude reference validity marker; send 1 when the four preceding references are encoded. Ignore those references if this marker is absent or not 1. The nonzero marker preserves zero-foot references during MAVLink trailing-zero trimming.</field>
+            <field type="uint8_t" name="altitude_reference_version">Altitude reference validity marker; set to 1 when the UF0, UF4, UF16 and UF20 Mode C altitude references are encoded. Ignore these references when the marker is not 1.</field>
             <field type="uint32_t" name="target_icao_address" invalid="0">Requested/expected ICAO address used by the group; not detected identity</field>
         </message>
 
