@@ -151,7 +151,7 @@ namespace Asv.Mavlink.{{ Namespace }}
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte GetMaxByteSize() => {{ msg.PayloadByteSize }}; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => {{ msg.PayloadByteSize - msg.ExtendedFieldsLength }}; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => {{ msg.PayloadByteSize | Minus: msg.ExtendedFieldsLength }}; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
