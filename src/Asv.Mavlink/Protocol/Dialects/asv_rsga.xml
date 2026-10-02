@@ -974,10 +974,12 @@
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags. Bits 8..14 indicate presence of BDS 1,0; 1,7; 2,0; 3,0; 4,0; 5,0; 6,0 respectively. All other bits retain their ASV_RSGA_DATA_FLAGS meaning.</field>
 
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong)</field>
+
             <field type="uint8_t" name="capability">Capability flags</field>
             <field type="uint32_t" name="icao_address">ICAO address</field>
-            <field type="uint32_t" name="uf11_cnt">UF11 count</field>
-            <field type="uint32_t" name="df11_cnt">DF11 count</field>
+            <field type="uint16_t" name="uf11_cnt">UF11 count</field>
+            <field type="uint16_t" name="df11_cnt">DF11 count</field>
 
             <field type="uint8_t" name="df4_flight_status">DF4 flight status</field>
             <field type="uint8_t" name="df4_downlink_request">DF4 downlink request</field>
@@ -1058,6 +1060,11 @@
             <field type="uint64_t" name="time_unix_usec" units="us">Timestamp (UNIX epoch time)</field>
             <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
 
+            <!-- RX -->
+            <field type="float" name="rx_power" units="dBm">Receive power (peak)</field>
+            <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
+            <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too weak, ≥0.8 — too strong)</field>
+
             <!-- Common ADS-B frame metadata -->
             <field type="uint16_t" name="messages_present" enum="ASV_RSGA_RTT_ADSB_B_REQ_MSG_FLAGS">Flags that identify which ADS-B message bodies are valid</field>
             <field type="uint32_t" name="icao_address">ICAO aircraft address common for decoded extended squitter messages</field>
@@ -1065,33 +1072,33 @@
             <field type="uint8_t" name="squitter_type">ADS-B squitter type (17 - with transponder, 18 - non-transponder)</field>
 
             <!-- ExSquitterMessages counters and periods -->
-            <field type="uint32_t" name="bds05_even_cnt">BDS 0,5 airborne position even message count</field>
+            <field type="uint16_t" name="bds05_even_cnt">BDS 0,5 airborne position even message count</field>
             <field type="float" name="bds05_even_period" units="s">BDS 0,5 airborne position even message period</field>
-            <field type="uint32_t" name="bds05_odd_cnt">BDS 0,5 airborne position odd message count</field>
+            <field type="uint16_t" name="bds05_odd_cnt">BDS 0,5 airborne position odd message count</field>
             <field type="float" name="bds05_odd_period" units="s">BDS 0,5 airborne position odd message period</field>
-            <field type="uint32_t" name="bds06_even_cnt">BDS 0,6 surface position even message count</field>
+            <field type="uint16_t" name="bds06_even_cnt">BDS 0,6 surface position even message count</field>
             <field type="float" name="bds06_even_period" units="s">BDS 0,6 surface position even message period</field>
-            <field type="uint32_t" name="bds06_odd_cnt">BDS 0,6 surface position odd message count</field>
+            <field type="uint16_t" name="bds06_odd_cnt">BDS 0,6 surface position odd message count</field>
             <field type="float" name="bds06_odd_period" units="s">BDS 0,6 surface position odd message period</field>
-            <field type="uint32_t" name="bds08_cnt">BDS 0,8 aircraft identification message count</field>
+            <field type="uint16_t" name="bds08_cnt">BDS 0,8 aircraft identification message count</field>
             <field type="float" name="bds08_period" units="s">BDS 0,8 aircraft identification message period</field>
-            <field type="uint32_t" name="bds09_ground_speed_cnt">BDS 0,9 ground speed message count</field>
+            <field type="uint16_t" name="bds09_ground_speed_cnt">BDS 0,9 ground speed message count</field>
             <field type="float" name="bds09_ground_speed_period" units="s">BDS 0,9 ground speed message period</field>
-            <field type="uint32_t" name="bds09_airspeed_cnt">BDS 0,9 airspeed message count</field>
+            <field type="uint16_t" name="bds09_airspeed_cnt">BDS 0,9 airspeed message count</field>
             <field type="float" name="bds09_airspeed_period" units="s">BDS 0,9 airspeed message period</field>
-            <field type="uint32_t" name="bds0a_event_driven_cnt">BDS 0,A event-driven message count</field>
+            <field type="uint16_t" name="bds0a_event_driven_cnt">BDS 0,A event-driven message count</field>
             <field type="float" name="bds0a_event_driven_period" units="s">BDS 0,A event-driven message period</field>
-            <field type="uint32_t" name="bds61_emergency_cnt">BDS 6,1 aircraft emergency or priority status message count</field>
+            <field type="uint16_t" name="bds61_emergency_cnt">BDS 6,1 aircraft emergency or priority status message count</field>
             <field type="float" name="bds61_emergency_period" units="s">BDS 6,1 aircraft emergency or priority status message period</field>
-            <field type="uint32_t" name="bds61_tcas_ra_cnt">BDS 6,1 TCAS RA broadcast message count</field>
+            <field type="uint16_t" name="bds61_tcas_ra_cnt">BDS 6,1 TCAS RA broadcast message count</field>
             <field type="float" name="bds61_tcas_ra_period" units="s">BDS 6,1 TCAS RA broadcast message period</field>
-            <field type="uint32_t" name="bds62_old_cnt">BDS 6,2 target state and status old format message count</field>
+            <field type="uint16_t" name="bds62_old_cnt">BDS 6,2 target state and status old format message count</field>
             <field type="float" name="bds62_old_period" units="s">BDS 6,2 target state and status old format message period</field>
-            <field type="uint32_t" name="bds62_new_cnt">BDS 6,2 target state and status new format message count</field>
+            <field type="uint16_t" name="bds62_new_cnt">BDS 6,2 target state and status new format message count</field>
             <field type="float" name="bds62_new_period" units="s">BDS 6,2 target state and status new format message period</field>
-            <field type="uint32_t" name="bds65_airborne_cnt">BDS 6,5 airborne aircraft operational status message count</field>
+            <field type="uint16_t" name="bds65_airborne_cnt">BDS 6,5 airborne aircraft operational status message count</field>
             <field type="float" name="bds65_airborne_period" units="s">BDS 6,5 airborne aircraft operational status message period</field>
-            <field type="uint32_t" name="bds65_surface_cnt">BDS 6,5 surface aircraft operational status message count</field>
+            <field type="uint16_t" name="bds65_surface_cnt">BDS 6,5 surface aircraft operational status message count</field>
             <field type="float" name="bds65_surface_period" units="s">BDS 6,5 surface aircraft operational status message period</field>
 
             <!-- ADS-B ME/BDS payloads (56 bits each) -->
