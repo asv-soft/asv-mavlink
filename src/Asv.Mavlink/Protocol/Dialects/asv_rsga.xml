@@ -705,9 +705,9 @@
             <field type="float" name="rx_signal_overflow" units="%" invalid="NaN">Signal overflow indicator (≤0.2 — too low, ≥0.8 — too high)</field>
             <field type="float" name="rx_gain" units="%">Percent of total RX gain level (0.0 - 1.0)</field>
             <!-- Total measure data -->
-            <field type="float" name="am_90" units="%">Total amplitude modulation of 90Hz</field>
+            <field type="float" name="am_90">Total 90 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="freq_90" units="Hz">Total frequency offset of signal 90 Hz</field>
-            <field type="float" name="am_150" units="%">Total amplitude modulation of 150Hz</field>
+            <field type="float" name="am_150">Total 150 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="freq_150" units="Hz">Total frequency offset of signal 150 Hz</field>
             
             <field type="float" name="phi_90_low_vs_high" units="deg"> Phase difference 90 Hz low and high freq channel</field>
@@ -716,21 +716,21 @@
             <!-- Course measure data -->
             <field type="float" name="low_power" units="dBm">Input power of low freq channel</field>
             <field type="int16_t" name="low_carrier_offset" units="Hz">Carrier frequency offset of low freq channel</field>
-            <field type="float" name="low_am_90" units="%">Aplitude modulation of 90Hz of low freq channel</field>
+            <field type="float" name="low_am_90">90 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="low_freq_90" units="Hz">Frequency offset of signal 90 Hz of low freq channel</field>
-            <field type="float" name="low_am_150" units="%">Aplitude modulation of 150Hz of low freq channel</field>
+            <field type="float" name="low_am_150">150 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="low_freq_150" units="Hz">Frequency offset of signal 150 Hz of low freq channel</field>
             <!-- Clearance measure data -->
             <field type="float" name="high_power" units="dBm">Input power of high freq channel</field>
             <field type="int16_t" name="high_carrier_offset" units="Hz">Carrier frequency offset of high freq channel</field>
-            <field type="float" name="high_am_90" units="%">Aplitude modulation of 90Hz of high freq channel</field>
+            <field type="float" name="high_am_90">90 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="high_freq_90" units="Hz">Frequency offset of signal 90 Hz of high freq channel</field>
-            <field type="float" name="high_am_150" units="% E2">Aplitude modulation of 150Hz of high freq channel</field>
+            <field type="float" name="high_am_150">150 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="high_freq_150" units="Hz">Frequency offset of signal 150 Hz of high freq channel</field>
             <!-- Code ID -->
-            <field type="float" name="code_id_am_1020" units="%">Current amplitude modulation of Code ID</field>
-            <field type="float" name="code_id_am_min_1020" units="%">Min amplitude modulation of Code ID</field>
-            <field type="float" name="code_id_am_max_1020" units="%">Max amplitude modulation of Code ID</field>
+            <field type="float" name="code_id_am_1020">Current amplitude-modulation depth of the 1020 Hz identification code as a fraction of one (1.0 = 100%).</field>
+            <field type="float" name="code_id_am_min_1020">Minimum amplitude-modulation depth of the 1020 Hz identification code as a fraction of one (1.0 = 100%).</field>
+            <field type="float" name="code_id_am_max_1020">Maximum amplitude-modulation depth of the 1020 Hz identification code as a fraction of one (1.0 = 100%).</field>
             <field type="uint16_t" name="code_id_dot_time" units="ms">Dot time</field>
             <field type="uint16_t" name="code_id_dash_time" units="ms">Dash time</field>
             <field type="uint16_t" name="code_id_symbol_pause" units="ms">Symbol pause time</field>
@@ -757,23 +757,23 @@
             <!-- High measure data -->
             <field type="float" name="low_power" units="dBm">Input power of low freq channel</field>
             <field type="int16_t" name="low_carrier_offset" units="Hz">Carrier frequency offset of low freq channel</field>
-            <field type="float" name="low_am_90" units="%">Aplitude modulation of 90Hz of low freq channel</field>
+            <field type="float" name="low_am_90">90 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="low_freq_90" units="Hz">Frequency offset of signal 90 Hz of low freq channel</field>
-            <field type="float" name="low_am_150" units="%">Aplitude modulation of 150Hz of low freq channel</field>
+            <field type="float" name="low_am_150">150 Hz amplitude-modulation depth of the low-frequency channel as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="low_freq_150" units="Hz">Frequency offset of signal 150 Hz of low freq channel</field>
             <!-- Low measure data -->
             <field type="float" name="high_power" units="dBm">Input power of high freq channel</field>
             <field type="int16_t" name="high_carrier_offset" units="Hz">Carrier frequency offset of high freq channel</field>
-            <field type="float" name="high_am_90" units="%">Aplitude modulation of 90Hz of high freq channel</field>
+            <field type="float" name="high_am_90">90 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="high_freq_90" units="Hz">Frequency offset of signal 90 Hz of high freq channel</field>
-            <field type="float" name="high_am_150" units="% E2">Aplitude modulation of 150Hz of high freq channel</field>
+            <field type="float" name="high_am_150">150 Hz amplitude-modulation depth of the high-frequency channel as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="high_freq_150" units="Hz">Frequency offset of signal 150 Hz of high freq channel</field>
             <!-- Total measure data -->
 
-            <field type="float" name="am_90" units="%">Total amplitude modulation of 90Hz</field>
+            <field type="float" name="am_90">Total 90 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="freq_90" units="Hz">Total frequency offset of signal 90 Hz</field>
 
-            <field type="float" name="am_150" units="%">Total amplitude modulation of 150Hz</field>
+            <field type="float" name="am_150">Total 150 Hz amplitude-modulation depth as a fraction of one (1.0 = 100%).</field>
             <field type="int16_t" name="freq_150" units="Hz">Total frequency offset of signal 150 Hz</field>
 
             <field type="float" name="phi_90_low_vs_high" units="deg"> Phase difference 90 Hz low and high freq channel</field>
@@ -978,6 +978,8 @@
 
             <field type="uint8_t" name="capability">Capability flags</field>
             <field type="uint32_t" name="icao_address">ICAO address</field>
+            <field type="uint32_t" name="uf11_cnt">UF11 count</field>
+            <field type="uint32_t" name="df11_cnt">DF11 count</field>
             <field type="uint16_t" name="uf11_cnt">UF11 count</field>
             <field type="uint16_t" name="df11_cnt">DF11 count</field>
 
@@ -1072,32 +1074,46 @@
             <field type="uint8_t" name="squitter_type">ADS-B squitter type (17 - with transponder, 18 - non-transponder)</field>
 
             <!-- ExSquitterMessages counters and periods -->
+            <field type="uint32_t" name="bds05_even_cnt">BDS 0,5 airborne position even message count</field>
             <field type="uint16_t" name="bds05_even_cnt">BDS 0,5 airborne position even message count</field>
             <field type="float" name="bds05_even_period" units="s">BDS 0,5 airborne position even message period</field>
+            <field type="uint32_t" name="bds05_odd_cnt">BDS 0,5 airborne position odd message count</field>
             <field type="uint16_t" name="bds05_odd_cnt">BDS 0,5 airborne position odd message count</field>
             <field type="float" name="bds05_odd_period" units="s">BDS 0,5 airborne position odd message period</field>
+            <field type="uint32_t" name="bds06_even_cnt">BDS 0,6 surface position even message count</field>
             <field type="uint16_t" name="bds06_even_cnt">BDS 0,6 surface position even message count</field>
             <field type="float" name="bds06_even_period" units="s">BDS 0,6 surface position even message period</field>
+            <field type="uint32_t" name="bds06_odd_cnt">BDS 0,6 surface position odd message count</field>
             <field type="uint16_t" name="bds06_odd_cnt">BDS 0,6 surface position odd message count</field>
             <field type="float" name="bds06_odd_period" units="s">BDS 0,6 surface position odd message period</field>
+            <field type="uint32_t" name="bds08_cnt">BDS 0,8 aircraft identification message count</field>
             <field type="uint16_t" name="bds08_cnt">BDS 0,8 aircraft identification message count</field>
             <field type="float" name="bds08_period" units="s">BDS 0,8 aircraft identification message period</field>
+            <field type="uint32_t" name="bds09_ground_speed_cnt">BDS 0,9 ground speed message count</field>
             <field type="uint16_t" name="bds09_ground_speed_cnt">BDS 0,9 ground speed message count</field>
             <field type="float" name="bds09_ground_speed_period" units="s">BDS 0,9 ground speed message period</field>
+            <field type="uint32_t" name="bds09_airspeed_cnt">BDS 0,9 airspeed message count</field>
             <field type="uint16_t" name="bds09_airspeed_cnt">BDS 0,9 airspeed message count</field>
             <field type="float" name="bds09_airspeed_period" units="s">BDS 0,9 airspeed message period</field>
+            <field type="uint32_t" name="bds0a_event_driven_cnt">BDS 0,A event-driven message count</field>
             <field type="uint16_t" name="bds0a_event_driven_cnt">BDS 0,A event-driven message count</field>
             <field type="float" name="bds0a_event_driven_period" units="s">BDS 0,A event-driven message period</field>
+            <field type="uint32_t" name="bds61_emergency_cnt">BDS 6,1 aircraft emergency or priority status message count</field>
             <field type="uint16_t" name="bds61_emergency_cnt">BDS 6,1 aircraft emergency or priority status message count</field>
             <field type="float" name="bds61_emergency_period" units="s">BDS 6,1 aircraft emergency or priority status message period</field>
+            <field type="uint32_t" name="bds61_tcas_ra_cnt">BDS 6,1 TCAS RA broadcast message count</field>
             <field type="uint16_t" name="bds61_tcas_ra_cnt">BDS 6,1 TCAS RA broadcast message count</field>
             <field type="float" name="bds61_tcas_ra_period" units="s">BDS 6,1 TCAS RA broadcast message period</field>
+            <field type="uint32_t" name="bds62_old_cnt">BDS 6,2 target state and status old format message count</field>
             <field type="uint16_t" name="bds62_old_cnt">BDS 6,2 target state and status old format message count</field>
             <field type="float" name="bds62_old_period" units="s">BDS 6,2 target state and status old format message period</field>
+            <field type="uint32_t" name="bds62_new_cnt">BDS 6,2 target state and status new format message count</field>
             <field type="uint16_t" name="bds62_new_cnt">BDS 6,2 target state and status new format message count</field>
             <field type="float" name="bds62_new_period" units="s">BDS 6,2 target state and status new format message period</field>
+            <field type="uint32_t" name="bds65_airborne_cnt">BDS 6,5 airborne aircraft operational status message count</field>
             <field type="uint16_t" name="bds65_airborne_cnt">BDS 6,5 airborne aircraft operational status message count</field>
             <field type="float" name="bds65_airborne_period" units="s">BDS 6,5 airborne aircraft operational status message period</field>
+            <field type="uint32_t" name="bds65_surface_cnt">BDS 6,5 surface aircraft operational status message count</field>
             <field type="uint16_t" name="bds65_surface_cnt">BDS 6,5 surface aircraft operational status message count</field>
             <field type="float" name="bds65_surface_period" units="s">BDS 6,5 surface aircraft operational status message period</field>
 

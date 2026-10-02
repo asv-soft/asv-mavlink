@@ -99,7 +99,7 @@ public abstract class MavlinkV2Message : MavlinkMessage
             var crcStartBuffer = buffer.Slice(payloadSize, 2);
             var crc = BinSerialize.ReadUShort(ref crcStartBuffer);
 
-            var originSize = GetPayload().GetMinByteSize();
+            var originSize = GetPayload().GetMaxByteSize();
             if (payloadSize < originSize)
             {
                 // this is Empty-Byte Payload Truncation https://mavlink.io/en/guide/serialization.html#payload_truncation
