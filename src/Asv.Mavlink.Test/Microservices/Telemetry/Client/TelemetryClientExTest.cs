@@ -4,7 +4,6 @@ using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
@@ -31,7 +30,7 @@ public class TelemetryClientExTest : ClientTestBase<TelemetryClientEx>
     [Fact]
     public async Task Init_ProperInput_Success()
     {
-        await _client.Init();
+        await _client.Init(Xunit.TestContext.Current.CancellationToken);
     }
 
     [Theory]

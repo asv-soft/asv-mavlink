@@ -10,7 +10,6 @@ using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test.Position.Client;
 
@@ -55,7 +54,7 @@ public sealed class PositionClientExTest : ClientTestBase<PositionClientEx>
     [Fact]
     public async Task Init_ProperInput_Success()
     {
-        await _client.Init();
+        await _client.Init(Xunit.TestContext.Current.CancellationToken);
     }
 
     [Theory]

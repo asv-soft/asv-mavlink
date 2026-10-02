@@ -1,0 +1,41 @@
+# Heartbeat
+
+The heartbeat microservice is used to detect and monitor devices in a MAVLink network. 
+It works by sending and receiving a special message — the [`HeartbeatPayload`](#heartbeatpayload). 
+This message contains basic information about a device (such as type, system status, modes, etc.) 
+and is used to determine whether the device is alive.
+
+The heartbeat microservice can be used in two roles:
+
+- A [client](HeartbeatClient.md) implementing [IHeartbeatClient](HeartbeatClient.md#iheartbeatclient)  
+  (for example, a ground control app) receives heartbeat messages and can decide whether the device is online or disconnected.
+
+- A [server](HeartbeatServer.md) implementing [IHeartbeatServer](HeartbeatServer.md#iheartbeatserver)  
+  (for example, a drone) sends out heartbeat messages with its current state.
+
+>You can read more about the heartbeat microservice in the official [MAVLink docs](https://mavlink.io/en/services/heartbeat.html). 
+>See the [HeartbeatPayload](#heartbeatpayload) section below for the exact structure of the payload.
+{style="info"}
+
+## [HeartbeatPayload](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Protocol/Messages/minimal.cs#L1759)
+
+Here is a quick reference for our `HeartbeatPayload` type, an implementation of [MAVLink heartbeat message](https://mavlink.io/en/messages/common.html#messages).
+
+| Property         | Type           | Description                                      |
+|------------------|----------------|--------------------------------------------------|
+| `Type`           | `MavType`      | Type of the component.                           |
+| `Autopilot`      | `MavAutopilot` | Autopilot type.                                  |
+| `BaseMode`       | `MavModeFlag`  | System mode bitmap.                              |
+| `CustomMode`     | `uint`         | A bitfield for use for autopilot-specific flags. |
+| `SystemStatus`   | `MavState`     | System status flag.                              |
+| `MavlinkVersion` | `byte`         | MAVLink version.                                 |
+
+### Custom mode helpers
+
+The following extension methods are available for working with the `CustomMode` bitfield:
+
+| Method                                                                  | Return Type | Description                                                   |
+|-------------------------------------------------------------------------|-------------|---------------------------------------------------------------|
+| `EditCustomMode(Action<UintBitArray> edit)`                             | `void`      | Edits the complete `CustomMode` bitfield.                     |
+| `SetCustomMode(int bitIndex, int bitLength, uint value)`                | `void`      | Sets a range of bits in `CustomMode`.                         |
+| `GetCustomMode(int bitIndex, int bitLength)`                            | `uint`      | Gets a range of bits from `CustomMode`.                       |

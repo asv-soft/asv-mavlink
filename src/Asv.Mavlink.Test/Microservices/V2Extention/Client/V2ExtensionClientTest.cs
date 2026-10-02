@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
-using Xunit.Abstractions;
 
+using Xunit;
 namespace Asv.Mavlink.Test.Client;
 
 [TestSubject(typeof(V2ExtensionClient))]

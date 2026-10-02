@@ -3,10 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
 using Asv.Mavlink.Minimal;
-using FluentAssertions;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
@@ -68,11 +66,8 @@ public class HeartbeatComplexTest: ComplexTestBase<HeartbeatClient, HeartbeatSer
         // Assert
         await Client.Link.State.FirstAsync(x => x == LinkState.Connected, _cancellationTokenSource.Token);
 
-        expectedHeartbeatPayload
-            .Should().BeEquivalentTo(clientReceivedPacket.Payload);
-
-        expectedHeartbeatPayload
-            .Should().BeEquivalentTo(serverSentPacket.Payload);
+        Assert.Equivalent(expectedHeartbeatPayload, clientReceivedPacket.Payload);
+        Assert.Equivalent(expectedHeartbeatPayload, serverSentPacket.Payload);
     }
     
     protected override HeartbeatServer CreateServer(MavlinkIdentity identity, IMavlinkContext core) => 

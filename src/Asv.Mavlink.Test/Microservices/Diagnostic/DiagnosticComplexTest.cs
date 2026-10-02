@@ -7,7 +7,6 @@ using JetBrains.Annotations;
 using ObservableCollections;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
@@ -48,9 +47,9 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
         // Act
 
         var t = new TaskCompletionSource();
-        using var c1 = Client.IntProbes.ObserveAdd()
+        using var c1 = Client.IntProbes.ObserveAdd(Xunit.TestContext.Current.CancellationToken)
             .Subscribe(t, (_, tcs) => tcs.TrySetResult());
-        await Server.Send(name, value);
+        await Server.Send(name, value, Xunit.TestContext.Current.CancellationToken);
         await t.Task;
 
         // Assert
@@ -74,11 +73,11 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
         var value = 10.0f;
 
         var t = new TaskCompletionSource();
-        using var c1 = Client.FloatProbes.ObserveAdd()
+        using var c1 = Client.FloatProbes.ObserveAdd(Xunit.TestContext.Current.CancellationToken)
             .Subscribe(t, (_, tcs) => tcs.TrySetResult());
 
         // Act
-        await Server.Send(name, value);
+        await Server.Send(name, value, Xunit.TestContext.Current.CancellationToken);
         await t.Task;
 
         // Assert
@@ -110,7 +109,7 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
 
         for (var i = 0; i < all; i++)
         {
-            await Server.Send($"name{i}", i);
+            await Server.Send($"name{i}", i, Xunit.TestContext.Current.CancellationToken);
         }
 
         await t.Task;
@@ -134,7 +133,7 @@ public class DiagnosticComplexTest(ITestOutputHelper log)
 
         for (var i = 0; i < all; i++)
         {
-            await Server.Send($"name{i}", (float)i);
+            await Server.Send($"name{i}", (float)i, Xunit.TestContext.Current.CancellationToken);
         }
 
         await t.Task;

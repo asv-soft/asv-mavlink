@@ -7,7 +7,6 @@ using DeepEqual.Syntax;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 using ArgumentNullException = System.ArgumentNullException;
 
 namespace Asv.Mavlink.Test.Ex;
@@ -208,7 +207,7 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
     [Fact]
     public void Init_ProperInput_Success()
     {
-        _client.Init();
+        _client.Init(Xunit.TestContext.Current.CancellationToken);
     }
 
     [Fact]

@@ -3,8 +3,8 @@ using Asv.Common;
 using Asv.IO;
 using Asv.XUnit;
 using TimeProviderExtensions;
-using Xunit.Abstractions;
 
+using Xunit;
 namespace Asv.Mavlink.Test;
 
 public abstract class ServerTestBase<TServer> : IDisposable

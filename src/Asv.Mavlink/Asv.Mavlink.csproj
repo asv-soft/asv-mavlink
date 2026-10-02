@@ -1,16 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>$(TargetFrameworksValue)</TargetFrameworks>
-    <FileVersion>$(ProductVersion)</FileVersion>
-    <Version>$(ProductVersion)</Version>
-    <PackageVersion>$(ProductVersion)</PackageVersion>
-    
-    <Authors>https://github.com/asv-soft</Authors>
-    <Company>https://github.com/asv-soft</Company>
-    <Copyright>https://github.com/asv-soft</Copyright>
-    
-    <PackageProjectUrl>https://github.com/asv-soft/asv-mavlink</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/asv-soft/asv-mavlink</RepositoryUrl>
     <PackageTags>mavlink;drone;PX4;Ardupilot;.net</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Mavlink .NET library for vehicle control Px4, Ardupilot </Description>
@@ -19,8 +8,6 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU</Platforms>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   
@@ -29,9 +16,9 @@
     <PackageReference Include="Asv.Common" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.IO" Version="$(AsvCommonVersion)" />
     <PackageReference Include="Asv.Store" Version="$(AsvCommonVersion)" />
-    <PackageReference Include="ZLogger" Version="$(ZLoggerVersion)" />
-    <PackageReference Include="TestableIO.System.IO.Abstractions" Version="$(SystemIOAbstractionsVersion)" />
-    <PackageReference Include="System.IO.Abstractions" Version="$(SystemIOAbstractionsVersion)" />
+    <PackageReference Include="ZLogger" Version="2.5.10" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions" Version="22.1.1" />
+    <PackageReference Include="System.IO.Abstractions" Version="22.1.1" />
   </ItemGroup>
     
   <ItemGroup>

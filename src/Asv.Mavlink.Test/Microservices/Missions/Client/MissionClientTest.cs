@@ -6,7 +6,6 @@ using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
@@ -100,7 +99,9 @@ public class MissionClientTest : ClientTestBase<MissionClient>
         });
         
         // Act
-        await _client.SendMissionAck(MavMissionResult.MavMissionAccepted, type: missionType);
+        await _client.SendMissionAck(MavMissionResult.MavMissionAccepted,
+            cancel: Xunit.TestContext.Current.CancellationToken,
+            type: missionType);
 
         // Assert
         var result = await _taskCompletionSource.Task as MissionAckPacket;

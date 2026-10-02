@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Asv.Common;
@@ -20,6 +21,12 @@ public class AsvRsgaClientEx : MavlinkMicroserviceClient, IAsvRsgaClientEx
     private readonly IDisposable _sub2;
     private readonly ReactiveProperty<AsvRsgaCustomMode> _currentMode;
     private readonly ReactiveProperty<AsvRsgaCustomSubMode> _currentSubMode;
+    private readonly ObservableList<GnssSource> _sources = new();
+    private readonly ObservableList<RsgaChartSource> _chartSources = new();
+    private readonly Subject<RsgaChartFrame> _chartFrames = new();
+    private readonly IDisposable _sub3;
+    private readonly IDisposable _sub4;
+
 
     public AsvRsgaClientEx(IAsvRsgaClient client, ICommandClient commandClient, IHeartbeatClient heartbeatClient)
         :base(RsgaHelper.MicroserviceExName, client.Identity, client.Core)
@@ -36,6 +43,37 @@ public class AsvRsgaClientEx : MavlinkMicroserviceClient, IAsvRsgaClientEx
         Base = client;
         _supportedModes = new ObservableList<AsvRsgaCustomMode>();
         _sub2 = client.OnCompatibilityResponse.Subscribe(OnCapabilityResponse);
+        
+        _sub3 = Base.GnssRawStream.Subscribe(CheckGnss);
+        _sub4 = Base.ChartRawStream.Subscribe(CheckChart);
+    }
+    
+    private void CheckGnss(AsvRsgaRttGnssPayload data)
+    {
+        if (_sources.Any(x => x.Stream.CurrentValue.RefId == data.RefId))
+        {
+            // already exists
+            return;
+        }
+        var source = new GnssSource(data.RefId, Base.GnssRawStream, data);
+        _sources.Add(source);
+    }
+
+    private void CheckChart(AsvRsgaRttChartPayload data)
+    {
+        try
+        {
+            var frame = RsgaChartHelper.ReadChartData(data);
+            if (_chartSources.Any(x => x.ChartType == frame.ChartType) == false)
+            {
+                _chartSources.Add(new RsgaChartSource(frame.ChartType, ChartFrames, frame));
+            }
+            _chartFrames.OnNext(frame);
+        }
+        catch (Exception e)
+        {
+            _logger.ZLogWarning(e, $"Error to decode RSGA chart:{e.Message}");
+        }
     }
 
     private void UpdateMode(HeartbeatPayload? heartbeatPayload)
@@ -85,6 +123,7 @@ public class AsvRsgaClientEx : MavlinkMicroserviceClient, IAsvRsgaClientEx
 
     public async Task<MavResult> StartRecord(string name, CancellationToken cancel = default)
     {
+        RsgaHelper.CheckRecordName(name);
         using var cs = CancellationTokenSource.CreateLinkedTokenSource(DisposeCancel, cancel);
         var result = await _commandClient.CommandLong(item => RsgaHelper.SetArgsForStartRecord(item, name),cs.Token).ConfigureAwait(false);
         return result.Result;
@@ -96,6 +135,12 @@ public class AsvRsgaClientEx : MavlinkMicroserviceClient, IAsvRsgaClientEx
         var result = await _commandClient.CommandLong(RsgaHelper.SetArgsForStopRecord,cs.Token).ConfigureAwait(false);
         return result.Result;
     }
+    
+    public IReadOnlyObservableList<GnssSource> GnssSources => _sources;
+
+    public Observable<RsgaChartFrame> ChartFrames => _chartFrames;
+
+    public IReadOnlyObservableList<RsgaChartSource> ChartSources => _chartSources;
 
     protected override void Dispose(bool disposing)
     {
@@ -104,6 +149,19 @@ public class AsvRsgaClientEx : MavlinkMicroserviceClient, IAsvRsgaClientEx
             _currentMode.Dispose();
             _currentSubMode.Dispose();
             _sub2.Dispose();
+            _sub3.Dispose();
+            _sub4.Dispose();
+            _chartFrames.Dispose();
+            foreach (var gnssSource in _sources)
+            {
+                gnssSource.Dispose();
+            }
+            _sources.Clear();
+            foreach (var chartSource in _chartSources)
+            {
+                chartSource.Dispose();
+            }
+            _chartSources.Clear();
         }
 
         base.Dispose(disposing);
@@ -112,6 +170,34 @@ public class AsvRsgaClientEx : MavlinkMicroserviceClient, IAsvRsgaClientEx
     protected override async ValueTask DisposeAsyncCore()
     {
         _sub2.Dispose();
+        
+        if (_sub3 is IAsyncDisposable sub2AsyncDisposable)
+            await sub2AsyncDisposable.DisposeAsync().ConfigureAwait(false);
+        else
+            _sub3.Dispose();
+
+        if (_sub4 is IAsyncDisposable sub4AsyncDisposable)
+            await sub4AsyncDisposable.DisposeAsync().ConfigureAwait(false);
+        else
+            _sub4.Dispose();
+
+        if (_chartFrames is IAsyncDisposable chartFramesAsyncDisposable)
+            await chartFramesAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+        else
+            _chartFrames.Dispose();
+        
+        foreach (var gnssSource in _sources)
+        {
+            gnssSource.Dispose();
+        }
+        _sources.Clear();
+        
+        foreach (var chartSource in _chartSources)
+        {
+            chartSource.Dispose();
+        }
+        _chartSources.Clear();
+
         await base.DisposeAsyncCore().ConfigureAwait(false);
     }
 }

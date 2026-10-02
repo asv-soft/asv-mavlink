@@ -9,7 +9,6 @@ using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
@@ -86,7 +85,7 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
         var correctAvailableDroneFrames = GetAvailableFrames();
 
         // Act
-        await Client.Init();
+        await Client.Init(Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(correctAvailableDroneFrames.IsDeepEqual(Client.Frames));
@@ -97,7 +96,7 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
     {
         // Arrange
         _ = Server;
-        await Client.Init();
+        await Client.Init(Xunit.TestContext.Current.CancellationToken);
         var availableFrameToSet = Client.Frames.First();
         var tsc = new TaskCompletionSource<bool>();
         using var cts = new CancellationTokenSource();
@@ -126,11 +125,11 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
     {
         // Arrange
         _ = Server;
-        await Client.Init();
+        await Client.Init(Xunit.TestContext.Current.CancellationToken);
         var frameToSet = new TestDroneFrame();
 
         // Act
-        var task = Client.SetFrame(frameToSet);
+        var task = Client.SetFrame(frameToSet, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         await Assert.ThrowsAsync<ArgumentException>(async () =>
@@ -147,7 +146,7 @@ public abstract class ArduFrameComplexTestBase(ITestOutputHelper log) : ComplexT
         var frameToSet = new ArduDroneFrame(ArduFrameClass.DynamicScriptingMatrix, null);
 
         // Act
-        var task = Client.SetFrame(frameToSet);
+        var task = Client.SetFrame(frameToSet, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         await Assert.ThrowsAsync<DroneFrameIsNotAvailableException>(async () =>

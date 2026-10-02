@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 

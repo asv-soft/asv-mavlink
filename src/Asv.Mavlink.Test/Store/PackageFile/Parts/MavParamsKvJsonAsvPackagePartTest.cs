@@ -9,7 +9,6 @@ using Asv.Store;
 using Asv.XUnit;
 using JetBrains.Annotations;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 

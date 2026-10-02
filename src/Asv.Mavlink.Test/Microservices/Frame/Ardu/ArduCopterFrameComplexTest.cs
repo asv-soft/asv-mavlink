@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using JetBrains.Annotations;
-using Xunit.Abstractions;
 
+using Xunit;
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(ArduCopterClientDevice))]

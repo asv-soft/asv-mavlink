@@ -4,11 +4,9 @@ using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
 using Asv.XUnit;
-using FluentAssertions;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
@@ -110,7 +108,7 @@ public class ComplexDeviceTest(ITestOutputHelper log)
         
         // Assert
         await tcs.Task;
-        states.Should().BeEquivalentTo(expectedStates);
+        Assert.Equivalent(expectedStates, states);
     }
     
     protected override IServerDevice CreateServer(MavlinkIdentity identity, IMavlinkContext core)

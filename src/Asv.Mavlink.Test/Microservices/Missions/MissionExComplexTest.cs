@@ -8,7 +8,6 @@ using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 using CancellationTokenSource = System.Threading.CancellationTokenSource;
 
 namespace Asv.Mavlink.Test;

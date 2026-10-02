@@ -7,7 +7,6 @@ using Asv.Mavlink.Common;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
@@ -51,7 +50,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Client.Send(requestPacket);
+        await Link.Client.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -93,7 +92,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Client.Send(requestPacket);
+        await Link.Client.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -130,7 +129,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Client.Send(requestPacket);
+        await Link.Client.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -166,7 +165,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Client.Send(requestPacket);
+        await Link.Client.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -199,7 +198,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Client.Send(requestPacket);
+        await Link.Client.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(resetCalled);
@@ -235,7 +234,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Client.Send(requestPacket);
+        await Link.Client.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -274,7 +273,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Client.Send(requestPacket);
+        await Link.Client.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -318,7 +317,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Client.Send(requestPacket);
+        await Link.Client.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -369,7 +368,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Client.Send(requestPacket);
+        await Link.Client.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -421,7 +420,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Client.Send(requestPacket);
+        await Link.Client.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -462,7 +461,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Server.Send(requestPacket);
+        await Link.Server.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -501,7 +500,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Server.Send(requestPacket);
+        await Link.Server.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -550,7 +549,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Server.Send(requestPacket);
+        await Link.Server.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -608,7 +607,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Server.Send(requestPacket);
+        await Link.Server.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);
@@ -651,7 +650,7 @@ public class FtpServerTest(ITestOutputHelper log) : ServerTestBase<FtpServer>(lo
             });
 
         // Act
-        await Link.Server.Send(requestPacket);
+        await Link.Server.Send(requestPacket, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(responsePacket);

@@ -1,0 +1,102 @@
+# Frame client
+
+To work with the frame configuration from the client side, request the [IFrameClient](#iframeclient) microservice from a device instance.
+
+```C#
+var frameClient = device.GetMicroservice<IFrameClient>()
+    ?? throw new Exception("No frame client found");
+```
+
+## Usage
+
+First, load the list of available frame configurations from the connected device:
+
+```C#
+// Load available frames from the device
+await frameClient.RefreshAvailableFrames();
+
+// Access the available frames through the Frames property
+foreach (var frame in frameClient.Frames.Values)
+{
+    Console.WriteLine($"Frame: {frame.Id}");
+}
+```
+
+Get the current frame configuration:
+
+```C#
+// Load available frames first
+await frameClient.RefreshAvailableFrames();
+
+await frameClient.RefreshCurrentFrame();
+
+var subscription = frameClient.CurrentFrame.Subscribe(currentFrame =>
+{
+    if (currentFrame is null) 
+    {
+        return;
+    }
+    
+    Console.WriteLine($"Current frame: {currentFrame}");
+});
+```
+
+> Do not forget to dispose subscriptions when they are no longer needed.
+{style="warning"}
+
+Update the frame configuration:
+
+```C#
+// Load available frames first
+await frameClient.RefreshAvailableFrames();
+
+// Select a frame from the Frames collection
+var selectedFrame = frameClient.Frames.Values.First();
+
+// Apply the new frame configuration
+await frameClient.SetFrame(selectedFrame);
+```
+
+> Always use frames from the `Frames` collection. 
+> Do not create custom `IDroneFrame` instances — they may not be supported by the device.
+{style="warning"}
+
+## [IFrameClient](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Frame/Client/IFrameClient.cs)
+
+| Property       | Type                                                 | Description                                                                              |
+|----------------|------------------------------------------------------|------------------------------------------------------------------------------------------|
+| `Frames`       | `IReadOnlyObservableDictionary<string, IDroneFrame>` | Supported drone frames. Populated by `RefreshAvailableFrames()`.                         |
+| `CurrentFrame` | `ReadOnlyReactiveProperty<IDroneFrame?>`             | Currently selected frame, or `null` when it cannot be matched or has not been refreshed. |
+
+| Method                                                                      | Return Type | Description                                                                                                               |
+|-----------------------------------------------------------------------------|-------------|---------------------------------------------------------------------------------------------------------------------------|
+| `RefreshAvailableFrames(CancellationToken cancel = default)`                | `ValueTask` | Rebuilds the `Frames` collection from the device.                                                                         |
+| `SetFrame(IDroneFrame droneFrameToSet, CancellationToken cancel = default)` | `Task`      | Updates the frame type for the current device.                                                                            |
+| `RefreshCurrentFrame(CancellationToken cancel = default)`                   | `Task`      | Refreshes the current frame configuration and starts reactively updating `CurrentFrame` when the frame parameters change. |
+
+### `IFrameClient.RefreshAvailableFrames`
+
+| Parameter | Type                | Description                                |
+|-----------|---------------------|--------------------------------------------|
+| `cancel`  | `CancellationToken` | An optional token to cancel the operation. |
+
+### `IFrameClient.SetFrame`
+
+| Parameter         | Type                | Description                                |
+|-------------------|---------------------|--------------------------------------------|
+| `droneFrameToSet` | `IDroneFrame`       | Frame type to use.                         |
+| `cancel`          | `CancellationToken` | An optional token to cancel the operation. |
+
+### `IFrameClient.RefreshCurrentFrame`
+
+| Parameter | Type                | Description                                |
+|-----------|---------------------|--------------------------------------------|
+| `cancel`  | `CancellationToken` | An optional token to cancel the operation. |
+
+## Implementations
+
+Different vehicle types provide their own implementations of [`IFrameClient`](#iframeclient):
+
+- [Ardu devices](ArduFrameClient.md)
+
+Each device has its own set of available frame configurations based on ArduPilot compatibility tables.

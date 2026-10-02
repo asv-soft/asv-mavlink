@@ -11,4 +11,7 @@ public interface IAsvRsgaClient:IMavlinkMicroserviceClient
     Task<AsvRsgaCompatibilityResponsePayload> GetCompatibilities(CancellationToken cancel = default);
     
     Observable<MavlinkMessage> DeviceMessages { get; }
+    
+    Observable<AsvRsgaRttGnssPayload> GnssRawStream { get; }
+    Observable<AsvRsgaRttChartPayload> ChartRawStream { get; }
 }

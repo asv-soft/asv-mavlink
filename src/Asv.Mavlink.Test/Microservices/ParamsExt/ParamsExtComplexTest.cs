@@ -8,7 +8,6 @@ using Asv.IO;
 using Asv.Mavlink.Common;
 using R3;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
@@ -183,7 +182,7 @@ public class ParamsExtComplexTest : ComplexTestBase<ParamsExtClientEx, ParamsExt
         });
 
         // Act
-        await Client.WriteOnce(name, outOfBoundsValue);
+        await Client.WriteOnce(name, outOfBoundsValue, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         var payload = await tcs.Task;

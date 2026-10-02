@@ -1,7 +1,7 @@
 using Asv.Cfg;
 using JetBrains.Annotations;
-using Xunit.Abstractions;
 
+using Xunit;
 namespace Asv.Mavlink.Test;
 
 [TestSubject(typeof(ParamsExtServerEx))]

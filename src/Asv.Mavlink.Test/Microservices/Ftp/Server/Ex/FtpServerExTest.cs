@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Asv.Common;
 using JetBrains.Annotations;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
@@ -66,11 +65,12 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         const string fileName = "test.txt";
 
         // Act
-        await Server.CreateFile(fileName, _cts.Token);
+        var session = await Server.CreateFile(fileName, _cts.Token);
+        await Server.TerminateSession(session, _cts.Token);
         var handle = await Server.OpenFileWrite(fileName, _cts.Token);
 
         // Assert
-        Assert.Equal(1, handle.Session);
+        Assert.Equal(0, handle.Session);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
 
@@ -111,12 +111,13 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
 
         // Act
         await Server.WriteFile(new WriteRequest(session, 0, size), buffer, _cts.Token);
-        await Server.TerminateSession(session);
+        await Server.TerminateSession(session, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         var writtenData = new byte[size];
         await Server.OpenFileRead(fileName, _cts.Token);
-        await Server.FileRead(new ReadRequest(session, 0, size), writtenData);
+        await Server.FileRead(new ReadRequest(session, 0, size), writtenData,
+            Xunit.TestContext.Current.CancellationToken);
         Assert.Equal(buffer, writtenData);
         Assert.Equal(Link.Server.Statistic.TxMessages, Link.Client.Statistic.RxMessages);
     }
@@ -157,7 +158,8 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         using var memory = MemoryPool<char>.Shared.Rent(256);
 
         // Act
-        var result = await Server.ListDirectory(directoryName, 0, memory.Memory);
+        var result = await Server.ListDirectory(directoryName, 0, memory.Memory,
+            Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         const string expectedOutput = $"F{fileName1}\t13\0F{fileName2}\t13\0";
@@ -186,7 +188,8 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         using var memory = MemoryPool<char>.Shared.Rent(256);
 
         // Act
-        var result = await Server.ListDirectory(relativeRootPath, 0, memory.Memory);
+        var result = await Server.ListDirectory(relativeRootPath, 0, memory.Memory,
+            Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         const string expectedOutput = $"F{fileName1}\t13\0F{fileName2}\t13\0";
@@ -312,7 +315,7 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         _fileSystem.AddFile(filePath, new MockFileData(string.Empty));
 
         // Act
-        var result = await Server.OpenFileWrite(relativeFilePath);
+        var result = await Server.OpenFileWrite(relativeFilePath, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(0, result.Session);
@@ -403,11 +406,11 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var buffer = new byte[] { 1, 2, 3, 4, 5 };
 
         // Act
-        await Server.OpenFileWrite(relativeFilePath);
-        await Server.WriteFile(request, buffer);
-        await Server.TerminateSession(0);
-        await Server.OpenFileRead(relativeFilePath);
-        var readResult = await Server.FileRead(readRequest, readBuffer);
+        await Server.OpenFileWrite(relativeFilePath, Xunit.TestContext.Current.CancellationToken);
+        await Server.WriteFile(request, buffer, Xunit.TestContext.Current.CancellationToken);
+        await Server.TerminateSession(0, Xunit.TestContext.Current.CancellationToken);
+        await Server.OpenFileRead(relativeFilePath, Xunit.TestContext.Current.CancellationToken);
+        var readResult = await Server.FileRead(readRequest, readBuffer, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(readResult.ReadCount == buffer.Length);
@@ -438,11 +441,11 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var buffer = new byte[fileSize];
 
         // Act
-        await Server.OpenFileRead(relativeFilePath);
-        await Server.OpenFileRead(relativeFilePath1);
-        await Server.TerminateSession(0);
-        var task = Server.FileRead(request, buffer);
-        var activeSessionResult = await Server.FileRead(request1, buffer);
+        await Server.OpenFileRead(relativeFilePath, Xunit.TestContext.Current.CancellationToken);
+        await Server.OpenFileRead(relativeFilePath1, Xunit.TestContext.Current.CancellationToken);
+        await Server.TerminateSession(0, Xunit.TestContext.Current.CancellationToken);
+        var task = Server.FileRead(request, buffer, Xunit.TestContext.Current.CancellationToken);
+        var activeSessionResult = await Server.FileRead(request1, buffer, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         await Assert.ThrowsAsync<FtpNackException>(async () => await task);
@@ -468,9 +471,9 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var buffer = new byte[2];
 
         // Act
-        await Server.OpenFileRead(relativeFilePath);
-        await Server.ResetSessions();
-        var task = Server.FileRead(request, buffer);
+        await Server.OpenFileRead(relativeFilePath, Xunit.TestContext.Current.CancellationToken);
+        await Server.ResetSessions(Xunit.TestContext.Current.CancellationToken);
+        var task = Server.FileRead(request, buffer, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         await Assert.ThrowsAsync<FtpNackException>(async () => await task);
@@ -493,8 +496,8 @@ public class FtpServerExTest : ServerTestBase<FtpServerEx>
         var request = new TruncateRequest(relativeFilePath, 5);
 
         // Act
-        await Server.TruncateFile(request);
-        var result = await Server.OpenFileRead(relativeFilePath);
+        await Server.TruncateFile(request, Xunit.TestContext.Current.CancellationToken);
+        var result = await Server.OpenFileRead(relativeFilePath, Xunit.TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.Size == request.Offset);

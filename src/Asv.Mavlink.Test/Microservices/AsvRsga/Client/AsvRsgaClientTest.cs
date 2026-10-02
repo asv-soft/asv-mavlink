@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 
@@ -44,7 +43,7 @@ public class AsvRsgaClientTest : ClientTestBase<AsvRsgaClient>, IDisposable
         var t2 = Task.Factory.StartNew(() =>
         {
             Time.Advance(TimeSpan.FromMilliseconds(timeout * attempts + 1));
-        });
+        }, Xunit.TestContext.Current.CancellationToken);
         
         //Assert
         await Task.WhenAll(t1, t2);

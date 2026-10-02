@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Asv.Mavlink.AsvSdr;
 using JetBrains.Annotations;
 using Xunit;
-using Xunit.Abstractions;
 using Xunit.Sdk;
 
 namespace Asv.Mavlink.Test;
@@ -42,7 +41,7 @@ public class AsvSdrClientExTest(ITestOutputHelper log) : ClientTestBase<AsvSdrCl
     [Fact]
     public async Task Client_Init_Success()
     {
-        await Client.Init();
+        await Client.Init(Xunit.TestContext.Current.CancellationToken);
         Assert.True(true);
     }
 

@@ -283,5 +283,6 @@ public static class RsgaHelper
     #endregion
 
     
-    
+    public static GeoPoint GetLocation(this AsvRsgaRttGnssPayload payload) =>
+        MavlinkTypesHelper.FromInt32ToGeoPoint(payload.Lat, payload.Lon, payload.AltMsl);
 }

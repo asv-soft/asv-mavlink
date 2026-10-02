@@ -27,7 +27,7 @@ public class AsvRsgaServer:MavlinkMicroserviceServer,IAsvRsgaServer
     {
         return InternalSend<AsvRsgaCompatibilityResponsePacket>(x => fillCallback(x.Payload), cancel);
     }
-    
+
     #region Dispose
 
     protected override void Dispose(bool disposing)

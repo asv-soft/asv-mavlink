@@ -7,7 +7,6 @@ using Asv.Mavlink.AsvRadio;
 using Asv.Mavlink.Common;
 using DotNext;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Asv.Mavlink.Test;
 

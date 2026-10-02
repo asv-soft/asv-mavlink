@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Asv.Mavlink.Common;
 using DeepEqual.Syntax;
-using FluentAssertions;
 using JetBrains.Annotations;
 using R3;
 using Xunit;
@@ -135,7 +134,7 @@ public class MissionItemTest : IDisposable
         // Assert
         await _tcs.Task;
         Assert.Equal(expectedCalls, called);
-        item.Should().NotBeEquivalentTo(oldItem);
+        Assert.False(item.IsDeepEqual(oldItem));
         Assert.Equal(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newX), item.Location.CurrentValue.Latitude);
         Assert.Equal(MavlinkTypesHelper.LatLonFromInt32E7ToDegDouble(newY), item.Location.CurrentValue.Longitude);
         Assert.Equal(newZ, item.Location.CurrentValue.Altitude);
