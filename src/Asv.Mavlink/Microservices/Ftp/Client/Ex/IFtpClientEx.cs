@@ -33,7 +33,12 @@ public interface IFtpClientEx
     /// <summary>
     /// Refreshes the local entry cache.
     /// </summary>
-    /// <param name="path">Remote directory path to refresh.</param>
+    /// <remarks>
+    /// A path without a leading separator (e.g. <c>logs</c> or <c>@SYS</c>) is mounted as a separate cache root;
+    /// only the projection matching the supplied path form is updated. Missing ancestors of a multi-segment path
+    /// are created as skeleton entries.
+    /// </remarks>
+    /// <param name="path">Remote directory path to refresh. Must not be empty or whitespace.</param>
     /// <param name="recursive">
     /// If <see langword="true"/>, refreshes subdirectories recursively;
     /// otherwise refreshes only the specified directory.
@@ -148,11 +153,12 @@ public interface IFtpClientEx
     /// <summary>
     /// Removes a remote directory.
     /// </summary>
-    /// <param name="path">Remote directory path to remove.</param>
+    /// <param name="path">Remote directory path to remove. Must not be empty or whitespace.</param>
     /// <param name="recursive">
     /// If <see langword="true"/>, removes all children recursively before removing the directory itself.
+    /// Defaults to <see langword="false"/>: removing a non-empty directory fails.
     /// </param>
     /// <param name="cancel">A cancellation token that cancels the operation.</param>
     /// <returns><see cref="Task"/></returns>
-    Task RemoveDirectory(string path, bool recursive = true, CancellationToken cancel = default);
+    Task RemoveDirectory(string path, bool recursive = false, CancellationToken cancel = default);
 }

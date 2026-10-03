@@ -450,49 +450,175 @@ public class FtpExComplexTest(ITestOutputHelper log)
     }
     
     [Theory]
-    [InlineData("empty", "empty")]
-    [InlineData("empty", "/empty/")]
-    [InlineData("empty", "/empty")]
     [InlineData("empty", "empty/")]
-    public async Task RemoveDirectoryAsync_NonRecursive_Success(string pathNameToCreate, string pathNameToRemove)
+    [InlineData("/empty/", "/empty/")]
+    [InlineData("/empty", "/empty/")]
+    [InlineData("empty/", "empty/")]
+    public async Task RemoveDirectoryAsync_NonRecursive_Success(
+        string clientPath,
+        string expectedCacheKey
+    )
     {
         // Arrange
         _ = Server;
-        var dir = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, pathNameToCreate);
+        var dir = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "empty");
         _fileSystem.AddDirectory(dir);
+        await Client.Refresh(clientPath, false, _cts.Token);
+        var cachedKeysBeforeRemoval = Client.Entries.Keys.ToList();
 
         // Act
-        await Client.RemoveDirectory(pathNameToRemove, recursive: false, _cts.Token);
+        await Client.RemoveDirectory(clientPath, recursive: false, _cts.Token);
 
         // Assert
         Assert.False(_fileSystem.Directory.Exists(dir));
+        Assert.Contains(expectedCacheKey, cachedKeysBeforeRemoval);
+        Assert.DoesNotContain(expectedCacheKey, Client.Entries.Keys);
         Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
     }
 
     [Theory]
-    [InlineData("folder", "/folder/")]
+    [InlineData("/folder/", "/folder/")]
+    [InlineData("folder/", "folder/")]
+    [InlineData("/folder", "/folder/")]
     [InlineData("folder", "folder/")]
-    public async Task RemoveDirectoryAsync_Recursive_Success(string pathNameToCreate, string pathNameToRemove)
+    public async Task RemoveDirectoryAsync_Recursive_Success(
+        string clientPath,
+        string expectedCachePrefix
+    )
     {
         // Arrange
         _ = Server;
-        var root = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, pathNameToCreate);
+        var root = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
         _fileSystem.AddDirectory(root);
         _fileSystem.AddDirectory(_fileSystem.Path.Combine(root, "child"));
         _fileSystem.AddDirectory(_fileSystem.Path.Combine(root, "child", "grand"));
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(root, "file1.txt"));
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(root, "child", "file2.txt"));
         _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(root, "child", "grand", "file3.txt"));
+        await Client.Refresh(clientPath, true, _cts.Token);
+        var cachedKeysBeforeRemoval = Client.Entries.Keys.ToList();
 
         // Act
-        await Client.RemoveDirectory(pathNameToRemove, recursive: true, _cts.Token);
+        await Client.RemoveDirectory(clientPath, recursive: true, _cts.Token);
 
         // Assert
         Assert.False(_fileSystem.Directory.Exists(root));
         Assert.False(_fileSystem.File.Exists(_fileSystem.Path.Combine(root, "file1.txt")));
+        Assert.Contains(
+            cachedKeysBeforeRemoval,
+            key => key.StartsWith(expectedCachePrefix, StringComparison.Ordinal)
+        );
+        Assert.DoesNotContain(
+            Client.Entries.Keys,
+            key => key.StartsWith(expectedCachePrefix, StringComparison.Ordinal)
+        );
         Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
     }
-    
+
+    [Fact]
+    public async Task Refresh_DirectoryWithPrefixSibling_PreservesSiblingCache()
+    {
+        // Arrange
+        _ = Server;
+        var folder = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
+        var sibling = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder2");
+        _fileSystem.AddDirectory(folder);
+        _fileSystem.AddDirectory(sibling);
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(sibling, "file.txt"));
+        await Client.Refresh("/", true, _cts.Token);
+
+        // Act
+        await Client.Refresh("/folder", false, _cts.Token);
+
+        // Assert
+        Assert.Contains("/folder2/", Client.Entries.Keys);
+        Assert.Contains("/folder2/file.txt", Client.Entries.Keys);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task Refresh_EmptyOrWhitespacePath_ThrowsArgumentException(string path)
+    {
+        // Arrange
+        _ = Server;
+
+        // Act
+        var task = Client.Refresh(path, false, _cts.Token);
+
+        // Assert
+        await Assert.ThrowsAnyAsync<ArgumentException>(() => task);
+        Assert.Empty(Client.Entries);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task RemoveDirectoryAsync_EmptyOrWhitespacePath_ThrowsArgumentException(string path)
+    {
+        // Arrange
+        _ = Server;
+
+        // Act
+        var task = Client.RemoveDirectory(path, recursive: false, _cts.Token);
+
+        // Assert
+        await Assert.ThrowsAnyAsync<ArgumentException>(() => task);
+    }
+
+    [Fact]
+    public async Task Refresh_MultiSegmentRelativePath_MaterializesParentChain()
+    {
+        // Arrange
+        _ = Server;
+        var dir = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "tes", "bet");
+        _fileSystem.AddDirectory(dir);
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(dir, "x.txt"));
+
+        // Act
+        await Client.Refresh("tes/bet", false, _cts.Token);
+
+        // Assert
+        Assert.Contains("tes/", Client.Entries.Keys);
+        Assert.Contains("tes/bet/", Client.Entries.Keys);
+        Assert.Contains("tes/bet/x.txt", Client.Entries.Keys);
+        Assert.Equal(string.Empty, Client.Entries["tes/"].ParentPath);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
+    }
+
+    [Fact]
+    public async Task RemoveDirectoryAsync_MountedRoot_EvictsAllCacheProjections()
+    {
+        // Arrange
+        _ = Server;
+        var root = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder");
+        _fileSystem.AddDirectory(root);
+        _fileSystem.AddDirectory(_fileSystem.Path.Combine(root, "child"));
+        _fileSystem.AddEmptyFile(_fileSystem.Path.Combine(root, "file1.txt"));
+        var sibling = _fileSystem.Path.Combine(_serverExConfig.RootDirectory, "folder2");
+        _fileSystem.AddDirectory(sibling);
+        await Client.Refresh("/", true, _cts.Token);
+        await Client.Refresh("folder", true, _cts.Token);
+        var cachedKeysBeforeRemoval = Client.Entries.Keys.ToList();
+
+        // Act
+        await Client.RemoveDirectory("folder", recursive: true, _cts.Token);
+
+        // Assert
+        Assert.False(_fileSystem.Directory.Exists(root));
+        Assert.Contains("/folder/", cachedKeysBeforeRemoval);
+        Assert.Contains("folder/", cachedKeysBeforeRemoval);
+        Assert.DoesNotContain(
+            Client.Entries.Keys,
+            key =>
+                key.TrimStart(MavlinkFtpHelper.DirectorySeparator)
+                    .StartsWith("folder/", StringComparison.Ordinal)
+        );
+        Assert.Contains("/folder2/", Client.Entries.Keys);
+        Assert.Equal(Link.Client.Statistic.RxMessages, Link.Server.Statistic.TxMessages);
+    }
+
     [Fact]
     public async Task RemoveDirectoryAsync_NonRecursive_ThrowsNack()
     {
