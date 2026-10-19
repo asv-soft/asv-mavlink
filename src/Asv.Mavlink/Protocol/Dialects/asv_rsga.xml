@@ -953,6 +953,10 @@
 
             <field type="int16_t" name="measure_time" units="ms">Measure time</field>
 
+            <field type="int16_t" name="rf_freq_ac" units="kHz" invalid="-32768">Mode A/C reply RF frequency offset from 1090 MHz; -32768 when unavailable</field>
+            <field type="uint8_t" name="pulse_amplitude_variation_mode_a" units="dB" invalid="255">Mode A pulse amplitude variation in 0.1 dB steps; 255 when unavailable</field>
+            <field type="uint8_t" name="pulse_amplitude_variation_mode_c" units="dB" invalid="255">Mode C pulse amplitude variation in 0.1 dB steps; 255 when unavailable</field>
+
             <field type="float" name="erp_instant_dbm" units="dBm" invalid="NaN">Instant effective radiated power</field>
             <field type="float" name="erp_dbm" units="dBm" invalid="NaN">Effective radiated power</field>
             <field type="float" name="mtl_instant_dbm" units="dBm" invalid="NaN">Instant minimum trigger level</field>
@@ -963,6 +967,7 @@
             <field type="float" name="mtl_all_call_dbm" units="dBm" invalid="NaN">All-call minimum trigger level</field>
             <field type="uint8_t" name="power_measurement_kind">Power measurement kind</field>
             <field type="uint8_t" name="erp_limit_applied">ERP limit application mode</field>
+            <field type="uint8_t" name="power_source_mode">ERP/MTL source: 0 - none, 1 - ATCRBS, 2 - Mode S. For Mode S power events, test_group and test_status describe the Mode S power/frequency test; other A/C measurements must be ignored.</field>
             <field type="uint8_t" name="test_group" invalid="255">IFR6000 test group; 255 when no group is selected</field>
             <field type="uint8_t" name="test_status">IFR6000 test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)</field>
         </message>
@@ -1030,16 +1035,10 @@
             <field type="uint8_t[7]" name="bds50">BDS 5,0</field>
             <field type="uint8_t[7]" name="bds60">BDS 6,0</field>
 
-            <field type="float" name="erp_instant_dbm" units="dBm" invalid="NaN">Instant effective radiated power</field>
-            <field type="float" name="erp_dbm" units="dBm" invalid="NaN">Effective radiated power</field>
-            <field type="float" name="mtl_instant_dbm" units="dBm" invalid="NaN">Instant minimum trigger level</field>
-            <field type="float" name="mtl_dbm" units="dBm" invalid="NaN">Minimum trigger level</field>
-            <field type="float" name="mtl_mode_a_dbm" units="dBm" invalid="NaN">Mode A minimum trigger level</field>
-            <field type="float" name="mtl_mode_c_dbm" units="dBm" invalid="NaN">Mode C minimum trigger level</field>
-            <field type="float" name="mtl_mode_s_dbm" units="dBm" invalid="NaN">Mode S minimum trigger level</field>
-            <field type="float" name="mtl_all_call_dbm" units="dBm" invalid="NaN">All-call minimum trigger level</field>
-            <field type="uint8_t" name="power_measurement_kind">Power measurement kind</field>
-            <field type="uint8_t" name="erp_limit_applied">ERP limit application mode</field>
+            <!-- ERP/MTL is sent in ASV_RSGA_RTT_MODE_A_C_REQ with power_source_mode = 2. -->
+            <field type="int16_t" name="rf_freq_s" units="kHz" invalid="-32768">Mode S reply RF frequency offset from 1090 MHz; -32768 when unavailable</field>
+            <field type="uint8_t" name="pulse_amplitude_variation_short" units="dB" invalid="255">Short Mode S reply pulse amplitude variation in 0.1 dB steps; 255 when unavailable</field>
+            <field type="uint8_t" name="pulse_amplitude_variation_long" units="dB" invalid="255">Long Mode S reply pulse amplitude variation in 0.1 dB steps; 255 when unavailable</field>
             <field type="uint8_t" name="df17_detected">DF17 extended squitter detected</field>
             <field type="uint8_t" name="test_group" invalid="255">IFR6000 test group; 255 when no group is selected</field>
             <field type="uint8_t" name="test_status">IFR6000 test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)</field>

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.3.1+30aefac0323aceecb0f53ee8deb119255187be0e 26-10-02.
+// This code was generate by tool Asv.Mavlink.Shell version 4.3.2-dev.1+db013e944d7d80b4fc3bac5eb6486420194f224e 26-10-19.
 
 using System;
 using System.Text;
@@ -7276,7 +7276,7 @@ namespace Asv.Mavlink.AsvRsga
         public const int MessageId = 13469; 
         public const string MessageIdAsString = "13469";
         
-        public const byte CrcExtra = 50;
+        public const byte CrcExtra = 64;
         
         public override int Id => MessageId;
                             
@@ -7300,9 +7300,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttModeACReqPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 135; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 140; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 135; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 140; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -7337,10 +7337,14 @@ namespace Asv.Mavlink.AsvRsga
             +4 // float mtl_mode_s_dbm
             +4 // float mtl_all_call_dbm
             +2 // int16_t measure_time
+            +2 // int16_t rf_freq_ac
             +Squawk.Length // char[4] squawk
             +1 // uint8_t spi
+            +1 // uint8_t pulse_amplitude_variation_mode_a
+            +1 // uint8_t pulse_amplitude_variation_mode_c
             +1 // uint8_t power_measurement_kind
             +1 // uint8_t erp_limit_applied
+            +1 // uint8_t power_source_mode
             +1 // uint8_t test_group
             +1 // uint8_t test_status
             );
@@ -7382,7 +7386,8 @@ namespace Asv.Mavlink.AsvRsga
             MtlModeSDbm = BinSerialize.ReadFloat(ref buffer);
             MtlAllCallDbm = BinSerialize.ReadFloat(ref buffer);
             MeasureTime = BinSerialize.ReadShort(ref buffer);
-            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/135 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            RfFreqAc = BinSerialize.ReadShort(ref buffer);
+            arraySize = /*ArrayLength*/4 - Math.Max(0,((/*PayloadByteSize*/140 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             unsafe
             {
@@ -7395,8 +7400,11 @@ namespace Asv.Mavlink.AsvRsga
             buffer = buffer[arraySize..];
            
             Spi = (byte)BinSerialize.ReadByte(ref buffer);
+            PulseAmplitudeVariationModeA = (byte)BinSerialize.ReadByte(ref buffer);
+            PulseAmplitudeVariationModeC = (byte)BinSerialize.ReadByte(ref buffer);
             PowerMeasurementKind = (byte)BinSerialize.ReadByte(ref buffer);
             ErpLimitApplied = (byte)BinSerialize.ReadByte(ref buffer);
+            PowerSourceMode = (byte)BinSerialize.ReadByte(ref buffer);
             TestGroup = (byte)BinSerialize.ReadByte(ref buffer);
             TestStatus = (byte)BinSerialize.ReadByte(ref buffer);
 
@@ -7434,6 +7442,7 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteFloat(ref buffer,MtlModeSDbm);
             BinSerialize.WriteFloat(ref buffer,MtlAllCallDbm);
             BinSerialize.WriteShort(ref buffer,MeasureTime);
+            BinSerialize.WriteShort(ref buffer,RfFreqAc);
             unsafe
             {
                 fixed (byte* bytePointer = buffer)
@@ -7445,11 +7454,14 @@ namespace Asv.Mavlink.AsvRsga
             buffer = buffer.Slice(Squawk.Length);
             
             BinSerialize.WriteByte(ref buffer,(byte)Spi);
+            BinSerialize.WriteByte(ref buffer,(byte)PulseAmplitudeVariationModeA);
+            BinSerialize.WriteByte(ref buffer,(byte)PulseAmplitudeVariationModeC);
             BinSerialize.WriteByte(ref buffer,(byte)PowerMeasurementKind);
             BinSerialize.WriteByte(ref buffer,(byte)ErpLimitApplied);
+            BinSerialize.WriteByte(ref buffer,(byte)PowerSourceMode);
             BinSerialize.WriteByte(ref buffer,(byte)TestGroup);
             BinSerialize.WriteByte(ref buffer,(byte)TestStatus);
-            /* PayloadByteSize = 135 */;
+            /* PayloadByteSize = 140 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -7486,11 +7498,15 @@ namespace Asv.Mavlink.AsvRsga
             FloatType.Accept(visitor,MtlModeSDbmField, ref _mtlModeSDbm);    
             FloatType.Accept(visitor,MtlAllCallDbmField, ref _mtlAllCallDbm);    
             Int16Type.Accept(visitor,MeasureTimeField, ref _measureTime);
+            Int16Type.Accept(visitor,RfFreqAcField, ref _rfFreqAc);
             ArrayType.Accept(visitor,SquawkField,  
                 (index, v, f, t) => CharType.Accept(v, f, t, ref Squawk[index]));
             UInt8Type.Accept(visitor,SpiField, ref _spi);    
+            UInt8Type.Accept(visitor,PulseAmplitudeVariationModeAField, ref _pulseAmplitudeVariationModeA);    
+            UInt8Type.Accept(visitor,PulseAmplitudeVariationModeCField, ref _pulseAmplitudeVariationModeC);    
             UInt8Type.Accept(visitor,PowerMeasurementKindField, ref _powerMeasurementKind);    
             UInt8Type.Accept(visitor,ErpLimitAppliedField, ref _erpLimitApplied);    
+            UInt8Type.Accept(visitor,PowerSourceModeField, ref _powerSourceMode);    
             UInt8Type.Accept(visitor,TestGroupField, ref _testGroup);    
             UInt8Type.Accept(visitor,TestStatusField, ref _testStatus);    
 
@@ -7887,6 +7903,19 @@ namespace Asv.Mavlink.AsvRsga
         private short _measureTime;
         public short MeasureTime { get => _measureTime; set => _measureTime = value; }
         /// <summary>
+        /// Mode A/C reply RF frequency offset from 1090 MHz; -32768 when unavailable
+        /// OriginName: rf_freq_ac, Units: kHz, IsExtended: false
+        /// </summary>
+        public static readonly Field RfFreqAcField = new Field.Builder()
+            .Name(nameof(RfFreqAc))
+            .Title("rf_freq_ac")
+            .Description("Mode A/C reply RF frequency offset from 1090 MHz; -32768 when unavailable")
+.Units(@"kHz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _rfFreqAc;
+        public short RfFreqAc { get => _rfFreqAc; set => _rfFreqAc = value; }
+        /// <summary>
         /// Mode A squawk code as text
         /// OriginName: squawk, Units: , IsExtended: false
         /// </summary>
@@ -7915,6 +7944,32 @@ namespace Asv.Mavlink.AsvRsga
         private byte _spi;
         public byte Spi { get => _spi; set => _spi = value; }
         /// <summary>
+        /// Mode A pulse amplitude variation in 0.1 dB steps; 255 when unavailable
+        /// OriginName: pulse_amplitude_variation_mode_a, Units: dB, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseAmplitudeVariationModeAField = new Field.Builder()
+            .Name(nameof(PulseAmplitudeVariationModeA))
+            .Title("pulse_amplitude_variation_mode_a")
+            .Description("Mode A pulse amplitude variation in 0.1 dB steps; 255 when unavailable")
+.Units(@"dB")
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _pulseAmplitudeVariationModeA;
+        public byte PulseAmplitudeVariationModeA { get => _pulseAmplitudeVariationModeA; set => _pulseAmplitudeVariationModeA = value; }
+        /// <summary>
+        /// Mode C pulse amplitude variation in 0.1 dB steps; 255 when unavailable
+        /// OriginName: pulse_amplitude_variation_mode_c, Units: dB, IsExtended: false
+        /// </summary>
+        public static readonly Field PulseAmplitudeVariationModeCField = new Field.Builder()
+            .Name(nameof(PulseAmplitudeVariationModeC))
+            .Title("pulse_amplitude_variation_mode_c")
+            .Description("Mode C pulse amplitude variation in 0.1 dB steps; 255 when unavailable")
+.Units(@"dB")
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _pulseAmplitudeVariationModeC;
+        public byte PulseAmplitudeVariationModeC { get => _pulseAmplitudeVariationModeC; set => _pulseAmplitudeVariationModeC = value; }
+        /// <summary>
         /// Power measurement kind
         /// OriginName: power_measurement_kind, Units: , IsExtended: false
         /// </summary>
@@ -7940,6 +7995,19 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private byte _erpLimitApplied;
         public byte ErpLimitApplied { get => _erpLimitApplied; set => _erpLimitApplied = value; }
+        /// <summary>
+        /// ERP/MTL source: 0 - none, 1 - ATCRBS, 2 - Mode S. For Mode S power events, test_group and test_status describe the Mode S power/frequency test; other A/C measurements must be ignored.
+        /// OriginName: power_source_mode, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field PowerSourceModeField = new Field.Builder()
+            .Name(nameof(PowerSourceMode))
+            .Title("power_source_mode")
+            .Description("ERP/MTL source: 0 - none, 1 - ATCRBS, 2 - Mode S. For Mode S power events, test_group and test_status describe the Mode S power/frequency test; other A/C measurements must be ignored.")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _powerSourceMode;
+        public byte PowerSourceMode { get => _powerSourceMode; set => _powerSourceMode = value; }
         /// <summary>
         /// IFR6000 test group; 255 when no group is selected
         /// OriginName: test_group, Units: , IsExtended: false
@@ -7976,7 +8044,7 @@ namespace Asv.Mavlink.AsvRsga
         public const int MessageId = 13470; 
         public const string MessageIdAsString = "13470";
         
-        public const byte CrcExtra = 99;
+        public const byte CrcExtra = 61;
         
         public override int Id => MessageId;
                             
@@ -8000,9 +8068,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttModeSReqPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 237; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 207; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 237; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 207; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -8022,14 +8090,6 @@ namespace Asv.Mavlink.AsvRsga
             +4 // uint32_t df21_icao_address
             +4 // float df16_altitude
             +4 // uint32_t df16_icao_address
-            +4 // float erp_instant_dbm
-            +4 // float erp_dbm
-            +4 // float mtl_instant_dbm
-            +4 // float mtl_dbm
-            +4 // float mtl_mode_a_dbm
-            +4 // float mtl_mode_c_dbm
-            +4 // float mtl_mode_s_dbm
-            +4 // float mtl_all_call_dbm
             +4 // float reply_delay_mode_s
             +4 // float reply_jitter_mode_s
             +4 // float uf0_mode_c_altitude_feet
@@ -8039,6 +8099,7 @@ namespace Asv.Mavlink.AsvRsga
             +4 // uint32_t target_icao_address
             +2 // uint16_t uf11_cnt
             +2 // uint16_t df11_cnt
+            +2 // int16_t rf_freq_s
             +1 // uint8_t capability
             +1 // uint8_t df4_flight_status
             +1 // uint8_t df4_downlink_request
@@ -8072,8 +8133,8 @@ namespace Asv.Mavlink.AsvRsga
             +Bds40.Length // uint8_t[7] bds40
             +Bds50.Length // uint8_t[7] bds50
             +Bds60.Length // uint8_t[7] bds60
-            +1 // uint8_t power_measurement_kind
-            +1 // uint8_t erp_limit_applied
+            +1 // uint8_t pulse_amplitude_variation_short
+            +1 // uint8_t pulse_amplitude_variation_long
             +1 // uint8_t df17_detected
             +1 // uint8_t test_group
             +1 // uint8_t test_status
@@ -8102,14 +8163,6 @@ namespace Asv.Mavlink.AsvRsga
             Df21IcaoAddress = BinSerialize.ReadUInt(ref buffer);
             Df16Altitude = BinSerialize.ReadFloat(ref buffer);
             Df16IcaoAddress = BinSerialize.ReadUInt(ref buffer);
-            ErpInstantDbm = BinSerialize.ReadFloat(ref buffer);
-            ErpDbm = BinSerialize.ReadFloat(ref buffer);
-            MtlInstantDbm = BinSerialize.ReadFloat(ref buffer);
-            MtlDbm = BinSerialize.ReadFloat(ref buffer);
-            MtlModeADbm = BinSerialize.ReadFloat(ref buffer);
-            MtlModeCDbm = BinSerialize.ReadFloat(ref buffer);
-            MtlModeSDbm = BinSerialize.ReadFloat(ref buffer);
-            MtlAllCallDbm = BinSerialize.ReadFloat(ref buffer);
             ReplyDelayModeS = BinSerialize.ReadFloat(ref buffer);
             ReplyJitterModeS = BinSerialize.ReadFloat(ref buffer);
             Uf0ModeCAltitudeFeet = BinSerialize.ReadFloat(ref buffer);
@@ -8119,6 +8172,7 @@ namespace Asv.Mavlink.AsvRsga
             TargetIcaoAddress = BinSerialize.ReadUInt(ref buffer);
             Uf11Cnt = BinSerialize.ReadUShort(ref buffer);
             Df11Cnt = BinSerialize.ReadUShort(ref buffer);
+            RfFreqS = BinSerialize.ReadShort(ref buffer);
             Capability = (byte)BinSerialize.ReadByte(ref buffer);
             Df4FlightStatus = (byte)BinSerialize.ReadByte(ref buffer);
             Df4DownlinkRequest = (byte)BinSerialize.ReadByte(ref buffer);
@@ -8144,7 +8198,7 @@ namespace Asv.Mavlink.AsvRsga
             Df20Df4FlightStatus = (byte)BinSerialize.ReadByte(ref buffer);
             Df20DownlinkRequest = (byte)BinSerialize.ReadByte(ref buffer);
             Df20UtilityMessage = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/7 - Math.Max(0,((/*PayloadByteSize*/237 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/7 - Math.Max(0,((/*PayloadByteSize*/207 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             for(var i=0;i<arraySize;i++)
             {
@@ -8213,8 +8267,8 @@ namespace Asv.Mavlink.AsvRsga
             {
                 Bds60[i] = (byte)BinSerialize.ReadByte(ref buffer);
             }
-            PowerMeasurementKind = (byte)BinSerialize.ReadByte(ref buffer);
-            ErpLimitApplied = (byte)BinSerialize.ReadByte(ref buffer);
+            PulseAmplitudeVariationShort = (byte)BinSerialize.ReadByte(ref buffer);
+            PulseAmplitudeVariationLong = (byte)BinSerialize.ReadByte(ref buffer);
             Df17Detected = (byte)BinSerialize.ReadByte(ref buffer);
             TestGroup = (byte)BinSerialize.ReadByte(ref buffer);
             TestStatus = (byte)BinSerialize.ReadByte(ref buffer);
@@ -8239,14 +8293,6 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteUInt(ref buffer,Df21IcaoAddress);
             BinSerialize.WriteFloat(ref buffer,Df16Altitude);
             BinSerialize.WriteUInt(ref buffer,Df16IcaoAddress);
-            BinSerialize.WriteFloat(ref buffer,ErpInstantDbm);
-            BinSerialize.WriteFloat(ref buffer,ErpDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlInstantDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlModeADbm);
-            BinSerialize.WriteFloat(ref buffer,MtlModeCDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlModeSDbm);
-            BinSerialize.WriteFloat(ref buffer,MtlAllCallDbm);
             BinSerialize.WriteFloat(ref buffer,ReplyDelayModeS);
             BinSerialize.WriteFloat(ref buffer,ReplyJitterModeS);
             BinSerialize.WriteFloat(ref buffer,Uf0ModeCAltitudeFeet);
@@ -8256,6 +8302,7 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteUInt(ref buffer,TargetIcaoAddress);
             BinSerialize.WriteUShort(ref buffer,Uf11Cnt);
             BinSerialize.WriteUShort(ref buffer,Df11Cnt);
+            BinSerialize.WriteShort(ref buffer,RfFreqS);
             BinSerialize.WriteByte(ref buffer,(byte)Capability);
             BinSerialize.WriteByte(ref buffer,(byte)Df4FlightStatus);
             BinSerialize.WriteByte(ref buffer,(byte)Df4DownlinkRequest);
@@ -8337,13 +8384,13 @@ namespace Asv.Mavlink.AsvRsga
             {
                 BinSerialize.WriteByte(ref buffer,(byte)Bds60[i]);
             }
-            BinSerialize.WriteByte(ref buffer,(byte)PowerMeasurementKind);
-            BinSerialize.WriteByte(ref buffer,(byte)ErpLimitApplied);
+            BinSerialize.WriteByte(ref buffer,(byte)PulseAmplitudeVariationShort);
+            BinSerialize.WriteByte(ref buffer,(byte)PulseAmplitudeVariationLong);
             BinSerialize.WriteByte(ref buffer,(byte)Df17Detected);
             BinSerialize.WriteByte(ref buffer,(byte)TestGroup);
             BinSerialize.WriteByte(ref buffer,(byte)TestStatus);
             BinSerialize.WriteByte(ref buffer,(byte)AltitudeReferenceVersion);
-            /* PayloadByteSize = 237 */;
+            /* PayloadByteSize = 207 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -8365,14 +8412,6 @@ namespace Asv.Mavlink.AsvRsga
             UInt32Type.Accept(visitor,Df21IcaoAddressField, ref _df21IcaoAddress);    
             FloatType.Accept(visitor,Df16AltitudeField, ref _df16Altitude);    
             UInt32Type.Accept(visitor,Df16IcaoAddressField, ref _df16IcaoAddress);    
-            FloatType.Accept(visitor,ErpInstantDbmField, ref _erpInstantDbm);    
-            FloatType.Accept(visitor,ErpDbmField, ref _erpDbm);    
-            FloatType.Accept(visitor,MtlInstantDbmField, ref _mtlInstantDbm);    
-            FloatType.Accept(visitor,MtlDbmField, ref _mtlDbm);    
-            FloatType.Accept(visitor,MtlModeADbmField, ref _mtlModeADbm);    
-            FloatType.Accept(visitor,MtlModeCDbmField, ref _mtlModeCDbm);    
-            FloatType.Accept(visitor,MtlModeSDbmField, ref _mtlModeSDbm);    
-            FloatType.Accept(visitor,MtlAllCallDbmField, ref _mtlAllCallDbm);    
             FloatType.Accept(visitor,ReplyDelayModeSField, ref _replyDelayModeS);    
             FloatType.Accept(visitor,ReplyJitterModeSField, ref _replyJitterModeS);    
             FloatType.Accept(visitor,Uf0ModeCAltitudeFeetField, ref _uf0ModeCAltitudeFeet);    
@@ -8382,6 +8421,7 @@ namespace Asv.Mavlink.AsvRsga
             UInt32Type.Accept(visitor,TargetIcaoAddressField, ref _targetIcaoAddress);    
             UInt16Type.Accept(visitor,Uf11CntField, ref _uf11Cnt);    
             UInt16Type.Accept(visitor,Df11CntField, ref _df11Cnt);    
+            Int16Type.Accept(visitor,RfFreqSField, ref _rfFreqS);
             UInt8Type.Accept(visitor,CapabilityField, ref _capability);    
             UInt8Type.Accept(visitor,Df4FlightStatusField, ref _df4FlightStatus);    
             UInt8Type.Accept(visitor,Df4DownlinkRequestField, ref _df4DownlinkRequest);    
@@ -8427,8 +8467,8 @@ namespace Asv.Mavlink.AsvRsga
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds50[index]));    
             ArrayType.Accept(visitor,Bds60Field, 
                 (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Bds60[index]));    
-            UInt8Type.Accept(visitor,PowerMeasurementKindField, ref _powerMeasurementKind);    
-            UInt8Type.Accept(visitor,ErpLimitAppliedField, ref _erpLimitApplied);    
+            UInt8Type.Accept(visitor,PulseAmplitudeVariationShortField, ref _pulseAmplitudeVariationShort);    
+            UInt8Type.Accept(visitor,PulseAmplitudeVariationLongField, ref _pulseAmplitudeVariationLong);    
             UInt8Type.Accept(visitor,Df17DetectedField, ref _df17Detected);    
             UInt8Type.Accept(visitor,TestGroupField, ref _testGroup);    
             UInt8Type.Accept(visitor,TestStatusField, ref _testStatus);    
@@ -8632,110 +8672,6 @@ namespace Asv.Mavlink.AsvRsga
         private uint _df16IcaoAddress;
         public uint Df16IcaoAddress { get => _df16IcaoAddress; set => _df16IcaoAddress = value; }
         /// <summary>
-        /// Instant effective radiated power
-        /// OriginName: erp_instant_dbm, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field ErpInstantDbmField = new Field.Builder()
-            .Name(nameof(ErpInstantDbm))
-            .Title("erp_instant_dbm")
-            .Description("Instant effective radiated power")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _erpInstantDbm;
-        public float ErpInstantDbm { get => _erpInstantDbm; set => _erpInstantDbm = value; }
-        /// <summary>
-        /// Effective radiated power
-        /// OriginName: erp_dbm, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field ErpDbmField = new Field.Builder()
-            .Name(nameof(ErpDbm))
-            .Title("erp_dbm")
-            .Description("Effective radiated power")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _erpDbm;
-        public float ErpDbm { get => _erpDbm; set => _erpDbm = value; }
-        /// <summary>
-        /// Instant minimum trigger level
-        /// OriginName: mtl_instant_dbm, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field MtlInstantDbmField = new Field.Builder()
-            .Name(nameof(MtlInstantDbm))
-            .Title("mtl_instant_dbm")
-            .Description("Instant minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlInstantDbm;
-        public float MtlInstantDbm { get => _mtlInstantDbm; set => _mtlInstantDbm = value; }
-        /// <summary>
-        /// Minimum trigger level
-        /// OriginName: mtl_dbm, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field MtlDbmField = new Field.Builder()
-            .Name(nameof(MtlDbm))
-            .Title("mtl_dbm")
-            .Description("Minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlDbm;
-        public float MtlDbm { get => _mtlDbm; set => _mtlDbm = value; }
-        /// <summary>
-        /// Mode A minimum trigger level
-        /// OriginName: mtl_mode_a_dbm, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field MtlModeADbmField = new Field.Builder()
-            .Name(nameof(MtlModeADbm))
-            .Title("mtl_mode_a_dbm")
-            .Description("Mode A minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlModeADbm;
-        public float MtlModeADbm { get => _mtlModeADbm; set => _mtlModeADbm = value; }
-        /// <summary>
-        /// Mode C minimum trigger level
-        /// OriginName: mtl_mode_c_dbm, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field MtlModeCDbmField = new Field.Builder()
-            .Name(nameof(MtlModeCDbm))
-            .Title("mtl_mode_c_dbm")
-            .Description("Mode C minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlModeCDbm;
-        public float MtlModeCDbm { get => _mtlModeCDbm; set => _mtlModeCDbm = value; }
-        /// <summary>
-        /// Mode S minimum trigger level
-        /// OriginName: mtl_mode_s_dbm, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field MtlModeSDbmField = new Field.Builder()
-            .Name(nameof(MtlModeSDbm))
-            .Title("mtl_mode_s_dbm")
-            .Description("Mode S minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlModeSDbm;
-        public float MtlModeSDbm { get => _mtlModeSDbm; set => _mtlModeSDbm = value; }
-        /// <summary>
-        /// All-call minimum trigger level
-        /// OriginName: mtl_all_call_dbm, Units: dBm, IsExtended: false
-        /// </summary>
-        public static readonly Field MtlAllCallDbmField = new Field.Builder()
-            .Name(nameof(MtlAllCallDbm))
-            .Title("mtl_all_call_dbm")
-            .Description("All-call minimum trigger level")
-.Units(@"dBm")
-            .DataType(FloatType.Default)
-        .Build();
-        private float _mtlAllCallDbm;
-        public float MtlAllCallDbm { get => _mtlAllCallDbm; set => _mtlAllCallDbm = value; }
-        /// <summary>
         /// Mode S reply delay
         /// OriginName: reply_delay_mode_s, Units: us, IsExtended: false
         /// </summary>
@@ -8852,6 +8788,19 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private ushort _df11Cnt;
         public ushort Df11Cnt { get => _df11Cnt; set => _df11Cnt = value; }
+        /// <summary>
+        /// Mode S reply RF frequency offset from 1090 MHz; -32768 when unavailable
+        /// OriginName: rf_freq_s, Units: kHz, IsExtended: false
+        /// </summary>
+        public static readonly Field RfFreqSField = new Field.Builder()
+            .Name(nameof(RfFreqS))
+            .Title("rf_freq_s")
+            .Description("Mode S reply RF frequency offset from 1090 MHz; -32768 when unavailable")
+.Units(@"kHz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _rfFreqS;
+        public short RfFreqS { get => _rfFreqS; set => _rfFreqS = value; }
         /// <summary>
         /// Capability flags
         /// OriginName: capability, Units: , IsExtended: false
@@ -9284,31 +9233,31 @@ namespace Asv.Mavlink.AsvRsga
         public const int Bds60MaxItemsCount = 7;
         public byte[] Bds60 { get; } = new byte[7];
         /// <summary>
-        /// Power measurement kind
-        /// OriginName: power_measurement_kind, Units: , IsExtended: false
+        /// Short Mode S reply pulse amplitude variation in 0.1 dB steps; 255 when unavailable
+        /// OriginName: pulse_amplitude_variation_short, Units: dB, IsExtended: false
         /// </summary>
-        public static readonly Field PowerMeasurementKindField = new Field.Builder()
-            .Name(nameof(PowerMeasurementKind))
-            .Title("power_measurement_kind")
-            .Description("Power measurement kind")
-
+        public static readonly Field PulseAmplitudeVariationShortField = new Field.Builder()
+            .Name(nameof(PulseAmplitudeVariationShort))
+            .Title("pulse_amplitude_variation_short")
+            .Description("Short Mode S reply pulse amplitude variation in 0.1 dB steps; 255 when unavailable")
+.Units(@"dB")
             .DataType(UInt8Type.Default)
         .Build();
-        private byte _powerMeasurementKind;
-        public byte PowerMeasurementKind { get => _powerMeasurementKind; set => _powerMeasurementKind = value; }
+        private byte _pulseAmplitudeVariationShort;
+        public byte PulseAmplitudeVariationShort { get => _pulseAmplitudeVariationShort; set => _pulseAmplitudeVariationShort = value; }
         /// <summary>
-        /// ERP limit application mode
-        /// OriginName: erp_limit_applied, Units: , IsExtended: false
+        /// Long Mode S reply pulse amplitude variation in 0.1 dB steps; 255 when unavailable
+        /// OriginName: pulse_amplitude_variation_long, Units: dB, IsExtended: false
         /// </summary>
-        public static readonly Field ErpLimitAppliedField = new Field.Builder()
-            .Name(nameof(ErpLimitApplied))
-            .Title("erp_limit_applied")
-            .Description("ERP limit application mode")
-
+        public static readonly Field PulseAmplitudeVariationLongField = new Field.Builder()
+            .Name(nameof(PulseAmplitudeVariationLong))
+            .Title("pulse_amplitude_variation_long")
+            .Description("Long Mode S reply pulse amplitude variation in 0.1 dB steps; 255 when unavailable")
+.Units(@"dB")
             .DataType(UInt8Type.Default)
         .Build();
-        private byte _erpLimitApplied;
-        public byte ErpLimitApplied { get => _erpLimitApplied; set => _erpLimitApplied = value; }
+        private byte _pulseAmplitudeVariationLong;
+        public byte PulseAmplitudeVariationLong { get => _pulseAmplitudeVariationLong; set => _pulseAmplitudeVariationLong = value; }
         /// <summary>
         /// DF17 extended squitter detected
         /// OriginName: df17_detected, Units: , IsExtended: false
