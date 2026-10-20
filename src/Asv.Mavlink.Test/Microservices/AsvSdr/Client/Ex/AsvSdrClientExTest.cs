@@ -67,15 +67,13 @@ public class AsvSdrClientExTest(ITestOutputHelper log) : ClientTestBase<AsvSdrCl
     public async Task Client_StartRecordCancelWithToken_Fail()
     {
         var recordName = "Test_Record";
-        var cancel = new CancellationTokenSource();
-        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-            await Client.StartRecord(recordName, cancel.Token));
-        var t2 = Task.Factory.StartNew(() =>
-        {
-            Time.Advance(TimeSpan.FromMilliseconds(_commandConfig.CommandTimeoutMs * _commandConfig.CommandAttempt + 100));
-        }, cancel.Token);
-
-        await Task.WhenAll(t1, t2);
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.StartRecord(recordName, cancel),
+            Link.Client,
+            Time,
+            _commandConfig.CommandAttempt,
+            TimeSpan.FromMilliseconds(_commandConfig.CommandTimeoutMs)
+        );
     }
 
     [Fact]

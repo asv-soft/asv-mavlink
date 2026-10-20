@@ -69,17 +69,14 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
         var attempts = (uint)5;
         var timeout = 1000;
 
-        // Act
-        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.RefreshInfo(_cancellationTokenSource.Token);
-        });
-
-        var t2 = Task.Factory.StartNew(() => { Time.Advance(TimeSpan.FromMilliseconds(timeout * attempts + 1)); },
-            Xunit.TestContext.Current.CancellationToken);
-
-        //Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.RefreshInfo(cancel),
+            Link.Client,
+            Time,
+            (int)attempts,
+            TimeSpan.FromMilliseconds(timeout)
+        );
         Assert.Equal(attempts, Link.Client.Statistic.TxMessages);
     }
 
@@ -90,17 +87,14 @@ public class AsvRsgaClientExTest : ClientTestBase<AsvRsgaClientEx>, IDisposable
         var attempts = (uint)5;
         var timeout = 1000;
 
-        // Act
-        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.SetMode(AsvRsgaCustomMode.AsvRsgaCustomModeIdle, _cancellationTokenSource.Token);
-        });
-
-        var t2 = Task.Factory.StartNew(() => { Time.Advance(TimeSpan.FromMilliseconds(timeout * attempts + 1)); },
-            Xunit.TestContext.Current.CancellationToken);
-
-        //Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.SetMode(AsvRsgaCustomMode.AsvRsgaCustomModeIdle, cancel),
+            Link.Client,
+            Time,
+            (int)attempts,
+            TimeSpan.FromMilliseconds(timeout)
+        );
         Assert.Equal(attempts, Link.Client.Statistic.TxMessages);
     }
 

@@ -14,8 +14,8 @@ namespace Asv.Mavlink
         private readonly IMavlinkContext _core;
         private readonly object _sync = new();
         private readonly ILogger _logger;
-        private readonly ReaderWriterLockSlim _dataLock = new();
-        private int _isSending;
+        private bool _isSending;
+        private TaskCompletionSource? _sendCompletion;
         private readonly ReactiveProperty<PacketTransponderState> _state = new();
         private readonly TPacket _packet;
         private ITimer? _timer;
@@ -35,9 +35,9 @@ namespace Asv.Mavlink
 
         public void Start(TimeSpan dueTime, TimeSpan period)
         {
-            if (_packet == null) throw new MavlinkException($"You need call '{nameof(Set)}' method< before call start");
             lock (_sync)
             {
+                ThrowIfDisposed();
                 _timer?.Dispose();
                 _timer = _core.TimeProvider.CreateTimer(OnTick,null,dueTime, period);
                 IsStarted = true;
@@ -46,27 +46,82 @@ namespace Asv.Mavlink
 
         private void OnTick(object? state)
         {
-            if (Interlocked.CompareExchange(ref _isSending, 1, 0) == 1)
+            CancellationToken cancel;
+            TPacket sendPacket;
+            lock (_sync)
             {
-                LogSkipped();
-                return;
+                if (IsDisposed || !IsStarted) return;
+                if (_isSending)
+                {
+                    LogSkipped();
+                    return;
+                }
+
+                // Send may complete after enqueueing, before serialization. Each queued packet
+                // therefore needs its own snapshot, independent of Set and subsequent ticks.
+                try
+                {
+                    sendPacket = new TPacket();
+                    var payload = _packet.GetPayload();
+                    Span<byte> buffer = stackalloc byte[payload.GetMaxByteSize()];
+                    var remaining = buffer;
+                    payload.Serialize(ref remaining);
+                    ReadOnlySpan<byte> serialized = buffer[..(buffer.Length - remaining.Length)];
+                    sendPacket.GetPayload().Deserialize(ref serialized);
+                    sendPacket.SystemId = _packet.SystemId;
+                    sendPacket.ComponentId = _packet.ComponentId;
+                    if (_packet is MavlinkV2Message source && sendPacket is MavlinkV2Message target)
+                    {
+                        target.CompatFlags = source.CompatFlags;
+                        target.IncompatFlags = source.IncompatFlags;
+                        target.Signature.IsPresent = source.Signature.IsPresent;
+                        target.Signature.LinkId = source.Signature.LinkId;
+                        target.Signature.Timestamp = source.Signature.Timestamp;
+                        target.Signature.Sign = source.Signature.Sign;
+                    }
+                    sendPacket.Tags.Clear();
+                    for (var i = 0; i < _packet.Tags.Count; i++)
+                    {
+                        sendPacket.Tags.Add(_packet.Tags[i]);
+                    }
+                    sendPacket.Sequence = _core.Sequence.GetNextSequenceNumber();
+                }
+                catch (Exception e)
+                {
+                    LogError(e);
+                    return;
+                }
+                cancel = DisposeCancel;
+                _isSending = true;
             }
 
+            _ = SendAsync(sendPacket, cancel);
+        }
+
+        private async Task SendAsync(TPacket packet, CancellationToken cancel)
+        {
+            Exception? error = null;
             try
             {
-                _dataLock.EnterReadLock();
-                _packet.Sequence = _core.Sequence.GetNextSequenceNumber();
-                _core.Connection.Send(_packet, DisposeCancel);
-                LogSuccess();
+                await _core.Connection.Send(packet, cancel).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                LogError(e);
+                error = e;
             }
             finally
             {
-                _dataLock.ExitReadLock();
-                Interlocked.Exchange(ref _isSending, 0);
+                lock (_sync)
+                {
+                    _isSending = false;
+                    _sendCompletion?.TrySetResult();
+                    _sendCompletion = null;
+                    if (!IsDisposed)
+                    {
+                        if (error == null) LogSuccess();
+                        else LogError(error);
+                    }
+                }
             }
         }
 
@@ -106,19 +161,17 @@ namespace Asv.Mavlink
 
         public void Set(Action<TPacket> changeCallback)
         {
-            if (IsDisposed) return;
-            try
+            lock (_sync)
             {
-                _dataLock.EnterWriteLock();
-                changeCallback(_packet);
-            }
-            catch (Exception e)
-            {
-                _logger.ZLogError(e,$"Error to set new value for {new TPacket().Name}:{e.Message}");
-            }
-            finally
-            {
-                _dataLock.ExitWriteLock();
+                if (IsDisposed) return;
+                try
+                {
+                    changeCallback(_packet);
+                }
+                catch (Exception e)
+                {
+                    _logger.ZLogError(e,$"Error to set new value for {new TPacket().Name}:{e.Message}");
+                }
             }
         }
 
@@ -128,12 +181,8 @@ namespace Asv.Mavlink
         {
             if (disposing)
             {
-                _dataLock.Dispose();
-                _state.Dispose();
-                lock (_sync)
-                {
-                    _timer?.Dispose();
-                }
+                Stop();
+                lock (_sync) _state.Dispose();
             }
 
             base.Dispose(disposing);
@@ -141,22 +190,18 @@ namespace Asv.Mavlink
 
         protected override async ValueTask DisposeAsyncCore()
         {
-            await CastAndDispose(_dataLock).ConfigureAwait(false);
-            await CastAndDispose(_state).ConfigureAwait(false);
-            // ReSharper disable once InconsistentlySynchronizedField
-            if (_timer != null) await _timer.DisposeAsync().ConfigureAwait(false);
+            Stop();
+            Task completion;
+            lock (_sync)
+            {
+                completion = _isSending
+                    ? (_sendCompletion ??= new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously)).Task
+                    : Task.CompletedTask;
+            }
 
             await base.DisposeAsyncCore().ConfigureAwait(false);
-
-            return;
-
-            static async ValueTask CastAndDispose(IDisposable resource)
-            {
-                if (resource is IAsyncDisposable resourceAsyncDisposable)
-                    await resourceAsyncDisposable.DisposeAsync().ConfigureAwait(false);
-                else
-                    resource.Dispose();
-            }
+            await completion.ConfigureAwait(false);
+            lock (_sync) _state.Dispose();
         }
 
         #endregion

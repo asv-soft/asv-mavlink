@@ -95,6 +95,72 @@ public class MissionClientExTest : ClientTestBase<MissionClientEx>
     }
 
     [Fact]
+    public void Create_AppendingDoesNotEditExistingItems()
+    {
+        var first = _client.Create();
+        var second = _client.Create();
+        first.Param1.Value = 12.5f;
+        second.Param4.Value = 42;
+        var changes = 0;
+        using var firstSubscription = first.OnChanged.Subscribe(_ => changes++);
+        using var secondSubscription = second.OnChanged.Subscribe(_ => changes++);
+
+        var appended = _client.Create();
+
+        Assert.Equal(0, changes);
+        Assert.Equal(12.5f, first.Param1.Value);
+        Assert.Equal(42f, second.Param4.Value);
+        Assert.Equal(new ushort[] { 0, 1, 2 }, _client.MissionItems.Select(item => item.Index));
+        Assert.Equal((ushort)2, appended.Payload.Seq);
+        Assert.Same(first, _client.MissionItems[0]);
+        Assert.Same(second, _client.MissionItems[1]);
+    }
+
+    [Fact]
+    public void Remove_MiddleItemReindexesSuffixWithoutEditingPrefix()
+    {
+        var first = _client.Create();
+        var removed = _client.Create();
+        var last = _client.Create();
+        last.Param1.Value = 17;
+        var prefixChanges = 0;
+        using var subscription = first.OnChanged.Subscribe(_ => prefixChanges++);
+
+        _client.Remove(1);
+        var appended = _client.Create();
+
+        Assert.Equal(0, prefixChanges);
+        Assert.DoesNotContain(removed, _client.MissionItems);
+        Assert.Same(first, _client.MissionItems[0]);
+        Assert.Same(last, _client.MissionItems[1]);
+        Assert.Equal((ushort)1, last.Index);
+        Assert.Equal((ushort)1, last.Payload.Seq);
+        Assert.Equal(17f, last.Param1.Value);
+        Assert.Equal((ushort)2, appended.Index);
+    }
+
+    [Fact]
+    public void Create_AllocationGrowthRemainsLinear()
+    {
+        // Compare allocations rather than wall time: reindexing every previous item
+        // used to allocate one closure per visit and made appends quadratic.
+        MeasureAllocations(64);
+        var small = MeasureAllocations(256);
+        var large = MeasureAllocations(1024);
+
+        Assert.True(large < small * 6, $"Append allocations grew from {small} to {large} bytes.");
+        return;
+
+        long MeasureAllocations(int count)
+        {
+            using var client = new MissionClientEx(_client.Base, _command!, _config);
+            var before = GC.GetAllocatedBytesForCurrentThread();
+            for (var i = 0; i < count; i++) client.Create();
+            return GC.GetAllocatedBytesForCurrentThread() - before;
+        }
+    }
+
+    [Fact]
     public void Remove_NonExistingItem_Throws()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => _client.Remove(0));

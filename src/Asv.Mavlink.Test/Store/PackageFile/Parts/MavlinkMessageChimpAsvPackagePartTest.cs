@@ -54,7 +54,7 @@ public class MavlinkMessageChimpAsvPackagePartTest(ITestOutputHelper log)
                 var actual = x.Data.GetPayload();
                 expected.ShouldDeepEqual(actual);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -79,6 +79,7 @@ public class MavlinkMessageChimpAsvPackagePartTest(ITestOutputHelper log)
             for (int i = 0; i < count; i++)
             {
                 var packet = factory.Create(messageId);
+                Assert.NotNull(packet);
                 packet.GetPayload().Randomize();
                 name = packet.Name;
                 var rec = new MavlinkMessageRecord((uint)i,start.AddSeconds(i) , packet);

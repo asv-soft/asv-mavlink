@@ -602,7 +602,7 @@ public class CommandLongComplexTest : ComplexTestBase<CommandClient, CommandLong
             5,
             6,
             7,
-            CancellationToken.None
+            Xunit.TestContext.Current.CancellationToken
         );
         
         // Assert

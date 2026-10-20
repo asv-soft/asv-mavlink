@@ -583,6 +583,60 @@ public class MissionExComplexTest : ComplexTestBase<MissionClientEx, MissionServ
     }
 
     [Fact]
+    public async Task Upload_AcceptedAckAllowsImmediateMissionStart()
+    {
+        var cancel = Xunit.TestContext.Current.CancellationToken;
+        var startAttempt = new TaskCompletionSource<Exception?>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var missionEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseMission = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var missionCompleted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        _client.Create().Command.Value = MavCmd.MavCmdUser1;
+        _server[MavCmd.MavCmdUser1] = async (_, token) =>
+        {
+            missionEntered.TrySetResult();
+            await releaseMission.Task.WaitAsync(token);
+        };
+
+        var acknowledgements = 0;
+        using var ackSubscription = _client.Base.OnMissionAck.Subscribe(ack =>
+        {
+            // Upload first clears the remote mission, then sends the replacement.
+            if (ack.Type == MavMissionResult.MavMissionAccepted
+                && Interlocked.Increment(ref acknowledgements) == 2)
+            {
+                startAttempt.TrySetResult(Record.Exception(() => _server.StartMission()));
+            }
+        });
+        using var stateSubscription = _server.State.Subscribe(state =>
+        {
+            if (state == MissionServerState.CompleteSuccess)
+            {
+                missionCompleted.TrySetResult();
+            }
+        });
+
+        try
+        {
+            await _client.Upload(cancel).WaitAsync(TimeSpan.FromSeconds(10), cancel);
+
+            Assert.Null(await startAttempt.Task.WaitAsync(TimeSpan.FromSeconds(10), cancel));
+            await missionEntered.Task.WaitAsync(TimeSpan.FromSeconds(10), cancel);
+            Assert.Single(_server.Items);
+            Assert.Equal(MissionServerState.Running, _server.State.CurrentValue);
+            // Upload cleanup must not reset the state acquired by the new mission.
+            Assert.Throws<InvalidOperationException>(_server.ClearItems);
+        }
+        finally
+        {
+            releaseMission.TrySetResult();
+            if (missionEntered.Task.IsCompletedSuccessfully)
+            {
+                await missionCompleted.Task.WaitAsync(TimeSpan.FromSeconds(10), cancel);
+            }
+        }
+    }
+
+    [Fact]
     public async Task Upload_SinglePacket_Success()
     {
         // Arrange

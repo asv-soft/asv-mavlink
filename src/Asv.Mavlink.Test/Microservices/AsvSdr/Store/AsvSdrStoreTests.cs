@@ -29,7 +29,7 @@ public class AsvSdrStoreTests
         //Assert
         Assert.NotNull(file);
         var fileNameString = new string(file.ReadMetadata().Info.RecordName.Where(c => c != 0).ToArray());
-        Assert.Equal(fileNameString, fileName);
+        Assert.Equal(fileName, fileNameString);
         var fileGuid = new Guid(file.ReadMetadata().Info.RecordGuid);
         Assert.Equal(fileGuid, guid);
     }

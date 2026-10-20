@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Asv.Mavlink;
@@ -37,7 +38,6 @@ public sealed class FtpSession(byte id) : IDisposable, IAsyncDisposable
         OpenReadWrite,
     }
     
-    private bool _disposed;
     private Stream? _stream;
     
     /// <summary>
@@ -102,43 +102,17 @@ public sealed class FtpSession(byte id) : IDisposable, IAsyncDisposable
         await DisposeAsync().ConfigureAwait(false);
     }
     
-    private void Dispose(bool disposing)
-    {
-        if (_disposed) return;
-        if (disposing)
-        {
-            _stream?.Dispose();
-        }
-        _disposed = true;
-    }
-        
     public void Dispose()
     {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
-    
-    private async ValueTask DisposeAsyncCore()
-    {
-        if (!_disposed)
-        {
-            if (_stream is not null)
-            {
-                await _stream.DisposeAsync().ConfigureAwait(false);
-            }
-            
-            _disposed = true;
-        }
+        Interlocked.Exchange(ref _stream, null)?.Dispose();
     }
 
     public async ValueTask DisposeAsync()
     {
-        await DisposeAsyncCore().ConfigureAwait(false);
-        GC.SuppressFinalize(this);
-    }
-
-    ~FtpSession()
-    {
-        Dispose(disposing: false);
+        var stream = Interlocked.Exchange(ref _stream, null);
+        if (stream is not null)
+        {
+            await stream.DisposeAsync().ConfigureAwait(false);
+        }
     }
 }

@@ -194,12 +194,12 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
     {
         _isMissionSynced.Value = false;
         _missionSource.RemoveAt(index);
-        EnsureIndex();
+        EnsureIndex(index);
     }
 
-    private void EnsureIndex()
+    private void EnsureIndex(int startIndex = 0)
     {
-        for (var i = 0; i < _missionSource.Count; i++)
+        for (var i = startIndex; i < _missionSource.Count; i++)
         {
             var i1 = i;
             _missionSource[i].Edit(x=>x.Seq = (ushort)i1);
@@ -215,9 +215,9 @@ public sealed class MissionClientEx : MavlinkMicroserviceClient, IMissionClientE
 
     private MissionItem AddMissionItem(MissionItemIntPayload item)
     {
+        item.Seq = (ushort)_missionSource.Count;
         var missionItem = new MissionItem(item);
         _missionSource.Add(missionItem);
-        EnsureIndex();
         missionItem.OnChanged.Subscribe(_ =>
         {
             _isMissionSynced.OnNext(false);

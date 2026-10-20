@@ -89,7 +89,7 @@ public class AsvSdrComplexTests(ITestOutputHelper log) : ComplexTestBase<AsvSdrC
         };
         var res = await Client.StartRecord("record", cancel.Token);
         var res1 = await Client.StopRecord(cancel.Token);
-        Assert.Equal(1,Client.Records.Count);
+        Assert.Single(Client.Records);
         Assert.Equal(MavResult.MavResultAccepted, res1);
         Assert.Equal(MavResult.MavResultAccepted, res);
     }

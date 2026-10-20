@@ -34,19 +34,14 @@ public class AsvRsgaClientTest : ClientTestBase<AsvRsgaClient>, IDisposable
         var attempts = (uint)5;
         var timeout = 1000;
         
-        // Act
-        var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.GetCompatibilities(_cancellationTokenSource.Token);
-        });
-
-        var t2 = Task.Factory.StartNew(() =>
-        {
-            Time.Advance(TimeSpan.FromMilliseconds(timeout * attempts + 1));
-        }, Xunit.TestContext.Current.CancellationToken);
-        
-        //Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.GetCompatibilities(cancel),
+            Link.Client,
+            Time,
+            (int)attempts,
+            TimeSpan.FromMilliseconds(timeout)
+        );
         Assert.Equal(attempts, Link.Client.Statistic.TxMessages);
     }
     

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +22,8 @@ public class AudioServiceConfig
 
 public class AudioService : IAudioService,IDisposable, IAsyncDisposable
 {
+    private readonly Lock _devicesSync = new();
+    private bool _disposed;
     private readonly ILogger _logger;
     private readonly IAudioCodecFactory _codecFactory;
     private readonly MavlinkIdentity _identity;
@@ -86,30 +87,33 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
     {
         if (pkt.Payload.TargetSystem != _identity.SystemId) return;
         if (pkt.Payload.TargetComponent != _identity.ComponentId) return;
-        if (_devices.TryGetValue(pkt.FullId, out var device) == false) return;
-        ((AudioDevice)device).OnInputAudioStream(pkt.Payload);
+        using (_devicesSync.EnterScope())
+        {
+            if (_disposed || !_devices.TryGetValue(pkt.FullId, out var device)) return;
+            ((AudioDevice)device).OnInputAudioStream(pkt.Payload);
+        }
     }
     private void OnRecvDeviceOnline(AsvAudioOnlinePacket pkt)
     {
-        if (_codec.Value == null)
+        using (_devicesSync.EnterScope())
         {
-            return;
-        }
-        try
-        {
-            if (_devices.TryGetValue(pkt.FullId, out var item))
+            if (_disposed || _codec.Value == null) return;
+            try
             {
-                ((AudioDevice)item).Update(pkt.Payload);
+                if (_devices.TryGetValue(pkt.FullId, out var item))
+                {
+                    ((AudioDevice)item).Update(pkt.Payload);
+                }
+                else
+                {
+                    var newItem = new AudioDevice(_codecFactory, _codec.Value.Value, pkt, SendAudioStream, InternalOnReceiveAudio, _core);
+                    _devices.Add(newItem.FullId, newItem);
+                }
             }
-            else
+            catch (Exception e)
             {
-                var newItem = new AudioDevice(_codecFactory, _codec.Value.Value, pkt, SendAudioStream, InternalOnReceiveAudio, _core );
-                _devices.Add(newItem.FullId,newItem);  
+                _logger.ZLogError(e, $"Error on add device:{e.Message}");
             }
-        }
-        catch (Exception e)
-        {
-            _logger.ZLogError(e, $"Error on add device:{e.Message}");
         }
     }
 
@@ -132,17 +136,25 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
 
     private void RemoveOldDevice(object? state)
     {
-        var itemsToDelete = _devices
-            .Select(x => (AudioDevice)x.Value)
-            .Where(device => _core.TimeProvider.GetElapsedTime(device.GetLastHit()) > _deviceTimeout)
-            .ToImmutableArray();
-        foreach (var item in itemsToDelete.RemoveRange(itemsToDelete))
+        AudioDevice[] itemsToDelete;
+        using (_devicesSync.EnterScope())
+        {
+            if (_disposed) return;
+            itemsToDelete = _devices.Select(pair => pair.Value)
+                .Cast<AudioDevice>()
+                .Where(device => _core.TimeProvider.GetElapsedTime(device.GetLastHit()) > _deviceTimeout)
+                .ToArray();
+            foreach (var item in itemsToDelete)
+            {
+                _devices.Remove(item.FullId);
+            }
+        }
+        foreach (var item in itemsToDelete)
         {
             item.Dispose();
         }
-
     }
-    
+
     public IEnumerable<AsvAudioCodec> AvailableCodecs => _codecFactory.AvailableCodecs;
     
     public void GoOnline(string name, AsvAudioCodec codec, bool speakerEnabled, bool micEnabled)
@@ -184,9 +196,13 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
   
     public void SendAll(ReadOnlyMemory<byte> pcmRawAudioData)
     {
-        foreach (var item in _devices.Select(x=>x.Value))
+        using (_devicesSync.EnterScope())
         {
-            item.SendAudio(pcmRawAudioData);
+            if (_disposed) return;
+            foreach (var item in _devices.Select(pair => pair.Value))
+            {
+                item.SendAudio(pcmRawAudioData);
+            }
         }
     }
 
@@ -197,30 +213,48 @@ public class AudioService : IAudioService,IDisposable, IAsyncDisposable
     private readonly IDisposable _sub3;
     private readonly IDisposable _sub4;
 
+    private IAudioDevice[]? DetachDevices()
+    {
+        using (_devicesSync.EnterScope())
+        {
+            if (_disposed) return null;
+            _disposed = true;
+            var devices = _devices.Select(pair => pair.Value).ToArray();
+            _devices.Clear();
+            return devices;
+        }
+    }
+
     public void Dispose()
     {
+        var devices = DetachDevices();
+        if (devices == null) return;
+        _timer.Dispose();
+        _sub1.Dispose();
+        _sub2.Dispose();
+        foreach (var device in devices) device.Dispose();
         _transponder.Dispose();
         _isOnline.Dispose();
         _codec.Dispose();
         _speakerEnabled.Dispose();
         _micEnabled.Dispose();
-        _sub1.Dispose();
-        _sub2.Dispose();
-        _timer.Dispose();
         _sub3.Dispose();
         _sub4.Dispose();
     }
 
     public async ValueTask DisposeAsync()
     {
+        var devices = DetachDevices();
+        if (devices == null) return;
+        await _timer.DisposeAsync().ConfigureAwait(false);
+        await CastAndDispose(_sub1).ConfigureAwait(false);
+        await CastAndDispose(_sub2).ConfigureAwait(false);
+        foreach (var device in devices) await CastAndDispose(device).ConfigureAwait(false);
         await CastAndDispose(_transponder).ConfigureAwait(false);
         await CastAndDispose(_isOnline).ConfigureAwait(false);
         await CastAndDispose(_codec).ConfigureAwait(false);
         await CastAndDispose(_speakerEnabled).ConfigureAwait(false);
         await CastAndDispose(_micEnabled).ConfigureAwait(false);
-        await CastAndDispose(_sub1).ConfigureAwait(false);
-        await CastAndDispose(_sub2).ConfigureAwait(false);
-        await _timer.DisposeAsync().ConfigureAwait(false);
         await CastAndDispose(_sub3).ConfigureAwait(false);
         await CastAndDispose(_sub4).ConfigureAwait(false);
 

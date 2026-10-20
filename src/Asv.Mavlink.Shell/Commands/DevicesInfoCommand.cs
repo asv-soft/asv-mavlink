@@ -168,8 +168,6 @@ public class DevicesInfoCommand
        {
            _info = info;
            
-           if (_disposed) return;
-
            var heartbeat = _info.GetMicroservice<IHeartbeatClient>() 
                            ?? throw new Exception("Heartbeat client not initialized");
 

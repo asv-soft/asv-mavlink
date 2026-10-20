@@ -194,6 +194,7 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
                 .ConfigureAwait(false);
             return;
         }
+        var result = MavMissionResult.MavMissionAccepted;
         try
         {
             var builder = ImmutableArray.CreateBuilder<ServerMissionItem>(req.Payload.Count);
@@ -212,17 +213,18 @@ public sealed class MissionServerEx : MavlinkMicroserviceServer, IMissionServerE
             _statusLogger.Info($"{Id}: uploaded '{count}' items");
             _missionSource.Clear();
             _missionSource.AddRange(builder.ToImmutable());
-            await Base.SendMissionAck(MavMissionResult.MavMissionAccepted, req.SystemId, req.ComponentId).ConfigureAwait(false);
         }
         catch (Exception)
         {
             _logger.ZLogError($"{Id}: upload error");
-            await Base.SendMissionAck(MavMissionResult.MavMissionError, req.SystemId, req.ComponentId).ConfigureAwait(false);
+            result = MavMissionResult.MavMissionError;
         }
         finally
         {
             Interlocked.Exchange(ref _internalBusyState, InternalBusyStateIdle);
         }
+        // Receiving the acknowledgement can synchronously start the next operation.
+        await Base.SendMissionAck(result, req.SystemId, req.ComponentId).ConfigureAwait(false);
     }
 
     public IMissionServer Base { get; }

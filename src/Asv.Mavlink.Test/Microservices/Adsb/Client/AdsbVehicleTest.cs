@@ -32,7 +32,7 @@ public class AdsbVehicleTest
         // Act + Assert
         Assert.Throws<ArgumentNullException>(() =>
         {
-            _ = new AdsbVehicle(payload, 123);
+            _ = new AdsbVehicle(payload!, 123);
         });
     }
     

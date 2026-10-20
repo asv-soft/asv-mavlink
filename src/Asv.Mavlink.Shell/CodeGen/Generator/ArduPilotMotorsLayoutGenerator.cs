@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text;
 using System.Globalization;
 using System.IO;
+using Spectre.Console;
 
 namespace Asv.Mavlink.Shell;
 
@@ -23,14 +23,14 @@ public class ArduPilotMotorsLayoutGenerator
 
 		if (config == null)
 		{
-			Console.WriteLine("Parsing error");
+			AnsiConsole.WriteLine("Parsing error");
 			return;
 		}
 
 		var code = GenerateCode(config);
 		File.WriteAllText(outputPath, code);
 
-		Console.WriteLine($"Generated file: {outputPath}");
+		AnsiConsole.WriteLine($"Generated file: {outputPath}");
 	}
 
 	static string GenerateCode(MotorConfig config)

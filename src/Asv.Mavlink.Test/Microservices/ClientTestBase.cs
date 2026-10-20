@@ -1,7 +1,10 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Asv.Common;
 using Asv.IO;
 using Asv.XUnit;
+using R3;
 using TimeProviderExtensions;
 
 using Xunit;
@@ -56,5 +59,41 @@ public abstract class ClientTestBase<TClient> : IDisposable
     {
         Dispose(true);
         GC.SuppressFinalize(this);
+    }
+}
+
+internal static class RetryTimeoutTestHelper
+{
+    public static async Task AssertTimeoutAsync(
+        Func<CancellationToken, Task> action,
+        IProtocolConnection connection,
+        ManualTimeProvider time,
+        int attempts,
+        TimeSpan timeout
+    )
+    {
+        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(
+            Xunit.TestContext.Current.CancellationToken
+        );
+        deadline.CancelAfter(TimeSpan.FromSeconds(10));
+        using var requests = new SemaphoreSlim(0);
+        using var subscription = connection.OnTxMessage.Subscribe(_ => requests.Release());
+        var operation = Assert.ThrowsAsync<TimeoutException>(() => action(deadline.Token));
+        try
+        {
+            for (var attempt = 0; attempt < attempts; attempt++)
+            {
+                // InternalCall registers each timeout before sending its request. Wait for
+                // that request because retry continuations can run after Advance returns.
+                await requests.WaitAsync(deadline.Token);
+                time.Advance(timeout);
+            }
+
+            await operation.WaitAsync(deadline.Token);
+        }
+        finally
+        {
+            await deadline.CancelAsync();
+        }
     }
 }

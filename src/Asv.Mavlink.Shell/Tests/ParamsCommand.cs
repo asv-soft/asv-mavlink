@@ -17,24 +17,24 @@ namespace Asv.Mavlink.Shell
         private const int PageSize = 20;
         private string _search = string.Empty;
         private int _skip;
-        private Table _paramsTable;
+        private Table? _paramsTable;
         private Table _paramsPageTable = new Table().AddColumn("");
         private readonly List<ParamItem> _viewedParamItems = [];
-        private ParamsClientEx _paramsClientEx;
-        private IDeviceExplorer _deviceExplorer;
+        private ParamsClientEx? _paramsClientEx;
 
         public ParamsCommand()
         {
             _userInput.Where(_ => _.Key == ConsoleKey.F6).Subscribe(_ =>
             {
-                _paramsClientEx.Dispose();
+                _paramsClientEx?.Dispose();
                 _cancel.Cancel();
             });
             _userInput.Where(_ => _.Key == ConsoleKey.F7).Subscribe(async _ =>
             {
-                await _paramsClientEx.ReadAll(cancel:_cancel.Token);
+                if (_paramsClientEx is not { } paramsClient) return;
+                await paramsClient.ReadAll(cancel:_cancel.Token);
                 _viewedParamItems.Clear();
-                _viewedParamItems.AddRange(_paramsClientEx.Items.Values);
+                _viewedParamItems.AddRange(paramsClient.Items.Values);
                 UpdateOutPut();
             });
             _userInput.Where(_ => _.Key == ConsoleKey.Backspace && !string.IsNullOrEmpty(_search)).Subscribe(_ =>
@@ -70,12 +70,13 @@ namespace Asv.Mavlink.Shell
         [Command("params")]
         public async Task<int> Run(string connection = "tcp://127.0.0.1:7341")
         {
-            AnsiConsole.Status().Start("CreateRouter", ctx =>
+            var deviceExplorer = AnsiConsole.Status().Start("CreateRouter", ctx =>
             {
                 ctx.SpinnerStyle(Style.Plain);
-                ShellCommandsHelper.CreateDeviceExplorer(connection, out _deviceExplorer);
+                ShellCommandsHelper.CreateDeviceExplorer(connection, out var explorer);
+                return explorer;
             });
-            var selectedDevice = await ShellCommandsHelper.DeviceAwaiter(_deviceExplorer, 3000);
+            var selectedDevice = await ShellCommandsHelper.DeviceAwaiter(deviceExplorer, 3000);
 
             if (selectedDevice is null)
             {
@@ -85,15 +86,13 @@ namespace Asv.Mavlink.Shell
             }
             
             const string status = @"Waiting for init device";
-            AnsiConsole.Status().StartAsync(status, statusContext =>
+            await AnsiConsole.Status().StartAsync(status, async statusContext =>
             {
                 statusContext.Spinner(Spinner.Known.Bounce);
                 while (selectedDevice is { State.CurrentValue: ClientDeviceState.Uninitialized })
                 {
-                    Task.Delay(TimeSpan.FromMilliseconds(100));
+                    await Task.Delay(TimeSpan.FromMilliseconds(100));
                 }
-
-                return Task.CompletedTask;
             });
             if (selectedDevice.Microservices.FirstOrDefault(_ => _ is IParamsClientEx) is not ParamsClientEx
                 paramsClient)
@@ -111,15 +110,13 @@ namespace Asv.Mavlink.Shell
 
             var actionThread = new Thread(KeyListen);
             actionThread.Start();
-            AnsiConsole.Live(_paramsTable).StartAsync(context =>
+            await AnsiConsole.Live(_paramsTable).StartAsync(async context =>
             {
                 while (_cancel.IsCancellationRequested == false)
                 {
-                    Task.Delay(TimeSpan.FromMilliseconds(35));
+                    await Task.Delay(TimeSpan.FromMilliseconds(35));
                     context.Refresh();
                 }
-
-                return Task.CompletedTask;
             });
 
             return 0;
@@ -149,6 +146,7 @@ namespace Asv.Mavlink.Shell
 
         private void UpdateOutPut()
         {
+            if (_paramsTable is not { } paramsTable) return;
             _paramsPageTable = new Table().AddColumn($"Page #{_skip / PageSize+1}");
             IEnumerable<ParamItem> result;
             result = _search == string.Empty
@@ -159,8 +157,8 @@ namespace Asv.Mavlink.Shell
                 _paramsPageTable.AddRow($@"{item.Name} = {Markup.Escape(item.Value.CurrentValue.ToString())}");
             }
 
-            _paramsTable.UpdateCell(0, 0, _paramsPageTable);
-            _paramsTable.UpdateCell(1, 0, $"Search:{_search}");
+            paramsTable.UpdateCell(0, 0, _paramsPageTable);
+            paramsTable.UpdateCell(1, 0, $"Search:{_search}");
         }
 
         private void KeyListen()

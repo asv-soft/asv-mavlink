@@ -173,7 +173,7 @@ namespace Asv.Mavlink.Shell
             return result.ToString();
         }
         
-        private string? NameConverter(string name)
+        private string? NameConverter(string? name)
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
             var a = Regex.Replace(name.ToLower(), "_([a-z0-9])", _=>_.Value.Substring(1).ToUpper(), RegexOptions.Compiled);

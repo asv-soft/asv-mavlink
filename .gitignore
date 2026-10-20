@@ -355,3 +355,5 @@ MigrationBackup/
 
 # Graphify generated output
 graphify-out/
+
+.testagent/

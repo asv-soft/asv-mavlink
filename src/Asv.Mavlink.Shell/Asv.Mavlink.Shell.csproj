@@ -26,16 +26,16 @@
     <PackageReference Include="ConsoleAppFramework" Version="5.7.13"/>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(DotNetVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(DotNetVersion)" />
-    <PackageReference Include="DotLiquid" Version="2.3.197" />
-    <PackageReference Include="DynamicData" Version="9.4.31" />
+    <PackageReference Include="DotLiquid" Version="2.3.260" />
+    <PackageReference Include="DynamicData" Version="9.5.0" />
     <PackageReference Include="Geodesy" Version="4.1.0" />
-    <PackageReference Include="Spectre.Console" Version="0.55.2" />
+    <PackageReference Include="Spectre.Console" Version="0.57.2" />
     <PackageReference Include="Spectre.Console.Analyzer" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="TestableIO.System.IO.Abstractions.Extensions" Version="22.0.4" />
-    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="22.1.1" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="22.3.0" />
     <PackageReference Include="TimeProviderExtensions" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
@@ -52,4 +52,18 @@
     </EmbeddedResource>
   </ItemGroup>
   
+  <!-- Keep indirect dependencies on the validated stable versions. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.9.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
+    <PackageReference Include="Microsoft.Diagnostics.NETCore.Client" Version="0.2.750501" />
+    <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="4.0.0" />
+    <!-- BenchmarkDotNet requires Perfolizer 0.6.1 and CLRMD 3.x.
+         Pragmastat 5.1+ removes APIs used by that Perfolizer version. -->
+    <PackageReference Include="Pragmastat" Version="5.0.0" />
+    <PackageReference Include="System.CodeDom" Version="$(DotNetVersion)" />
+    <PackageReference Include="System.Management" Version="$(DotNetVersion)" />
+    <PackageReference Include="System.Reactive" Version="7.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" PrivateAssets="all" />
+  </ItemGroup>
 </Project>

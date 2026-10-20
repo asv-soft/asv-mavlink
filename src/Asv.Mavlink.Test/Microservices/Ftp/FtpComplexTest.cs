@@ -808,23 +808,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         var emptyRequest = new ReadRequest(0, 0, 0);
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.BurstReadFile(emptyRequest, _ => { }, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.BurstReadFile(emptyRequest, _ => { }, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -834,23 +825,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         var emptyRequest = new ReadRequest(0, 0, 0);
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.ReadFile(emptyRequest, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.ReadFile(emptyRequest, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -860,23 +842,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         const string path = "/some_file.txt";
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.CalcFileCrc32(path, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.CalcFileCrc32(path, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -886,23 +859,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         const string path = "/some_directory";
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.CreateDirectory(path, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.CreateDirectory(path, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -912,23 +876,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         const string path = "/some_file.txt";
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.CreateFile(path, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.CreateFile(path, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -938,23 +893,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         const string path = "/";
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.ListDirectory(path, 0, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.ListDirectory(path, 0, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -965,23 +911,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         const string path1 = "/some_file1.txt";
         const string path2 = "/some_file2.txt";
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.Rename(path1, path2, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.Rename(path1, path2, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -991,23 +928,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         var emptyRequest = new WriteRequest(0, 0, 0);
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.WriteFile(emptyRequest, Memory<byte>.Empty, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.WriteFile(emptyRequest, Memory<byte>.Empty, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -1017,23 +945,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         const string path = "/some_file.txt";
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.OpenFileRead(path, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.OpenFileRead(path, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -1043,23 +962,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         const string path = "/some_file.txt";
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.OpenFileWrite(path, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.OpenFileWrite(path, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -1069,23 +979,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         const string path = "/some_directory";
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.RemoveDirectory(path, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.RemoveDirectory(path, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -1095,23 +996,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         const string path = "/some_file.txt";
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.RemoveFile(path, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.RemoveFile(path, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -1120,23 +1012,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
     {
         // Arrange
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.ResetSessions(_cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.ResetSessions(cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -1146,23 +1029,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         const byte session = 0;
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.TerminateSession(session, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.TerminateSession(session, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 
@@ -1172,23 +1046,14 @@ public class FtpComplexTest(ITestOutputHelper log) : ComplexTestBase<FtpClient, 
         // Arrange
         var emptyRequest = new TruncateRequest();
 
-        // Act
-        using var t1 = Assert.ThrowsAsync<TimeoutException>(async () =>
-        {
-            await Client.TruncateFile(emptyRequest, _cts.Token);
-        });
-
-        using var t2 = Task.Factory.StartNew(() =>
-        {
-            ClientTime.Advance(
-                TimeSpan.FromMilliseconds(
-                    _clientConfig.TimeoutMs * _clientConfig.CommandAttemptCount + 1
-                )
-            );
-        }, Xunit.TestContext.Current.CancellationToken);
-
-        // Assert
-        await Task.WhenAll(t1, t2);
+        // Act / Assert
+        await RetryTimeoutTestHelper.AssertTimeoutAsync(
+            cancel => Client.TruncateFile(emptyRequest, cancel),
+            Link.Client,
+            ClientTime,
+            _clientConfig.CommandAttemptCount,
+            TimeSpan.FromMilliseconds(_clientConfig.TimeoutMs)
+        );
         Assert.Equal(_clientConfig.CommandAttemptCount, (int)Link.Client.Statistic.TxMessages);
     }
 

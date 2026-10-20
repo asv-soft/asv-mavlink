@@ -23,7 +23,7 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
     private readonly ObservableDictionary<string, ParamExtItem> _paramsSource;
     private readonly BindableReactiveProperty<bool> _isSynced;
     private readonly Subject<(string, MavParamExtValue)> _onValueChanged;
-    private readonly CancellationTokenSource _disposeCancel;
+    private readonly CompositeDisposable _itemSubscriptions = new();
     private readonly IDisposable _sub1;
     private readonly ImmutableDictionary<string, ParamExtDescription> _existDescription;
 
@@ -43,7 +43,6 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
         _config = config;
         _existDescription = existDescription.ToImmutableDictionary(x => x.Name, x => x);
         Base = client;
-        _disposeCancel = new CancellationTokenSource();
         _paramsSource = new ObservableDictionary<string, ParamExtItem>();
         _isSynced = new BindableReactiveProperty<bool>(false);
 
@@ -86,10 +85,10 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
 
                 item = new ParamExtItem(Base, desc, value);
                 _paramsSource.Add(name, item);
+                _itemSubscriptions.Add(item.IsSynced.AsObservable().Subscribe(OnSyncedChanged));
             }
 
             item.InternalUpdate(value);
-            item.IsSynced.AsObservable().Subscribe(OnSyncedChanged);
             _onValueChanged.OnNext((name, MavParamExtHelper.CreateFromBuffer(value.ParamValue, value.ParamType)));
         }
     }
@@ -200,6 +199,7 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
         }, null, TimeSpan.FromMilliseconds(_config.ReadTimeoutMs/2.0), TimeSpan.FromMilliseconds(_config.ReadTimeoutMs/2.0));
 
         var cached = _paramsSource.ToImmutableArray();
+        _itemSubscriptions.Clear();
         _paramsSource.Clear();
         foreach (var item in cached)
         {
@@ -242,12 +242,18 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
 
     protected override void Dispose(bool disposing)
     {
+        base.Dispose(disposing);
         if (disposing)
         {
+            _sub1.Dispose();
+            _itemSubscriptions.Dispose();
+            foreach (var pair in _paramsSource)
+            {
+                pair.Value.Dispose();
+            }
+            _paramsSource.Clear();
             _isSynced.Dispose();
             _onValueChanged.Dispose();
-            _disposeCancel.Dispose();
-            _sub1.Dispose();
             RemoteCount.Dispose();
             LocalCount.Dispose();
         }
@@ -255,10 +261,16 @@ public class ParamsExtClientEx : MavlinkMicroserviceClient, IParamsExtClientEx
 
     protected override async ValueTask DisposeAsyncCore()
     {
+        await base.DisposeAsyncCore().ConfigureAwait(false);
+        _sub1.Dispose();
+        _itemSubscriptions.Dispose();
+        foreach (var pair in _paramsSource)
+        {
+            await pair.Value.DisposeAsync().ConfigureAwait(false);
+        }
+        _paramsSource.Clear();
         await CastAndDispose(_isSynced).ConfigureAwait(false);
         await CastAndDispose(_onValueChanged).ConfigureAwait(false);
-        await CastAndDispose(_disposeCancel).ConfigureAwait(false);
-        await CastAndDispose(_sub1).ConfigureAwait(false);
         await CastAndDispose(RemoteCount).ConfigureAwait(false);
         await CastAndDispose(LocalCount).ConfigureAwait(false);
 
