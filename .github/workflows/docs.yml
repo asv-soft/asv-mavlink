@@ -35,6 +35,29 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set documentation version from ProductVersion
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          from xml.dom import minidom
+
+          props = ET.parse('src/Directory.Build.props')
+          versions = props.findall('./PropertyGroup/ProductVersion')
+          if len(versions) != 1 or not (version := (versions[0].text or '').strip()):
+              raise SystemExit('Expected one non-empty ProductVersion in src/Directory.Build.props')
+
+          path = Path('src/Writerside/writerside.cfg')
+          document = minidom.parse(str(path))
+          instances = [node for node in document.getElementsByTagName('instance')
+                       if node.getAttribute('src') == 'am.tree']
+          if len(instances) != 1:
+              raise SystemExit('Expected one am.tree instance in writerside.cfg')
+          instances[0].setAttribute('version', version)
+          path.write_bytes(document.toxml(encoding='UTF-8'))
+          print(f'Documentation version: {version}')
+          PY
+
       - name: Define instance ID
         id: define-ids
         run: |

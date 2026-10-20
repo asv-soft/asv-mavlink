@@ -2,6 +2,10 @@
 
 # 🧊 Asv.Mavlink
 
+[![NuGet version](https://img.shields.io/nuget/v/Asv.Mavlink)](https://www.nuget.org/packages/Asv.Mavlink)
+[![Documentation](https://github.com/asv-soft/asv-mavlink/actions/workflows/docs-pages.yml/badge.svg?branch=main)](https://asv.me/asv-mavlink/)
+[![GitHub Packages](https://img.shields.io/badge/GitHub-Packages-blue?logo=github)](https://github.com/asv-soft/asv-mavlink/pkgs/nuget/Asv.Mavlink)
+
 ## Introduction
 
 The [`asv-mavlink`](https://github.com/asv-soft/asv-mavlink) library provides a robust interface for communication with MAVLink compatible vehicles and payloads. This library is designed to facilitate the interaction with drones and other devices using the MAVLink protocol, enabling users to send commands, receive telemetry data, and perform various operations.
@@ -20,7 +24,8 @@ dotnet add package Asv.Mavlink --version <Version>
 
 ## Documentation
 
-Documentation can be found [here](https://docs.asv.me/libraries/asv-mavlink)
+Read the [Asv.Mavlink documentation](https://asv.me/asv-mavlink/) for getting started,
+protocol usage, microservices, and CLI commands.
 
 ## Implemented Microservices
 
