@@ -25,31 +25,31 @@ They are fully compatible with other MAVLink devices — for example, you can co
 We also provide several custom MAVLink services, which are typically built by combining multiple standard microservices.
 
 Available microservices:
-* [Adsb](Adsb.md) { #adsb }
-* [](AsvAudio.md) { #asv-audio }
-* [](AsvChart.md) { #asv-chart }
-* [](AsvGbs.md) { #asv-gbs }
-* [](AsvRadio.md) { #asv-radio }
-* [](AsvRsga.md) { #asv-rsga }
-* [](AsvSdr.md) { #asv-sdr }
-* [](Commands.md) { #commands }
-* [](Control.md) { #control }
-* [](Dgps.md) { #dgps }
-* [](Diagnostic.md) { #diagnostic }
-* [](Frame.md) { #frame }
-* [](Ftp.md) { #ftp }
-* [](Gnss.md) { #gnss }
-* [](Heartbeat.md) { #heartbeat }
-* [](Logging.md) { #logging }
-* [](Missions.md) { #missions }
-* [](Mode.md) { #mode }
-* [](MotorTest.md) { #motor-test }
-* [](Params.md) { #params }
-* [](ParamsExt.md) { #params-ext }
-* [Position (Offboard Control Interface)](Position.md) { #position }
-* [](StatusText.md) { #status-text }
-* [](Telemetry.md) { #telemetry }
-* [](V2Extention.md) { #v2extention }
+* <a href="Adsb.md" id="adsb">Adsb</a>
+* <a href="AsvAudio.md" id="asv-audio"/>
+* <a href="AsvChart.md" id="asv-chart"/>
+* <a href="AsvGbs.md" id="asv-gbs"/>
+* <a href="AsvRadio.md" id="asv-radio"/>
+* <a href="AsvRsga.md" id="asv-rsga"/>
+* <a href="AsvSdr.md" id="asv-sdr"/>
+* <a href="Commands.md" id="commands"/>
+* <a href="Control.md" id="control"/>
+* <a href="Dgps.md" id="dgps"/>
+* <a href="Diagnostic.md" id="diagnostic"/>
+* <a href="Frame.md" id="frame"/>
+* <a href="Ftp.md" id="ftp"/>
+* <a href="Gnss.md" id="gnss"/>
+* <a href="Heartbeat.md" id="heartbeat"/>
+* <a href="Logging.md" id="logging"/>
+* <a href="Missions.md" id="missions"/>
+* <a href="Mode.md" id="mode"/>
+* <a href="MotorTest.md" id="motor-test"/>
+* <a href="Params.md" id="params"/>
+* <a href="ParamsExt.md" id="params-ext"/>
+* <a href="Position.md" id="position">Position (Offboard Control Interface)</a>
+* <a href="StatusText.md" id="status-text"/>
+* <a href="Telemetry.md" id="telemetry"/>
+* <a href="V2Extention.md" id="v2extention"/>
 
 ## Note about the reactive approach (R3 library)
 
