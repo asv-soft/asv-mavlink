@@ -106,6 +106,8 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
             AsvChartDataFormat.AsvChartDataFormatRangeFloat16bit
         );
         var options = new AsvChartOptions(1, AsvChartDataTrigger.AsvChartDataTriggerPeriodic, 0);
+        // Keep unrelated collection notifications out of this stream's packet statistics.
+        _serverConfig.SendCollectionUpdateMs = int.MaxValue;
         Server.Charts.Add(1, info);
         var sync = await Client.ReadAllInfo(null, _cancellationTokenSource.Token);
         if (!sync)
@@ -113,9 +115,19 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
             throw new Exception("Can't sync charts");
         }
 
+        Task? sendTask = null;
+        var responseSent = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var responseSubscription = Link.Server.OnTxMessage.Subscribe(packet =>
+        {
+            if (packet is AsvChartDataResponsePacket response && response.Payload.ChatId == info.Id)
+            {
+                responseSent.TrySetResult();
+            }
+        });
+
         Server.OnDataRequest = (opts, infoChart, cancel) =>
         {
-            Task.Run(async () =>
+            sendTask = Task.Run(async () =>
             {
                 for (int i = 0; i < expectedCount; i++)
                 {
@@ -147,8 +159,11 @@ public class AsvChartComplexTest : ComplexTestBase<AsvChartClient, AsvChartServe
         var finalOptions = await Client.RequestStream(options, _cancellationTokenSource.Token);
 
         // Assert
-        await _tcs.Task;
-        await Task.Yield();
+        Assert.NotNull(sendTask);
+        // Receive callbacks can run before the sender updates its TX statistics.
+        await sendTask.WaitAsync(TimeSpan.FromSeconds(5), Xunit.TestContext.Current.CancellationToken);
+        await responseSent.Task.WaitAsync(TimeSpan.FromSeconds(5), Xunit.TestContext.Current.CancellationToken);
+        await _tcs.Task.WaitAsync(TimeSpan.FromSeconds(5), Xunit.TestContext.Current.CancellationToken);
         Assert.NotNull(finalOptions); 
         Assert.Equivalent(options, finalOptions);
         Assert.Equivalent(dataToSend, dataReceived);
