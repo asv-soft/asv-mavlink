@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -108,6 +109,34 @@ public abstract class MavlinkClientDeviceFactory<TDevice>(MavlinkIdentity selfId
 {
     public abstract override int Order { get; }
     public abstract string DeviceClass { get; }
+
+    public override bool TryGetSourceAddress(IProtocolMessage message, out DeviceAddress address)
+    {
+        if (message is MavlinkMessage mavlink)
+        {
+            address = CreateAddress(mavlink.SystemId, mavlink.ComponentId);
+            return true;
+        }
+
+        address = default;
+        return false;
+    }
+
+    public override bool TryGetDeviceAddress(DeviceId deviceId, out DeviceAddress address)
+    {
+        if (deviceId is MavlinkClientDeviceId mavlink)
+        {
+            address = CreateAddress(mavlink.Id.Target.SystemId, mavlink.Id.Target.ComponentId);
+            return true;
+        }
+
+        address = default;
+        return false;
+    }
+
+    private static DeviceAddress CreateAddress(byte systemId, byte componentId) =>
+        new("mavlink", string.Create(CultureInfo.InvariantCulture, $"{systemId}:{componentId}"));
+
     protected override void InternalUpdateDevice(TDevice device, HeartbeatPacket msg)
     {
         // nothing to do
