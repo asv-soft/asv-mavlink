@@ -64,6 +64,14 @@ foreach (var entry in ftpClientEx.Entries.Values)
 }
 ```
 
+## Path semantics
+
+`IFtpClientEx` keeps a local cache of remote entries (`Entries`) and normalizes every directory path to a canonical form:
+
+- **Trailing separator**: a directory path always ends with `/` in the cache (`/logs/`), a file path never does (`/logs/1.bin`). Trailing separators in *input* paths do not matter: `/logs` and `/logs/` refer to the same entry.
+- **Leading separator**: the leading part of an input path is significant and preserved. Paths starting with `/` live under the `/` cache root, while a path without a leading separator (`logs`, `@SYS`) is *mounted* as a separate cache root with an empty `ParentPath`. The cache may therefore hold several projections of one server object at once (`/logs/...` and `logs/...`).
+- Servers themselves ignore the leading separator, so all projections address the same remote object. The path sent to the server is always the canonical form.
+
 ## Api {collapsible="true"}
 
 ### [IFtpClientEx](https://github.com/asv-soft/asv-mavlink/blob/main/src/Asv.Mavlink/Microservices/Ftp/Client/Ex/IFtpClientEx.cs#L21)
@@ -83,7 +91,7 @@ Provides a higher-level, convenience API over a low-level MAVLink FTP client.
 | `UploadFile(string filePath, Stream streamToUpload, IProgress<double>? progress = null, CancellationToken cancel = default)`                                                                 | `Task`      | Uploads data from the provided stream into a remote file.                                            |
 | `BurstDownloadFile(string filePath, Stream streamToSave, IProgress<double>? progress = null, byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default)`              | `Task<int>` | Downloads a remote file using the MAVLink FTP burst-read mode into the specified destination stream. |
 | `BurstDownloadFile(string filePath, IBufferWriter<byte> bufferToSave, IProgress<double>? progress = null, byte partSize = MavlinkFtpHelper.MaxDataSize, CancellationToken cancel = default)` | `Task<int>` | Downloads a remote file using the MAVLink FTP burst-read mode into the specified IBufferWriter.      |
-| `RemoveDirectory(string path, bool recursive = true, CancellationToken cancel = default)`                                                                                                    | `Task`      | Removes a remote directory.                                                                          |
+| `RemoveDirectory(string path, bool recursive = false, CancellationToken cancel = default)`                                                                                                   | `Task`      | Removes a remote directory.                                                                          |
 
 #### `IFtpClientEx.Refresh`
 | Parameter   | Type                | Description                                                                                      |
@@ -136,14 +144,9 @@ Provides a higher-level, convenience API over a low-level MAVLink FTP client.
 
 #### `IFtpClientEx.RemoveDirectory`
 
-> Currently unstable.
-> 
-> This method sometimes cannot perform recursive deletions.
-> { style="warning" }
-
-| Parameter   | Type                 | Description                                                                     |
-|-------------|----------------------|---------------------------------------------------------------------------------|
-| `path`      | `string`             | Remote directory path to remove.                                                |
-| `recursive` | `bool`               | If true, removes all children recursively before removing the directory itself. |
-| `cancel`    | `CancellationToken`  | Optional cancel token argument.                                                 |
+| Parameter   | Type                | Description                                                                     |
+|-------------|---------------------|---------------------------------------------------------------------------------|
+| `path`      | `string`            | Remote directory path to remove.                                                |
+| `recursive` | `bool`              | If true, removes all children recursively before removing the directory itself. |
+| `cancel`    | `CancellationToken` | Optional cancel token argument.                                                 |
 
