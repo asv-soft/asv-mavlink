@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.3.2-dev.1+db013e944d7d80b4fc3bac5eb6486420194f224e 26-10-19.
+// This code was generate by tool Asv.Mavlink.Shell version 4.4.3+5ec5a7b95e1d83ef8eca4dde98bde595786b7124 26-10-29.
 
 using System;
 using System.Text;
@@ -8044,7 +8044,7 @@ namespace Asv.Mavlink.AsvRsga
         public const int MessageId = 13470; 
         public const string MessageIdAsString = "13470";
         
-        public const byte CrcExtra = 61;
+        public const byte CrcExtra = 189;
         
         public override int Id => MessageId;
                             
@@ -8068,9 +8068,9 @@ namespace Asv.Mavlink.AsvRsga
     public class AsvRsgaRttModeSReqPayload : IPayload
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMaxByteSize() => 207; // Sum of byte sized of all fields (include extended)
+        public byte GetMaxByteSize() => 209; // Sum of byte sized of all fields (include extended)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte GetMinByteSize() => 207; // of byte sized of fields (exclude extended)
+        public byte GetMinByteSize() => 209; // of byte sized of fields (exclude extended)
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public int GetByteSize()
         {
@@ -8138,6 +8138,8 @@ namespace Asv.Mavlink.AsvRsga
             +1 // uint8_t df17_detected
             +1 // uint8_t test_group
             +1 // uint8_t test_status
+            +1 // uint8_t reply_pulse_width_status
+            +1 // uint8_t reply_pulse_spacing_status
             +1 // uint8_t altitude_reference_version
             );
         }
@@ -8198,7 +8200,7 @@ namespace Asv.Mavlink.AsvRsga
             Df20Df4FlightStatus = (byte)BinSerialize.ReadByte(ref buffer);
             Df20DownlinkRequest = (byte)BinSerialize.ReadByte(ref buffer);
             Df20UtilityMessage = (byte)BinSerialize.ReadByte(ref buffer);
-            arraySize = /*ArrayLength*/7 - Math.Max(0,((/*PayloadByteSize*/207 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            arraySize = /*ArrayLength*/7 - Math.Max(0,((/*PayloadByteSize*/209 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
             
             for(var i=0;i<arraySize;i++)
             {
@@ -8272,6 +8274,8 @@ namespace Asv.Mavlink.AsvRsga
             Df17Detected = (byte)BinSerialize.ReadByte(ref buffer);
             TestGroup = (byte)BinSerialize.ReadByte(ref buffer);
             TestStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            ReplyPulseWidthStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            ReplyPulseSpacingStatus = (byte)BinSerialize.ReadByte(ref buffer);
             AltitudeReferenceVersion = (byte)BinSerialize.ReadByte(ref buffer);
 
         }
@@ -8389,8 +8393,10 @@ namespace Asv.Mavlink.AsvRsga
             BinSerialize.WriteByte(ref buffer,(byte)Df17Detected);
             BinSerialize.WriteByte(ref buffer,(byte)TestGroup);
             BinSerialize.WriteByte(ref buffer,(byte)TestStatus);
+            BinSerialize.WriteByte(ref buffer,(byte)ReplyPulseWidthStatus);
+            BinSerialize.WriteByte(ref buffer,(byte)ReplyPulseSpacingStatus);
             BinSerialize.WriteByte(ref buffer,(byte)AltitudeReferenceVersion);
-            /* PayloadByteSize = 207 */;
+            /* PayloadByteSize = 209 */;
         }
 
         public void Accept(IVisitor visitor)
@@ -8472,6 +8478,8 @@ namespace Asv.Mavlink.AsvRsga
             UInt8Type.Accept(visitor,Df17DetectedField, ref _df17Detected);    
             UInt8Type.Accept(visitor,TestGroupField, ref _testGroup);    
             UInt8Type.Accept(visitor,TestStatusField, ref _testStatus);    
+            UInt8Type.Accept(visitor,ReplyPulseWidthStatusField, ref _replyPulseWidthStatus);    
+            UInt8Type.Accept(visitor,ReplyPulseSpacingStatusField, ref _replyPulseSpacingStatus);    
             UInt8Type.Accept(visitor,AltitudeReferenceVersionField, ref _altitudeReferenceVersion);    
 
         }
@@ -9297,6 +9305,32 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         private byte _testStatus;
         public byte TestStatus { get => _testStatus; set => _testStatus = value; }
+        /// <summary>
+        /// Mode S reply pulse width test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)
+        /// OriginName: reply_pulse_width_status, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field ReplyPulseWidthStatusField = new Field.Builder()
+            .Name(nameof(ReplyPulseWidthStatus))
+            .Title("reply_pulse_width_status")
+            .Description("Mode S reply pulse width test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _replyPulseWidthStatus;
+        public byte ReplyPulseWidthStatus { get => _replyPulseWidthStatus; set => _replyPulseWidthStatus = value; }
+        /// <summary>
+        /// Mode S reply pulse spacing test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)
+        /// OriginName: reply_pulse_spacing_status, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field ReplyPulseSpacingStatusField = new Field.Builder()
+            .Name(nameof(ReplyPulseSpacingStatus))
+            .Title("reply_pulse_spacing_status")
+            .Description("Mode S reply pulse spacing test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _replyPulseSpacingStatus;
+        public byte ReplyPulseSpacingStatus { get => _replyPulseSpacingStatus; set => _replyPulseSpacingStatus = value; }
         /// <summary>
         /// Altitude reference validity marker; set to 1 when the UF0, UF4, UF16 and UF20 Mode C altitude references are encoded. Ignore these references when the marker is not 1.
         /// OriginName: altitude_reference_version, Units: , IsExtended: false

@@ -1044,6 +1044,8 @@
             <field type="uint8_t" name="test_status">IFR6000 test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)</field>
             <field type="float" name="reply_delay_mode_s" units="us" invalid="NaN">Mode S reply delay</field>
             <field type="float" name="reply_jitter_mode_s" units="us" invalid="NaN">Mode S reply delay jitter</field>
+            <field type="uint8_t" name="reply_pulse_width_status">Mode S reply pulse width test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)</field>
+            <field type="uint8_t" name="reply_pulse_spacing_status">Mode S reply pulse spacing test status (0 - not run, 1 - running, 2 - pass, 3 - fail, 4 - inconclusive)</field>
             <field type="float" name="uf0_mode_c_altitude_feet" units="ft" invalid="NaN">Mode C altitude reference used by the UF0 comparison; NaN when unavailable</field>
             <field type="float" name="uf4_mode_c_altitude_feet" units="ft" invalid="NaN">Mode C altitude reference used by the UF4 comparison; NaN when unavailable</field>
             <field type="float" name="uf16_mode_c_altitude_feet" units="ft" invalid="NaN">Mode C altitude reference used by the UF16 comparison; NaN when unavailable</field>
