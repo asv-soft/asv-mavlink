@@ -16,6 +16,9 @@ env:
 
 jobs:
   deploy:
+    permissions:
+      contents: read
+      id-token: write
     name: 'Deploy'
     runs-on: ubuntu-latest
     steps:
@@ -85,10 +88,16 @@ jobs:
           cd src
           dotnet pack -c Release --no-build --no-restore -p:PackageVersion=${{ env.VERSION }} --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
 
+      - name: Authenticate to NuGet.org
+        uses: NuGet/login@v1
+        id: nuget_login
+        with:
+          user: asvol
+
       - name: Pushing packages to Nuget
         run: |
           cd src
-          dotnet nuget push "${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.${{ env.VERSION }}.nupkg" -k "${{ secrets.NUGET_AUTH_TOKEN }}" --skip-duplicate -s ${{ env.NUGET_SOURCE_URL }}
+          dotnet nuget push "${{ env.PACKAGE_OUTPUT_DIRECTORY }}Asv.Mavlink.${{ env.VERSION }}.nupkg" -k "${{ steps.nuget_login.outputs.NUGET_API_KEY }}" --skip-duplicate -s ${{ env.NUGET_SOURCE_URL }}
 
       - name: Pushing packages to Github
         run: |
