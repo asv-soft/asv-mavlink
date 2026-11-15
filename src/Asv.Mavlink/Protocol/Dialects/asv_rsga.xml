@@ -62,6 +62,9 @@
             <entry value="57" name="ASV_RSGA_CUSTOM_MODE_TX_GNSS">
                 <description>GNSS generator(satellite) mode</description>
             </entry>
+            <entry value="58" name="ASV_RSGA_CUSTOM_MODE_UVD_REQ">
+                <description>UVD transponder interrogator mode</description>
+            </entry>
             <!--==================================================-->
             <!--          NavAIDs PLANE MODES (74-99)             -->
             <!--==================================================-->
@@ -1123,5 +1126,31 @@
         
         
 
+        <message id="13472" name="ASV_RSGA_RTT_UVD_REQ">
+            <description>Captured UVD interrogator results for one request code. [!WRAP_TO_V2_EXTENSION_PACKET!]</description>
+            <field type="uint32_t" name="index">Publication index</field>
+            <field type="uint64_t" name="time_unix_usec" units="us">Snapshot timestamp, UNIX epoch</field>
+            <field type="uint64_t" name="flags" enum="ASV_RSGA_DATA_FLAGS">Data flags</field>
+            <field type="uint32_t" name="run_id">Measurement run identifier; prevents mixing results of different runs</field>
+            <field type="uint32_t" name="information_word">Stored P1..P20 information, P1 in bit 0. Not proof of fresh complete information reception.</field>
+            <field type="float" name="mtl" units="dBm" invalid="NaN">Own-code measured sensitivity threshold</field>
+            <field type="float" name="erp" units="dBm" invalid="NaN">Measured reply power with configured RF path compensation</field>
+            <field type="float" name="frequency" units="MHz" invalid="NaN">Measured reply frequency, referenced to 740 MHz</field>
+            <field type="float" name="reply_delay" units="us" invalid="NaN">Reply delay with configured code-specific calibration and propagation correction</field>
+            <field type="float" name="interrogation_level" units="dBm" invalid="NaN">Requested interrogation level used for the last observation</field>
+            <field type="float" name="rx_gain">Normalized RX gain, 0..1</field>
+            <field type="uint32_t" name="interrogation_frequency" units="Hz">Selected interrogation frequency, 837500000 or 1030000000</field>
+            <field type="uint16_t" name="validity">Validity bits: 0 MTL, 1 ERP, 2 frequency, 3 SLS count, 4 attenuated SLS count, 5 delay, 6 normal count, 7 stored information. Bit 8 indicates clamped hardware TX gain; the requested interrogation level is retained. Stored information validity does not imply freshness.</field>
+            <field type="int16_t" name="raw_reply_delay">Signed raw reply delay, 0.025 us per tick</field>
+            <field type="int16_t" name="raw_frequency_offset" units="kHz">Signed raw offset from 740 MHz</field>
+            <field type="uint8_t" name="request_code">ZK1 = 1, ZK2 = 2, ZK3 = 3</field>
+            <field type="uint8_t" name="active_test" invalid="255">0 MTL, 1 ERP, 2 frequency, 3 SLS, 4 attenuated SLS, 5 delay, 6 information; 255 none</field>
+            <field type="uint8_t" name="test_status">Overall code status: 0 NotRun, 1 Running, 2 PASS, 3 FAIL, 4 Inconclusive</field>
+            <field type="uint8_t[7]" name="statuses">Independent statuses in active_test order: 0 NotRun, 1 Running, 2 PASS, 3 FAIL, 4 Inconclusive</field>
+            <field type="uint8_t" name="normal_reply_count" invalid="255">Normal coordinate replies per 200 requests; 0..200 valid</field>
+            <field type="uint8_t" name="sls_reply_count" invalid="255">Coordinate replies with P2 = P1 per 200 requests; 0..200 valid</field>
+            <field type="uint8_t" name="attenuated_sls_reply_count" invalid="255">Coordinate replies with P2 = P1 - 9 dB per 200 requests; 0..200 valid</field>
+            <field type="uint8_t" name="information_flags">Bits: 0 coordinate distress; 1 information decoded structurally; 2 TI emergency; 3 full-information freshness confirmed (not available in current FPGA)</field>
+        </message>
     </messages>
 </mavlink>
