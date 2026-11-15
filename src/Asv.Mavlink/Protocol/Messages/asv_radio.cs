@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.4.3+5ec5a7b95e1d83ef8eca4dde98bde595786b7124 26-10-29.
+// This code was generate by tool Asv.Mavlink.Shell version 4.4.4+41c39b7b1927205941e0dc973def2bde084bd0b9 26-11-15.
 
 using System;
 using System.Text;

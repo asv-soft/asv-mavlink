@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// This code was generate by tool Asv.Mavlink.Shell version 4.4.3+5ec5a7b95e1d83ef8eca4dde98bde595786b7124 26-10-29.
+// This code was generate by tool Asv.Mavlink.Shell version 4.4.4+41c39b7b1927205941e0dc973def2bde084bd0b9 26-11-15.
 
 using System;
 using System.Text;
@@ -66,6 +66,7 @@ namespace Asv.Mavlink.AsvRsga
             src.Add(AsvRsgaRttModeACReqPacket.MessageId, ()=>new AsvRsgaRttModeACReqPacket());
             src.Add(AsvRsgaRttModeSReqPacket.MessageId, ()=>new AsvRsgaRttModeSReqPacket());
             src.Add(AsvRsgaRttAdsBReqPacket.MessageId, ()=>new AsvRsgaRttAdsBReqPacket());
+            src.Add(AsvRsgaRttUvdReqPacket.MessageId, ()=>new AsvRsgaRttUvdReqPacket());
         }
  
     }
@@ -151,6 +152,11 @@ namespace Asv.Mavlink.AsvRsga
         /// </summary>
         AsvRsgaCustomModeTxGnss = 57,
         /// <summary>
+        /// UVD transponder interrogator mode
+        /// ASV_RSGA_CUSTOM_MODE_UVD_REQ
+        /// </summary>
+        AsvRsgaCustomModeUvdReq = 58,
+        /// <summary>
         /// DME air(interrogator) mode
         /// ASV_RSGA_CUSTOM_MODE_DME_REQ
         /// </summary>
@@ -220,6 +226,7 @@ namespace Asv.Mavlink.AsvRsga
             yield return converter(55);
             yield return converter(56);
             yield return converter(57);
+            yield return converter(58);
             yield return converter(74);
             yield return converter(75);
             yield return converter(76);
@@ -244,6 +251,7 @@ namespace Asv.Mavlink.AsvRsga
             yield return new EnumValue<T>(converter(55),"ASV_RSGA_CUSTOM_MODE_TX_GBAS");
             yield return new EnumValue<T>(converter(56),"ASV_RSGA_CUSTOM_MODE_ADSB_REQ");
             yield return new EnumValue<T>(converter(57),"ASV_RSGA_CUSTOM_MODE_TX_GNSS");
+            yield return new EnumValue<T>(converter(58),"ASV_RSGA_CUSTOM_MODE_UVD_REQ");
             yield return new EnumValue<T>(converter(74),"ASV_RSGA_CUSTOM_MODE_DME_REQ");
             yield return new EnumValue<T>(converter(75),"ASV_RSGA_CUSTOM_MODE_RX_LLZ");
             yield return new EnumValue<T>(converter(76),"ASV_RSGA_CUSTOM_MODE_RX_GP");
@@ -10410,6 +10418,473 @@ namespace Asv.Mavlink.AsvRsga
         .Build();
         public const int Bds65SurfaceMeMaxItemsCount = 7;
         public byte[] Bds65SurfaceMe { get; } = new byte[7];
+    }
+    /// <summary>
+    /// Captured UVD interrogator results for one request code. [!WRAP_TO_V2_EXTENSION_PACKET!]
+    ///  ASV_RSGA_RTT_UVD_REQ
+    /// </summary>
+    public class AsvRsgaRttUvdReqPacket : MavlinkV2Message<AsvRsgaRttUvdReqPayload>
+    {
+        public const int MessageId = 13472; 
+        public const string MessageIdAsString = "13472";
+        
+        public const byte CrcExtra = 124;
+        
+        public override int Id => MessageId;
+                            
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]                    
+        public override string GetIdAsString() => MessageIdAsString;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override byte GetCrcExtra() => CrcExtra;
+        
+        public override bool WrapToV2Extension => true;
+
+        public override AsvRsgaRttUvdReqPayload Payload { get; } = new();
+
+        public override string Name => "ASV_RSGA_RTT_UVD_REQ";
+
+    }
+
+    /// <summary>
+    ///  ASV_RSGA_RTT_UVD_REQ
+    /// </summary>
+    public class AsvRsgaRttUvdReqPayload : IPayload
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMaxByteSize() => 76; // Sum of byte sized of all fields (include extended)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte GetMinByteSize() => 76; // of byte sized of fields (exclude extended)
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public int GetByteSize()
+        {
+            return (byte)(
+            +8 // uint64_t time_unix_usec
+            + 8 // uint64_t flags
+            +4 // uint32_t index
+            +4 // uint32_t run_id
+            +4 // uint32_t information_word
+            +4 // float mtl
+            +4 // float erp
+            +4 // float frequency
+            +4 // float reply_delay
+            +4 // float interrogation_level
+            +4 // float rx_gain
+            +4 // uint32_t interrogation_frequency
+            +2 // uint16_t validity
+            +2 // int16_t raw_reply_delay
+            +2 // int16_t raw_frequency_offset
+            +1 // uint8_t request_code
+            +1 // uint8_t active_test
+            +1 // uint8_t test_status
+            +Statuses.Length // uint8_t[7] statuses
+            +1 // uint8_t normal_reply_count
+            +1 // uint8_t sls_reply_count
+            +1 // uint8_t attenuated_sls_reply_count
+            +1 // uint8_t information_flags
+            );
+        }
+
+
+
+        public void Deserialize(ref ReadOnlySpan<byte> buffer)
+        {
+            var arraySize = 0;
+            var payloadSize = buffer.Length;
+            TimeUnixUsec = BinSerialize.ReadULong(ref buffer);
+            Flags = (AsvRsgaDataFlags)BinSerialize.ReadULong(ref buffer);
+            Index = BinSerialize.ReadUInt(ref buffer);
+            RunId = BinSerialize.ReadUInt(ref buffer);
+            InformationWord = BinSerialize.ReadUInt(ref buffer);
+            Mtl = BinSerialize.ReadFloat(ref buffer);
+            Erp = BinSerialize.ReadFloat(ref buffer);
+            Frequency = BinSerialize.ReadFloat(ref buffer);
+            ReplyDelay = BinSerialize.ReadFloat(ref buffer);
+            InterrogationLevel = BinSerialize.ReadFloat(ref buffer);
+            RxGain = BinSerialize.ReadFloat(ref buffer);
+            InterrogationFrequency = BinSerialize.ReadUInt(ref buffer);
+            Validity = BinSerialize.ReadUShort(ref buffer);
+            RawReplyDelay = BinSerialize.ReadShort(ref buffer);
+            RawFrequencyOffset = BinSerialize.ReadShort(ref buffer);
+            RequestCode = (byte)BinSerialize.ReadByte(ref buffer);
+            ActiveTest = (byte)BinSerialize.ReadByte(ref buffer);
+            TestStatus = (byte)BinSerialize.ReadByte(ref buffer);
+            arraySize = /*ArrayLength*/7 - Math.Max(0,((/*PayloadByteSize*/76 - payloadSize - /*ExtendedFieldsLength*/0)/1 /*FieldTypeByteSize*/));
+            
+            for(var i=0;i<arraySize;i++)
+            {
+                Statuses[i] = (byte)BinSerialize.ReadByte(ref buffer);
+            }
+            NormalReplyCount = (byte)BinSerialize.ReadByte(ref buffer);
+            SlsReplyCount = (byte)BinSerialize.ReadByte(ref buffer);
+            AttenuatedSlsReplyCount = (byte)BinSerialize.ReadByte(ref buffer);
+            InformationFlags = (byte)BinSerialize.ReadByte(ref buffer);
+
+        }
+
+        public void Serialize(ref Span<byte> buffer)
+        {
+            BinSerialize.WriteULong(ref buffer,TimeUnixUsec);
+            BinSerialize.WriteULong(ref buffer,(ulong)Flags);
+            BinSerialize.WriteUInt(ref buffer,Index);
+            BinSerialize.WriteUInt(ref buffer,RunId);
+            BinSerialize.WriteUInt(ref buffer,InformationWord);
+            BinSerialize.WriteFloat(ref buffer,Mtl);
+            BinSerialize.WriteFloat(ref buffer,Erp);
+            BinSerialize.WriteFloat(ref buffer,Frequency);
+            BinSerialize.WriteFloat(ref buffer,ReplyDelay);
+            BinSerialize.WriteFloat(ref buffer,InterrogationLevel);
+            BinSerialize.WriteFloat(ref buffer,RxGain);
+            BinSerialize.WriteUInt(ref buffer,InterrogationFrequency);
+            BinSerialize.WriteUShort(ref buffer,Validity);
+            BinSerialize.WriteShort(ref buffer,RawReplyDelay);
+            BinSerialize.WriteShort(ref buffer,RawFrequencyOffset);
+            BinSerialize.WriteByte(ref buffer,(byte)RequestCode);
+            BinSerialize.WriteByte(ref buffer,(byte)ActiveTest);
+            BinSerialize.WriteByte(ref buffer,(byte)TestStatus);
+            for(var i=0;i<Statuses.Length;i++)
+            {
+                BinSerialize.WriteByte(ref buffer,(byte)Statuses[i]);
+            }
+            BinSerialize.WriteByte(ref buffer,(byte)NormalReplyCount);
+            BinSerialize.WriteByte(ref buffer,(byte)SlsReplyCount);
+            BinSerialize.WriteByte(ref buffer,(byte)AttenuatedSlsReplyCount);
+            BinSerialize.WriteByte(ref buffer,(byte)InformationFlags);
+            /* PayloadByteSize = 76 */;
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            UInt64Type.Accept(visitor,TimeUnixUsecField, ref _timeUnixUsec);    
+            var tmpFlags = (ulong)Flags;
+            UInt64Type.Accept(visitor,FlagsField, ref tmpFlags);
+            Flags = (AsvRsgaDataFlags)tmpFlags;
+            UInt32Type.Accept(visitor,IndexField, ref _index);    
+            UInt32Type.Accept(visitor,RunIdField, ref _runId);    
+            UInt32Type.Accept(visitor,InformationWordField, ref _informationWord);    
+            FloatType.Accept(visitor,MtlField, ref _mtl);    
+            FloatType.Accept(visitor,ErpField, ref _erp);    
+            FloatType.Accept(visitor,FrequencyField, ref _frequency);    
+            FloatType.Accept(visitor,ReplyDelayField, ref _replyDelay);    
+            FloatType.Accept(visitor,InterrogationLevelField, ref _interrogationLevel);    
+            FloatType.Accept(visitor,RxGainField, ref _rxGain);    
+            UInt32Type.Accept(visitor,InterrogationFrequencyField, ref _interrogationFrequency);    
+            UInt16Type.Accept(visitor,ValidityField, ref _validity);    
+            Int16Type.Accept(visitor,RawReplyDelayField, ref _rawReplyDelay);
+            Int16Type.Accept(visitor,RawFrequencyOffsetField, ref _rawFrequencyOffset);
+            UInt8Type.Accept(visitor,RequestCodeField, ref _requestCode);    
+            UInt8Type.Accept(visitor,ActiveTestField, ref _activeTest);    
+            UInt8Type.Accept(visitor,TestStatusField, ref _testStatus);    
+            ArrayType.Accept(visitor,StatusesField, 
+                (index, v, f, t) => UInt8Type.Accept(v, f, t, ref Statuses[index]));    
+            UInt8Type.Accept(visitor,NormalReplyCountField, ref _normalReplyCount);    
+            UInt8Type.Accept(visitor,SlsReplyCountField, ref _slsReplyCount);    
+            UInt8Type.Accept(visitor,AttenuatedSlsReplyCountField, ref _attenuatedSlsReplyCount);    
+            UInt8Type.Accept(visitor,InformationFlagsField, ref _informationFlags);    
+
+        }
+
+        /// <summary>
+        /// Snapshot timestamp, UNIX epoch
+        /// OriginName: time_unix_usec, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field TimeUnixUsecField = new Field.Builder()
+            .Name(nameof(TimeUnixUsec))
+            .Title("time_unix_usec")
+            .Description("Snapshot timestamp, UNIX epoch")
+.Units(@"us")
+            .DataType(UInt64Type.Default)
+        .Build();
+        private ulong _timeUnixUsec;
+        public ulong TimeUnixUsec { get => _timeUnixUsec; set => _timeUnixUsec = value; }
+        /// <summary>
+        /// Data flags
+        /// OriginName: flags, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field FlagsField = new Field.Builder()
+            .Name(nameof(Flags))
+            .Title("flags")
+            .Description("Data flags")
+            .DataType(new UInt64Type(AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Min(),AsvRsgaDataFlagsHelper.GetValues(x=>(ulong)x).Max()))
+            .Enum(AsvRsgaDataFlagsHelper.GetEnumValues(x=>(ulong)x))
+            .Build();
+        private AsvRsgaDataFlags _flags;
+        public AsvRsgaDataFlags Flags { get => _flags; set => _flags = value; } 
+        /// <summary>
+        /// Publication index
+        /// OriginName: index, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field IndexField = new Field.Builder()
+            .Name(nameof(Index))
+            .Title("index")
+            .Description("Publication index")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _index;
+        public uint Index { get => _index; set => _index = value; }
+        /// <summary>
+        /// Measurement run identifier; prevents mixing results of different runs
+        /// OriginName: run_id, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field RunIdField = new Field.Builder()
+            .Name(nameof(RunId))
+            .Title("run_id")
+            .Description("Measurement run identifier; prevents mixing results of different runs")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _runId;
+        public uint RunId { get => _runId; set => _runId = value; }
+        /// <summary>
+        /// Stored P1..P20 information, P1 in bit 0. Not proof of fresh complete information reception.
+        /// OriginName: information_word, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field InformationWordField = new Field.Builder()
+            .Name(nameof(InformationWord))
+            .Title("information_word")
+            .Description("Stored P1..P20 information, P1 in bit 0. Not proof of fresh complete information reception.")
+
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _informationWord;
+        public uint InformationWord { get => _informationWord; set => _informationWord = value; }
+        /// <summary>
+        /// Own-code measured sensitivity threshold
+        /// OriginName: mtl, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field MtlField = new Field.Builder()
+            .Name(nameof(Mtl))
+            .Title("mtl")
+            .Description("Own-code measured sensitivity threshold")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _mtl;
+        public float Mtl { get => _mtl; set => _mtl = value; }
+        /// <summary>
+        /// Measured reply power with configured RF path compensation
+        /// OriginName: erp, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field ErpField = new Field.Builder()
+            .Name(nameof(Erp))
+            .Title("erp")
+            .Description("Measured reply power with configured RF path compensation")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _erp;
+        public float Erp { get => _erp; set => _erp = value; }
+        /// <summary>
+        /// Measured reply frequency, referenced to 740 MHz
+        /// OriginName: frequency, Units: MHz, IsExtended: false
+        /// </summary>
+        public static readonly Field FrequencyField = new Field.Builder()
+            .Name(nameof(Frequency))
+            .Title("frequency")
+            .Description("Measured reply frequency, referenced to 740 MHz")
+.Units(@"MHz")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _frequency;
+        public float Frequency { get => _frequency; set => _frequency = value; }
+        /// <summary>
+        /// Reply delay with configured code-specific calibration and propagation correction
+        /// OriginName: reply_delay, Units: us, IsExtended: false
+        /// </summary>
+        public static readonly Field ReplyDelayField = new Field.Builder()
+            .Name(nameof(ReplyDelay))
+            .Title("reply_delay")
+            .Description("Reply delay with configured code-specific calibration and propagation correction")
+.Units(@"us")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _replyDelay;
+        public float ReplyDelay { get => _replyDelay; set => _replyDelay = value; }
+        /// <summary>
+        /// Requested interrogation level used for the last observation
+        /// OriginName: interrogation_level, Units: dBm, IsExtended: false
+        /// </summary>
+        public static readonly Field InterrogationLevelField = new Field.Builder()
+            .Name(nameof(InterrogationLevel))
+            .Title("interrogation_level")
+            .Description("Requested interrogation level used for the last observation")
+.Units(@"dBm")
+            .DataType(FloatType.Default)
+        .Build();
+        private float _interrogationLevel;
+        public float InterrogationLevel { get => _interrogationLevel; set => _interrogationLevel = value; }
+        /// <summary>
+        /// Normalized RX gain, 0..1
+        /// OriginName: rx_gain, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field RxGainField = new Field.Builder()
+            .Name(nameof(RxGain))
+            .Title("rx_gain")
+            .Description("Normalized RX gain, 0..1")
+
+            .DataType(FloatType.Default)
+        .Build();
+        private float _rxGain;
+        public float RxGain { get => _rxGain; set => _rxGain = value; }
+        /// <summary>
+        /// Selected interrogation frequency, 837500000 or 1030000000
+        /// OriginName: interrogation_frequency, Units: Hz, IsExtended: false
+        /// </summary>
+        public static readonly Field InterrogationFrequencyField = new Field.Builder()
+            .Name(nameof(InterrogationFrequency))
+            .Title("interrogation_frequency")
+            .Description("Selected interrogation frequency, 837500000 or 1030000000")
+.Units(@"Hz")
+            .DataType(UInt32Type.Default)
+        .Build();
+        private uint _interrogationFrequency;
+        public uint InterrogationFrequency { get => _interrogationFrequency; set => _interrogationFrequency = value; }
+        /// <summary>
+        /// Validity bits: 0 MTL, 1 ERP, 2 frequency, 3 SLS count, 4 attenuated SLS count, 5 delay, 6 normal count, 7 stored information. Bit 8 indicates clamped hardware TX gain; the requested interrogation level is retained. Stored information validity does not imply freshness.
+        /// OriginName: validity, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field ValidityField = new Field.Builder()
+            .Name(nameof(Validity))
+            .Title("validity")
+            .Description("Validity bits: 0 MTL, 1 ERP, 2 frequency, 3 SLS count, 4 attenuated SLS count, 5 delay, 6 normal count, 7 stored information. Bit 8 indicates clamped hardware TX gain; the requested interrogation level is retained. Stored information validity does not imply freshness.")
+
+            .DataType(UInt16Type.Default)
+        .Build();
+        private ushort _validity;
+        public ushort Validity { get => _validity; set => _validity = value; }
+        /// <summary>
+        /// Signed raw reply delay, 0.025 us per tick
+        /// OriginName: raw_reply_delay, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field RawReplyDelayField = new Field.Builder()
+            .Name(nameof(RawReplyDelay))
+            .Title("raw_reply_delay")
+            .Description("Signed raw reply delay, 0.025 us per tick")
+
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _rawReplyDelay;
+        public short RawReplyDelay { get => _rawReplyDelay; set => _rawReplyDelay = value; }
+        /// <summary>
+        /// Signed raw offset from 740 MHz
+        /// OriginName: raw_frequency_offset, Units: kHz, IsExtended: false
+        /// </summary>
+        public static readonly Field RawFrequencyOffsetField = new Field.Builder()
+            .Name(nameof(RawFrequencyOffset))
+            .Title("raw_frequency_offset")
+            .Description("Signed raw offset from 740 MHz")
+.Units(@"kHz")
+            .DataType(Int16Type.Default)
+        .Build();
+        private short _rawFrequencyOffset;
+        public short RawFrequencyOffset { get => _rawFrequencyOffset; set => _rawFrequencyOffset = value; }
+        /// <summary>
+        /// ZK1 = 1, ZK2 = 2, ZK3 = 3
+        /// OriginName: request_code, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field RequestCodeField = new Field.Builder()
+            .Name(nameof(RequestCode))
+            .Title("request_code")
+            .Description("ZK1 = 1, ZK2 = 2, ZK3 = 3")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _requestCode;
+        public byte RequestCode { get => _requestCode; set => _requestCode = value; }
+        /// <summary>
+        /// 0 MTL, 1 ERP, 2 frequency, 3 SLS, 4 attenuated SLS, 5 delay, 6 information; 255 none
+        /// OriginName: active_test, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field ActiveTestField = new Field.Builder()
+            .Name(nameof(ActiveTest))
+            .Title("active_test")
+            .Description("0 MTL, 1 ERP, 2 frequency, 3 SLS, 4 attenuated SLS, 5 delay, 6 information; 255 none")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _activeTest;
+        public byte ActiveTest { get => _activeTest; set => _activeTest = value; }
+        /// <summary>
+        /// Overall code status: 0 NotRun, 1 Running, 2 PASS, 3 FAIL, 4 Inconclusive
+        /// OriginName: test_status, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field TestStatusField = new Field.Builder()
+            .Name(nameof(TestStatus))
+            .Title("test_status")
+            .Description("Overall code status: 0 NotRun, 1 Running, 2 PASS, 3 FAIL, 4 Inconclusive")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _testStatus;
+        public byte TestStatus { get => _testStatus; set => _testStatus = value; }
+        /// <summary>
+        /// Independent statuses in active_test order: 0 NotRun, 1 Running, 2 PASS, 3 FAIL, 4 Inconclusive
+        /// OriginName: statuses, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field StatusesField = new Field.Builder()
+            .Name(nameof(Statuses))
+            .Title("statuses")
+            .Description("Independent statuses in active_test order: 0 NotRun, 1 Running, 2 PASS, 3 FAIL, 4 Inconclusive")
+
+            .DataType(new ArrayType(UInt8Type.Default,7))
+        .Build();
+        public const int StatusesMaxItemsCount = 7;
+        public byte[] Statuses { get; } = new byte[7];
+        [Obsolete("This method is deprecated. Use GetStatusesMaxItemsCount instead.")]
+        public byte GetStatusesMaxItemsCount() => 7;
+        /// <summary>
+        /// Normal coordinate replies per 200 requests; 0..200 valid
+        /// OriginName: normal_reply_count, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field NormalReplyCountField = new Field.Builder()
+            .Name(nameof(NormalReplyCount))
+            .Title("normal_reply_count")
+            .Description("Normal coordinate replies per 200 requests; 0..200 valid")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _normalReplyCount;
+        public byte NormalReplyCount { get => _normalReplyCount; set => _normalReplyCount = value; }
+        /// <summary>
+        /// Coordinate replies with P2 = P1 per 200 requests; 0..200 valid
+        /// OriginName: sls_reply_count, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field SlsReplyCountField = new Field.Builder()
+            .Name(nameof(SlsReplyCount))
+            .Title("sls_reply_count")
+            .Description("Coordinate replies with P2 = P1 per 200 requests; 0..200 valid")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _slsReplyCount;
+        public byte SlsReplyCount { get => _slsReplyCount; set => _slsReplyCount = value; }
+        /// <summary>
+        /// Coordinate replies with P2 = P1 - 9 dB per 200 requests; 0..200 valid
+        /// OriginName: attenuated_sls_reply_count, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field AttenuatedSlsReplyCountField = new Field.Builder()
+            .Name(nameof(AttenuatedSlsReplyCount))
+            .Title("attenuated_sls_reply_count")
+            .Description("Coordinate replies with P2 = P1 - 9 dB per 200 requests; 0..200 valid")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _attenuatedSlsReplyCount;
+        public byte AttenuatedSlsReplyCount { get => _attenuatedSlsReplyCount; set => _attenuatedSlsReplyCount = value; }
+        /// <summary>
+        /// Bits: 0 coordinate distress; 1 information decoded structurally; 2 TI emergency; 3 full-information freshness confirmed (not available in current FPGA)
+        /// OriginName: information_flags, Units: , IsExtended: false
+        /// </summary>
+        public static readonly Field InformationFlagsField = new Field.Builder()
+            .Name(nameof(InformationFlags))
+            .Title("information_flags")
+            .Description("Bits: 0 coordinate distress; 1 information decoded structurally; 2 TI emergency; 3 full-information freshness confirmed (not available in current FPGA)")
+
+            .DataType(UInt8Type.Default)
+        .Build();
+        private byte _informationFlags;
+        public byte InformationFlags { get => _informationFlags; set => _informationFlags = value; }
     }
 
 
